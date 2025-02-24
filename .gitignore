@@ -33,8 +33,6 @@ packages/
 .nuget/
 
 # 🟢 Конфигурация / Логирование
-appsettings*.json
-secrets.json
 logs/
 logs/*.log
 *.log
