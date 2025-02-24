@@ -1,0 +1,66 @@
+# 🟢 Rider / JetBrains
+.idea/
+*.sln.iml
+*.ipr
+*.iws
+
+# 🟢 Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.vsp
+
+# 🟢 .NET 8 артефакты
+bin/
+obj/
+out/
+*.dll
+*.exe
+*.pdb
+*.log
+*.bak
+*.swp
+*.cache
+*.db
+*.mdf
+*.ldf
+
+# 🟢 NuGet
+packages/
+*.nupkg
+.nuget/
+
+# 🟢 Конфигурация / Логирование
+appsettings*.json
+secrets.json
+logs/
+logs/*.log
+*.log
+*.tlog
+*.csv
+*.ts
+*.csproj.user
+
+# 🟢 Docker
+docker-compose.override.yml
+.env
+
+# 🟢 IDE файлы
+*.code-workspace
+*.vsconfig
+*.csproj.user
+*.csproj.vspscc
+*.vssscc
+
+# 🟢 Resharper / Rider
+*.DotSettings
+*.DotSettings.user
+resharper.xml
+resharper/
+
+# 🟢 Misc
+node_modules/
+Thumbs.db
+.DS_Store
