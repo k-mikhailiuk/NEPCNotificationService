@@ -1,6 +1,6 @@
 using DataIngrestorApi.App.Extensions;
-using DataIngrestorApi.Services;
-using MessagingBroker;
+using DataIngrestorApi.DataAccess;
+using DataIngrestorApi.Services.Extensions;
 using OptionsConfiguration;
 
 namespace DataIngrestorApi.App;
@@ -16,15 +16,22 @@ public static class DIConfigure
     /// </summary>
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddJsonSerializeOptions();
         services.AddSwagger();
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddProducer<KafkaMessageProducer>();
         services.AddHealthCheck();
-        services.AddProducerHealthCheck();
-        services.AddKafkaMessageProducerOptions(configuration);
-        services.AddKafkaTopics(configuration);
-        services.AddKafkaConfigProvider();
         services.AddMessageProcessor();
+        services.AddDatabaseConnectionString(configuration);
+        services.AddDbContext(configuration);
     }
+
+    // private static void RegisterKafka(this IServiceCollection services, IConfiguration configuration)
+    // {
+    //     services.AddKafkaConfigProvider();
+    //     services.AddProducer<KafkaMessageProducer>();
+    //     services.AddKafkaTopics(configuration);
+    //     services.AddKafkaMessageProducerOptions(configuration);
+    //     services.AddProducerHealthCheck();
+    // }
 }

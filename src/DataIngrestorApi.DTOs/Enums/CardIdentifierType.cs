@@ -10,25 +10,25 @@ public enum CardIdentifierType
     /// <summary>
     /// Номер карты
     /// </summary>
-    Pan = 1,
+    pan = 1,
     
     /// <summary>
     /// Хэш номера карты в верхнем регистре, вычисленного алгоритмом sha-256
     /// </summary>
-    Sha256 = 2,
+    sha256 = 2,
     
     /// <summary>
     /// Хэш номера карты в верхнем регистре, вычисленного алгоритмом sha-1
     /// </summary>
-    Sha1 = 3,
+    sha1 = 3,
     
     /// <summary>
     /// Номер счета+последние 4 цифры ПАНа через разделитель '='
     /// </summary>
-    AcctIdPanTail = 4,
+    acctIdPanTail = 4,
     
     /// <summary>
     /// EAN13 карты (Штрих-код)
     /// </summary>
-    Ean13 = 5,
+    ean13 = 5,
 }

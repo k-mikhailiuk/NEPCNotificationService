@@ -1,51 +1,53 @@
 using System.Text.Json;
+using DataIngrestorApi.DataAccess;
+using DataIngrestorApi.DataAccess.Entities;
 using DataIngrestorApi.DTOs;
 using DataIngrestorApi.Services.MessageProcessor.Abstractions;
-using MessagingBroker.Abstractions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using OptionsConfiguration.Kafka;
 
 namespace DataIngrestorApi.Services.MessageProcessor;
 
+/// <summary>
+/// Класс-обработчик полученных сообщений
+/// </summary>
 public class MessageProcessor : IMessageProcessor
 {
-    private readonly IMessageProducer _producer;
     private readonly ILogger<MessageProcessor> _logger;
-    private readonly KafkaTopicsOptions _kafkaTopics;
+    private readonly IngressApiDbContext _context;
+    private readonly JsonSerializerOptions _jsonOptions;
 
-    public MessageProcessor(IMessageProducer producer, ILogger<MessageProcessor> logger, IOptions<KafkaTopicsOptions> kafkaTopics)
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="MessageProcessor"/>.
+    /// </summary>
+    /// <param name="logger">Логгер для записи событий и ошибок</param>
+    /// <param name="context">Экземпляр <see cref="IngressApiDbContext"/> для работы с базой данных.</param>
+    /// <param name="jsonOptions">Настройки сериализации JSON.</param>
+    public MessageProcessor(ILogger<MessageProcessor> logger, IngressApiDbContext context, JsonSerializerOptions jsonOptions)
     {
-        _producer = producer;
         _logger = logger;
-        _kafkaTopics = kafkaTopics.Value;
+        _context = context;
+        _jsonOptions = jsonOptions;
     }
 
+    /// <summary>
+    /// Обрабатывает пакет уведомлений и сохраняет их в базу данных.
+    /// </summary>
+    /// <param name="request">Объект, содержащий пакет уведомлений.</param>
     public async Task ProcessBatchAsync(NotificationRequestDto request)
     {
-        var tasks = new List<Task>();
-
-        foreach (var batchItem in request.Batch)
+        if (request.Batch.Length == 0)
         {
-            try
-            {
-                var jsonMessage = JsonSerializer.Serialize(batchItem);
-
-                tasks.Add(_producer.ProduceAsync(jsonMessage, _kafkaTopics.NepcTopic));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Failed to process batch item: {BatchItem}", batchItem);
-            }
+            _logger.LogWarning("Received empty batch.");
+            return;
         }
 
-        try
-        {
-            await Task.WhenAll(tasks);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "One or more messages failed to send to Kafka.");
-        }
+        var messages = request.Batch
+            .Select(batchItem => InboxMessage.Create(batchItem, _jsonOptions))
+            .ToList();
+
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+        await _context.InboxMessages.AddRangeAsync(messages);
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
     }
 }

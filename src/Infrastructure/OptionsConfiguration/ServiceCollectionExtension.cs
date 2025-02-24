@@ -20,4 +20,13 @@ public static class ServiceCollectionExtension
     {
         return services.Configure<KafkaTopicsOptions>(configuration.GetSection(KafkaTopicsOptions.KafkaTopics));
     }
+
+    public static IServiceCollection AddDatabaseConnectionString(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string is missing");
+        
+        return services.Configure<string>(options => options = connectionString);
+    }
 }

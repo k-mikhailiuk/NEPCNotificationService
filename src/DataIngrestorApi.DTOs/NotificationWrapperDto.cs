@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using DataIngrestorApi.DTOs.AcctBalChange;
 using DataIngrestorApi.DTOs.AcqFinAuth;
 using DataIngrestorApi.DTOs.CardStatusChange;
@@ -37,7 +38,7 @@ public class NotificationWrapperDto
     /// <summary>
     /// Уведомление об изменении статуса токена
     /// </summary>
-    public TokenStausChangeDto? TokenStausChange { get; set; }
+    public TokenStausChangeDto? TokenStatusChange { get; set; }
     
     /// <summary>
     /// Уведомление о снятии холда

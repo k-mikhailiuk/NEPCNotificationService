@@ -33,5 +33,5 @@ public class TokenStausChangeDto
     /// <summary>
     /// Список расширений
     /// </summary>
-    public ExtensionDto? Extensions { get; set; }
+    public List<ExtensionDto>? Extensions { get; set; }
 }

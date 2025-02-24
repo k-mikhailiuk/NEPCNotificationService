@@ -13,5 +13,5 @@ public class AuthMoneyDetailsDto
     /// <summary>
     /// Сумма(со знаком) изменения лимита кредита
     /// </summary>
-    public MoneyDto? ExceededLimitMoney { get; set; }
+    public MoneyDto? ExceedLimitMoney { get; set; }
 }

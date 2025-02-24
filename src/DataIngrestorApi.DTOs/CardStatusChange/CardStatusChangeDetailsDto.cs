@@ -1,3 +1,7 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using DataIngrestorApi.DTOs.Extensions;
+
 namespace DataIngrestorApi.DTOs.CardStatusChange;
 
 /// <summary>
@@ -41,7 +45,14 @@ public class CardStatusChangeDetailsDto
     public string? Note { get; set; }
     
     /// <summary>
+    /// Для хранения неидентифицированных полей/заполнение CardIdentifier
+    /// </summary>
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
+    
+    /// <summary>
     /// Один из идентификаторов карты
     /// </summary>
-    public CardIdentifierDto? CardIdentifier { get; set; }
+    [JsonIgnore]
+    public List<CardIdentifierDto>? CardIdentifier => CardIdentifierJsonParser.Transform(ExtensionData);
 }

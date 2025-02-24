@@ -15,5 +15,5 @@ public class CardIdentifierDto
     /// <summary>
     /// Значение идентификатора карты
     /// </summary>
-    public string Value { get; set; }
+    public string? Value { get; set; }
 }
