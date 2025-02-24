@@ -65,9 +65,5 @@ public class TokenStausChangeDetailsDto
     [JsonExtensionData]
     public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
     
-    /// <summary>
-    /// Один из идентификаторов карты
-    /// </summary>
-    [JsonIgnore]
-    public List<CardIdentifierDto>? CardIdentifier => CardIdentifierJsonParser.Transform(ExtensionData);
+    
 }

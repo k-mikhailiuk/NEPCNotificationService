@@ -4,6 +4,9 @@ using DataIngrestorApi.DTOs.Enums;
 
 namespace DataIngrestorApi.DTOs.Extensions;
 
+/// <summary>
+/// Парсер для получения полей идентификатора карты
+/// </summary>
 public static class CardIdentifierJsonParser
 {
     /// <summary>
