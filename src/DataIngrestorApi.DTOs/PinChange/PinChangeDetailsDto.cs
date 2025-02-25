@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DataIngrestorApi.DTOs.Abstractions;
 using DataIngrestorApi.DTOs.Extensions;
 
 namespace DataIngrestorApi.DTOs.PinChange;
@@ -7,7 +9,7 @@ namespace DataIngrestorApi.DTOs.PinChange;
 /// <summary>
 /// Подробная информация об изменении PIN-кода
 /// </summary>
-public class PinChangeDetailsDto
+public class PinChangeDetailsDto : IHasCardIdentifier, IValidatableObject
 {
     /// <summary>
     /// Срок действия карты (YYMM)
@@ -41,8 +43,14 @@ public class PinChangeDetailsDto
     public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
     
     /// <summary>
-    /// Один из идентификаторов карты
+    /// Список идентификаторов карты
     /// </summary>
     [JsonIgnore]
     public List<CardIdentifierDto>? CardIdentifier => CardIdentifierJsonParser.Transform(ExtensionData);
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        CardIdentifierValidationHelper.ValidateAndCleanExtensionData(ExtensionData);
+        yield break;
+    }
 }

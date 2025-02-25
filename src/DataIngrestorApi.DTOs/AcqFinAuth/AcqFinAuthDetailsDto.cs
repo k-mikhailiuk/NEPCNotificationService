@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DataIngrestorApi.DTOs.Abstractions;
 using DataIngrestorApi.DTOs.Extensions;
 
 namespace DataIngrestorApi.DTOs.AcqFinAuth;
@@ -7,7 +9,7 @@ namespace DataIngrestorApi.DTOs.AcqFinAuth;
 /// <summary>
 /// Детали онлайн эквайринговой финансовой авторизации по карте
 /// </summary>
-public class AcqFinAuthDetailsDto
+public class AcqFinAuthDetailsDto : IHasCardIdentifier, IValidatableObject
 {
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
@@ -122,8 +124,14 @@ public class AcqFinAuthDetailsDto
     public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
     
     /// <summary>
-    /// Один из идентификаторов карты
+    /// Список идентификаторов карты
     /// </summary>
     [JsonIgnore]
     public List<CardIdentifierDto>? CardIdentifier => CardIdentifierJsonParser.Transform(ExtensionData);
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        CardIdentifierValidationHelper.ValidateAndCleanExtensionData(ExtensionData);
+        yield break;
+    }
 }

@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DataIngrestorApi.DTOs.Abstractions;
 using DataIngrestorApi.DTOs.Extensions;
 
 namespace DataIngrestorApi.DTOs.CardStatusChange;
@@ -7,7 +9,7 @@ namespace DataIngrestorApi.DTOs.CardStatusChange;
 /// <summary>
 /// Подробная информация об изменении статуса карты
 /// </summary>
-public class CardStatusChangeDetailsDto
+public class CardStatusChangeDetailsDto : IHasCardIdentifier, IValidatableObject
 {
     /// <summary>
     /// Срок действия карты (YYMM)
@@ -51,8 +53,14 @@ public class CardStatusChangeDetailsDto
     public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
     
     /// <summary>
-    /// Один из идентификаторов карты
+    /// Список идентификаторов карты
     /// </summary>
     [JsonIgnore]
     public List<CardIdentifierDto>? CardIdentifier => CardIdentifierJsonParser.Transform(ExtensionData);
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        CardIdentifierValidationHelper.ValidateAndCleanExtensionData(ExtensionData);
+        yield break;
+    }
 }

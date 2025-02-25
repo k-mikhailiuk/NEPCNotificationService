@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using DataIngrestorApi.DTOs.Abstractions;
 using DataIngrestorApi.DTOs.Extensions;
 
 namespace DataIngrestorApi.DTOs.TokenStausChange;
@@ -7,7 +9,7 @@ namespace DataIngrestorApi.DTOs.TokenStausChange;
 /// <summary>
 /// Подробная информация об изменении статуса токена
 /// </summary>
-public class TokenStausChangeDetailsDto
+public class TokenStausChangeDetailsDto : IHasCardIdentifier, IValidatableObject
 {
     /// <summary>
     /// Идентификатор токена, связанного с PAN
@@ -65,5 +67,15 @@ public class TokenStausChangeDetailsDto
     [JsonExtensionData]
     public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
     
-    
+    /// <summary>
+    /// Список идентификаторов карты
+    /// </summary>
+    [JsonIgnore]
+    public List<CardIdentifierDto>? CardIdentifier => CardIdentifierJsonParser.Transform(ExtensionData);
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        CardIdentifierValidationHelper.ValidateAndCleanExtensionData(ExtensionData);
+        yield break;
+    }
 }
