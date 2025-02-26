@@ -30,10 +30,10 @@ public class PinChange
     /// Уникальный идентификатор PinChangeDetails
     /// </summary>
     [Required]
-    public long PinChangeDetailsId { get; set; }
+    public long DetailsId { get; set; }
     
     /// <inheritdoc cref="PinChangeDetails" />
-    [ForeignKey(nameof(PinChangeDetailsId))]
+    [ForeignKey(nameof(DetailsId))]
     public PinChangeDetails Details { get; set; }
     
     /// <summary>

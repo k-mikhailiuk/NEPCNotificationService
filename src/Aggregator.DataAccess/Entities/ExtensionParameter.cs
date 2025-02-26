@@ -6,7 +6,7 @@ namespace Aggregator.DataAccess.Entities;
 /// <summary>
 /// Параметры расширения
 /// </summary>
-public class ExtesionParameters
+public class ExtensionParameter
 {
     /// <summary>
     /// Уникальный идентификатор

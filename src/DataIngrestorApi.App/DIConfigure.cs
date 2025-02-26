@@ -23,7 +23,7 @@ public static class DIConfigure
         services.AddHealthCheck();
         services.AddMessageProcessor();
         services.AddDatabaseConnectionString(configuration);
-        services.AddDbContext(configuration);
+        services.AddIngressApiDbContext(configuration);
     }
 
     // private static void RegisterKafka(this IServiceCollection services, IConfiguration configuration)

@@ -30,10 +30,10 @@ public class Unhold
     /// Уникальный идентификатор UnholdDetails 
     /// </summary>
     [Required]
-    public long UnholdDetailsId { get; set; }
+    public long DetailsId { get; set; }
     
     /// <inheritdoc cref="UnholdDetails" />
-    [ForeignKey(nameof(UnholdDetailsId))]
+    [ForeignKey(nameof(DetailsId))]
     public UnholdDetails Details { get; set; }
     
     /// <summary>

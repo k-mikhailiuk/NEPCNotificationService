@@ -9,6 +9,11 @@ namespace Aggregator.DataAccess.Entities.Abstract;
 public abstract class AccountsInfo
 {
     /// <summary>
+    /// Уникальный идентификатор
+    /// </summary>
+    public long Id { get; set; }
+    
+    /// <summary>
     /// Номер счета
     /// </summary>
     [Required]

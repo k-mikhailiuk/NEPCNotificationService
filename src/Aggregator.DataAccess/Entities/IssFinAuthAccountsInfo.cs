@@ -9,8 +9,8 @@ namespace Aggregator.DataAccess.Entities;
 public class IssFinAuthAccountsInfo : AccountsInfo
 {
     /// <summary>
-    /// Уникальный идентификатор
+    /// Уникальный идентификатор IssFinAuth
     /// </summary>
-    [Key]
-    public long IssFinAuthAccountsInfoId { get; set; }
+    [Required]
+    public long IssFinAuthId { get; set; }
 }

@@ -30,10 +30,10 @@ public class AcctBalChange
     /// Уникальный идентификатор AcctBalChangeDetails
     /// </summary>
     [Required]
-    public long AcctBalChangeDetailsId { get; set; }
+    public long DetailsId { get; set; }
     
     /// <inheritdoc cref="AcctBalChangeDetails" />
-    [ForeignKey(nameof(AcctBalChangeDetailsId))]
+    [ForeignKey(nameof(DetailsId))]
     public AcctBalChangeDetails Details { get; set; }
     
     /// <summary>

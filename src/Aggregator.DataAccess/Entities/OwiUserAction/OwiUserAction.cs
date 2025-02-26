@@ -30,10 +30,10 @@ public class OwiUserAction
     /// Уникальный идентификатор OwiUserActionDetails
     /// </summary>
     [Required]
-    public long OwiUserActionDetailsId { get; set; }
+    public long DetailsId { get; set; }
     
     /// <inheritdoc cref="OwiUserActionDetails" />
-    [ForeignKey(nameof(OwiUserActionDetailsId))]
+    [ForeignKey(nameof(DetailsId))]
     public OwiUserActionDetails Details { get; set; }
     
     /// <summary>

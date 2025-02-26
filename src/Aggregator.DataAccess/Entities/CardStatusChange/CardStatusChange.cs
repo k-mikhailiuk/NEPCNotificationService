@@ -30,11 +30,11 @@ public class CardStatusChange
     /// Идентификатор CardStatusChangeDetails
     /// </summary>
     [Required]
-    public long CardStatusChangeDetailsId { get; set; }
+    public long DetailsId { get; set; }
     
-    /// <inheritdoc cref="CardStatusChangeDetails" />
-    [ForeignKey(nameof(CardStatusChangeDetailsId))]
-    public CardStatusChangeDetails CardStatusChangeDetails { get; set; }
+    /// <inheritdoc cref="Details" />
+    [ForeignKey(nameof(DetailsId))]
+    public CardStatusChangeDetails Details { get; set; }
     
     /// <summary>
     /// Идентификатор CardInfo

@@ -2,13 +2,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DataIngrestorApi.DataAccess;
+namespace Aggregator.DataAccess;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddIngressApiDbContext(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddAggregatorDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<IngressApiDbContext>(options =>
+        services.AddDbContext<AggregatorDbContext>(options =>
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                                    ?? throw new InvalidOperationException("Connection string is missing");

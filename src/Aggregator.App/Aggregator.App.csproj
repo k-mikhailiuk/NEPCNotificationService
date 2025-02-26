@@ -1,14 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Worker">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-Aggregator.App-426752e7-ca3c-45b5-9117-34afecda1fdd</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
         <None Include="..\..\shared\appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
         <None Include="..\..\shared\appsettings.Development.json" Link="appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
-
-
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1"/>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
+      <ProjectReference Include="..\Infrastructure\OptionsConfiguration\OptionsConfiguration.csproj" />
+    </ItemGroup>
 </Project>

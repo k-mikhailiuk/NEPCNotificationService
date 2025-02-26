@@ -6,7 +6,7 @@ namespace Aggregator.DataAccess.Entities.TokenChangeStatus;
 /// <summary>
 /// Уведомление об изменении статуса токена
 /// </summary>
-public class TokenChangeStatus
+public class TokenStatusChange
 {
     /// <summary>
     /// Уникальный идентификатор уведомления
@@ -30,10 +30,10 @@ public class TokenChangeStatus
     /// Уникальный идентификатор TokenStatusChangeDetails
     /// </summary>
     [Required]
-    public long TokenStatusChangeDetailsId { get; set; }
+    public long DetailsId { get; set; }
     
     /// <inheritdoc cref="TokenStatusChangeDetails" />
-    [ForeignKey(nameof(TokenStatusChangeDetailsId))]
+    [ForeignKey(nameof(DetailsId))]
     public TokenStatusChangeDetails Details { get; set; }
     
     /// <summary>

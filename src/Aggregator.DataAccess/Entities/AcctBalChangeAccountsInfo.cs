@@ -9,8 +9,8 @@ namespace Aggregator.DataAccess.Entities;
 public class AcctBalChangeAccountsInfo : AccountsInfo
 {
     /// <summary>
-    /// Уникальный идентификатор
+    /// Уникальный идентификатор AcctBalChange
     /// </summary>
-    [Key]
-    public long AcctBalChangeAccountsInfoId { get; set; }
+    [Required]
+    public long AcctBalChangeId { get; set; }
 }

@@ -5,7 +5,6 @@ namespace DataIngrestorApi.DataAccess;
 
 public class IngressApiDbContext : DbContext
 {
-    
     public DbSet<InboxMessage> InboxMessages { get; set; }
 
     public IngressApiDbContext(DbContextOptions<IngressApiDbContext> options)
