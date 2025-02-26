@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.TokenChangeStatus;
@@ -64,5 +63,5 @@ public class TokenStatusChangeDetails
     public string? FpanRef { get; set; }
     
     /// <inheritdoc cref="CardIdentifier" />
-    public CardIdentifier? CardIdentifier { get; set; }
+    public CardIdentifier CardIdentifier { get; set; }
 }

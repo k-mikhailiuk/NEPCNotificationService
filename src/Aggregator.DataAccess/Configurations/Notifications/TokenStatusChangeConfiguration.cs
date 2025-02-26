@@ -29,7 +29,7 @@ public class TokenStatusChangeConfiguration : IEntityTypeConfiguration<TokenStat
         
         builder.HasMany(x=>x.Extensions)
             .WithOne()
-            .HasForeignKey(x=>x.ExtensionId)
+            .HasForeignKey(x=>x.NotificationId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

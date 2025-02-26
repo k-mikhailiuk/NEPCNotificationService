@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Aggregator.DataAccess.Entities.Enum;
 
 namespace Aggregator.DataAccess.Entities;

@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities;
@@ -39,5 +38,5 @@ public class CardInfo
     public List<CardInfoLimitWrapper>? Limits { get; set; }
     
     /// <inheritdoc cref="CardIdentifier" />
-    public CardIdentifier? CardIdentifier { get; set; }
+    public CardIdentifier CardIdentifier { get; set; }
 }

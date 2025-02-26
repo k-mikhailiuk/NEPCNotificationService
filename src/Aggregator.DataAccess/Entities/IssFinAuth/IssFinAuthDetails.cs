@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.IssFinAuth;
@@ -47,17 +46,17 @@ public class IssFinAuthDetails
     public char AuthDirection { get; set; }
     
     /// <inheritdoc cref="ConvMoney" />
-    public ConvMoney? ConvMoney { get; set; }
+    public ConvMoney ConvMoney { get; set; }
     
     /// <summary>
     /// Состояние счета после операции
     /// </summary>
-    public AccountBalance? AccountBalance { get; set; }
+    public AccountBalance AccountBalance { get; set; }
     
     /// <summary>
     /// Сумма авторизации в валюте банка-эмитента. Включает эквайринговую комиссию. Не включает эмитентскую комиссию.
     /// </summary>
-    public BillingMoney? BillingMoney { get; set; }
+    public BillingMoney BillingMoney { get; set; }
 
     /// <summary>
     /// Локальное время совершения авторизации на устройстве (YYYYMMDDHH24MISS)
@@ -85,7 +84,7 @@ public class IssFinAuthDetails
     public string? Rrn { get; set; }
     
     /// <inheritdoc cref="AcqFee" />
-    public AcqFee? AcqFee { get; set; }
+    public AcqFee AcqFee { get; set; }
     
     /// <summary>
     /// Направление движения эквайринговой комиссии относительно счета.
@@ -96,7 +95,7 @@ public class IssFinAuthDetails
     /// <summary>
     /// Комиссия банка-эмитента в валюте счета
     /// </summary>
-    public IssFee? IssFee { get; set; }
+    public IssFee IssFee { get; set; }
     
     /// <summary>
     /// Направление движения эмитентской комиссии относительно счета.
@@ -117,7 +116,7 @@ public class IssFinAuthDetails
     /// <summary>
     /// Мобильный кошелек
     /// </summary>
-    public WalletProvider? WalletProvider { get; set; }
+    public WalletProvider WalletProvider { get; set; }
     
     /// <summary>
     /// Токен карты
@@ -130,8 +129,8 @@ public class IssFinAuthDetails
     public List<CheckedLimit>? CheckedLimits { get; set; }
     
     /// <inheritdoc cref="AuthMoneyDetails" />
-    public AuthMoneyDetails? AuthMoneyDetails { get; set; }
+    public AuthMoneyDetails AuthMoneyDetails { get; set; }
     
     /// <inheritdoc cref="CardIdentifier" />
-    public CardIdentifier? CardIdentifier { get; set; } 
+    public CardIdentifier CardIdentifier { get; set; } 
 }

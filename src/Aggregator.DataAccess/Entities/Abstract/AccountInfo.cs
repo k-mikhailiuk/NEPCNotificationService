@@ -34,7 +34,7 @@ public abstract class AccountsInfo
     /// <summary>
     /// Лимит кредита
     /// </summary>
-    public ExceedLimitMoney? ExceedLimit { get; set; }
+    public ExceedLimitMoney ExceedLimit { get; set; }
     
     /// <summary>
     /// Список лимитов

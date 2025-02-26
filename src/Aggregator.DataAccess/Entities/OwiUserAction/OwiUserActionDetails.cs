@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Aggregator.DataAccess.Entities.OwiUserAction;
 
 /// <summary>

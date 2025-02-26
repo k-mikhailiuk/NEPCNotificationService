@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Aggregator.DataAccess.Entities.PinChange;
 
 /// <summary>
@@ -40,5 +37,5 @@ public class PinChange
     public CardInfo CardInfo { get; set; }
     
     /// <inheritdoc cref="NotificationExtension" />
-    public List<NotificationExtension> Extensions { get; set; }
+    public List<NotificationExtension>? Extensions { get; set; }
 }

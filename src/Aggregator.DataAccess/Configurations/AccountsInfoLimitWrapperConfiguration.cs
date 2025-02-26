@@ -13,9 +13,9 @@ public class AccountsInfoLimitWrapperConfiguration : IEntityTypeConfiguration<Ac
         builder.HasKey(x => x.Id);
         
         builder.Property(x=>x.Id).ValueGeneratedOnAdd();
-        builder.Property(x => x.Limit).IsRequired().HasConversion<byte>();
+        builder.Property(x => x.LimitType).IsRequired().HasConversion<byte>();
         builder.Property(x=>x.CardInfoId).IsRequired();
-        builder.Property(x=>x.Limit).IsRequired();
+        builder.Property(x=>x.LimitId).IsRequired();
         
         builder.HasOne(x=>x.Limit)
             .WithOne()

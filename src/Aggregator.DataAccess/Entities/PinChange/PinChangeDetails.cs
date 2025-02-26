@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.PinChange;
@@ -39,5 +38,5 @@ public class PinChangeDetails
     public string Service { get; set; }
     
     /// <inheritdoc cref="CardIdentifier" />
-    public CardIdentifier? CardIdentifier { get; set; }
+    public CardIdentifier CardIdentifier { get; set; }
 }

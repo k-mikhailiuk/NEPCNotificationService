@@ -10,16 +10,15 @@ public class NotificationExtensionConfiguration : IEntityTypeConfiguration<Notif
     {
         builder.ToTable("NotificationExtensions");
         
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.ExtensionId);
         
-        builder.Property(x=>x.Id).ValueGeneratedOnAdd();
-        builder.Property(x => x.ExtensionId).IsRequired();
         builder.Property(x => x.NotificationId).IsRequired();
         builder.Property(x => x.Critical).IsRequired();
         
-        builder.HasMany(x=>x.ExtesionParameters)
-            .WithOne()
-            .HasForeignKey(x=>x.ExtensionId)
+        builder.HasMany(x => x.ExtesionParameters)
+            .WithOne(x => x.Extension)
+            .HasForeignKey(x => x.ExtensionId)
+            .HasPrincipalKey(x => x.ExtensionId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

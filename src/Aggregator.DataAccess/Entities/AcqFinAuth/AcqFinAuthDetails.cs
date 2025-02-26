@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.AcqFinAuth;
@@ -72,7 +71,7 @@ public class AcqFinAuthDetails
     public string? Rrn { get; set; }
     
     /// <inheritdoc cref="AcqFee" />
-    public AcqFee? AcqFee { get; set; } 
+    public AcqFee AcqFee { get; set; } 
     
     /// <summary>
     /// Направление движения эквайринговой комиссии относительно карты.
@@ -81,7 +80,7 @@ public class AcqFinAuthDetails
     public char? AcqFeeDirection { get; set; }
     
     /// <inheritdoc cref="ConvMoney" />
-    public ConvMoney? ConvMoney { get; set; }
+    public ConvMoney ConvMoney { get; set; }
     
     /// <summary>
     /// Признак операции, проведенной в физическом устройстве (0 - false, 1 - true)
@@ -109,5 +108,5 @@ public class AcqFinAuthDetails
     public string? ServiceCode { get; set; }
     
     /// <inheritdoc cref="CardIdentifier" />
-    public CardIdentifier? CardIdentifier { get; set; }
+    public CardIdentifier CardIdentifier { get; set; }
 }

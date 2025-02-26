@@ -6,11 +6,12 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Комиссия банка-эквайера в валюте операции
 /// </summary>
+[Owned]
 public class AcqFee : ICurrencyAmount
 {
     /// <inheritdoc />
-    public long Amount { get; set; }
+    public long? Amount { get; set; }
     
     /// <inheritdoc />
-    public string Currency { get; set; }
+    public string? Currency { get; set; }
 }

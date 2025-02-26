@@ -6,6 +6,7 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Идентификатор карты
 /// </summary>
+[Owned]
 public class CardIdentifier
 {
     /// <summary>

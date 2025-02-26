@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.AcctBalChange;
@@ -30,12 +28,12 @@ public class AcctBalChangeDetails
     public DateTimeOffset TransactionTime { get; set; }
     
     /// <inheritdoc cref="Authorization" />
-    public Authorization? Auth { get; set; }
+    public Authorization Auth { get; set; }
     
     /// <summary>
     /// Уникальный идентификатор транзакции
     /// </summary>
-    public long FinTransId { get; set; }
+    public long? FinTransId { get; set; }
     
     /// <inheritdoc cref="FinTransaction" />
     public FinTransaction? FinTrans { get; set; }

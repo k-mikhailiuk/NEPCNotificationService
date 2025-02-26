@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities;
@@ -20,7 +18,7 @@ public class FinTransaction
     public string? FinTrans { get; set; }
     
     /// <inheritdoc cref="TranMoney" />
-    public TranMoney? TranMoney { get; set; }
+    public TranMoney TranMoney { get; set; }
     
     /// <summary>
     /// Направление движения средств относительно счета карты. C - счет кредитуется, D - счет дебетуется

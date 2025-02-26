@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Aggregator.DataAccess.Entities;
 
 /// <summary>
@@ -16,7 +13,7 @@ public class ExtensionParameter
     /// <summary>
     /// Идентификатор расширения, которому принадлежит параметр
     /// </summary>
-    public long ExtensionId { get; set; }
+    public string ExtensionId { get; set; }
     
     /// <inheritdoc cref="NotificationExtension" />
     public NotificationExtension Extension { get; set; }

@@ -5,15 +5,16 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Мобильный кошелек
 /// </summary>
+[Owned]
 public class WalletProvider
 {
     /// <summary>
     /// Идентификатор кошелька в разрезе платежной системы
     /// </summary>
-    public string Id { get; set; }
+    public string? Id { get; set; }
     
     /// <summary>
     /// Платежная система карты
     /// </summary>
-    public string PaymentSystem { get; set; }
+    public string? PaymentSystem { get; set; }
 }

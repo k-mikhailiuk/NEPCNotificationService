@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.Unhold;
@@ -66,7 +65,7 @@ public class UnholdDetails
     public string? Rrn { get; set; }
     
     /// <inheritdoc cref="IssFee" />
-    public IssFee? IssFee { get; set; }
+    public IssFee IssFee { get; set; }
     
     /// <summary>
     /// Направление движения эмитентской комиссии относительно счета карты оригинальной авторизации.
@@ -80,7 +79,7 @@ public class UnholdDetails
     public string? SvTrace { get; set; }
     
     /// <inheritdoc cref="WalletProvider" />
-    public WalletProvider? WalletProvider { get; set; }
+    public WalletProvider WalletProvider { get; set; }
     
     /// <summary>
     /// Токен карты
@@ -88,5 +87,5 @@ public class UnholdDetails
     public string? Dpan { get; set; }
     
     /// <inheritdoc cref="CardIdentifier" />
-    public CardIdentifier? CardIdentifier { get; set; }
+    public CardIdentifier CardIdentifier { get; set; }
 }

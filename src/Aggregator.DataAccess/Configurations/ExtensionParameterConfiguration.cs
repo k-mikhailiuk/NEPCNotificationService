@@ -10,9 +10,8 @@ public class ExtensionParameterConfiguration : IEntityTypeConfiguration<Extensio
     {
         builder.ToTable("ExtensionParameters");
         
-        builder.HasKey(x => x.Id);
+        builder.HasKey(x => x.ExtensionId);
         
-        builder.Property(x => x.ExtensionId).IsRequired();
         builder.Property(x => x.Name).IsRequired();
         builder.Property(x => x.Value).IsRequired();
         

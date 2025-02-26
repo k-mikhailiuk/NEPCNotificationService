@@ -6,11 +6,12 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Сумма(со знаком) изменения лимита кредита
 /// </summary>
+[Owned]
 public class ExceedLimitMoney : ICurrencyAmount
 {
     /// <inheritdoc />
-    public long Amount { get; set; }
+    public long? Amount { get; set; }
     
     /// <inheritdoc />
-    public string Currency { get; set; }
+    public string? Currency { get; set; }
 }

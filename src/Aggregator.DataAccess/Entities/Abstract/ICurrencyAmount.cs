@@ -8,10 +8,10 @@ public interface ICurrencyAmount
     /// <summary>
     /// Сумма в минимальных единицах валюты
     /// </summary>
-    public long Amount { get; set; }
+    public long? Amount { get; set; }
     
     /// <summary>
     /// Трехзначный числовой код валюты (ISO-4217)
     /// </summary>
-    public string Currency { get; set; }
+    public string? Currency { get; set; }
 }

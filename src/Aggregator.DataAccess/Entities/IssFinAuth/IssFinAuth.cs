@@ -1,6 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace Aggregator.DataAccess.Entities.IssFinAuth;
 
 /// <summary>
@@ -53,5 +50,5 @@ public class IssFinAuth
     public MerchantInfo MerchantInfo { get; set; }
     
     /// <inheritdoc cref="NotificationExtension" />
-    public List<NotificationExtension> Extensions { get; set; }
+    public List<NotificationExtension>? Extensions { get; set; }
 }
