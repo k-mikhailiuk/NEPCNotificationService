@@ -25,11 +25,11 @@ public class OwiUserActionConfiguration : IEntityTypeConfiguration<OwiUserAction
         builder.HasOne(x=>x.CardInfo)
             .WithOne()
             .HasForeignKey<OwiUserAction>()
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasMany(x=>x.Extensions)
             .WithOne()
             .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -26,21 +26,21 @@ public class IssFinAuthConfiguration : IEntityTypeConfiguration<IssFinAuth>
         builder.HasOne(x=>x.MerchantInfo)
             .WithOne()
             .HasForeignKey<IssFinAuth>(x=>x.MerchantInfoId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x=>x.CardInfo)
             .WithOne()
             .HasForeignKey<IssFinAuth>(x=>x.CardInfoId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasMany(x=>x.AccountsInfo)
             .WithOne()
             .HasForeignKey(x=>x.IssFinAuthId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
         
         builder.HasMany(x=>x.Extensions)
             .WithOne()
             .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

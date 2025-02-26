@@ -25,16 +25,16 @@ public class AcctBalChangeConfiguration : IEntityTypeConfiguration<AcctBalChange
         builder.HasOne(x=>x.CardInfo)
             .WithOne()
             .HasForeignKey<AcctBalChange>(x=>x.CardInfoId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasMany(x=>x.AccountsInfo)
             .WithOne()
             .HasForeignKey(x=>x.AcctBalChangeId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
         
         builder.HasMany(x=>x.Extensions)
             .WithOne()
             .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aggregator.DataAccess.Migrations
 {
     [DbContext(typeof(AggregatorDbContext))]
-    [Migration("20250226112231_CreateEntities")]
+    [Migration("20250226115335_CreateEntities")]
     partial class CreateEntities
     {
         /// <inheritdoc />
@@ -1006,7 +1006,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.CardInfo", "CardInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", "CardInfoId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChangeDetails", "Details")
@@ -1101,7 +1101,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", null)
                         .WithMany("AccountsInfo")
                         .HasForeignKey("AcctBalChangeId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AviableBalance", "AviableBalance", b1 =>
@@ -1160,7 +1160,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.MerchantInfo", "MerchantInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.AcqFinAuth.AcqFinAuth", "MerchantInfoId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Details");
@@ -1306,7 +1306,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.CardInfo", "CardInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.CardStatusChange.CardStatusChange", "CardInfoId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.CardStatusChange.CardStatusChangeDetails", "Details")
@@ -1402,7 +1402,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.CardInfo", "CardInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", "CardInfoId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuthDetails", "Details")
                         .WithOne()
@@ -1413,7 +1413,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.MerchantInfo", "MerchantInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", "MerchantInfoId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CardInfo");
@@ -1667,7 +1667,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", null)
                         .WithMany("AccountsInfo")
                         .HasForeignKey("IssFinAuthId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AviableBalance", "AviableBalance", b1 =>
@@ -1720,49 +1720,49 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", null)
                         .WithMany("Extensions")
                         .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.AcqFinAuth.AcqFinAuth", null)
                         .WithMany("Extensions")
                         .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.CardStatusChange.CardStatusChange", null)
                         .WithMany("Extensions")
                         .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", null)
                         .WithMany("Extensions")
                         .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.OwiUserAction.OwiUserAction", null)
                         .WithMany("Extensions")
                         .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.PinChange.PinChange", null)
                         .WithMany("Extensions")
                         .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.TokenChangeStatus.TokenStatusChange", null)
                         .WithMany("Extensions")
                         .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.Unhold.Unhold", null)
                         .WithMany("Extesions")
                         .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -1771,7 +1771,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.CardInfo", "CardInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.OwiUserAction.OwiUserAction", "CardInfoId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Aggregator.DataAccess.Entities.OwiUserAction.OwiUserActionDetails", "Details")
                         .WithOne()
@@ -1789,7 +1789,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.CardInfo", "CardInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.PinChange.PinChange", "CardInfoId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.PinChange.PinChangeDetails", "Details")
@@ -1833,7 +1833,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.CardInfo", "CardInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.TokenChangeStatus.TokenStatusChange", "CardInfoId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.TokenChangeStatus.TokenStatusChangeDetails", "Details")
@@ -1877,7 +1877,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.CardInfo", "CardInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.Unhold.Unhold", "CardInfoId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.Unhold.UnholdDetails", "Details")
@@ -1889,7 +1889,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasOne("Aggregator.DataAccess.Entities.MerchantInfo", "MerchantInfo")
                         .WithOne()
                         .HasForeignKey("Aggregator.DataAccess.Entities.Unhold.Unhold", "MerchantInfoId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("CardInfo");

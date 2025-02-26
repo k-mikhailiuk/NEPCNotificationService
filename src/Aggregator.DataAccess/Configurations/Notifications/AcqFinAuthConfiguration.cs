@@ -25,11 +25,11 @@ public class AcqFinAuthConfiguration : IEntityTypeConfiguration<AcqFinAuth>
         builder.HasOne(x=>x.MerchantInfo)
             .WithOne()
             .HasForeignKey<AcqFinAuth>(x=>x.MerchantInfoId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasMany(x=>x.Extensions)
             .WithOne()
             .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

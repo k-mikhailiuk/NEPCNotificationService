@@ -26,16 +26,16 @@ public class UnholdConfiguration : IEntityTypeConfiguration<Unhold>
         builder.HasOne(x=>x.MerchantInfo)
             .WithOne()
             .HasForeignKey<Unhold>(x=>x.MerchantInfoId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x=>x.CardInfo)
             .WithOne()
             .HasForeignKey<Unhold>(x=>x.CardInfoId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasMany(x=>x.Extesions)
             .WithOne()
             .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

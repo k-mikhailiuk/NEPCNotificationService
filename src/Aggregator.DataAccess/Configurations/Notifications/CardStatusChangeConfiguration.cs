@@ -25,11 +25,11 @@ public class CardStatusChangeConfiguration : IEntityTypeConfiguration<CardStatus
         builder.HasOne(x=>x.CardInfo)
             .WithOne()
             .HasForeignKey<CardStatusChange>(x => x.CardInfoId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasMany(x=>x.Extensions)
             .WithOne()
             .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

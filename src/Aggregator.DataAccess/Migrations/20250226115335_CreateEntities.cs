@@ -301,7 +301,7 @@ namespace Aggregator.DataAccess.Migrations
                         principalSchema: "nepc",
                         principalTable: "CardInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_CardStatusChanges_CardStatusChangeDetails_DetailsId",
                         column: x => x.DetailsId,
@@ -391,7 +391,7 @@ namespace Aggregator.DataAccess.Migrations
                         principalSchema: "nepc",
                         principalTable: "MerchantInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -442,7 +442,7 @@ namespace Aggregator.DataAccess.Migrations
                         principalSchema: "nepc",
                         principalTable: "CardInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_IssFinAuths_IssFinAuthDetails_DetailsId",
                         column: x => x.DetailsId,
@@ -456,7 +456,7 @@ namespace Aggregator.DataAccess.Migrations
                         principalSchema: "nepc",
                         principalTable: "MerchantInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -480,7 +480,7 @@ namespace Aggregator.DataAccess.Migrations
                         principalSchema: "nepc",
                         principalTable: "CardInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OwiUserActions_OwiUserActionDetails_DetailsId",
                         column: x => x.DetailsId,
@@ -511,7 +511,7 @@ namespace Aggregator.DataAccess.Migrations
                         principalSchema: "nepc",
                         principalTable: "CardInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PinChanges_PinChangeDetails_DetailsId",
                         column: x => x.DetailsId,
@@ -542,7 +542,7 @@ namespace Aggregator.DataAccess.Migrations
                         principalSchema: "nepc",
                         principalTable: "CardInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_TokenStatusChanges_TokenStatusChangeDetails_DetailsId",
                         column: x => x.DetailsId,
@@ -574,14 +574,14 @@ namespace Aggregator.DataAccess.Migrations
                         principalSchema: "nepc",
                         principalTable: "CardInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Unholds_MerchantInfos_MerchantInfoId",
                         column: x => x.MerchantInfoId,
                         principalSchema: "nepc",
                         principalTable: "MerchantInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Unholds_UnholdDetails_DetailsId",
                         column: x => x.DetailsId,
@@ -647,8 +647,7 @@ namespace Aggregator.DataAccess.Migrations
                         column: x => x.IssFinAuthId,
                         principalSchema: "nepc",
                         principalTable: "IssFinAuths",
-                        principalColumn: "IssFinAuthId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IssFinAuthId");
                 });
 
             migrationBuilder.CreateTable(
@@ -679,7 +678,7 @@ namespace Aggregator.DataAccess.Migrations
                         principalSchema: "nepc",
                         principalTable: "CardInfos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -705,8 +704,7 @@ namespace Aggregator.DataAccess.Migrations
                         column: x => x.AcctBalChangeId,
                         principalSchema: "nepc",
                         principalTable: "AcctBalChanges",
-                        principalColumn: "AcctBalChangeId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "AcctBalChangeId");
                 });
 
             migrationBuilder.CreateTable(
@@ -727,57 +725,49 @@ namespace Aggregator.DataAccess.Migrations
                         column: x => x.NotificationId,
                         principalSchema: "nepc",
                         principalTable: "AcctBalChanges",
-                        principalColumn: "AcctBalChangeId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "AcctBalChangeId");
                     table.ForeignKey(
                         name: "FK_NotificationExtensions_AcqFinAuths_NotificationId",
                         column: x => x.NotificationId,
                         principalSchema: "nepc",
                         principalTable: "AcqFinAuths",
-                        principalColumn: "AcqFinAuthId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "AcqFinAuthId");
                     table.ForeignKey(
                         name: "FK_NotificationExtensions_CardStatusChanges_NotificationId",
                         column: x => x.NotificationId,
                         principalSchema: "nepc",
                         principalTable: "CardStatusChanges",
-                        principalColumn: "CardStatusChangeId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "CardStatusChangeId");
                     table.ForeignKey(
                         name: "FK_NotificationExtensions_IssFinAuths_NotificationId",
                         column: x => x.NotificationId,
                         principalSchema: "nepc",
                         principalTable: "IssFinAuths",
-                        principalColumn: "IssFinAuthId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "IssFinAuthId");
                     table.ForeignKey(
                         name: "FK_NotificationExtensions_OwiUserActions_NotificationId",
                         column: x => x.NotificationId,
                         principalSchema: "nepc",
                         principalTable: "OwiUserActions",
-                        principalColumn: "OwiUserActionId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "OwiUserActionId");
                     table.ForeignKey(
                         name: "FK_NotificationExtensions_PinChanges_NotificationId",
                         column: x => x.NotificationId,
                         principalSchema: "nepc",
                         principalTable: "PinChanges",
-                        principalColumn: "PinChangeId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "PinChangeId");
                     table.ForeignKey(
                         name: "FK_NotificationExtensions_TokenStatusChanges_NotificationId",
                         column: x => x.NotificationId,
                         principalSchema: "nepc",
                         principalTable: "TokenStatusChanges",
-                        principalColumn: "TokenChangeStatusId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "TokenChangeStatusId");
                     table.ForeignKey(
                         name: "FK_NotificationExtensions_Unholds_NotificationId",
                         column: x => x.NotificationId,
                         principalSchema: "nepc",
                         principalTable: "Unholds",
-                        principalColumn: "UnholdId",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "UnholdId");
                 });
 
             migrationBuilder.CreateTable(

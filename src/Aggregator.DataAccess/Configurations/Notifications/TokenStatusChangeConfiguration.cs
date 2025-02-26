@@ -20,7 +20,7 @@ public class TokenStatusChangeConfiguration : IEntityTypeConfiguration<TokenStat
         builder.HasOne(x => x.CardInfo)
             .WithOne()
             .HasForeignKey<TokenStatusChange>(x=>x.CardInfoId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x=>x.Details)
             .WithOne()
@@ -30,6 +30,6 @@ public class TokenStatusChangeConfiguration : IEntityTypeConfiguration<TokenStat
         builder.HasMany(x=>x.Extensions)
             .WithOne()
             .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
