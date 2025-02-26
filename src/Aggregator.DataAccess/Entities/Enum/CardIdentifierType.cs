@@ -1,5 +1,8 @@
 namespace Aggregator.DataAccess.Entities.Enum;
 
+/// <summary>
+/// Тип идентификатора карты
+/// </summary>
 public enum CardIdentifierType
 {
     /// <summary>
