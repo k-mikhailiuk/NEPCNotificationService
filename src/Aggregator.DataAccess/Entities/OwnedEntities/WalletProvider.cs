@@ -5,7 +5,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Мобильный кошелек
 /// </summary>
-[Owned]
 public class WalletProvider
 {
     /// <summary>

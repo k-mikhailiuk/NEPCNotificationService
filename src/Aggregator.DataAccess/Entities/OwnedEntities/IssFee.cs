@@ -6,7 +6,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Комиссия банка-эмитента в валюте счета
 /// </summary>
-[Owned]
 public class IssFee : ICurrencyAmount
 {
     /// <inheritdoc />

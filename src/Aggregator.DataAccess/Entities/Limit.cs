@@ -11,7 +11,6 @@ public class Limit
     /// <summary>
     /// Идентификатор лимита
     /// </summary>
-    [Key]
     public long LimitId { get; set; }
     
     /// <summary>
@@ -37,18 +36,15 @@ public class Limit
     /// <summary>
     /// Пороговое (выставленное) значение лимита
     /// </summary>
-    [Required]
     public long TrsValue { get; set; }
     
     /// <summary>
     /// Текущее (накопленное) значение по лимиту
     /// </summary>
-    [Required]
     public long UsedValue { get; set; }
     
     /// <summary>
     /// Тип лимита
     /// </summary>
-    [Required]
     public LimitType LimitType { get; set; }
 }

@@ -6,7 +6,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Сумма(со знаком) изменения лимита кредита
 /// </summary>
-[Owned]
 public class ExceedLimitMoney : ICurrencyAmount
 {
     /// <inheritdoc />

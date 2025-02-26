@@ -5,7 +5,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Информация об авторизации
 /// </summary>
-[Owned]
 public class Authorization
 {
     /// <summary>

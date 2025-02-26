@@ -11,19 +11,16 @@ public class AcqFinAuthDetails
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
-    [Key]
     public long AcqFinAuthDetailsId { get; set; }
     
     /// <summary>
     /// Признак отмены (0 - false, 1 - true)
     /// </summary>
-    [Required]
     public bool Reversal { get; set; }
     
     /// <summary>
     /// Тип транзакции
     /// </summary>
-    [Required]
     public int TransType { get; set; }
     
     /// <summary>
@@ -39,35 +36,29 @@ public class AcqFinAuthDetails
     /// <summary>
     /// Идентификатор института-корреспондента
     /// </summary>
-    [Required]
     public string CorrespondingAccount { get; set; }
     
     /// <inheritdoc cref="AuthMoney" />
-    [Required]
     public AuthMoney AuthMoney { get; set; }
     
     /// <summary>
     /// Направление движения суммы авторизации относительно карты. C - карта кредитуется, D - карта дебетуется
     /// </summary>
-    [Required]
     public char AuthDirection { get; set; }
     
     /// <summary>
     /// Локальное время совершения авторизации на устройстве (YYYYMMDDHH24MISS)
     /// </summary>
-    [Required]
     public DateTimeOffset LocalTime { get; set; }
     
     /// <summary>
     /// Время регистрации авторизации в ПЦ (YYYYMMDDHH24MISS)
     /// </summary>
-    [Required]
     public DateTimeOffset TransactionTime { get; set; }
     
     /// <summary>
     /// Внутренний код ответа ПЦ
     /// </summary>
-    [Required]
     public int ResponseCode { get; set; }
     
     /// <summary>
@@ -95,7 +86,6 @@ public class AcqFinAuthDetails
     /// <summary>
     /// Признак операции, проведенной в физическом устройстве (0 - false, 1 - true)
     /// </summary>
-    [Required]
     public bool PhysTerm { get; set; }
     
     /// <summary>

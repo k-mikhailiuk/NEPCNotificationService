@@ -6,7 +6,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Доступный баланс
 /// </summary>
-[Owned]
 public class AviableBalance : ICurrencyAmount
 {
     /// <inheritdoc />

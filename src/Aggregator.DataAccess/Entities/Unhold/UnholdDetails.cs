@@ -11,64 +11,53 @@ public class UnholdDetails
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
-    [Key]
     public long UnholdId { get; set; }
     
     /// <summary>
     /// Признак отмены (0 - false, 1 - true)
     /// </summary>
-    [Required]
     public bool Reversal { get; set; }
     
     /// <summary>
     /// Тип транзакции
     /// </summary>
-    [Required]
     public int TransType { get; set; }
     
     /// <summary>
     /// Идентификатор института-корреспондента
     /// </summary>
-    [Required]
     public string CorrespondingAccount { get; set; }
     
     /// <summary>
     /// Номер счета
     /// </summary>
-    [Required]
     public string AccountId { get; set; }
     
     /// <inheritdoc cref="AuthMoney" />
-    [Required]
     public AuthMoney AuthMoney { get; set; }
     
     /// <summary>
     /// Направление движения средств относительно счета карты. C - счет кредитуется, D - счет дебетуется.
     /// Направление движения средств расхолдирования обратно движению средств оригинальной авторизации
     /// </summary>
-    [Required]
     public char UnholdDirection { get; set; }
     
     /// <inheritdoc cref="UnholdMoney" />
-    [Required]
     public UnholdMoney UnholdMoney { get; set; }
     
     /// <summary>
     /// Локальное время совершения авторизации на устройстве (YYYYMMDDHH24MISS)
     /// </summary>
-    [Required]
     public DateTimeOffset LocalTime { get; set; }
     
     /// <summary>
     /// Время регистрации авторизации в ПЦ (YYYYMMDDHH24MISS)
     /// </summary>
-    [Required]
     public DateTimeOffset TransactionDate { get; set; }
     
     /// <summary>
     /// Код авторизации эмитента
     /// </summary>
-    [Required]
     public string ApprovalCode { get; set; }
     
     /// <summary>

@@ -5,7 +5,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Изменение собственных средств и Exceed Limit
 /// </summary>
-[Owned]
 public class AuthMoneyDetails
 {
     /// <inheritdoc cref="OwnFundsMoney" />

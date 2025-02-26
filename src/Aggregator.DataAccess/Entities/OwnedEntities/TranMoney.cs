@@ -6,7 +6,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Сумма транзакции в валюте счета
 /// </summary>
-[Owned]
 public class TranMoney : ICurrencyAmount
 {
     /// <inheritdoc />

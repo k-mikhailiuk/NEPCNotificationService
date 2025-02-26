@@ -6,7 +6,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Сумма авторизации в валюте банка-эмитента. Включает эквайринговую комиссию. Не включает эмитентскую комиссию
 /// </summary>
-[Owned]
 public class BillingMoney : ICurrencyAmount
 {
     /// <inheritdoc />

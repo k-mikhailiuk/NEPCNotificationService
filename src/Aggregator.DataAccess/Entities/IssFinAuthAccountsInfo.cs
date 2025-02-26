@@ -11,6 +11,5 @@ public class IssFinAuthAccountsInfo : AccountsInfo
     /// <summary>
     /// Уникальный идентификатор IssFinAuth
     /// </summary>
-    [Required]
     public long IssFinAuthId { get; set; }
 }

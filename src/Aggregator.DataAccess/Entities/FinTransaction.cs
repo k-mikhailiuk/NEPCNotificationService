@@ -12,7 +12,6 @@ public class FinTransaction
     /// <summary>
     /// Идентификатор финансовой транзакции (bo_utrnno)
     /// </summary>
-    [Key]
     public long FinTransactionId { get; set; }
     
     /// <summary>
@@ -34,7 +33,6 @@ public class FinTransaction
     public long? MerchantInfoId { get; set; }
     
     /// <inheritdoc cref="MerchantInfo" />
-    [ForeignKey(nameof(MerchantInfoId))]
     public MerchantInfo? MerchantInfo { get; set; }
     
     /// <summary>

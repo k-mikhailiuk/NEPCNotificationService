@@ -6,7 +6,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Сумма(со знаком) изменения собственных средств
 /// </summary>
-[Owned]
 public class OwnFundsMoney: ICurrencyAmount
 {
     /// <inheritdoc />

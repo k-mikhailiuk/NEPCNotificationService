@@ -11,31 +11,26 @@ public class IssFinAuthDetails
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
-    [Key]
     public long IssFinAuthDetailsId { get; set; }
     
     /// <summary>
     /// Признак отмены (0 - false, 1 - true)
     /// </summary>
-    [Required]
     public bool Reversal { get; set; }
     
     /// <summary>
     /// Тип транзакции
     /// </summary>
-    [Required]
     public int TransType { get; set; }
     
     /// <summary>
     /// Идентификатор банка эмитента
     /// </summary>
-    [Required]
     public string IssInstId { get; set; }
     
     /// <summary>
     /// Идентификатор института-корреспондента
     /// </summary>
-    [Required]
     public string CorrespondingAccount { get; set; }
     
     /// <summary>
@@ -44,13 +39,11 @@ public class IssFinAuthDetails
     public string? AccountId { get; set; }
     
     /// <inheritdoc cref="AuthMoney" />
-    [Required]
     public AuthMoney AuthMoney { get; set; }
     
     /// <summary>
     /// Направление движения суммы авторизации относительно счета. C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    [Required]
     public char AuthDirection { get; set; }
     
     /// <inheritdoc cref="ConvMoney" />
@@ -69,19 +62,16 @@ public class IssFinAuthDetails
     /// <summary>
     /// Локальное время совершения авторизации на устройстве (YYYYMMDDHH24MISS)
     /// </summary>
-    [Required]
     public DateTimeOffset LocalTime { get; set; }
     
     /// <summary>
     /// Время регистрации авторизации в ПЦ (YYYYMMDDHH24MISS)
     /// </summary>
-    [Required]
     public DateTimeOffset TransactionTime { get; set; }
     
     /// <summary>
     /// Внутренний код ответа ПЦ
     /// </summary>
-    [Required]
     public int ResponseCode { get; set; }
     
     /// <summary>

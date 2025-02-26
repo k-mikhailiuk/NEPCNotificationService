@@ -11,25 +11,21 @@ public class CardInfo
     /// <summary>
     /// Уникальный идентификатор
     /// </summary>
-    [Key]
     public long Id { get; set; }
     
     /// <summary>
     /// Срок действия карты (YYMM)
     /// </summary>
-    [Required]
     public string ExpDate { get; set; }
     
     /// <summary>
     /// Ссылка на номер карты
     /// </summary>
-    [Required]
     public string RefPan  { get; set; }
     
     /// <summary>
     /// Идентификатор контракта
     /// </summary>
-    [Required]
     public string ContractId { get; set; }
     
     /// <summary>

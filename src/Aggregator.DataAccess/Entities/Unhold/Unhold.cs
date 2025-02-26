@@ -11,49 +11,40 @@ public class Unhold
     /// <summary>
     /// Уникальный идентификатор уведомления
     /// </summary>
-    [Key]
     public long UnholdId { get; set; }
     
     /// <summary>
     /// Уникальный идентификатор события
     /// </summary>
-    [Required]
     public long EventId { get; set; }
     
     /// <summary>
     /// Время создания уведомления (YYYYMMDDHH24MISS) во временной зоне ПЦ
     /// </summary>
-    [Required]
     public DateTimeOffset Time { get; set; }
     
     /// <summary>
     /// Уникальный идентификатор UnholdDetails 
     /// </summary>
-    [Required]
     public long DetailsId { get; set; }
     
     /// <inheritdoc cref="UnholdDetails" />
-    [ForeignKey(nameof(DetailsId))]
     public UnholdDetails Details { get; set; }
     
     /// <summary>
     /// Уникальный идентификатор CardInfo
     /// </summary>
-    [Required]
     public long CardInfoId { get; set; }
     
     /// <inheritdoc cref="CardInfo" />
-    [ForeignKey(nameof(CardInfoId))]
     public CardInfo CardInfo { get; set; }
     
     /// <summary>
     /// Уникальный идентификатор MerchantInfo
     /// </summary>
-    [Required]
     public long MerchantInfoId { get; set; }
     
     /// <inheritdoc cref="MerchantInfo" />
-    [ForeignKey(nameof(MerchantInfoId))]
     public MerchantInfo MerchantInfo { get; set; }
     
     /// <inheritdoc cref="NotificationExtension" />

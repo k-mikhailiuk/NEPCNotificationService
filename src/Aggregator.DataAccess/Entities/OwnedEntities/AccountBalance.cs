@@ -6,7 +6,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Состояние счета после операции
 /// </summary>
-[Owned]
 public class AccountBalance : ICurrencyAmount
 {
     /// <inheritdoc />

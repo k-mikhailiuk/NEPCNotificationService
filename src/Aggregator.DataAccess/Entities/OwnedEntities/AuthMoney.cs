@@ -6,7 +6,6 @@ namespace Aggregator.DataAccess.Entities.OwnedEntities;
 /// <summary>
 /// Сумма авторизации в валюте операции. Включает эквайринговую комиссию
 /// </summary>
-[Owned]
 public class AuthMoney : ICurrencyAmount
 {
     /// <inheritdoc />

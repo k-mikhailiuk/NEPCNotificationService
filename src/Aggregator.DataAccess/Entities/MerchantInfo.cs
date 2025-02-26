@@ -10,7 +10,6 @@ public class MerchantInfo
     /// <summary>
     /// Уникальный идентификатор
     /// </summary>
-    [Key]
     public long Id { get; set; }
     
     /// <summary>
@@ -21,7 +20,6 @@ public class MerchantInfo
     /// <summary>
     /// Код категории мерчанта
     /// </summary>
-    [Required]
     public string? Mcc { get; set; }
     
     /// <summary>
