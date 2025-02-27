@@ -33,7 +33,7 @@ namespace Aggregator.DataAccess.Migrations
             CreateIssFinAuths(migrationBuilder);
             CreateOwiUserActions(migrationBuilder);
             CreatePinChanges(migrationBuilder);
-            CreateIssFinAuths(migrationBuilder);
+            CreateTokenStatusChanges(migrationBuilder);
             CreateUnholds(migrationBuilder);
             CreateAcctBalChangeDetails(migrationBuilder);
             CreateIssFinAuthAccountsInfos(migrationBuilder);
