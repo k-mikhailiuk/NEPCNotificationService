@@ -87,7 +87,8 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("AccountId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("Direction")
                         .IsRequired()
@@ -98,12 +99,14 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("IssInstId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<bool>("Reversal")
                         .HasColumnType("bit");
 
                     b.Property<int>("TransType")
+                        .HasMaxLength(3)
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("TransactionTime")
@@ -128,7 +131,8 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("AccountsInfoId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<long>("AcctBalChangeId")
                         .HasColumnType("bigint");
@@ -183,13 +187,15 @@ namespace Aggregator.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("AcqFinAuthDetailsId"));
 
                     b.Property<string>("AccountId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("AcqFeeDirection")
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("ApprovalCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("AuthDirection")
                         .IsRequired()
@@ -197,14 +203,17 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("AuthorizationCondition")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("CorrespondingAccount")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<string>("ExpDate")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<DateTimeOffset>("LocalTime")
                         .HasColumnType("datetimeoffset");
@@ -214,24 +223,29 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("PosEntryMode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<int>("ResponseCode")
+                        .HasMaxLength(6)
                         .HasColumnType("int");
 
                     b.Property<bool>("Reversal")
                         .HasColumnType("bit");
 
                     b.Property<string>("Rrn")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("ServiceCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
 
                     b.Property<string>("ServiceId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<int>("TransType")
                         .HasColumnType("int");
@@ -254,18 +268,22 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("ContractId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("ExpDate")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<string>("MobilePhone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
 
                     b.Property<string>("RefPan")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.HasKey("Id");
 
@@ -339,22 +357,26 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("ExpDate")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<int>("NewStatus")
                         .HasColumnType("int");
 
                     b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<int>("OldStatus")
                         .HasColumnType("int");
 
                     b.Property<string>("Service")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("CardStatusChangeDetailsId");
 
@@ -388,14 +410,15 @@ namespace Aggregator.DataAccess.Migrations
             modelBuilder.Entity("Aggregator.DataAccess.Entities.ExtensionParameter", b =>
                 {
                     b.Property<string>("ExtensionId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("Value")
                         .IsRequired()
@@ -421,7 +444,8 @@ namespace Aggregator.DataAccess.Migrations
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("FinTrans")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
 
                     b.Property<long?>("MerchantInfoId")
                         .HasColumnType("bigint");
@@ -547,7 +571,8 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("AccountsInfoId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<long>("IssFinAuthId")
                         .HasColumnType("bigint");
@@ -571,13 +596,15 @@ namespace Aggregator.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("LimitId"));
 
                     b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
 
                     b.Property<int?>("CycleLength")
                         .HasColumnType("int");
 
                     b.Property<string>("CycleType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<DateTimeOffset?>("EndTime")
                         .HasColumnType("datetimeoffset");
@@ -605,32 +632,40 @@ namespace Aggregator.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Aid")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(31)
+                        .HasColumnType("nvarchar(31)");
 
                     b.Property<string>("Country")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
 
                     b.Property<string>("Mcc")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<string>("MerchantId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(25)
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(31)
+                        .HasColumnType("nvarchar(31)");
 
                     b.Property<string>("TerminalId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("ZipCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("Id");
 
@@ -640,7 +675,8 @@ namespace Aggregator.DataAccess.Migrations
             modelBuilder.Entity("Aggregator.DataAccess.Entities.NotificationExtension", b =>
                 {
                     b.Property<string>("ExtensionId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("Critical")
                         .HasColumnType("bit");
@@ -700,11 +736,13 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("Action")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<DateTimeOffset>("TransactionTime")
                         .HasColumnType("datetimeoffset");
@@ -755,14 +793,17 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("ExpDate")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<int?>("ResponseCode")
+                        .HasMaxLength(6)
                         .HasColumnType("int");
 
                     b.Property<string>("Service")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -816,27 +857,34 @@ namespace Aggregator.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("TokenStatusChangeDetailsId"));
 
                     b.Property<DateTimeOffset>("ChangeDate")
+                        .HasMaxLength(14)
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("DeviceId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(48)
+                        .HasColumnType("nvarchar(48)");
 
                     b.Property<string>("DeviceName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("DeviceType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("DpanExpDate")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<string>("DpanRef")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(48)
+                        .HasColumnType("nvarchar(48)");
 
                     b.Property<string>("FpanRef")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(48)
+                        .HasColumnType("nvarchar(48)");
 
                     b.Property<string>("PaymentSystem")
                         .IsRequired()
@@ -848,7 +896,8 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("WalletProvider")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
 
                     b.HasKey("TokenStatusChangeDetailsId");
 
@@ -902,18 +951,22 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("AccountId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("ApprovalCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
 
                     b.Property<string>("CorrespondingAccount")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
 
                     b.Property<string>("Dpan")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(19)
+                        .HasColumnType("nvarchar(19)");
 
                     b.Property<string>("IssFeeDirection")
                         .HasColumnType("nvarchar(max)");
@@ -926,7 +979,8 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<string>("Rrn")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("SvTrace")
                         .HasColumnType("nvarchar(max)");
@@ -1029,11 +1083,12 @@ namespace Aggregator.DataAccess.Migrations
                             b1.Property<long>("AcctBalChangeDetailsId")
                                 .HasColumnType("bigint");
 
-                            b1.Property<long?>("Amount")
+                            b1.Property<long>("Amount")
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("AcctBalChangeDetailsId");
 
@@ -1048,11 +1103,12 @@ namespace Aggregator.DataAccess.Migrations
                             b1.Property<long>("AcctBalChangeDetailsId")
                                 .HasColumnType("bigint");
 
-                            b1.Property<long?>("Amount")
+                            b1.Property<long>("Amount")
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("AcctBalChangeDetailsId");
 
@@ -1106,11 +1162,13 @@ namespace Aggregator.DataAccess.Migrations
                             b1.Property<long>("AcctBalChangeAccountsInfoId")
                                 .HasColumnType("bigint");
 
-                            b1.Property<long?>("Amount")
+                            b1.Property<long>("Amount")
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("AcctBalChangeAccountsInfoId");
 
@@ -1129,7 +1187,9 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("AcctBalChangeAccountsInfoId");
 
@@ -1176,7 +1236,8 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("AcqFinAuthDetailsId");
 
@@ -1191,11 +1252,13 @@ namespace Aggregator.DataAccess.Migrations
                             b1.Property<long>("AcqFinAuthDetailsId")
                                 .HasColumnType("bigint");
 
-                            b1.Property<long?>("Amount")
+                            b1.Property<long>("Amount")
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("AcqFinAuthDetailsId");
 
@@ -1233,7 +1296,8 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("AcqFinAuthDetailsId");
 
@@ -1378,7 +1442,8 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("FinTransactionId");
 
@@ -1672,11 +1737,13 @@ namespace Aggregator.DataAccess.Migrations
                             b1.Property<long>("IssFinAuthAccountsInfoId")
                                 .HasColumnType("bigint");
 
-                            b1.Property<long?>("Amount")
+                            b1.Property<long>("Amount")
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("IssFinAuthAccountsInfoId");
 
@@ -1695,7 +1762,8 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("IssFinAuthAccountsInfoId");
 
@@ -1903,11 +1971,13 @@ namespace Aggregator.DataAccess.Migrations
                             b1.Property<long>("UnholdDetailsUnholdId")
                                 .HasColumnType("bigint");
 
-                            b1.Property<long?>("Amount")
+                            b1.Property<long>("Amount")
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("UnholdDetailsUnholdId");
 
@@ -1922,11 +1992,13 @@ namespace Aggregator.DataAccess.Migrations
                             b1.Property<long>("UnholdDetailsUnholdId")
                                 .HasColumnType("bigint");
 
-                            b1.Property<long?>("Amount")
+                            b1.Property<long>("Amount")
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .IsRequired()
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("UnholdDetailsUnholdId");
 
@@ -1964,7 +2036,8 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
 
                             b1.HasKey("UnholdDetailsUnholdId");
 
@@ -1980,7 +2053,8 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Id")
-                                .HasColumnType("nvarchar(max)");
+                                .HasMaxLength(11)
+                                .HasColumnType("nvarchar(11)");
 
                             b1.Property<string>("PaymentSystem")
                                 .HasColumnType("nvarchar(max)");

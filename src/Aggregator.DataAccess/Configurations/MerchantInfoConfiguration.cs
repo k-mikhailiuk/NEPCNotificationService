@@ -13,13 +13,13 @@ public class MerchantInfoConfiguration : IEntityTypeConfiguration<MerchantInfo>
         builder.HasKey(x => x.Id);
         
         builder.Property(x => x.MerchantId).IsRequired(false);
-        builder.Property(x => x.Mcc).IsRequired();
-        builder.Property(x => x.TerminalId).IsRequired(false);
-        builder.Property(x => x.Aid).IsRequired(false);
-        builder.Property(x => x.Name).IsRequired(false);
-        builder.Property(x => x.Street).IsRequired(false);
-        builder.Property(x => x.City).IsRequired(false);
-        builder.Property(x => x.Country).IsRequired(false);
-        builder.Property(x => x.ZipCode).IsRequired(false);
+        builder.Property(x => x.Mcc).IsRequired().HasMaxLength(4);
+        builder.Property(x => x.TerminalId).IsRequired(false).HasMaxLength(8);
+        builder.Property(x => x.Aid).IsRequired(false).HasMaxLength(11);
+        builder.Property(x => x.Name).IsRequired(false).HasMaxLength(25);
+        builder.Property(x => x.Street).IsRequired(false).HasMaxLength(31);
+        builder.Property(x => x.City).IsRequired(false).HasMaxLength(31);
+        builder.Property(x => x.Country).IsRequired(false).HasMaxLength(3);
+        builder.Property(x => x.ZipCode).IsRequired(false).HasMaxLength(10);
     }
 }

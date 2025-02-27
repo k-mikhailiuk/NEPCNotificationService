@@ -13,10 +13,10 @@ public class CardInfoConfiguration : IEntityTypeConfiguration<CardInfo>
         builder.HasKey(x => x.Id);
         
         builder.Property(x=>x.Id).ValueGeneratedOnAdd();
-        builder.Property(x => x.ExpDate).IsRequired();
-        builder.Property(x => x.RefPan).IsRequired();
-        builder.Property(x => x.ContractId).IsRequired();
-        builder.Property(x => x.MobilePhone).IsRequired(false);
+        builder.Property(x => x.ExpDate).IsRequired().HasMaxLength(4);
+        builder.Property(x => x.RefPan).IsRequired().HasMaxLength(64);
+        builder.Property(x => x.ContractId).IsRequired().HasMaxLength(6);
+        builder.Property(x => x.MobilePhone).IsRequired(false).HasMaxLength(16);
 
         builder.OwnsOne(x => x.CardIdentifier);
         

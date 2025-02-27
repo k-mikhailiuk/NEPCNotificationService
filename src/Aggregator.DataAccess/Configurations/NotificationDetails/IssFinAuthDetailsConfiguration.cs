@@ -14,37 +14,65 @@ public class IssFinAuthDetailsConfiguration : IEntityTypeConfiguration<IssFinAut
         
         builder.Property(x=>x.Reversal).IsRequired();
         builder.Property(x=>x.TransType).IsRequired();
-        builder.Property(x=>x.IssInstId).IsRequired();
-        builder.Property(x=>x.CorrespondingAccount).IsRequired();
-        builder.Property(x=>x.AccountId).IsRequired();
-        builder.Property(x => x.AccountId).IsRequired(false);
+        builder.Property(x=>x.IssInstId).IsRequired().HasMaxLength(4);
+        builder.Property(x=>x.CorrespondingAccount).IsRequired().HasMaxLength(4);
+        builder.Property(x=>x.AccountId).IsRequired(false).HasMaxLength(32);
 
-        builder.OwnsOne(x => x.AuthMoney);
+        builder.OwnsOne(x => x.AuthMoney, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired();
+            parameters.Property(x => x.Currency).IsRequired().HasMaxLength(3);
+        });
         
         builder.Property(x=>x.AuthDirection).IsRequired();
         
-        builder.OwnsOne(x => x.ConvMoney);
-        builder.OwnsOne(x => x.AccountBalance);
-        builder.OwnsOne(x => x.BillingMoney);
+        builder.OwnsOne(x => x.ConvMoney, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired(false);
+            parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
+        });
+        builder.OwnsOne(x => x.AccountBalance, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired(false);
+            parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
+        });
+        builder.OwnsOne(x => x.BillingMoney, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired(false);
+            parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
+        });
         
         builder.Property(x => x.LocalTime).IsRequired();
         builder.Property(x=>x.TransType).IsRequired();
-        builder.Property(x=>x.ResponseCode).IsRequired(false);
-        builder.Property(x=>x.ApprovalCode).IsRequired(false);
-        builder.Property(x=>x.Rrn).IsRequired(false);
+        builder.Property(x=>x.ResponseCode).IsRequired(false).HasMaxLength(6);
+        builder.Property(x=>x.ApprovalCode).IsRequired(false).HasMaxLength(6);
+        builder.Property(x=>x.Rrn).IsRequired(false).HasMaxLength(12);
         
-        builder.OwnsOne(x => x.AcqFee);
+        builder.OwnsOne(x => x.AcqFee, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired(false);
+            parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
+        });
         
         builder.Property(x=>x.AcqFeeDirection).IsRequired(false);
         
-        builder.OwnsOne(x => x.IssFee);
+        builder.OwnsOne(x => x.IssFee, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired(false);
+            parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
+        });
         
         builder.Property(x=>x.IssFeeDirection).IsRequired(false);
         builder.Property(x=>x.SvTrace).IsRequired(false);
+        builder.Property(x=>x.AuthorizationCondition).IsRequired(false).HasMaxLength(12);
 
-        builder.OwnsOne(x => x.WalletProvider);
+        builder.OwnsOne(x => x.WalletProvider, parameters =>
+        {
+            parameters.Property(x => x.PaymentSystem).IsRequired(false);
+            parameters.Property(x => x.Id).IsRequired(false).HasMaxLength(11);
+        });
 
-        builder.Property(x => x.Dpan);
+        builder.Property(x => x.Dpan).IsRequired(false).HasMaxLength(19);
 
         builder.OwnsOne(x => x.AuthMoneyDetails, details =>
         {

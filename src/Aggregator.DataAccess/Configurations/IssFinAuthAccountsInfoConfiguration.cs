@@ -13,12 +13,20 @@ public class IssFinAuthAccountsInfoConfiguration : IEntityTypeConfiguration<IssF
         builder.HasKey(x => x.Id);
         
         builder.Property(x=>x.Id).ValueGeneratedOnAdd();
-        builder.Property(x => x.AccountsInfoId).IsRequired();
+        builder.Property(x => x.AccountsInfoId).IsRequired().HasMaxLength(32);
         builder.Property(x => x.IssFinAuthId).IsRequired();
         builder.Property(x => x.Type).IsRequired();
         
-        builder.OwnsOne(x => x.AviableBalance);
-        builder.OwnsOne(x => x.ExceedLimit);
+        builder.OwnsOne(x => x.AviableBalance, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired();
+            parameters.Property(x => x.Currency).IsRequired().HasMaxLength(3);
+        });
+        builder.OwnsOne(x => x.ExceedLimit, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired(false);
+            parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
+        });
         
         builder.HasMany(x=>x.Limits)
             .WithOne()

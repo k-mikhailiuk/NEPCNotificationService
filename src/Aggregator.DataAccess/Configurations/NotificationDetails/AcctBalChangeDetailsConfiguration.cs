@@ -13,20 +13,28 @@ public class AcctBalChangeDetailsConfiguration : IEntityTypeConfiguration<AcctBa
         builder.HasKey(x => x.AcctBalChangeDetailsId);
         
         builder.Property(x => x.Reversal).IsRequired();
-        builder.Property(x => x.TransType).IsRequired();
+        builder.Property(x => x.TransType).IsRequired().HasMaxLength(3);
         builder.Property(x => x.TransactionTime).IsRequired();
 
         builder.OwnsOne(x => x.Auth);
         
         builder.Property(x=>x.FinTransId).IsRequired(false);
-        builder.Property(x=>x.IssInstId).IsRequired();
-        builder.Property(x=>x.AccountId).IsRequired();
+        builder.Property(x=>x.IssInstId).IsRequired().HasMaxLength(4);
+        builder.Property(x=>x.AccountId).IsRequired().HasMaxLength(32);
 
-        builder.OwnsOne(x => x.AccountAmount);
+        builder.OwnsOne(x => x.AccountAmount, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired();
+            parameters.Property(x => x.Currency).HasMaxLength(3);
+        });
         
         builder.Property(x=>x.Direction).IsRequired();
 
-        builder.OwnsOne(x => x.AccountBalance);
+        builder.OwnsOne(x => x.AccountBalance, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired();
+            parameters.Property(x => x.Currency).HasMaxLength(3);
+        });
         
         builder.HasOne(x=>x.FinTrans)
             .WithOne()

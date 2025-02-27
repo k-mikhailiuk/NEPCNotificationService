@@ -12,9 +12,13 @@ public class FinTransactionConfiguration : IEntityTypeConfiguration<FinTransacti
 
         builder.HasKey(x => x.FinTransactionId);
 
-        builder.Property(x => x.FinTrans).IsRequired(false);
+        builder.Property(x => x.FinTrans).IsRequired(false).HasMaxLength(7);
 
-        builder.OwnsOne(x => x.TranMoney);
+        builder.OwnsOne(x => x.TranMoney, parameters =>
+        {
+            parameters.Property(x => x.Amount).IsRequired(false);
+            parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
+        });
         
         builder.Property(x => x.Direction).IsRequired(false);
         builder.Property(x => x.MerchantInfoId).IsRequired(false);
