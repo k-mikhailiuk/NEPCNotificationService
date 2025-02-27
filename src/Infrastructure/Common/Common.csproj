@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
+      <ProjectReference Include="..\..\Aggregator.DTOs\Aggregator.DTOs.csproj" />
+    </ItemGroup>
+
 </Project>

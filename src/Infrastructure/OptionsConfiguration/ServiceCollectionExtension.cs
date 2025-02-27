@@ -21,6 +21,12 @@ public static class ServiceCollectionExtension
         return services.Configure<KafkaTopicsOptions>(configuration.GetSection(KafkaTopicsOptions.KafkaTopics));
     }
 
+    public static IServiceCollection AddAggregatorOptions(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services.Configure<AggregatorOptions>(configuration.GetSection(AggregatorOptions.Aggregator));
+    }
+
     public static IServiceCollection AddDatabaseConnectionString(this IServiceCollection services,
         IConfiguration configuration)
     {

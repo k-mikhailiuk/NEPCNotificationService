@@ -13,8 +13,8 @@ public class InboxRepository : Repository<InboxMessage>, IInboxRepository
     {
     }
 
-    public async Task<IEnumerable<InboxMessage>> GetUnprocessedMessagesAsync()
+    public async Task<List<InboxMessage>> GetUnprocessedMessagesAsync(int batchSize)
     {
-       return await _dbSet.Where(x => x.Status == InboxMessageStatus.New).ToListAsync();
+       return await _dbSet.Where(x => x.Status == InboxMessageStatus.New).Take(batchSize).ToListAsync();
     }
 }

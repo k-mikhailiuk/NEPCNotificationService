@@ -2,7 +2,7 @@ namespace OptionsConfiguration.Kafka;
 
 public sealed class KafkaTopicsOptions
 {
-    public const string KafkaTopics = "KafkaTopics"; 
+    public const string KafkaTopics = nameof(KafkaTopics); 
     
     public string HealthCheckTopic { get; set; }
     

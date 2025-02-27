@@ -4,5 +4,5 @@ namespace Aggregator.Repositories.Abstractions.Repositories;
 
 public interface IInboxRepository : IRepository<InboxMessage>
 {
-    Task<IEnumerable<InboxMessage>> GetUnprocessedMessagesAsync();
+    Task<List<InboxMessage>> GetUnprocessedMessagesAsync(int batchSize);
 }

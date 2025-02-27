@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataIngrestorApi.App", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.App", "src\NotificationService.App\NotificationService.App.csproj", "{2347227C-6B56-4298-B0E2-0D441F062417}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.Commands", "src\Aggregator.Commands\Aggregator.Commands.csproj", "{B4D2D4E9-AA10-48FF-A5FD-B5E634A01F3A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.Core", "src\Aggregator.Core\Aggregator.Core.csproj", "{B4D2D4E9-AA10-48FF-A5FD-B5E634A01F3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.Repositories", "src\Aggregator.Repositories\Aggregator.Repositories.csproj", "{DF277C3A-0779-45E1-8FE3-CEF677756E48}"
 EndProject
@@ -35,6 +35,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.DataAccess", "src\Aggregator.DataAccess\Aggregator.DataAccess.csproj", "{5412D135-F0E6-4684-8EEE-AC8B757A83C9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.App", "src\Aggregator.App\Aggregator.App.csproj", "{46EAD774-294B-48AB-9B21-B13E3FEB206B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.DTOs", "src\Aggregator.DTOs\Aggregator.DTOs.csproj", "{8E594E05-5CDD-48F8-A5B5-98B627685D14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +100,10 @@ Global
 		{46EAD774-294B-48AB-9B21-B13E3FEB206B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46EAD774-294B-48AB-9B21-B13E3FEB206B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46EAD774-294B-48AB-9B21-B13E3FEB206B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E594E05-5CDD-48F8-A5B5-98B627685D14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E594E05-5CDD-48F8-A5B5-98B627685D14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E594E05-5CDD-48F8-A5B5-98B627685D14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E594E05-5CDD-48F8-A5B5-98B627685D14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{91761164-DAE0-4456-8342-39A571BE9A27} = {53440ED9-EC80-4AB9-B5F2-D9A018D57D37}
@@ -114,5 +120,6 @@ Global
 		{7F67DBF9-9028-4668-B164-B6D5FC63BFC0} = {11638FC4-FCB4-48D9-9873-4B88A285E65E}
 		{5412D135-F0E6-4684-8EEE-AC8B757A83C9} = {11638FC4-FCB4-48D9-9873-4B88A285E65E}
 		{46EAD774-294B-48AB-9B21-B13E3FEB206B} = {141C8A94-D506-4060-BAFA-47928EA9B627}
+		{8E594E05-5CDD-48F8-A5B5-98B627685D14} = {89D8B426-F1AF-4598-AAC6-B2F7CF260062}
 	EndGlobalSection
 EndGlobal

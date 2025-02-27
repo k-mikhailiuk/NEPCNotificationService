@@ -2,7 +2,7 @@ using Aggregator.Repositories.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Scrutor;
 
-namespace Aggregator.Repositories.Extensions;
+namespace Aggregator.Repositories;
 
 public static class ServiceCollectionExtensions
 {

@@ -11,6 +11,7 @@
         <None Include="..\..\shared\appsettings.Development.json" Link="appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="MediatR" Version="12.4.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,6 +19,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1"/>
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\Aggregator.Core\Aggregator.Core.csproj" />
       <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
       <ProjectReference Include="..\Aggregator.Repositories\Aggregator.Repositories.csproj" />
       <ProjectReference Include="..\Infrastructure\OptionsConfiguration\OptionsConfiguration.csproj" />

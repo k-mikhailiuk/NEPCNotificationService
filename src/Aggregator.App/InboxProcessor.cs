@@ -1,4 +1,8 @@
+using Aggregator.Core.Commands;
 using Aggregator.Repositories.Abstractions;
+using MediatR;
+using Microsoft.Extensions.Options;
+using OptionsConfiguration;
 
 namespace Aggregator.App;
 
@@ -6,29 +10,51 @@ public class InboxProcessor : BackgroundService
 {
     private readonly ILogger<InboxProcessor> _logger;
     private readonly IServiceProvider _serviceProvider;
+    private readonly AggregatorOptions _aggregatorOptions;
 
-    public InboxProcessor(ILogger<InboxProcessor> logger, IServiceProvider serviceProvider)
+    public InboxProcessor(ILogger<InboxProcessor> logger, IServiceProvider serviceProvider,
+        IOptions<AggregatorOptions> aggregatorOptions)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
+        _aggregatorOptions = aggregatorOptions.Value;
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken cancelationToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            using var serviceScope = _serviceProvider.CreateScope();
-            
-            using var unitOfWork = serviceScope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        _logger.LogInformation("InboxProcessor started with batch size: {BatchSize}", _aggregatorOptions.BatchSize);
 
-            var messages = await unitOfWork.Inbox.GetUnprocessedMessagesAsync();
-            
-            if (_logger.IsEnabled(LogLevel.Information))
+        while (!cancelationToken.IsCancellationRequested)
+        {
+            try
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                await ProcessBatchAsync(cancelationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while processing Inbox messages.");
             }
 
-            await Task.Delay(1000, stoppingToken);
+            await Task.Delay(_aggregatorOptions.IntervalInSeconds, cancelationToken);
         }
+    }
+
+    private async Task ProcessBatchAsync(CancellationToken cancelationToken)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+        var messages = await unitOfWork.Inbox.GetUnprocessedMessagesAsync(_aggregatorOptions.BatchSize);
+
+        if (messages.Count == 0)
+        {
+            _logger.LogDebug("No unprocessed messages found.");
+            return;
+        }
+
+        _logger.LogInformation("Processing {Count} messages from Inbox.", messages.Count);
+
+        await mediator.Send(new ProcessInboxMessageCommand(messages), cancelationToken);
     }
 }
