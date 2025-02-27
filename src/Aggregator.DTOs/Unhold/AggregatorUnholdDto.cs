@@ -28,12 +28,12 @@ public class AggregatorUnholdDto
     /// <summary>
     /// Информация о карте
     /// </summary>
-    public AggregatorCardInfoDto AggregatorCardInfo { get; set; }
+    public AggregatorCardInfoDto CardInfo { get; set; }
     
     /// <summary>
     /// Информация о мерчанте
     /// </summary>
-    public AggregatorMerchantInfoDto AggregatorMerchantInfo { get; set; }
+    public AggregatorMerchantInfoDto MerchantInfo { get; set; }
     
     /// <summary>
     /// Список расширений

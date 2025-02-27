@@ -28,7 +28,7 @@ public class AggregatorTokenStausChangeDto
     /// <summary>
     /// Информация о карте
     /// </summary>
-    public AggregatorCardInfoDto AggregatorCardInfo { get; set; }
+    public AggregatorCardInfoDto CardInfo { get; set; }
     
     /// <summary>
     /// Список расширений

@@ -38,7 +38,7 @@ public class AggregatorIssFinAuthDto
     /// <summary>
     /// Информация о мерчанте
     /// </summary>
-    public AggregatorMerchantInfoDto AggregatorMerchantInfo { get; set; }
+    public AggregatorMerchantInfoDto MerchantInfo { get; set; }
     
     /// <summary>
     /// Список расширений

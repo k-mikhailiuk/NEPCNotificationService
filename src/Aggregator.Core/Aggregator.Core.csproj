@@ -15,10 +15,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
       <ProjectReference Include="..\DataIngrestorApi.DataAccess\DataIngrestorApi.DataAccess.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Parsers\" />
+      <ProjectReference Include="..\Infrastructure\Common\Common.csproj" />
     </ItemGroup>
 
 </Project>

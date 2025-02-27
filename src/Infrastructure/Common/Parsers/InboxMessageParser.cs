@@ -7,7 +7,7 @@ namespace Common.Parsers;
 
 public static class InboxMessageParser
 {
-    public static object? ParseInboxMessage(string payload, NotificationType type)
+    public static object? ParseInboxMessage(string payload)
     {
         try
         {
