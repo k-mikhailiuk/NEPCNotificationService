@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataIngrestorApi.App", "src
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationService.App", "src\NotificationService.App\NotificationService.App.csproj", "{2347227C-6B56-4298-B0E2-0D441F062417}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.Queries", "src\Aggregator.Queries\Aggregator.Queries.csproj", "{B4D2D4E9-AA10-48FF-A5FD-B5E634A01F3A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.Commands", "src\Aggregator.Commands\Aggregator.Commands.csproj", "{B4D2D4E9-AA10-48FF-A5FD-B5E634A01F3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aggregator.Repositories", "src\Aggregator.Repositories\Aggregator.Repositories.csproj", "{DF277C3A-0779-45E1-8FE3-CEF677756E48}"
 EndProject

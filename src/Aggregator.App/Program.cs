@@ -6,8 +6,9 @@ builder.Configuration.Sources.Clear();
 builder.Configuration.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: false, reloadOnChange: true);
 
 var services = builder.Services;
-
 services.RegisterServices(builder.Configuration);
+
+builder.Services.AddHostedService<InboxProcessor>();
 
 var host = builder.Build();
 host.Run();

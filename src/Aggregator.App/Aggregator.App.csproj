@@ -19,6 +19,7 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
+      <ProjectReference Include="..\Aggregator.Repositories\Aggregator.Repositories.csproj" />
       <ProjectReference Include="..\Infrastructure\OptionsConfiguration\OptionsConfiguration.csproj" />
     </ItemGroup>
 </Project>

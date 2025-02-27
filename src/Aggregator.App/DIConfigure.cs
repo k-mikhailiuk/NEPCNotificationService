@@ -1,4 +1,5 @@
 using Aggregator.DataAccess;
+using Aggregator.Repositories.Extensions;
 using OptionsConfiguration;
 
 namespace Aggregator.App;
@@ -12,5 +13,6 @@ public static class DIConfigure
     {
         services.AddDatabaseConnectionString(configuration);
         services.AddAggregatorDbContext(configuration);
+        services.AddRepositories();
     }
 }
