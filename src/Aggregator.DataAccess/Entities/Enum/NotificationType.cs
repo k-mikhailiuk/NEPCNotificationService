@@ -1,5 +1,3 @@
-using Aggregator.DataAccess.Entities.TokenChangeStatus;
-
 namespace Aggregator.DataAccess.Entities.Enum;
 
 /// <summary>
@@ -24,8 +22,8 @@ public enum NotificationType
     /// <inheritdoc cref="Aggregator.DataAccess.Entities.PinChange.PinChange" />
     PinChange = 4,
     
-    /// <inheritdoc cref="TokenStatusChange" />
-    TokenChangeStatus = 5,
+    /// <inheritdoc cref="TokenChangeStatus.TokenStatusChange" />
+    TokenStatusChange = 5,
     
     /// <inheritdoc cref="Aggregator.DataAccess.Entities.Unhold.Unhold" />
     Unhold = 6,

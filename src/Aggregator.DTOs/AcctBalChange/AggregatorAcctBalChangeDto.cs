@@ -1,23 +1,19 @@
+using Aggregator.DTOs.Abstractions;
+
 namespace Aggregator.DTOs.AcctBalChange;
 
 /// <summary>
 /// Уведомление об изменении лимита авторизации по факту финансовой обработки
 /// </summary>
-public class AggregatorAcctBalChangeDto
+public class AggregatorAcctBalChangeDto : INotificationAggregatorDto
 {
-    /// <summary>
-    /// Уникальный идентификатор уведомления
-    /// </summary>
+    /// <inheritdoc />
     public long Id { get; set; }
     
-    /// <summary>
-    /// Уникальный идентификатор события
-    /// </summary>
+    /// <inheritdoc />
     public long EventId { get; set; }
     
-    /// <summary>
-    /// Время создания уведомления (YYYYMMDDHH24MISS) во временной зоне ПЦ
-    /// </summary>
+    /// <inheritdoc />
     public string Time { get; set; }
     
     /// <summary>

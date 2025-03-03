@@ -16,6 +16,7 @@ public static class DIConfigure
         services.AddAggregatorDbContext(configuration);
         services.AddRepositories();
         services.AddCommands();
+        services.AddFactories();
         services.AddAggregatorOptions(configuration);
     }
 }

@@ -1,23 +1,19 @@
+using Aggregator.DTOs.Abstractions;
+
 namespace Aggregator.DTOs.Unhold;
 
 /// <summary>
 /// Уведомление о снятии холда
 /// </summary>
-public class AggregatorUnholdDto
+public class AggregatorUnholdDto : INotificationAggregatorDto
 {
-    /// <summary>
-    /// Уникальный идентификатор уведомления
-    /// </summary>
+    /// <inheritdoc />
     public long Id { get; set; }
     
-    /// <summary>
-    /// Уникальный идентификатор события
-    /// </summary>
+    /// <inheritdoc />
     public long EventId { get; set; }
     
-    /// <summary>
-    /// Время создания уведомления (YYYYMMDDHH24MISS) во временной зоне ПЦ
-    /// </summary>
+    /// <inheritdoc />
     public string Time { get; set; }
     
     /// <summary>

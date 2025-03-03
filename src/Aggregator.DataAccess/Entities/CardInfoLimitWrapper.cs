@@ -23,6 +23,11 @@ public class CardInfoLimitWrapper
     public long CardInfoId { get; set; }
     
     /// <summary>
+    /// CardInfo.
+    /// </summary>
+    public virtual CardInfo CardInfo { get; set; }
+    
+    /// <summary>
     /// Идентификатор лимита.
     /// </summary>
     public long LimitId { get; set; }

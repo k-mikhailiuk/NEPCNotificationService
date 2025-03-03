@@ -1,23 +1,19 @@
+using Aggregator.DTOs.Abstractions;
+
 namespace Aggregator.DTOs.OwiUserAction;
 
 /// <summary>
 /// Уведомление о действии пользователя в OWI
 /// </summary>
-public class AggregatorOwiUserActionDto
+public class AggregatorOwiUserActionDto : INotificationAggregatorDto
 {
-    /// <summary>
-    /// Уникальный идентификатор уведомления
-    /// </summary>
+    /// <inheritdoc />
     public long Id { get; set; }
     
-    /// <summary>
-    /// Уникальный идентификатор события
-    /// </summary>
+    /// <inheritdoc />
     public long EventId { get; set; }
     
-    /// <summary>
-    /// Время создания уведомления (YYYYMMDDHH24MISS) во временной зоне ПЦ
-    /// </summary>
+    /// <inheritdoc />
     public string Time { get; set; }
     
     /// <summary>
