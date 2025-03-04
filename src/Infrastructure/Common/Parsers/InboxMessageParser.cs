@@ -1,7 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Aggregator.DataAccess.Entities.Enum;
-using Common.Mappers;
 
 namespace Common.Parsers;
 
