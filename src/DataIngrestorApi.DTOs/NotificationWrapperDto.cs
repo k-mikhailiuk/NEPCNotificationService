@@ -5,7 +5,7 @@ using DataIngrestorApi.DTOs.CardStatusChange;
 using DataIngrestorApi.DTOs.IssFinAuth;
 using DataIngrestorApi.DTOs.OwiUserAction;
 using DataIngrestorApi.DTOs.PinChange;
-using DataIngrestorApi.DTOs.TokenStausChange;
+using DataIngrestorApi.DTOs.TokenStatusChange;
 using DataIngrestorApi.DTOs.Unhold;
 
 namespace DataIngrestorApi.DTOs;

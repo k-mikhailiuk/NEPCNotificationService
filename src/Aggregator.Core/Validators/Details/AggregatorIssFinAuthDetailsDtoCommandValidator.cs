@@ -59,7 +59,7 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .WithMessage("transactionTime must be 14 digits in format YYYYMMDDHH24MISS");
 
         RuleFor(x => x.ResponseCode)
-            .InclusiveBetween(1, 999999)
+            .InclusiveBetween(-999999, 999999)
             .WithMessage("responseCode must be in [1..999999], i.e. up to 6 digits");
 
         RuleFor(x => x.ApprovalCode)

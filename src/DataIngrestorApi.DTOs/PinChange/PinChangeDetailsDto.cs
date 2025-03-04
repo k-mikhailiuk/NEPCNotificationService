@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DataIngrestorApi.DTOs.Abstractions;
@@ -9,48 +8,55 @@ namespace DataIngrestorApi.DTOs.PinChange;
 /// <summary>
 /// Подробная информация об изменении PIN-кода
 /// </summary>
-public class PinChangeDetailsDto : IHasCardIdentifier, IValidatableObject
+public class PinChangeDetailsDto : IHasCardIdentifier
 {
     /// <summary>
     /// Срок действия карты (YYMM)
     /// </summary>
     public string ExpDate { get; set; }
-    
+
     /// <summary>
     /// Время смены PIN-кода в ПЦ (YYYYMMDDHH24MISS)
     /// </summary>
     public string TransactionTime { get; set; }
-    
+
     /// <summary>
     /// Статус операции изменения PIN-кода. OK - успешный, NOK - неуспешный
     /// </summary>
     public string Status { get; set; }
-    
+
     /// <summary>
     /// Внутренний код ответа ПЦ
     /// </summary>
     public int? ResponseCode { get; set; }
-    
+
     /// <summary>
     /// Сервис по изменению PIN-кода.
     /// </summary>
     public string Service { get; set; }
-    
+
     /// <summary>
     /// Для хранения неидентифицированных полей/заполнение CardIdentifier
     /// </summary>
     [JsonExtensionData]
     public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
-    
+
+    private List<CardIdentifierDto>? _cardIdentifier;
+
     /// <summary>
     /// Список идентификаторов карты
     /// </summary>
-    [JsonIgnore]
-    public List<CardIdentifierDto>? CardIdentifier => CardIdentifierJsonParser.Transform(ExtensionData);
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public List<CardIdentifierDto>? CardIdentifier
     {
-        CardIdentifierValidationHelper.ValidateAndCleanExtensionData(ExtensionData);
-        yield break;
+        get
+        {
+            if (_cardIdentifier is not null) return _cardIdentifier;
+
+            _cardIdentifier = CardIdentifierJsonParser.Transform(ExtensionData);
+
+            ExtensionData.Clear();
+
+            return _cardIdentifier;
+        }
     }
 }

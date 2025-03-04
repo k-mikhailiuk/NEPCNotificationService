@@ -14,7 +14,7 @@ public class AggregatorMerchantInfoDtoCommandValidator : AbstractValidator<Aggre
             .WithMessage("Id must be between 1 and 15 characters");
         
         RuleFor(x=>x.MCC)
-            .Matches("pattern: ^[0-9]{4}$")
+            .Matches("^[0-9]{4}$")
             .WithMessage("MCC is not valid");
         
         RuleFor(x=>x.TerminalId)

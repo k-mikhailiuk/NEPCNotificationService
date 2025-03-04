@@ -29,6 +29,9 @@ public static class CardIdentifierJsonParser
                     list.Add(new CardIdentifierDto { Type = cardType, Value = val });
             }
         }
+        
+        dict.Clear();
+        
         return list.Any() ? list : null;
     }
 }

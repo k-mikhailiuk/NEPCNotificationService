@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DataIngrestorApi.DTOs.Abstractions;
@@ -9,7 +8,7 @@ namespace DataIngrestorApi.DTOs.IssFinAuth;
 /// <summary>
 /// Детали финансовой авторизации по карте банка-эмитента
 /// </summary>
-public class IssFinAuthDetailsDto : IHasCardIdentifier, IValidatableObject
+public class IssFinAuthDetailsDto : IHasCardIdentifier
 {
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
@@ -148,16 +147,23 @@ public class IssFinAuthDetailsDto : IHasCardIdentifier, IValidatableObject
     /// </summary>
     [JsonExtensionData]
     public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
+
+    private List<CardIdentifierDto>? _cardIdentifier;
     
     /// <summary>
     /// Список идентификаторов карты
     /// </summary>
-    [JsonIgnore]
-    public List<CardIdentifierDto>? CardIdentifier => CardIdentifierJsonParser.Transform(ExtensionData);
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public List<CardIdentifierDto>? CardIdentifier
     {
-        CardIdentifierValidationHelper.ValidateAndCleanExtensionData(ExtensionData);
-        yield break;
+        get
+        {
+            if (_cardIdentifier is not null) return _cardIdentifier;
+            
+            _cardIdentifier = CardIdentifierJsonParser.Transform(ExtensionData);
+
+            ExtensionData.Clear();
+
+            return _cardIdentifier;
+        }
     }
 }

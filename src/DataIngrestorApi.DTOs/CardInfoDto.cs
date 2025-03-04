@@ -9,7 +9,7 @@ namespace DataIngrestorApi.DTOs;
 /// <summary>
 /// Информация о карте
 /// </summary>
-public class CardInfoDto : IHasCardIdentifier, IValidatableObject
+public class CardInfoDto : IHasCardIdentifier
 {
     /// <summary>
     /// Срок действия карты (YYMM)
@@ -41,16 +41,23 @@ public class CardInfoDto : IHasCardIdentifier, IValidatableObject
     /// </summary>
     [JsonExtensionData]
     public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
+
+    private List<CardIdentifierDto>? _cardIdentifier;
     
     /// <summary>
     /// Список идентификаторов карты
     /// </summary>
-    [JsonIgnore]
-    public List<CardIdentifierDto>? CardIdentifier => CardIdentifierJsonParser.Transform(ExtensionData);
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    public List<CardIdentifierDto>? CardIdentifier
     {
-        CardIdentifierValidationHelper.ValidateAndCleanExtensionData(ExtensionData);
-        yield break;
+        get
+        {
+            if (_cardIdentifier is not null) return _cardIdentifier;
+            
+            _cardIdentifier = CardIdentifierJsonParser.Transform(ExtensionData);
+
+            ExtensionData.Clear();
+
+            return _cardIdentifier;
+        }
     }
 }

@@ -8,7 +8,7 @@ public class AggregatorCheckedLimitDtoCommandValidator : AbstractValidator<Aggre
     public AggregatorCheckedLimitDtoCommandValidator()
     {
         RuleFor(x => x.Id)
-            .GreaterThan(1)
+            .GreaterThanOrEqualTo(1)
             .WithMessage("Id must be greater than 1.");
         
         RuleFor(x=>x.Type)
