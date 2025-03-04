@@ -28,5 +28,5 @@ public class AggregatorAccountInfoDto
     /// <summary>
     /// Тип - контейнер лимитов
     /// </summary>
-    public AggregatorLimitWrapperDto[]? limits { get; set; }
+    public AggregatorLimitWrapperDto[]? Limits { get; set; }
 }

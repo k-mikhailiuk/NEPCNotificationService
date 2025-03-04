@@ -110,7 +110,7 @@ public class AggregatorIssFinAuthDetailsDto
     /// <summary>
     /// Идентификатор группы операций
     /// </summary>
-    public long? svTrace { get; set; }
+    public long? SvTrace { get; set; }
     
     /// <summary>
     /// Условия выполнения авторизации

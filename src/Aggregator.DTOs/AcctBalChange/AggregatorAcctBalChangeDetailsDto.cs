@@ -38,7 +38,7 @@ public class AggregatorAcctBalChangeDetailsDto
     /// <summary>
     /// Идентификатор банка эмитента
     /// </summary>
-    public string issInstId { get; set; }
+    public string IssInstId { get; set; }
     
     /// <summary>
     /// Номер счета

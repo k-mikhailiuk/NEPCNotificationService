@@ -18,5 +18,7 @@ public static class DIConfigure
         services.AddCommands();
         services.AddFactories();
         services.AddAggregatorOptions(configuration);
+        services.AddBehaviors();
+        services.AddValidators();
     }
 }

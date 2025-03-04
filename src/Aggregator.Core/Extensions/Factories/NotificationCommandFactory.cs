@@ -40,9 +40,9 @@ public class NotificationCommandFactory : INotificationCommandFactory
             _ when notificationType == typeof(AggregatorAcctBalChangeDto) => 
                 new ProcessNotificationCommand<AggregatorAcctBalChangeDto>(
                     notifications.Cast<AggregatorAcctBalChangeDto>().ToList()),
-            _ when notificationType == typeof(AggregatorTokenStausChangeDto) => 
-                new ProcessNotificationCommand<AggregatorTokenStausChangeDto>(
-                    notifications.Cast<AggregatorTokenStausChangeDto>().ToList()),
+            _ when notificationType == typeof(AggregatorTokenStatusChangeDto) => 
+                new ProcessNotificationCommand<AggregatorTokenStatusChangeDto>(
+                    notifications.Cast<AggregatorTokenStatusChangeDto>().ToList()),
             _ => throw new NotSupportedException($"Тип уведомления {notificationType.Name} не поддерживается.")
         };
     }

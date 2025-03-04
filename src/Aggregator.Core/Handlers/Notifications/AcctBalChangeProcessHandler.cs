@@ -8,19 +8,17 @@ namespace Aggregator.Core.Handlers.Notifications;
 
 public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>>
 {
-    private readonly IMediator _mediator;
     private readonly IAcctBalChangeRepository _acctBalChangeRepository;
     
-    public AcctBalChangeProcessHandler(IUnitOfWork unitOfWork, IMediator mediator)
+    public AcctBalChangeProcessHandler(IUnitOfWork unitOfWork)
     {
         _acctBalChangeRepository = unitOfWork.AcctBalChange;
-        _mediator = mediator;
     }
     public async Task Handle(ProcessNotificationCommand<AggregatorAcctBalChangeDto> request, CancellationToken cancellationToken)
     {
-        foreach (var notification in request.Notifications)
-        {
-            await _acctBalChangeRepository.AddAsync(notification, cancellationToken);
-        }
+        // foreach (var notification in request.Notifications)
+        // {
+        //     await _acctBalChangeRepository.AddAsync(notification, cancellationToken);
+        // }
     }
 }

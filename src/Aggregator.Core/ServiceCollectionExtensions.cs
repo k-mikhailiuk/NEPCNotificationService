@@ -4,6 +4,7 @@ using Aggregator.Core.Extensions.Factories;
 using Aggregator.Core.Handlers;
 using Aggregator.Core.Handlers.Notifications;
 using Aggregator.Core.Validators;
+using Aggregator.Core.Validators.Notifications;
 using Aggregator.DTOs.AcctBalChange;
 using Aggregator.DTOs.AcqFinAuth;
 using Aggregator.DTOs.CardStatusChange;
@@ -12,7 +13,6 @@ using Aggregator.DTOs.OwiUserAction;
 using Aggregator.DTOs.PinChange;
 using Aggregator.DTOs.TokenStausChange;
 using Aggregator.DTOs.Unhold;
-using DataIngrestorApi.DTOs.CardStatusChange;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,8 +45,8 @@ public static class ServiceCollectionExtensions
             .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorPinChangeDto>>,
                 PinChangeProcessHandler>();
         services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorTokenStausChangeDto>>,
-                TokenStausChangeProcessHandler>();
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorTokenStatusChangeDto>>,
+                TokenStatusChangeProcessHandler>();
         services.AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorUnholdDto>>, UnholdProcessHandler>();
         
         return services;
@@ -61,11 +61,20 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddBehaviors(this IServiceCollection services)
     {
-        services.AddTransient(
-            typeof(IPipelineBehavior<,>),
-            typeof(ValidationBehaviorForProcessNotification<>)
-        );
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorCardStatusChangeDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorCardStatusChangeDto>>();
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorIssFinAuthDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorIssFinAuthDto>>();
 
+        return services;
+    }
+
+    public static IServiceCollection AddValidators(this IServiceCollection services)
+    {
+        services.AddTransient<IValidator<AggregatorCardStatusChangeDto>, CardStatusChangeDtoValidator>();
+        services.AddTransient<IValidator<AggregatorIssFinAuthDto>, AggregatorIssFinAuthDtoCommandValidator>();
         return services;
     }
 }

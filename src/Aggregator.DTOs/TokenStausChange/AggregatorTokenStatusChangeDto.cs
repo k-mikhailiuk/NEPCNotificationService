@@ -5,7 +5,7 @@ namespace Aggregator.DTOs.TokenStausChange;
 /// <summary>
 /// Уведомление об изменении статуса токена
 /// </summary>
-public class AggregatorTokenStausChangeDto : INotificationAggregatorDto
+public class AggregatorTokenStatusChangeDto : INotificationAggregatorDto
 {
     /// <inheritdoc />
     public long Id { get; set; }
@@ -19,7 +19,7 @@ public class AggregatorTokenStausChangeDto : INotificationAggregatorDto
     /// <summary>
     /// Подробная информация об изменении статуса токена
     /// </summary>
-    public AggregatorTokenStausChangeDetailsDto Details { get; set; }
+    public AggregatorTokenStatusChangeDetailsDto Details { get; set; }
     
     /// <summary>
     /// Информация о карте

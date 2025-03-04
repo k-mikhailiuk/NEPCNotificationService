@@ -38,7 +38,7 @@ public class NotificationWrapperDto
     /// <summary>
     /// Уведомление об изменении статуса токена
     /// </summary>
-    public TokenStausChangeDto? TokenStatusChange { get; set; }
+    public TokenStatusChangeDto? TokenStatusChange { get; set; }
     
     /// <summary>
     /// Уведомление о снятии холда

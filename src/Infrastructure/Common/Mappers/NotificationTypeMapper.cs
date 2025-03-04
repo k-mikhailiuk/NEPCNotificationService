@@ -18,7 +18,7 @@ public static class NotificationTypeMapper
         { NotificationType.AcqFinAuth, typeof(AggregatorAcqFinAuthDto) },
         { NotificationType.CardStatusChange, typeof(AggregatorCardStatusChangeDto) },
         { NotificationType.PinChange, typeof(AggregatorPinChangeDto) },
-        { NotificationType.TokenStatusChange, typeof(AggregatorTokenStausChangeDto) },
+        { NotificationType.TokenStatusChange, typeof(AggregatorTokenStatusChangeDto) },
         { NotificationType.Unhold, typeof(AggregatorUnholdDto) },
         { NotificationType.OwiUserAction, typeof(AggregatorOwiUserActionDto) },
         { NotificationType.AcctBalChange, typeof(AggregatorAcctBalChangeDto) }

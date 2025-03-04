@@ -3,7 +3,7 @@ namespace DataIngrestorApi.DTOs.TokenStausChange;
 /// <summary>
 /// Уведомление об изменении статуса токена
 /// </summary>
-public class TokenStausChangeDto
+public class TokenStatusChangeDto
 {
     /// <summary>
     /// Уникальный идентификатор уведомления
@@ -23,7 +23,7 @@ public class TokenStausChangeDto
     /// <summary>
     /// Подробная информация об изменении статуса токена
     /// </summary>
-    public TokenStausChangeDetailsDto Details { get; set; }
+    public TokenStatusChangeDetailsDto Details { get; set; }
     
     /// <summary>
     /// Информация о карте
