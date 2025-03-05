@@ -12,7 +12,7 @@ public class FinTransactionConfiguration : IEntityTypeConfiguration<FinTransacti
 
         builder.HasKey(x => x.FinTransactionId);
 
-        builder.Property(x => x.FinTrans).IsRequired(false).HasMaxLength(7);
+        builder.Property(x => x.FeTrans).IsRequired(false).HasMaxLength(7);
 
         builder.OwnsOne(x => x.TranMoney, parameters =>
         {
