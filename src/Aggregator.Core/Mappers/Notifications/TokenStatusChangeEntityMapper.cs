@@ -1,15 +1,26 @@
 using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.DataAccess.Entities.TokenChangeStatus;
 using Aggregator.DTOs.TokenStausChange;
+using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
 public class TokenStatusChangeEntityMapper : INotificationMapper<TokenStatusChange, AggregatorTokenStatusChangeDto>
 {
+    private readonly ILogger<TokenStatusChangeEntityMapper> _logger;
+
+    public TokenStatusChangeEntityMapper(ILogger<TokenStatusChangeEntityMapper> logger)
+    {
+        _logger = logger;
+    }
+
     public TokenStatusChange Map(AggregatorTokenStatusChangeDto dto)
     {
         if (dto == null)
+        {
+            _logger.LogWarning("AggregatorTokenStatusChangeDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorTokenStatusChangeDto is null");
+        }
 
         var notification = new TokenStatusChange
         {
@@ -24,15 +35,15 @@ public class TokenStatusChangeEntityMapper : INotificationMapper<TokenStatusChan
         return notification;
     }
 
-    private static TokenStatusChangeDetails MapDetails(AggregatorTokenStatusChangeDetailsDto dto)
+    private TokenStatusChangeDetails MapDetails(AggregatorTokenStatusChangeDetailsDto dto)
     {
         if (dto == null)
         {
-            Console.WriteLine("Details is null");
+            _logger.LogInformation("Details is null");
             return null;
         }
 
-        Console.WriteLine($"Mapping TokenStatusChangeDetails");
+        _logger.LogInformation("Mapping TokenStatusChangeDetails");
 
         return new TokenStatusChangeDetails
         {

@@ -5,15 +5,26 @@ using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 using Aggregator.DTOs;
 using Aggregator.DTOs.IssFinAuth;
+using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
 public class IssFinAuthEntityMapper : INotificationMapper<IssFinAuth, AggregatorIssFinAuthDto>
 {
+    private readonly ILogger<IssFinAuthEntityMapper> _logger;
+
+    public IssFinAuthEntityMapper(ILogger<IssFinAuthEntityMapper> logger)
+    {
+        _logger = logger;
+    }
+
     public IssFinAuth Map(AggregatorIssFinAuthDto dto)
     {
         if (dto == null)
+        {
+            _logger.LogWarning("AggregatorIssFinAuthDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorIssFinAuthDto is null");
+        }
 
         var notification = new IssFinAuth
         {
@@ -30,15 +41,15 @@ public class IssFinAuthEntityMapper : INotificationMapper<IssFinAuth, Aggregator
         return notification;
     }
 
-    private static IssFinAuthDetails MapDetails(AggregatorIssFinAuthDetailsDto dto)
+    private IssFinAuthDetails MapDetails(AggregatorIssFinAuthDetailsDto dto)
     {
         if (dto == null)
         {
-            Console.WriteLine("Details is null");
+            _logger.LogInformation("Details is null");
             return null;
         }
 
-        Console.WriteLine($"Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}");
+        _logger.LogInformation($"Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}", dto.Id, dto.TransactionTime);
 
         try
         {
@@ -114,15 +125,15 @@ public class IssFinAuthEntityMapper : INotificationMapper<IssFinAuth, Aggregator
         }
     }
 
-    private static List<IssFinAuthAccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto)
+    private List<IssFinAuthAccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto)
     {
         if (dto == null || dto.Count == 0)
         {
-            Console.WriteLine("AccountsInfo is null");
+            _logger.LogInformation("AccountsInfo is null");
             return null;
         }
 
-        Console.WriteLine($"Mapping AccountsInfo");
+        _logger.LogInformation($"Mapping AccountsInfo");
 
         return dto.Select(x => new IssFinAuthAccountsInfo
         {

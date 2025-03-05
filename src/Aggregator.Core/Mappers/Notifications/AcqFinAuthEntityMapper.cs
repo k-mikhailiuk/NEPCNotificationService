@@ -2,15 +2,26 @@ using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 using Aggregator.DTOs.AcqFinAuth;
+using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
 public class AcqFinAuthEntityMapper : INotificationMapper<AcqFinAuth, AggregatorAcqFinAuthDto>
 {
+    private readonly ILogger<AcqFinAuthEntityMapper> _logger;
+
+    public AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
+    {
+        _logger = logger;
+    }
+
     public AcqFinAuth Map(AggregatorAcqFinAuthDto dto)
     {
         if (dto == null)
+        {
+            _logger.LogWarning("AcqFinAuthDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorAcqFinAuthDto is null");
+        }
 
         var notification = new AcqFinAuth
         {
@@ -25,15 +36,15 @@ public class AcqFinAuthEntityMapper : INotificationMapper<AcqFinAuth, Aggregator
         return notification;
     }
 
-    private static AcqFinAuthDetails MapDetails(AggregatorAcqFinAuthDetailsDto dto)
+    private AcqFinAuthDetails MapDetails(AggregatorAcqFinAuthDetailsDto dto)
     {
         if (dto == null)
         {
-            Console.WriteLine("Details is null");
+            _logger.LogInformation("Details is null");
             return null;
         }
 
-        Console.WriteLine($"Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}");
+        _logger.LogInformation($"Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}", dto.Id, dto.TransactionTime);
 
         return new AcqFinAuthDetails
         {

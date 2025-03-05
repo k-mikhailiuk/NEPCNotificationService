@@ -3,15 +3,26 @@ using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 using Aggregator.DTOs.AcctBalChange;
+using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
 public class AcctBalChangeEntityMapper : INotificationMapper<AcctBalChange, AggregatorAcctBalChangeDto>
 {
+    private readonly ILogger<AcctBalChangeEntityMapper> _logger;
+
+    public AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger)
+    {
+        _logger = logger;
+    }
+
     public AcctBalChange Map(AggregatorAcctBalChangeDto dto)
     {
         if (dto == null)
+        {
+            _logger.LogWarning("AcctBalChangeDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorCardStatusChangeDto is null");
+        }
 
         var notification = new AcctBalChange
         {
@@ -26,15 +37,15 @@ public class AcctBalChangeEntityMapper : INotificationMapper<AcctBalChange, Aggr
         return notification;
     }
 
-    private static AcctBalChangeDetails MapDetails(AggregatorAcctBalChangeDetailsDto dto)
+    private AcctBalChangeDetails MapDetails(AggregatorAcctBalChangeDetailsDto dto)
     {
         if (dto == null)
         {
-            Console.WriteLine("Details is null");
+            _logger.LogInformation("Details is null");
             return null;
         }
 
-        Console.WriteLine($"Mapping CardStatusChangeDetails:");
+        _logger.LogInformation("Mapping CardStatusChangeDetails:");
 
         return new AcctBalChangeDetails
         {
