@@ -18,7 +18,7 @@ public class AggregatorTokenStatusChangeDetailsDto
     /// <summary>
     /// Новый статус токена
     /// </summary>
-    public string Status {get; set;}
+    public char Status {get; set;}
     
     /// <summary>
     /// Дата создания/изменения токена в ПЦ (YYYYMMDDHH24MISS)

@@ -21,7 +21,7 @@ public class AggregatorTransactionDtoCommandValidator : AbstractValidator<Aggreg
             .When(x => x.TranMoney != null);
 
         RuleFor(x => x.Direction)
-            .Matches("^[CD]$")
+            .Must(dir => dir is 'C' or 'D')
             .WithMessage("Direction is not valid");
 
         RuleFor(x => x.MerchantInfo)

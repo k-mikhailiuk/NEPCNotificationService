@@ -15,7 +15,7 @@ public class FinTransaction
     /// <summary>
     /// Тип транзакции в FE (используется в BO)
     /// </summary>
-    public string? FinTrans { get; set; }
+    public string? FeTrans { get; set; }
     
     /// <inheritdoc cref="TranMoney" />
     public TranMoney TranMoney { get; set; }

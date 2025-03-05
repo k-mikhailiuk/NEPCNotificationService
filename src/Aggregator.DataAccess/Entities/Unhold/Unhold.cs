@@ -45,5 +45,5 @@ public class Unhold
     public MerchantInfo MerchantInfo { get; set; }
     
     /// <inheritdoc cref="NotificationExtension" />
-    public List<NotificationExtension>? Extesions { get; set; }
+    public List<NotificationExtension>? Extensions { get; set; }
 }

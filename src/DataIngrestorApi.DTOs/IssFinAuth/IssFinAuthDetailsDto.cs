@@ -48,7 +48,7 @@ public class IssFinAuthDetailsDto : IHasCardIdentifier
     /// <summary>
     /// Направление движения суммы авторизации относительно счета. C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string AuthDirection { get; set; }
+    public char AuthDirection { get; set; }
     
     /// <summary>
     /// Сумма авторизации в валюте счета. Включает эквайринговую комиссию. Включает эмитентскую комиссию
@@ -99,7 +99,7 @@ public class IssFinAuthDetailsDto : IHasCardIdentifier
     /// Направление движения эквайринговой комиссии относительно счета.
     /// Заполняется, если присутствует эквайринговая комиссия. C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string? AcqFeeDirection { get; set; }
+    public char? AcqFeeDirection { get; set; }
     
     /// <summary>
     /// Комиссия банка-эмитента в валюте счета
@@ -110,7 +110,7 @@ public class IssFinAuthDetailsDto : IHasCardIdentifier
     /// Направление движения эмитентской комиссии относительно счета.
     /// Заполняется, если присутствует эмитентская комиссия. C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string? IssFeeDirection { get; set; }
+    public char? IssFeeDirection { get; set; }
     
     /// <summary>
     /// Идентификатор группы операций

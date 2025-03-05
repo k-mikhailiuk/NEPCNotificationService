@@ -10,7 +10,7 @@ public class UnholdDetails
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
-    public long UnholdId { get; set; }
+    public long UnholdDetailsId { get; set; }
     
     /// <summary>
     /// Признак отмены (0 - false, 1 - true)
@@ -52,7 +52,7 @@ public class UnholdDetails
     /// <summary>
     /// Время регистрации авторизации в ПЦ (YYYYMMDDHH24MISS)
     /// </summary>
-    public DateTimeOffset TransactionDate { get; set; }
+    public DateTimeOffset TransactionTime { get; set; }
     
     /// <summary>
     /// Код авторизации эмитента
@@ -71,12 +71,12 @@ public class UnholdDetails
     /// Направление движения эмитентской комиссии относительно счета карты оригинальной авторизации.
     /// Заполняется, если присутствует эмитентская комиссия. C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string? IssFeeDirection { get; set; }
+    public char? IssFeeDirection { get; set; }
     
     /// <summary>
     /// Идентификатор группы операций
     /// </summary>
-    public string? SvTrace { get; set; }
+    public long? SvTrace { get; set; }
     
     /// <inheritdoc cref="WalletProvider" />
     public WalletProvider WalletProvider { get; set; }

@@ -6,27 +6,22 @@ namespace Aggregator.DataAccess.Entities.Enum;
 public enum CheckedLimitObjectType
 {
     /// <summary>
-    /// Неопределённый тип объекта.
+    /// Карта
     /// </summary>
-    Undefined = 0,
-
+    CARD = 0,
+    
     /// <summary>
-    /// Лимит применяется к карте.
+    /// Счет
     /// </summary>
-    Card = 1,
-
+    ACCOUNT = 1,
+    
     /// <summary>
-    /// Лимит применяется к счёту.
+    /// Группа карт
     /// </summary>
-    Account = 2,
-
-    /// <summary>
-    /// Лимит применяется к группе карт.
-    /// </summary>
-    Card_Group = 3,
+    CARD_GROUP = 2,
 
     /// <summary>
     /// Неизвестный тип объекта.
     /// </summary>
-    Unknown = 4
+    Unknown = 3
 }

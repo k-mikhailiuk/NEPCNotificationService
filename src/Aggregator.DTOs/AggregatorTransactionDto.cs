@@ -24,7 +24,7 @@ public class AggregatorTransactionDto
     /// Направление движения средств относительно счета карты.
     /// C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string? Direction {get; set;}
+    public char? Direction {get; set;}
     
     /// <summary>
     /// Информация о мерчанте

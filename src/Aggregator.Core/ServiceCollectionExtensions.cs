@@ -3,6 +3,9 @@ using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions.Factories;
 using Aggregator.Core.Handlers;
 using Aggregator.Core.Handlers.Notifications;
+using Aggregator.Core.Mappers;
+using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.Core.Mappers.Notifications;
 using Aggregator.Core.Validators;
 using Aggregator.Core.Validators.Notifications;
 using Aggregator.DTOs.AcctBalChange;
@@ -55,6 +58,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddFactories(this IServiceCollection services)
     {
         services.AddSingleton<INotificationCommandFactory, NotificationCommandFactory>();
+        services.AddSingleton<NotificationEntityMapperFactory>();
+        
 
         return services;
     }
@@ -75,6 +80,17 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<IValidator<AggregatorCardStatusChangeDto>, CardStatusChangeDtoValidator>();
         services.AddTransient<IValidator<AggregatorIssFinAuthDto>, AggregatorIssFinAuthDtoCommandValidator>();
+        return services;
+    }
+
+    public static IServiceCollection AddMappers(this IServiceCollection services)
+    {
+        services.Scan(scan => scan
+            .FromAssemblyOf<AcqFinAuthEntityMapper>()
+            .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<,>)))
+            .AsImplementedInterfaces()
+            .WithSingletonLifetime());
+
         return services;
     }
 }

@@ -32,7 +32,7 @@ public class AggregatorUnholdDetailsDtoCommandValidator : AbstractValidator<Aggr
             .SetValidator(new AggregatorMoneyDtoCommandValidator());
 
         RuleFor(x => x.UnholdDirection)
-            .Matches("^[CD]$")
+            .Must(dir => dir is 'C' or 'D')
             .WithMessage("UnholdDirection is not valid");
         
         RuleFor(x=>x.UnholdMoney)
@@ -61,8 +61,8 @@ public class AggregatorUnholdDetailsDtoCommandValidator : AbstractValidator<Aggr
             .When(x => x.IssFee is not null);
 
         RuleFor(x => x.IssFeeDirection)
-            .Matches("^[CD]$")
-            .When(x => !string.IsNullOrEmpty(x.IssFeeDirection))
+            .Must(dir => dir is 'C' or 'D')
+            .When(x => x.IssFeeDirection != null)
             .WithMessage("IssFeeDirection is not valid");
 
         RuleFor(x => x.SvTrace)

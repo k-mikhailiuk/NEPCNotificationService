@@ -10,7 +10,7 @@ public class UnholdDetailsConfiguration : IEntityTypeConfiguration<UnholdDetails
     {
         builder.ToTable("UnholdDetails");
 
-        builder.HasKey(x => x.UnholdId);
+        builder.HasKey(x => x.UnholdDetailsId);
         
         builder.Property(x => x.Reversal).IsRequired();
         builder.Property(x => x.TransType).IsRequired();
@@ -32,7 +32,7 @@ public class UnholdDetailsConfiguration : IEntityTypeConfiguration<UnholdDetails
         });
         
         builder.Property(x => x.LocalTime).IsRequired();
-        builder.Property(x => x.TransactionDate).IsRequired();
+        builder.Property(x => x.TransactionTime).IsRequired();
         builder.Property(x => x.ApprovalCode).IsRequired().HasMaxLength(6);
         builder.Property(x => x.Rrn).IsRequired().HasMaxLength(12);
         

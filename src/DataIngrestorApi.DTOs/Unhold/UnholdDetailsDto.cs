@@ -44,7 +44,7 @@ public class UnholdDetailsDto : IHasCardIdentifier
     /// Направление движения средств относительно счета карты. C - счет кредитуется, D - счет дебетуется.
     /// Направление движения средств расхолдирования обратно движению средств оригинальной авторизации
     /// </summary>
-    public string UnholdDirection { get; set; }
+    public char UnholdDirection { get; set; }
     
     /// <summary>
     /// Сумма авторизации в валюте счета. Не включает эмитентскую комиссию
@@ -80,7 +80,7 @@ public class UnholdDetailsDto : IHasCardIdentifier
     /// Направление движения эмитентской комиссии относительно счета карты оригинальной авторизации.
     /// Заполняется, если присутствует эмитентская комиссия. C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string? IssFeeDirection { get; set; }
+    public char? IssFeeDirection { get; set; }
     
     /// <summary>
     /// Идентификатор группы операций

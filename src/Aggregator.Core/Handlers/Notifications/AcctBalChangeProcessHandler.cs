@@ -1,4 +1,6 @@
 using Aggregator.Core.Commands;
+using Aggregator.Core.Mappers;
+using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DTOs.AcctBalChange;
 using Aggregator.Repositories.Abstractions;
 using Aggregator.Repositories.Abstractions.Repositories.AcctBalChange;
@@ -8,17 +10,18 @@ namespace Aggregator.Core.Handlers.Notifications;
 
 public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>>
 {
-    private readonly IAcctBalChangeRepository _acctBalChangeRepository;
+    private readonly NotificationEntityMapperFactory _mapperFactory;
     
-    public AcctBalChangeProcessHandler(IUnitOfWork unitOfWork)
+    public AcctBalChangeProcessHandler(IUnitOfWork unitOfWork, NotificationEntityMapperFactory mapperFactory)
     {
-        _acctBalChangeRepository = unitOfWork.AcctBalChange;
+        _mapperFactory = mapperFactory;
     }
     public async Task Handle(ProcessNotificationCommand<AggregatorAcctBalChangeDto> request, CancellationToken cancellationToken)
     {
-        // foreach (var notification in request.Notifications)
-        // {
-        //     await _acctBalChangeRepository.AddAsync(notification, cancellationToken);
-        // }
+        var dtos = request.Notifications;
+        
+        var mapper = _mapperFactory.GetMapper<AcctBalChange, AggregatorAcctBalChangeDto>();
+
+        var entities = dtos.Select(dto => mapper.Map(dto));
     }
 }

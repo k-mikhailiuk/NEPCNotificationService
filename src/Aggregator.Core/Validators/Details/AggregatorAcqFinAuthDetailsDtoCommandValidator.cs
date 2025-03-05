@@ -38,7 +38,7 @@ public class AggregatorAcqFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .SetValidator(new AggregatorMoneyDtoCommandValidator());
         
         RuleFor(x=>x.AuthDirection)
-            .Matches("^[CD]$")
+            .Must(dir => dir is 'C' or 'D')
             .WithMessage("AuthDirection is invalid");
         
         RuleFor(x => x.LocalTime)
@@ -69,8 +69,8 @@ public class AggregatorAcqFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .When(x => x.AcqFee is not null);
         
         RuleFor(x=>x.AcqFeeDirection)
-            .Matches("^[CD]$")
-            .When(x=> !string.IsNullOrEmpty(x.AcqFeeDirection))
+            .Must(dir => dir is 'C' or 'D')
+            .When(x=> x.AcqFeeDirection != null)
             .WithMessage("AcqFeeDirection is invalid");
         
         RuleFor(x=>x.ConvMoney)

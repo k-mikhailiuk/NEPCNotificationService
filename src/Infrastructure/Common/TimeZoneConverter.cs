@@ -21,4 +21,12 @@ public static class TimeZoneConverter
 
         throw new FormatException($"Input string '{stringDateTime}' is not in the correct format '{format}'.");
     }
+    
+    public static DateTimeOffset ConvertFromUtcToLocal(string stringDateTime, string timeZoneId = "N. Central Asia Standard Time")
+    {
+        return DateTimeOffset.Now;
+    }
+    
+    
+    
 }

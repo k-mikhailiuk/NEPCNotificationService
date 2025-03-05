@@ -54,7 +54,7 @@ public class AcctBalChangeDetailsDto
     /// Направление движения суммы относительно счета.
     /// C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string Direction { get; set; }
+    public char Direction { get; set; }
     
     /// <summary>
     /// Состояние счета после операции

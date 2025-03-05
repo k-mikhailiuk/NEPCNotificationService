@@ -33,8 +33,8 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .SetValidator(new AggregatorMoneyDtoCommandValidator());
 
         RuleFor(x => x.AuthDirection)
-            .Matches("^[CD]$")
-            .When(x => !string.IsNullOrEmpty(x.AuthDirection))
+            .Must(dir => dir is 'C' or 'D')
+            .When(x => x.AuthDirection != null)
             .WithMessage("authDirection is invalid");
         
         RuleFor(x => x.ConvMoney)
@@ -77,13 +77,13 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .When(x=>x.AcqFee is not null);
 
         RuleFor(x => x.AcqFeeDirection)
-            .Matches("^[CD]$")
-            .When(x => !string.IsNullOrEmpty(x.AcqFeeDirection))
+            .Must(dir => dir is 'C' or 'D')
+            .When(x => x.AcqFeeDirection != null)
             .WithMessage("acqFeeDirection must be 'C' or 'D'");
 
         RuleFor(x => x.IssFeeDirection)
-            .Matches("^[CD]$")
-            .When(x => !string.IsNullOrEmpty(x.IssFeeDirection))
+            .Must(dir => dir is 'C' or 'D')
+            .When(x => x.IssFeeDirection != null)
             .WithMessage("issFeeDirection must be 'C' or 'D'");
 
         RuleFor(x => x.SvTrace)

@@ -33,7 +33,7 @@ public class UnholdConfiguration : IEntityTypeConfiguration<Unhold>
             .HasForeignKey<Unhold>(x=>x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasMany(x=>x.Extesions)
+        builder.HasMany(x=>x.Extensions)
             .WithOne()
             .HasForeignKey(x=>x.NotificationId)
             .OnDelete(DeleteBehavior.NoAction);

@@ -17,7 +17,7 @@ public class AggregatorTokenStatusChangeDetailsDtoCommandValidator : AbstractVal
             .WithMessage("Payment system is not valid.");
 
         RuleFor(x => x.Status)
-            .Matches("^(A|I|S|L)$")
+            .Must(dir => dir is 'A' or 'I' or 'S' or 'L')
             .WithMessage("Status is not valid.");
         
         RuleFor(x=>x.ChangeDate)

@@ -43,7 +43,7 @@ public class AggregatorAcqFinAuthDetailsDto
     /// <summary>
     /// Направление движения суммы авторизации относительно карты. C - карта кредитуется, D - карта дебетуется
     /// </summary>
-    public string AuthDirection { get; set; }
+    public char AuthDirection { get; set; }
     
     /// <summary>
     /// Локальное время совершения авторизации на устройстве (YYYYMMDDHH24MISS)
@@ -79,7 +79,7 @@ public class AggregatorAcqFinAuthDetailsDto
     /// Направление движения эквайринговой комиссии относительно карты.
     /// Заполняется, если присутствует эквайринговая комиссия. C - карта кредитуется, D - карта дебетуется
     /// </summary>
-    public string? AcqFeeDirection { get; set; }
+    public char? AcqFeeDirection { get; set; }
     
     /// <summary>
     /// Сумма авторизации в валюте счета. Включает эмитентскую комиссию

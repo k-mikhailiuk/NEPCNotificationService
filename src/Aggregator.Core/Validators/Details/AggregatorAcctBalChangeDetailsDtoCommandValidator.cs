@@ -29,7 +29,7 @@ public class AggregatorAcctBalChangeDetailsDtoCommandValidator : AbstractValidat
             .WithMessage("Account id must be between 1 and 32 characters");
         
         RuleFor(x=>x.Direction)
-            .Matches("^[CD]$")
+            .Must(dir => dir is 'C' or 'D')
             .WithMessage("Direction is invalid");
     }
 }
