@@ -51,7 +51,7 @@ public class UnholdEntityMapper : INotificationMapper<Unhold, AggregatorUnholdDt
             AuthMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AuthMoney>(dto.AuthMoney),
             UnholdDirection = dto.UnholdDirection,
             UnholdMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<UnholdMoney>(dto.UnholdMoney),
-            LocalTime = ConversionExtensionsHelper.SafeConvertTime(dto.LocalTime),
+            LocalTime = ConversionExtensionsHelper.SafeConvertFromLocalToUtc(dto.LocalTime),
             TransactionTime = ConversionExtensionsHelper.SafeConvertTime(dto.TransactionTime),
             ApprovalCode = dto.ApprovalCode,
             Rrn = dto.RRN,

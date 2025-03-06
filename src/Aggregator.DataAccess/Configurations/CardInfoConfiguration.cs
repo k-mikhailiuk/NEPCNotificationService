@@ -20,9 +20,9 @@ public class CardInfoConfiguration : IEntityTypeConfiguration<CardInfo>
 
         builder.OwnsOne(x => x.CardIdentifier);
         
-        builder.HasMany(x=>x.Limits)
-            .WithOne()
-            .HasForeignKey(x=>x.Id)
+        builder.HasMany(x => x.Limits)
+            .WithOne(x => x.CardInfo)
+            .HasForeignKey(x => x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -3,7 +3,6 @@ using Aggregator.Core.Mappers;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DTOs.AcctBalChange;
 using Aggregator.Repositories.Abstractions;
-using Aggregator.Repositories.Abstractions.Repositories.AcctBalChange;
 using MediatR;
 
 namespace Aggregator.Core.Handlers.Notifications;

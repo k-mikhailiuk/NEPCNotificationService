@@ -12,11 +12,11 @@ public class NotificationEntityMapperFactory
         _serviceProvider = serviceProvider;
     }
 
-    public INotificationMapper<TDto, TEntity> GetMapper<TDto, TEntity>()
+    public INotificationMapper<TEntity, TDto> GetMapper<TEntity, TDto>()
     {
-        var mapper = _serviceProvider.GetService<INotificationMapper<TDto, TEntity>>();
+        var mapper = _serviceProvider.GetService<INotificationMapper<TEntity, TDto>>();
         if (mapper == null)
-            throw new InvalidOperationException($"No mapper found for {typeof(TDto).Name} -> {typeof(TEntity).Name}");
+            throw new InvalidOperationException($"No mapper found for {typeof(TEntity).Name} -> {typeof(TDto).Name}");
         
         return mapper;
     }

@@ -12,6 +12,7 @@ public class LimitConfiguration : IEntityTypeConfiguration<Limit>
         
         builder.HasKey(x=>x.LimitId);
         
+        builder.Property(x=>x.LimitId).IsRequired();
         builder.Property(x=>x.CycleType).IsRequired(false).HasMaxLength(30);
         builder.Property(x=>x.CycleLength).IsRequired(false);
         builder.Property(x=>x.EndTime).IsRequired(false);

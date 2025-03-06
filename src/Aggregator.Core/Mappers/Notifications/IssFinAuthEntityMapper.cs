@@ -66,7 +66,7 @@ public class IssFinAuthEntityMapper : INotificationMapper<IssFinAuth, Aggregator
                 ConvMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<ConvMoney>(dto.ConvMoney),
                 AccountBalance = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AccountBalance>(dto.AccountBalance),
                 BillingMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<BillingMoney>(dto.BillingMoney),
-                LocalTime = ConversionExtensionsHelper.SafeConvertTime(dto.LocalTime),
+                LocalTime = ConversionExtensionsHelper.SafeConvertFromLocalToUtc(dto.LocalTime),
                 TransactionTime = ConversionExtensionsHelper.SafeConvertTime(dto.TransactionTime),
                 ResponseCode = dto.ResponseCode,
                 ApprovalCode = dto.ApprovalCode,

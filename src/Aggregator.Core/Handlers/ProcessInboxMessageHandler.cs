@@ -27,7 +27,6 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
         {
             var notification = InboxMessageParser.ParseInboxMessage(message.Payload);
             
-
             if (notification == null)
             {
                 _logger.LogWarning("Не удалось распарсить уведомление.");

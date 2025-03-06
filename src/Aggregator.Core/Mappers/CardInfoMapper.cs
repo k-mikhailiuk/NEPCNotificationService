@@ -27,10 +27,10 @@ public static class CardInfoMapper
                     .Select(x => new CardInfoLimitWrapper
                     {
                         LimitType = x.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
-                        LimitId = x.AmtLimit?.Id ?? x.CntLimit?.Id ?? 0,
+                        LimitId = x.AmtLimit != null ? x.AmtLimit.Id : x.CntLimit.Id,
                         Limit = new Limit
                         {
-                            LimitId = x.AmtLimit?.Id ?? x.CntLimit?.Id ?? 0,
+                            LimitId = x.AmtLimit != null ? x.AmtLimit.Id : x.CntLimit.Id,
                             LimitType = x.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
                             Currency = x.AmtLimit?.Currency ?? null,
                             CycleLength = x.AmtLimit != null ? x.AmtLimit.CycleLength : 0,

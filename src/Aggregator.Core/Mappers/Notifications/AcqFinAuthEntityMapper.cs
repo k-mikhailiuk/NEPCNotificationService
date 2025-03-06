@@ -56,7 +56,7 @@ public class AcqFinAuthEntityMapper : INotificationMapper<AcqFinAuth, Aggregator
             CorrespondingAccount = dto.CorrespondingAccount,
             AuthMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AuthMoney>(dto.AuthMoney),
             AuthDirection = dto.AuthDirection,
-            LocalTime = ConversionExtensionsHelper.SafeConvertTime(dto.LocalTime),
+            LocalTime = ConversionExtensionsHelper.SafeConvertFromLocalToUtc(dto.LocalTime),
             TransactionTime = ConversionExtensionsHelper.SafeConvertTime(dto.TransactionTime),
             ResponseCode = dto.ResponseCode,
             ApprovalCode = dto.ApprovalCode,

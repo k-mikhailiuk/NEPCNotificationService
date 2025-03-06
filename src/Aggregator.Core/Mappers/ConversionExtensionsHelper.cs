@@ -9,21 +9,28 @@ namespace Aggregator.Core.Mappers;
 
 public static class ConversionExtensionsHelper
 {
-    public static DateTimeOffset SafeConvertTime(string? time)
+    public static DateTimeOffset SafeConvertTime(string time)
     {
-        if (string.IsNullOrEmpty(time))
-        {
-            Console.WriteLine("⚠ SafeConvertTime: time is NULL, returning MinValue");
-            return DateTimeOffset.MinValue;
-        }
-
         try
         {
             return TimeZoneConverter.ConvertFromStringToUtc(time);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"⚠ SafeConvertTime: Failed to convert time={time}. Error: {ex.Message}");
+            Console.WriteLine($"SafeConvertTime: Failed to convert time={time}. Error: {ex.Message}");
+            return DateTimeOffset.MinValue;
+        }
+    }
+
+    public static DateTimeOffset SafeConvertFromLocalToUtc(string time)
+    {
+        try
+        {
+            return TimeZoneConverter.ConvertLocalToUtc(time);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SafeConvertTime: Failed to convert time={time}. Error: {ex.Message}");
             return DateTimeOffset.MinValue;
         }
     }

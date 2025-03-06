@@ -20,5 +20,6 @@ public static class DIConfigure
         services.AddAggregatorOptions(configuration);
         services.AddBehaviors();
         services.AddValidators();
+        services.AddMappers();
     }
 }

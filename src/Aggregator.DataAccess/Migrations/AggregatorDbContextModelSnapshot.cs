@@ -296,6 +296,8 @@ namespace Aggregator.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
                     b.Property<long>("CardInfoId")
                         .HasColumnType("bigint");
 
@@ -307,8 +309,9 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LimitId")
-                        .IsUnique();
+                    b.HasIndex("CardInfoId");
+
+                    b.HasIndex("LimitId");
 
                     b.ToTable("CardInfoLimitWrappers", "nepc");
                 });
@@ -443,7 +446,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.Property<string>("Direction")
                         .HasColumnType("nvarchar(1)");
 
-                    b.Property<string>("FinTrans")
+                    b.Property<string>("FeTrans")
                         .HasMaxLength(7)
                         .HasColumnType("nvarchar(7)");
 
@@ -943,11 +946,11 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.Unhold.UnholdDetails", b =>
                 {
-                    b.Property<long>("UnholdId")
+                    b.Property<long>("UnholdDetailsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UnholdId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("UnholdDetailsId"));
 
                     b.Property<string>("AccountId")
                         .IsRequired()
@@ -969,7 +972,7 @@ namespace Aggregator.DataAccess.Migrations
                         .HasColumnType("nvarchar(19)");
 
                     b.Property<string>("IssFeeDirection")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(1)");
 
                     b.Property<DateTimeOffset>("LocalTime")
                         .HasColumnType("datetimeoffset");
@@ -982,20 +985,20 @@ namespace Aggregator.DataAccess.Migrations
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
-                    b.Property<string>("SvTrace")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long?>("SvTrace")
+                        .HasColumnType("bigint");
 
                     b.Property<int>("TransType")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("TransactionDate")
+                    b.Property<DateTimeOffset>("TransactionTime")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("UnholdDirection")
                         .IsRequired()
                         .HasColumnType("nvarchar(1)");
 
-                    b.HasKey("UnholdId");
+                    b.HasKey("UnholdDetailsId");
 
                     b.ToTable("UnholdDetails", "nepc");
                 });
@@ -1347,17 +1350,19 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.CardInfoLimitWrapper", b =>
                 {
-                    b.HasOne("Aggregator.DataAccess.Entities.CardInfo", null)
+                    b.HasOne("Aggregator.DataAccess.Entities.CardInfo", "CardInfo")
                         .WithMany("Limits")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("CardInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.Limit", "Limit")
-                        .WithOne()
-                        .HasForeignKey("Aggregator.DataAccess.Entities.CardInfoLimitWrapper", "LimitId")
+                        .WithMany()
+                        .HasForeignKey("LimitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CardInfo");
 
                     b.Navigation("Limit");
                 });
@@ -1825,7 +1830,7 @@ namespace Aggregator.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.Unhold.Unhold", null)
-                        .WithMany("Extesions")
+                        .WithMany("Extensions")
                         .HasForeignKey("NotificationId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -1968,7 +1973,7 @@ namespace Aggregator.DataAccess.Migrations
                 {
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.UnholdMoney", "UnholdMoney", b1 =>
                         {
-                            b1.Property<long>("UnholdDetailsUnholdId")
+                            b1.Property<long>("UnholdDetailsId")
                                 .HasColumnType("bigint");
 
                             b1.Property<long>("Amount")
@@ -1979,17 +1984,17 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasMaxLength(3)
                                 .HasColumnType("nvarchar(3)");
 
-                            b1.HasKey("UnholdDetailsUnholdId");
+                            b1.HasKey("UnholdDetailsId");
 
                             b1.ToTable("UnholdDetails", "nepc");
 
                             b1.WithOwner()
-                                .HasForeignKey("UnholdDetailsUnholdId");
+                                .HasForeignKey("UnholdDetailsId");
                         });
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AuthMoney", "AuthMoney", b1 =>
                         {
-                            b1.Property<long>("UnholdDetailsUnholdId")
+                            b1.Property<long>("UnholdDetailsId")
                                 .HasColumnType("bigint");
 
                             b1.Property<long>("Amount")
@@ -2000,17 +2005,17 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasMaxLength(3)
                                 .HasColumnType("nvarchar(3)");
 
-                            b1.HasKey("UnholdDetailsUnholdId");
+                            b1.HasKey("UnholdDetailsId");
 
                             b1.ToTable("UnholdDetails", "nepc");
 
                             b1.WithOwner()
-                                .HasForeignKey("UnholdDetailsUnholdId");
+                                .HasForeignKey("UnholdDetailsId");
                         });
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.CardIdentifier", "CardIdentifier", b1 =>
                         {
-                            b1.Property<long>("UnholdDetailsUnholdId")
+                            b1.Property<long>("UnholdDetailsId")
                                 .HasColumnType("bigint");
 
                             b1.Property<int?>("CardIdentifierType")
@@ -2019,17 +2024,17 @@ namespace Aggregator.DataAccess.Migrations
                             b1.Property<string>("CardIdentifierValue")
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.HasKey("UnholdDetailsUnholdId");
+                            b1.HasKey("UnholdDetailsId");
 
                             b1.ToTable("UnholdDetails", "nepc");
 
                             b1.WithOwner()
-                                .HasForeignKey("UnholdDetailsUnholdId");
+                                .HasForeignKey("UnholdDetailsId");
                         });
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.IssFee", "IssFee", b1 =>
                         {
-                            b1.Property<long>("UnholdDetailsUnholdId")
+                            b1.Property<long>("UnholdDetailsId")
                                 .HasColumnType("bigint");
 
                             b1.Property<long?>("Amount")
@@ -2039,17 +2044,17 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasMaxLength(3)
                                 .HasColumnType("nvarchar(3)");
 
-                            b1.HasKey("UnholdDetailsUnholdId");
+                            b1.HasKey("UnholdDetailsId");
 
                             b1.ToTable("UnholdDetails", "nepc");
 
                             b1.WithOwner()
-                                .HasForeignKey("UnholdDetailsUnholdId");
+                                .HasForeignKey("UnholdDetailsId");
                         });
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.WalletProvider", "WalletProvider", b1 =>
                         {
-                            b1.Property<long>("UnholdDetailsUnholdId")
+                            b1.Property<long>("UnholdDetailsId")
                                 .HasColumnType("bigint");
 
                             b1.Property<string>("Id")
@@ -2059,12 +2064,12 @@ namespace Aggregator.DataAccess.Migrations
                             b1.Property<string>("PaymentSystem")
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.HasKey("UnholdDetailsUnholdId");
+                            b1.HasKey("UnholdDetailsId");
 
                             b1.ToTable("UnholdDetails", "nepc");
 
                             b1.WithOwner()
-                                .HasForeignKey("UnholdDetailsUnholdId");
+                                .HasForeignKey("UnholdDetailsId");
                         });
 
                     b.Navigation("AuthMoney")
@@ -2149,7 +2154,7 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.Unhold.Unhold", b =>
                 {
-                    b.Navigation("Extesions");
+                    b.Navigation("Extensions");
                 });
 #pragma warning restore 612, 618
         }

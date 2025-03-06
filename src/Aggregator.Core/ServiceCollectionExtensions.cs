@@ -6,7 +6,6 @@ using Aggregator.Core.Handlers.Notifications;
 using Aggregator.Core.Mappers;
 using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.Core.Mappers.Notifications;
-using Aggregator.Core.Validators;
 using Aggregator.Core.Validators.Notifications;
 using Aggregator.DTOs.AcctBalChange;
 using Aggregator.DTOs.AcqFinAuth;
