@@ -1,5 +1,6 @@
 using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.DataAccess.Entities.CardStatusChange;
+using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DTOs.CardStatusChange;
 using Microsoft.Extensions.Logging;
 
@@ -24,11 +25,11 @@ public class CardStatusChangeEntityMapper : INotificationMapper<CardStatusChange
 
         var notification = new CardStatusChange
         {
-            CardStatusChangeId = dto.Id,
+            NotificationId = dto.Id,
             EventId = dto.EventId,
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions),
+            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.CardStatusChange),
             CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
         };
 

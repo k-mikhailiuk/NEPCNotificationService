@@ -9,9 +9,9 @@ public class OwiUserActionConfiguration : IEntityTypeConfiguration<OwiUserAction
     public void Configure(EntityTypeBuilder<OwiUserAction> builder)
     {
         builder.ToTable("OwiUserActions");
-
-        builder.HasKey(x => x.OwiUserActionId);
         
+        builder.HasKey(x=>x.NotificationId);
+
         builder.Property(x=>x.EventId).IsRequired();
         builder.Property(x=>x.Time).IsRequired();
         builder.Property(x=>x.CardInfoId).IsRequired(false);
@@ -26,10 +26,5 @@ public class OwiUserActionConfiguration : IEntityTypeConfiguration<OwiUserAction
             .WithOne()
             .HasForeignKey<OwiUserAction>()
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasMany(x=>x.Extensions)
-            .WithOne()
-            .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -10,8 +10,8 @@ public class AcqFinAuthConfiguration : IEntityTypeConfiguration<AcqFinAuth>
     {
         builder.ToTable("AcqFinAuths");
         
-        builder.HasKey(x => x.AcqFinAuthId);
-        
+        builder.HasKey(x=>x.NotificationId);
+
         builder.Property(x=>x.EventId).IsRequired();
         builder.Property(x=>x.Time).IsRequired();
         builder.Property(x=>x.DetailsId).IsRequired();
@@ -26,10 +26,5 @@ public class AcqFinAuthConfiguration : IEntityTypeConfiguration<AcqFinAuth>
             .WithOne()
             .HasForeignKey<AcqFinAuth>(x=>x.MerchantInfoId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasMany(x=>x.Extensions)
-            .WithOne()
-            .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

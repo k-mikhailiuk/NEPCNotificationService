@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.Enum;
 
 namespace Aggregator.DataAccess.Entities;
@@ -10,6 +11,7 @@ public class Limit
     /// <summary>
     /// Идентификатор лимита
     /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long LimitId { get; set; }
     
     /// <summary>

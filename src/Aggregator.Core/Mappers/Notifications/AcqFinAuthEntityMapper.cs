@@ -1,5 +1,6 @@
 using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
+using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 using Aggregator.DTOs.AcqFinAuth;
 using Microsoft.Extensions.Logging;
@@ -25,11 +26,11 @@ public class AcqFinAuthEntityMapper : INotificationMapper<AcqFinAuth, Aggregator
 
         var notification = new AcqFinAuth
         {
-            AcqFinAuthId = dto.Id,
+            NotificationId = dto.Id,
             EventId = dto.EventId,
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions),
+            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.AcqFinAuth),
             MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo)
         };
 

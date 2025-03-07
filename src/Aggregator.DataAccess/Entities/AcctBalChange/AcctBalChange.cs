@@ -1,23 +1,26 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using Aggregator.DataAccess.Entities.Abstract;
+using Aggregator.DataAccess.Entities.Enum;
+
 namespace Aggregator.DataAccess.Entities.AcctBalChange;
 
 /// <summary>
 /// Уведомление об изменении лимита авторизации по факту финансовой обработки операции
 /// </summary>
-public class AcctBalChange
+public class AcctBalChange : INotification
 {
-    /// <summary>
-    /// Уникальный идентификатор уведомления
-    /// </summary>
-    public long AcctBalChangeId { get; set; }
+    /// <inheritdoc />
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public long NotificationId { get; set; }
     
-    /// <summary>
-    /// Уникальный идентификатор события
-    /// </summary>
+    /// <inheritdoc />
+    public NotificationType NotificationType { get; set; }
+    
+    /// <inheritdoc />
     public long EventId { get; set; }
     
-    /// <summary>
-    /// Время создания уведомления (YYYYMMDDHH24MISS) во временной зоне ПЦ
-    /// </summary>
+    /// <inheritdoc />
     public DateTimeOffset Time { get; set; }
     
     /// <summary>

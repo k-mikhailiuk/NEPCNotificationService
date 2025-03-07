@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.IssFinAuth;
@@ -10,6 +11,7 @@ public class IssFinAuthDetails
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long IssFinAuthDetailsId { get; set; }
     
     /// <summary>

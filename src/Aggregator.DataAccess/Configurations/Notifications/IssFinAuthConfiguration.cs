@@ -9,38 +9,33 @@ public class IssFinAuthConfiguration : IEntityTypeConfiguration<IssFinAuth>
     public void Configure(EntityTypeBuilder<IssFinAuth> builder)
     {
         builder.ToTable("IssFinAuths");
-        
-        builder.HasKey(x => x.IssFinAuthId);
-        
+
+        builder.HasKey(x=>x.NotificationId);
+
         builder.Property(x => x.EventId).IsRequired();
         builder.Property(x => x.Time).IsRequired();
         builder.Property(x => x.DetailsId).IsRequired();
         builder.Property(x => x.MerchantInfoId).IsRequired();
-        builder.Property(x=>x.CardInfoId).IsRequired(false);
-        
-        builder.HasOne(x=>x.Details)
+        builder.Property(x => x.CardInfoId).IsRequired(false);
+
+        builder.HasOne(x => x.Details)
             .WithOne()
-            .HasForeignKey<IssFinAuth>(x=>x.DetailsId)
+            .HasForeignKey<IssFinAuth>(x => x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasOne(x=>x.MerchantInfo)
+
+        builder.HasOne(x => x.MerchantInfo)
             .WithOne()
-            .HasForeignKey<IssFinAuth>(x=>x.MerchantInfoId)
+            .HasForeignKey<IssFinAuth>(x => x.MerchantInfoId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasOne(x=>x.CardInfo)
+
+        builder.HasOne(x => x.CardInfo)
             .WithOne()
-            .HasForeignKey<IssFinAuth>(x=>x.CardInfoId)
+            .HasForeignKey<IssFinAuth>(x => x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasMany(x=>x.AccountsInfo)
+
+        builder.HasMany(x => x.AccountsInfo)
             .WithOne()
-            .HasForeignKey(x=>x.IssFinAuthId)
-            .OnDelete(DeleteBehavior.NoAction);
-        
-        builder.HasMany(x=>x.Extensions)
-            .WithOne()
-            .HasForeignKey(x=>x.NotificationId)
+            .HasForeignKey(x => x.IssFinAuthId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

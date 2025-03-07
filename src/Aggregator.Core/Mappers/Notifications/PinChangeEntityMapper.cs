@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.PinChange;
 using Aggregator.DTOs.PinChange;
 using Microsoft.Extensions.Logging;
@@ -25,11 +26,11 @@ public class PinChangeEntityMapper : INotificationMapper<PinChange, AggregatorPi
 
         var notification = new PinChange
         {
-            PinChangeId = dto.Id,
+            NotificationId = dto.Id,
             EventId = dto.EventId,
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions),
+            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.PinChange),
             CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo)
         };
 

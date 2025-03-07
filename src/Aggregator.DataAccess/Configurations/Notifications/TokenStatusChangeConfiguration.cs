@@ -9,9 +9,9 @@ public class TokenStatusChangeConfiguration : IEntityTypeConfiguration<TokenStat
     public void Configure(EntityTypeBuilder<TokenStatusChange> builder)
     {
         builder.ToTable("TokenStatusChanges");
-
-        builder.HasKey(x => x.TokenChangeStatusId);
         
+        builder.HasKey(x=>x.NotificationId);
+
         builder.Property(x => x.EventId).IsRequired();
         builder.Property(x=>x.Time).IsRequired();
         builder.Property(x=>x.DetailsId).IsRequired();
@@ -26,10 +26,5 @@ public class TokenStatusChangeConfiguration : IEntityTypeConfiguration<TokenStat
             .WithOne()
             .HasForeignKey<TokenStatusChange>(x=>x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasMany(x=>x.Extensions)
-            .WithOne()
-            .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

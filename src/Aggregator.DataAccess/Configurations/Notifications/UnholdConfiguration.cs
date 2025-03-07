@@ -9,9 +9,9 @@ public class UnholdConfiguration : IEntityTypeConfiguration<Unhold>
     public void Configure(EntityTypeBuilder<Unhold> builder)
     {
         builder.ToTable("Unholds");
-
-        builder.HasKey(x => x.UnholdId);
         
+        builder.HasKey(x=>x.NotificationId);
+
         builder.Property(x => x.EventId).IsRequired();
         builder.Property(x=>x.Time).IsRequired();
         builder.Property(x=>x.CardInfoId).IsRequired();
@@ -32,10 +32,5 @@ public class UnholdConfiguration : IEntityTypeConfiguration<Unhold>
             .WithOne()
             .HasForeignKey<Unhold>(x=>x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasMany(x=>x.Extensions)
-            .WithOne()
-            .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

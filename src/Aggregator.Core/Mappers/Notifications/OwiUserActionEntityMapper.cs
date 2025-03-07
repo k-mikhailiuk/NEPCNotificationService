@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwiUserAction;
 using Aggregator.DTOs.OwiUserAction;
 using Microsoft.Extensions.Logging;
@@ -24,11 +25,11 @@ public class OwiUserActionEntityMapper : INotificationMapper<OwiUserAction, Aggr
 
         var notification = new OwiUserAction
         {
-            OwiUserActionId = dto.Id,
+            NotificationId = dto.Id,
             EventId = dto.EventId,
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions),
+            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.OwiUserAction),
             CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo)
         };
 

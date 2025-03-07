@@ -1,25 +1,27 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using Aggregator.DataAccess.Entities.Abstract;
+using Aggregator.DataAccess.Entities.Enum;
+
 namespace Aggregator.DataAccess.Entities.IssFinAuth;
 
 /// <summary>
 /// Уведомление о финансовой авторизации по номеру счета банка-эмитента
 /// </summary>
-public class IssFinAuth
+public class IssFinAuth : INotification
 {
-    /// <summary>
-    /// Уникальный идентификатор уведомления
-    /// </summary>
-    public long IssFinAuthId { get; set; }
+    /// <inheritdoc />
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public long NotificationId { get; set; }
     
-    /// <summary>
-    /// Уникальный идентификатор события
-    /// </summary>
+    /// <inheritdoc />
+    public NotificationType NotificationType { get; set; }
+    
+    /// <inheritdoc />
     public long EventId { get; set; }
     
-    /// <summary>
-    /// Время создания уведомления (YYYYMMDDHH24MISS) во временной зоне ПЦ
-    /// </summary>
+    /// <inheritdoc />
     public DateTimeOffset Time { get; set; }
-    
+
     /// <summary>
     /// Идентификатор деталей финансовой авторизации по карте банка-эмитента
     /// </summary>

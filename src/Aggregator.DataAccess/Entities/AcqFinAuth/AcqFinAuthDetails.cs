@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.AcqFinAuth;
@@ -10,6 +11,7 @@ public class AcqFinAuthDetails
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long AcqFinAuthDetailsId { get; set; }
     
     /// <summary>

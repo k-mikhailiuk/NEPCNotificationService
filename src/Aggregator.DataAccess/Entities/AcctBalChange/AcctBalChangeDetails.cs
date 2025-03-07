@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.AcctBalChange;
@@ -10,6 +11,7 @@ public class AcctBalChangeDetails
     /// <summary>
     /// Внутренний идентификатор операции изменения ЛА по факту фин. обработки
     /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long AcctBalChangeDetailsId { get; set; }
     
     /// <summary>

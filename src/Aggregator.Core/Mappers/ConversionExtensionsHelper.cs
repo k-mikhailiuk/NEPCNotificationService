@@ -67,7 +67,7 @@ public static class ConversionExtensionsHelper
             .FirstOrDefault()!;
     }
     
-    public static List<NotificationExtension> MapExtensions(List<AggregatorExtensionDto> dto)
+    public static List<NotificationExtension> MapExtensions(List<AggregatorExtensionDto> dto, long notificationId, NotificationType notificationType)
     {
         if (dto == null || dto.Count == 0)
         {
@@ -80,8 +80,9 @@ public static class ConversionExtensionsHelper
         return dto.Select(x => new NotificationExtension
         {
             ExtensionId = x.Id,
-            NotificationType = NotificationType.IssFinAuth,
+            NotificationType = notificationType,
             Critical = Convert.ToBoolean(x.Critical),
+            NotificationId = notificationId,
             ExtesionParameters = x.Parameters?.Select(p => new ExtensionParameter
             {
                 ExtensionId = x.Id,

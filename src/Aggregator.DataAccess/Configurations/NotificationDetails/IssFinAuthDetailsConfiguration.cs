@@ -9,14 +9,14 @@ public class IssFinAuthDetailsConfiguration : IEntityTypeConfiguration<IssFinAut
     public void Configure(EntityTypeBuilder<IssFinAuthDetails> builder)
     {
         builder.ToTable("IssFinAuthDetails");
-        
+    
         builder.HasKey(x => x.IssFinAuthDetailsId);
-        
-        builder.Property(x=>x.Reversal).IsRequired();
-        builder.Property(x=>x.TransType).IsRequired();
-        builder.Property(x=>x.IssInstId).IsRequired().HasMaxLength(4);
-        builder.Property(x=>x.CorrespondingAccount).IsRequired().HasMaxLength(4);
-        builder.Property(x=>x.AccountId).IsRequired(false).HasMaxLength(32);
+
+        builder.Property(x => x.Reversal).IsRequired();
+        builder.Property(x => x.TransType).IsRequired();
+        builder.Property(x => x.IssInstId).IsRequired().HasMaxLength(4);
+        builder.Property(x => x.CorrespondingAccount).IsRequired().HasMaxLength(4);
+        builder.Property(x => x.AccountId).IsRequired(false).HasMaxLength(32);
 
         builder.OwnsOne(x => x.AuthMoney, parameters =>
         {

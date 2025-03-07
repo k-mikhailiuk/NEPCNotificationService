@@ -9,8 +9,8 @@ public class AcctBalChangeConfiguration : IEntityTypeConfiguration<AcctBalChange
     public void Configure(EntityTypeBuilder<AcctBalChange> builder)
     {
         builder.ToTable("AcctBalChanges");
-
-        builder.HasKey(x => x.AcctBalChangeId);
+        
+        builder.HasKey(x=>x.NotificationId);
         
         builder.Property(x=>x.EventId).IsRequired();
         builder.Property(x=>x.Time).IsRequired();
@@ -30,11 +30,6 @@ public class AcctBalChangeConfiguration : IEntityTypeConfiguration<AcctBalChange
         builder.HasMany(x=>x.AccountsInfo)
             .WithOne()
             .HasForeignKey(x=>x.AcctBalChangeId)
-            .OnDelete(DeleteBehavior.NoAction);
-        
-        builder.HasMany(x=>x.Extensions)
-            .WithOne()
-            .HasForeignKey(x=>x.NotificationId)
             .OnDelete(DeleteBehavior.NoAction);
     }
 }

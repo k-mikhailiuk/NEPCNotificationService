@@ -28,14 +28,14 @@ public class IssFinAuthEntityMapper : INotificationMapper<IssFinAuth, Aggregator
 
         var notification = new IssFinAuth
         {
-            IssFinAuthId = dto.Id,
+            NotificationId = dto.Id,
             EventId = dto.EventId,
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
             CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
             MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo),
             AccountsInfo = MapAccountsInfo(dto.AccountsInfo),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions)
+            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.IssFinAuth),
         };
 
         return notification;

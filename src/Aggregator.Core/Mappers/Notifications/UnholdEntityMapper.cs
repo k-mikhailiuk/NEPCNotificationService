@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 using Aggregator.DataAccess.Entities.Unhold;
 using Aggregator.DTOs.Unhold;
@@ -19,11 +20,11 @@ public class UnholdEntityMapper : INotificationMapper<Unhold, AggregatorUnholdDt
 
         var notification = new Unhold
         {
-            UnholdId = dto.Id,
+            NotificationId = dto.Id,
             EventId = dto.EventId,
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions),
+            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.Unhold),
             CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
             MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo)
         };

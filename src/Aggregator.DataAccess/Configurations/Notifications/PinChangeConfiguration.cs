@@ -9,9 +9,9 @@ public class PinChangeConfiguration : IEntityTypeConfiguration<PinChange>
     public void Configure(EntityTypeBuilder<PinChange> builder)
     {
         builder.ToTable("PinChanges");
-
-        builder.HasKey(x => x.PinChangeId);
         
+        builder.HasKey(x=>x.NotificationId);
+
         builder.Property(x => x.EventId).IsRequired();
         builder.Property(x => x.Time).IsRequired();
         builder.Property(x=>x.DetailsId).IsRequired();
@@ -26,10 +26,5 @@ public class PinChangeConfiguration : IEntityTypeConfiguration<PinChange>
             .WithOne()
             .HasForeignKey<PinChange>(x=>x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasMany(x=>x.Extensions)
-            .WithOne()
-            .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

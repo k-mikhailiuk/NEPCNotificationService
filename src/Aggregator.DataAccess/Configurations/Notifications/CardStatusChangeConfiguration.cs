@@ -9,9 +9,9 @@ public class CardStatusChangeConfiguration : IEntityTypeConfiguration<CardStatus
     public void Configure(EntityTypeBuilder<CardStatusChange> builder)
     {
         builder.ToTable("CardStatusChanges");
-
-        builder.HasKey(x => x.CardStatusChangeId);
         
+        builder.HasKey(x=>x.NotificationId);
+
         builder.Property(x => x.EventId).IsRequired();
         builder.Property(x => x.Time).IsRequired();
         builder.Property(x => x.DetailsId).IsRequired();
@@ -26,10 +26,5 @@ public class CardStatusChangeConfiguration : IEntityTypeConfiguration<CardStatus
             .WithOne()
             .HasForeignKey<CardStatusChange>(x => x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasMany(x=>x.Extensions)
-            .WithOne()
-            .HasForeignKey(x=>x.NotificationId)
-            .OnDelete(DeleteBehavior.NoAction);
     }
 }

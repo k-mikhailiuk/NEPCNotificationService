@@ -60,7 +60,7 @@ public class AggregatorDbContext : DbContext
         
         modelBuilder.Entity<InboxMessage>()
             .ToTable("InboxMessages", "nepc", t => t.ExcludeFromMigrations());
-        
+
         ApplyNotificationConfigurations(modelBuilder);
         ApplyNotificationDetailsConfigurations(modelBuilder);
         ApplyAdditionalConfigurations(modelBuilder);
