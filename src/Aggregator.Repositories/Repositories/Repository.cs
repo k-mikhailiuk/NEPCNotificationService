@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Aggregator.DataAccess;
 using Aggregator.Repositories.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -25,8 +26,36 @@ public class Repository<T> : IRepository<T> where T : class
         return await _dbSet.ToListAsync(cancellationToken);
     }
 
+    public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+    {
+        return await _dbSet.AnyAsync(predicate, cancellationToken);
+    }
+
     public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
     {
         await _dbSet.AddAsync(entity, cancellationToken);
+    }
+
+    public void Attach(T entity)
+    {
+        _dbSet.Attach(entity);
+    }
+    
+    public void Detach(T entity)
+    {
+        _dbSet.Entry(entity).State = EntityState.Detached;
+    }
+
+    
+    public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+    {
+        return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
+    }
+    
+    public async Task<List<T>> GetListAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+    {
+        return await _dbSet
+            .Where(predicate)
+            .ToListAsync(cancellationToken);
     }
 }

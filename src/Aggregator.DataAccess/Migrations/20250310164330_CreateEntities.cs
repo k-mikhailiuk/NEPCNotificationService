@@ -642,7 +642,8 @@ namespace Aggregator.DataAccess.Migrations
                         column: x => x.IssFinAuthId,
                         principalSchema: "nepc",
                         principalTable: "IssFinAuths",
-                        principalColumn: "NotificationId");
+                        principalColumn: "NotificationId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -707,6 +708,8 @@ namespace Aggregator.DataAccess.Migrations
                 schema: "nepc",
                 columns: table => new
                 {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ExtensionId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     NotificationId = table.Column<long>(type: "bigint", nullable: false),
                     NotificationType = table.Column<int>(type: "int", nullable: false),
@@ -722,7 +725,7 @@ namespace Aggregator.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NotificationExtensions", x => x.ExtensionId);
+                    table.PrimaryKey("PK_NotificationExtensions", x => x.Id);
                     table.ForeignKey(
                         name: "FK_NotificationExtensions_AcctBalChanges_AcctBalChangeNotificationId",
                         column: x => x.AcctBalChangeNotificationId,
@@ -814,20 +817,20 @@ namespace Aggregator.DataAccess.Migrations
                 schema: "nepc",
                 columns: table => new
                 {
-                    ExtensionId = table.Column<string>(type: "nvarchar(50)", nullable: false),
                     Id = table.Column<long>(type: "bigint", nullable: false),
+                    ExtensionId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExtensionParameters", x => x.ExtensionId);
+                    table.PrimaryKey("PK_ExtensionParameters", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExtensionParameters_NotificationExtensions_ExtensionId",
-                        column: x => x.ExtensionId,
+                        name: "FK_ExtensionParameters_NotificationExtensions_Id",
+                        column: x => x.Id,
                         principalSchema: "nepc",
                         principalTable: "NotificationExtensions",
-                        principalColumn: "ExtensionId",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 

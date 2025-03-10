@@ -13,7 +13,7 @@ public class ExtensionParameter
     /// <summary>
     /// Идентификатор расширения, которому принадлежит параметр
     /// </summary>
-    public string ExtensionId { get; set; }
+    public long NotificationExtensionId { get; set; }
     
     /// <inheritdoc cref="NotificationExtension" />
     public NotificationExtension Extension { get; set; }

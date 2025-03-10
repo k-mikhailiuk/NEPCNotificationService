@@ -11,7 +11,9 @@ public class NotificationExtensionConfiguration : IEntityTypeConfiguration<Notif
     {
         builder.ToTable("NotificationExtensions");
 
-        builder.HasKey(x => x.ExtensionId);
+        builder.HasKey(x => x.Id);
+        
+        builder.HasAlternateKey(x => x.ExtensionId);
         
         builder.Property(x => x.ExtensionId).IsRequired().HasMaxLength(50);
         builder.Property(x => x.NotificationId).IsRequired();

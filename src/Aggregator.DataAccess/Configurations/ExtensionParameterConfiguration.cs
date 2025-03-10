@@ -10,14 +10,14 @@ public class ExtensionParameterConfiguration : IEntityTypeConfiguration<Extensio
     {
         builder.ToTable("ExtensionParameters");
         
-        builder.HasKey(x => x.ExtensionId);
+        builder.HasKey(x => x.Id);
         
         builder.Property(x => x.Name).IsRequired().HasMaxLength(256);
         builder.Property(x => x.Value).IsRequired();
         
-        builder.HasOne(x=>x.Extension)
-            .WithMany(x=>x.ExtesionParameters)
-            .HasForeignKey(x=>x.ExtensionId)
+        builder.HasOne(p => p.Extension)
+            .WithMany(e => e.ExtensionParameters)
+            .HasForeignKey(p => p.NotificationExtensionId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

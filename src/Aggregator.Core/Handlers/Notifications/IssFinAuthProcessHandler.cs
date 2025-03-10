@@ -1,6 +1,7 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Mappers;
 using Aggregator.DataAccess.Entities;
+using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DTOs.IssFinAuth;
 using Aggregator.Repositories.Abstractions;
@@ -14,7 +15,9 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
     private readonly NotificationEntityMapperFactory _mapperFactory;
     private readonly IServiceProvider _serviceProvider;
 
-    public IssFinAuthProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
+    public IssFinAuthProcessHandler(
+        NotificationEntityMapperFactory mapperFactory,
+        IServiceProvider serviceProvider)
     {
         _mapperFactory = mapperFactory;
         _serviceProvider = serviceProvider;
@@ -26,123 +29,261 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
         var dtos = request.Notifications;
 
         var mapper = _mapperFactory.GetMapper<IssFinAuth, AggregatorIssFinAuthDto>();
+        var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
-        var entities = dtos.Select(dto => mapper.Map(dto));
+        using var scope = _serviceProvider.CreateScope();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-        await ProcessEntitiesAsync(entities, cancellationToken);
+        await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
 
-        throw new NotImplementedException();
+        await PreloadAndUnifyMerchantAsync(entities, unitOfWork, cancellationToken);
+
+        await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
+
+        await PreloadAndUnifyExtensionsAsync(entities, unitOfWork, cancellationToken);
+
+        await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
     }
 
-    private async Task ProcessEntitiesAsync(IEnumerable<IssFinAuth> entities, CancellationToken cancellationToken)
+    private async Task ProcessEntitiesAsync(
+        List<IssFinAuth> entities,
+        IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
     {
-        try
+        foreach (var entity in entities)
         {
-            using var scope = _serviceProvider.CreateScope();
-            using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            await ProcessDetailsLimitsAsync(entity.Details, unitOfWork, cancellationToken);
 
-            foreach (var entity in entities)
+            var existing = await unitOfWork.IssFinAuth.GetByIdAsync(entity.NotificationId, cancellationToken);
+            if (existing == null)
             {
-                await ProcessCardInfoAsync(entity.CardInfo, unitOfWork, cancellationToken);
-
-                await unitOfWork.MerchantInfo.AddAsync(entity.MerchantInfo, cancellationToken);
-
-                await ProcessDetailsAsync(entity.Details, unitOfWork, cancellationToken);
-                
-                await ProcessAccountsInfo(entity.AccountsInfo, unitOfWork, cancellationToken);
-                
                 await unitOfWork.IssFinAuth.AddAsync(entity, cancellationToken);
-                
-                await ProcessExtensionsAsync(entity.Extensions, unitOfWork, cancellationToken);
-
-                await unitOfWork.SaveChangesAsync();
             }
+
+            await ProcessExtensionsAsync(entity.Extensions, unitOfWork, cancellationToken);
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
+
+        await unitOfWork.SaveChangesAsync();
     }
 
-    private async Task ProcessCardInfoAsync(CardInfo? cardInfoEntity, IUnitOfWork unitOfWork,
+    private async Task PreloadAndUnifyDetailsAsync(
+        List<IssFinAuth> entities,
+        IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        if (cardInfoEntity?.Limits != null)
+        var allDetailsIds = entities
+            .Select(e => e.Details.IssFinAuthDetailsId)
+            .Distinct()
+            .ToList();
+
+        var existingDetailsList = await unitOfWork.IssFinAuthDetails
+            .GetListAsync(d => allDetailsIds.Contains(d.IssFinAuthDetailsId), cancellationToken);
+
+        var detailsCache = existingDetailsList.ToDictionary(d => d.IssFinAuthDetailsId, d => d);
+
+        foreach (var entity in entities)
         {
-            foreach (var limit in cardInfoEntity.Limits)
+            var dId = entity.Details.IssFinAuthDetailsId;
+            if (detailsCache.TryGetValue(dId, out var existingDet))
             {
-                var existingLimit = await unitOfWork.Limit.GetByIdAsync(limit.Limit.LimitId, cancellationToken);
-
-                if (existingLimit == null)
-                    await unitOfWork.Limit.AddAsync(limit.Limit, cancellationToken);
+                entity.Details = existingDet;
             }
-        }
-    }
-
-    private async Task ProcessDetailsAsync(IssFinAuthDetails issFinAuthDetails, IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
-    {
-        if (issFinAuthDetails.CheckedLimits != null)
-        {
-            foreach (var limit in issFinAuthDetails.CheckedLimits)
+            else
             {
-                var existingLimit = await unitOfWork.Limit.GetByIdAsync(limit.Id, cancellationToken);
-
-                if (existingLimit == null)
-                    await unitOfWork.CheckedLimit.AddAsync(limit, cancellationToken);
+                detailsCache[dId] = entity.Details;
             }
         }
-        
-        var existingDetails = await unitOfWork.IssFinAuthDetails.GetByIdAsync(issFinAuthDetails.IssFinAuthDetailsId, cancellationToken);
-        if (existingDetails == null)
-            await unitOfWork.IssFinAuthDetails.AddAsync(issFinAuthDetails, cancellationToken);
     }
 
-    private async Task ProcessExtensionsAsync(List<NotificationExtension> extensions, IUnitOfWork unitOfWork,
+    private async Task PreloadAndUnifyMerchantAsync(
+        List<IssFinAuth> entities,
+        IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        if(!extensions.Any())
+        var allMerchantIds = entities
+            .Where(e => e.MerchantInfo != null)
+            .Select(e => e.MerchantInfo!.Id)
+            .Distinct()
+            .ToList();
+
+        var existingMerchants = await unitOfWork.MerchantInfo
+            .GetListAsync(m => allMerchantIds.Contains(m.Id), cancellationToken);
+
+        var merchantCache = existingMerchants.ToDictionary(m => m.Id, m => m);
+
+        foreach (var entity in entities)
+        {
+            if (entity.MerchantInfo == null)
+                continue;
+
+            var mid = entity.MerchantInfo.Id;
+            if (merchantCache.TryGetValue(mid, out var existingM))
+            {
+                entity.MerchantInfo = existingM;
+            }
+            else
+            {
+                merchantCache[mid] = entity.MerchantInfo;
+            }
+        }
+    }
+
+    private async Task ProcessDetailsLimitsAsync(
+        IssFinAuthDetails issFinAuthDetails,
+        IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
+    {
+        if (issFinAuthDetails.CheckedLimits == null)
             return;
-        
+
+        foreach (var limit in issFinAuthDetails.CheckedLimits)
+        {
+            var existingLimit = await unitOfWork.Limit.FindAsync(
+                x => x.LimitId == limit.Id, cancellationToken);
+
+            if (existingLimit == null)
+            {
+                await unitOfWork.CheckedLimit.AddAsync(limit, cancellationToken);
+            }
+        }
+    }
+
+    private async Task ProcessExtensionsAsync(
+        List<NotificationExtension> extensions,
+        IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
+    {
         foreach (var extension in extensions)
         {
-            if (extension.ExtesionParameters != null)
+            if (extension.ExtensionParameters != null)
             {
-                foreach (var parameter in extension.ExtesionParameters)
+                foreach (var parameter in extension.ExtensionParameters)
                 {
                     await unitOfWork.ExtensionParameter.AddAsync(parameter, cancellationToken);
                 }
             }
-            await unitOfWork.NotificationExtension.AddAsync(extension, cancellationToken);
         }
     }
 
-    private async Task ProcessAccountsInfo(List<IssFinAuthAccountsInfo> issFinAuthAccountsInfo, IUnitOfWork unitOfWork,
+
+    private async Task PreloadAndUnifyLimitsAsync(
+        List<IssFinAuth> entities,
+        IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        foreach (var accountInfo in issFinAuthAccountsInfo)
+        var limitIds = new HashSet<long>();
+
+        foreach (var entity in entities)
         {
-            if (accountInfo.Limits != null)
+            if (entity.CardInfo?.Limits != null)
             {
-                foreach (var accountsInfoLimitWrapper in accountInfo.Limits)
+                foreach (var lw in entity.CardInfo.Limits)
                 {
-                    var limit = accountsInfoLimitWrapper.Limit;
+                    limitIds.Add(lw.Limit.LimitId);
+                }
+            }
 
-                    var existingLimit = await unitOfWork.Limit.GetByIdAsync(limit.LimitId, cancellationToken);
-
-                    if (existingLimit != null)
+            if (entity.AccountsInfo != null)
+            {
+                foreach (var accInfo in entity.AccountsInfo)
+                {
+                    if (accInfo.Limits == null) continue;
+                    foreach (var lw in accInfo.Limits)
                     {
-                        accountsInfoLimitWrapper.Limit = existingLimit;
-                    }
-                    else
-                    {
-                        await unitOfWork.Limit.AddAsync(limit, cancellationToken);
-                        await unitOfWork.AccountsInfoLimitWrapper.AddAsync(accountsInfoLimitWrapper, cancellationToken);
+                        limitIds.Add(lw.Limit.LimitId);
                     }
                 }
             }
-            await unitOfWork.IssFinAuthAccountsInfo.AddAsync(accountInfo, cancellationToken);
+        }
+
+        var existingLimits = await unitOfWork.Limit
+            .GetListAsync(l => limitIds.Contains(l.LimitId), cancellationToken);
+
+        var limitCache = existingLimits.ToDictionary(l => l.LimitId, l => l);
+
+        foreach (var entity in entities)
+        {
+            if (entity.CardInfo?.Limits != null)
+            {
+                foreach (var lw in entity.CardInfo.Limits)
+                {
+                    var lid = lw.Limit.LimitId;
+                    if (limitCache.TryGetValue(lid, out var existingLim))
+                    {
+                        lw.Limit = existingLim;
+                    }
+                    else
+                    {
+                        limitCache[lid] = lw.Limit;
+                    }
+                }
+            }
+
+            if (entity.AccountsInfo != null)
+            {
+                foreach (var accInfo in entity.AccountsInfo)
+                {
+                    if (accInfo.Limits == null)
+                        continue;
+
+                    foreach (var lw in accInfo.Limits)
+                    {
+                        var lid = lw.Limit.LimitId;
+                        if (limitCache.TryGetValue(lid, out var existingLim))
+                        {
+                            lw.Limit = existingLim;
+                        }
+                        else
+                        {
+                            limitCache[lid] = lw.Limit;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private async Task PreloadAndUnifyExtensionsAsync(
+        List<IssFinAuth> entities,
+        IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
+    {
+        var allExtensionIds = new HashSet<string>();
+
+        foreach (var entity in entities)
+        {
+            if (entity.Extensions == null) continue;
+
+            foreach (var ext in entity.Extensions)
+            {
+                allExtensionIds.Add(ext.ExtensionId);
+            }
+        }
+
+        var existingExtensions = await unitOfWork.NotificationExtension
+            .GetListAsync(
+                x => allExtensionIds.Contains(x.ExtensionId)
+                     && x.NotificationType == NotificationType.IssFinAuth,
+                cancellationToken
+            );
+
+        var extCache = existingExtensions.ToDictionary(x => x.ExtensionId, x => x);
+
+        foreach (var issFinAuth in entities)
+        {
+            if (issFinAuth.Extensions == null) continue;
+            for (var i = 0; i < issFinAuth.Extensions.Count; i++)
+            {
+                var ext = issFinAuth.Extensions[i];
+                if (extCache.TryGetValue(ext.ExtensionId, out var existingExt))
+                {
+                    issFinAuth.Extensions[i] = existingExt;
+                }
+                else
+                {
+                    extCache[ext.ExtensionId] = ext;
+                }
+            }
         }
     }
 }

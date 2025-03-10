@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.Enum;
 
 namespace Aggregator.DataAccess.Entities;
@@ -7,6 +8,12 @@ namespace Aggregator.DataAccess.Entities;
 /// </summary>
 public class NotificationExtension
 {
+    /// <summary>
+    /// Уникальный идентификатор
+    /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
+    
     /// <summary>
     /// Идентификатор расширения
     /// </summary>
@@ -28,5 +35,5 @@ public class NotificationExtension
     /// <summary>
     /// Список параметров расширения
     /// </summary>
-    public List<ExtensionParameter>? ExtesionParameters { get; set; }
+    public List<ExtensionParameter>? ExtensionParameters { get; set; }
 }

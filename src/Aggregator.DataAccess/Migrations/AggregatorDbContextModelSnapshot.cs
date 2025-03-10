@@ -406,11 +406,12 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.ExtensionParameter", b =>
                 {
-                    b.Property<string>("ExtensionId")
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<long>("Id")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("ExtensionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -421,7 +422,7 @@ namespace Aggregator.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ExtensionId");
+                    b.HasKey("Id");
 
                     b.ToTable("ExtensionParameters", "nepc");
                 });
@@ -662,9 +663,11 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.NotificationExtension", b =>
                 {
-                    b.Property<string>("ExtensionId")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<long?>("AcctBalChangeNotificationId")
                         .HasColumnType("bigint");
@@ -677,6 +680,11 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Property<bool>("Critical")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ExtensionId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long?>("IssFinAuthNotificationId")
                         .HasColumnType("bigint");
@@ -699,7 +707,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.Property<long?>("UnholdNotificationId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ExtensionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AcctBalChangeNotificationId");
 
@@ -1444,7 +1452,7 @@ namespace Aggregator.DataAccess.Migrations
                 {
                     b.HasOne("Aggregator.DataAccess.Entities.NotificationExtension", "Extension")
                         .WithMany("ExtesionParameters")
-                        .HasForeignKey("ExtensionId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1751,10 +1759,10 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.IssFinAuthAccountsInfo", b =>
                 {
-                    b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", null)
+                    b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", "IssFinAuth")
                         .WithMany("AccountsInfo")
                         .HasForeignKey("IssFinAuthId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AviableBalance", "AviableBalance", b1 =>
@@ -1803,6 +1811,8 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.Navigation("ExceedLimit")
                         .IsRequired();
+
+                    b.Navigation("IssFinAuth");
                 });
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.NotificationExtension", b =>
