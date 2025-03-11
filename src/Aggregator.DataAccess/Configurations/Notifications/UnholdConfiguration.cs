@@ -18,19 +18,19 @@ public class UnholdConfiguration : IEntityTypeConfiguration<Unhold>
         builder.Property(x=>x.DetailsId).IsRequired();
         builder.Property(x=>x.MerchantInfoId).IsRequired();
         
-        builder.HasOne(x=>x.Details)
-            .WithOne()
-            .HasForeignKey<Unhold>(x=>x.DetailsId)
+        builder.HasOne(x => x.Details)
+            .WithMany()
+            .HasForeignKey(x => x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x=>x.MerchantInfo)
-            .WithOne()
-            .HasForeignKey<Unhold>(x=>x.MerchantInfoId)
+            .WithMany()
+            .HasForeignKey(x=>x.MerchantInfoId)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x=>x.CardInfo)
-            .WithOne()
-            .HasForeignKey<Unhold>(x=>x.CardInfoId)
+            .WithMany()
+            .HasForeignKey(x=>x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

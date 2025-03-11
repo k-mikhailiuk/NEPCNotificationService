@@ -17,14 +17,14 @@ public class PinChangeConfiguration : IEntityTypeConfiguration<PinChange>
         builder.Property(x=>x.DetailsId).IsRequired();
         builder.Property(x=>x.CardInfoId).IsRequired();
         
-        builder.HasOne(x=>x.Details)
-            .WithOne()
-            .HasForeignKey<PinChange>(x=>x.DetailsId)
+        builder.HasOne(x => x.Details)
+            .WithMany()
+            .HasForeignKey(x => x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x=>x.CardInfo)
-            .WithOne()
-            .HasForeignKey<PinChange>(x=>x.CardInfoId)
+            .WithMany()
+            .HasForeignKey(x=>x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -1,7 +1,6 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Mappers;
 using Aggregator.DataAccess.Entities;
-using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DTOs.IssFinAuth;
 using Aggregator.Repositories.Abstractions;
@@ -53,17 +52,15 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
         foreach (var entity in entities)
         {
             await ProcessDetailsLimitsAsync(entity.Details, unitOfWork, cancellationToken);
-
-            var existing = await unitOfWork.IssFinAuth.GetByIdAsync(entity.NotificationId, cancellationToken);
-            if (existing == null)
-            {
+            
+            var existing =
+                await unitOfWork.IssFinAuth.ExistsAsync(x => x.NotificationId == entity.NotificationId,
+                    cancellationToken);
+            if (!existing)
                 await unitOfWork.IssFinAuth.AddAsync(entity, cancellationToken);
-            }
-
-            await ProcessExtensionsAsync(entity.Extensions, unitOfWork, cancellationToken);
+            
+            await unitOfWork.SaveChangesAsync();
         }
-
-        await unitOfWork.SaveChangesAsync();
     }
 
     private async Task PreloadAndUnifyDetailsAsync(
@@ -101,8 +98,7 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
         CancellationToken cancellationToken)
     {
         var allMerchantIds = entities
-            .Where(e => e.MerchantInfo != null)
-            .Select(e => e.MerchantInfo!.Id)
+            .Select(e => e.MerchantInfo.Id)
             .Distinct()
             .ToList();
 
@@ -113,9 +109,6 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
 
         foreach (var entity in entities)
         {
-            if (entity.MerchantInfo == null)
-                continue;
-
             var mid = entity.MerchantInfo.Id;
             if (merchantCache.TryGetValue(mid, out var existingM))
             {
@@ -148,24 +141,6 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
         }
     }
 
-    private async Task ProcessExtensionsAsync(
-        List<NotificationExtension> extensions,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
-    {
-        foreach (var extension in extensions)
-        {
-            if (extension.ExtensionParameters != null)
-            {
-                foreach (var parameter in extension.ExtensionParameters)
-                {
-                    await unitOfWork.ExtensionParameter.AddAsync(parameter, cancellationToken);
-                }
-            }
-        }
-    }
-
-
     private async Task PreloadAndUnifyLimitsAsync(
         List<IssFinAuth> entities,
         IUnitOfWork unitOfWork,
@@ -183,15 +158,12 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
                 }
             }
 
-            if (entity.AccountsInfo != null)
+            foreach (var accInfo in entity.AccountsInfo)
             {
-                foreach (var accInfo in entity.AccountsInfo)
+                if (accInfo.Limits == null) continue;
+                foreach (var lw in accInfo.Limits)
                 {
-                    if (accInfo.Limits == null) continue;
-                    foreach (var lw in accInfo.Limits)
-                    {
-                        limitIds.Add(lw.Limit.LimitId);
-                    }
+                    limitIds.Add(lw.Limit.LimitId);
                 }
             }
         }
@@ -219,24 +191,21 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
                 }
             }
 
-            if (entity.AccountsInfo != null)
+            foreach (var accInfo in entity.AccountsInfo)
             {
-                foreach (var accInfo in entity.AccountsInfo)
-                {
-                    if (accInfo.Limits == null)
-                        continue;
+                if (accInfo.Limits == null)
+                    continue;
 
-                    foreach (var lw in accInfo.Limits)
+                foreach (var lw in accInfo.Limits)
+                {
+                    var lid = lw.Limit.LimitId;
+                    if (limitCache.TryGetValue(lid, out var existingLim))
                     {
-                        var lid = lw.Limit.LimitId;
-                        if (limitCache.TryGetValue(lid, out var existingLim))
-                        {
-                            lw.Limit = existingLim;
-                        }
-                        else
-                        {
-                            limitCache[lid] = lw.Limit;
-                        }
+                        lw.Limit = existingLim;
+                    }
+                    else
+                    {
+                        limitCache[lid] = lw.Limit;
                     }
                 }
             }
@@ -248,40 +217,54 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
         IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        var allExtensionIds = new HashSet<string>();
-
-        foreach (var entity in entities)
-        {
-            if (entity.Extensions == null) continue;
-
-            foreach (var ext in entity.Extensions)
-            {
-                allExtensionIds.Add(ext.ExtensionId);
-            }
-        }
-
-        var existingExtensions = await unitOfWork.NotificationExtension
-            .GetListAsync(
-                x => allExtensionIds.Contains(x.ExtensionId)
-                     && x.NotificationType == NotificationType.IssFinAuth,
-                cancellationToken
-            );
-
-        var extCache = existingExtensions.ToDictionary(x => x.ExtensionId, x => x);
+        var extensionKeys = new HashSet<(string extId, long notifId)>();
 
         foreach (var issFinAuth in entities)
         {
             if (issFinAuth.Extensions == null) continue;
+            var notifId = issFinAuth.NotificationId;
+
+            foreach (var ext in issFinAuth.Extensions)
+            {
+                ext.NotificationId = notifId;
+
+                extensionKeys.Add((ext.ExtensionId, ext.NotificationId));
+            }
+        }
+
+        var allExtensionIds = extensionKeys.Select(k => k.extId).Distinct().ToList();
+        var partialList = await unitOfWork.NotificationExtension
+            .GetListAsync(x => allExtensionIds.Contains(x.ExtensionId),
+                cancellationToken);
+
+        var existingExtensions = partialList
+            .Where(x => extensionKeys.Contains((x.ExtensionId, x.NotificationId)))
+            .ToList();
+
+        var extCache = new Dictionary<(string extId, long notifId), NotificationExtension>();
+        foreach (var dbExt in existingExtensions)
+        {
+            var key = (dbExt.ExtensionId, dbExt.NotificationId);
+            extCache[key] = dbExt;
+        }
+
+        foreach (var issFinAuth in entities)
+        {
+            if (issFinAuth.Extensions == null) continue;
+
             for (var i = 0; i < issFinAuth.Extensions.Count; i++)
             {
                 var ext = issFinAuth.Extensions[i];
-                if (extCache.TryGetValue(ext.ExtensionId, out var existingExt))
+                ext.NotificationId = issFinAuth.NotificationId;
+
+                var key = (ext.ExtensionId, ext.NotificationId);
+                if (extCache.TryGetValue(key, out var existingExt))
                 {
                     issFinAuth.Extensions[i] = existingExt;
                 }
                 else
                 {
-                    extCache[ext.ExtensionId] = ext;
+                    extCache[key] = ext;
                 }
             }
         }

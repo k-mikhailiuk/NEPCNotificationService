@@ -6,14 +6,9 @@ namespace Aggregator.DTOs;
 public class AggregatorExtensionDto
 {
     /// <summary>
-    /// Уникальный идентификатор
-    /// </summary>
-    public long Id { get; set; }
-    
-    /// <summary>
     /// Идентификатор расширения
     /// </summary>
-    public string ExtensionId { get; set; }
+    public string Id { get; set; }
     
     /// <summary>
     /// Признак критичности расширения (0 - false, 1 - true)

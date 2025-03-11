@@ -817,8 +817,9 @@ namespace Aggregator.DataAccess.Migrations
                 schema: "nepc",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false),
-                    ExtensionId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NotificationExtensionId = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -826,8 +827,8 @@ namespace Aggregator.DataAccess.Migrations
                 {
                     table.PrimaryKey("PK_ExtensionParameters", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExtensionParameters_NotificationExtensions_Id",
-                        column: x => x.Id,
+                        name: "FK_ExtensionParameters_NotificationExtensions_NotificationExtensionId",
+                        column: x => x.NotificationExtensionId,
                         principalSchema: "nepc",
                         principalTable: "NotificationExtensions",
                         principalColumn: "Id",
@@ -859,29 +860,25 @@ namespace Aggregator.DataAccess.Migrations
                 name: "IX_AcctBalChanges_CardInfoId",
                 schema: "nepc",
                 table: "AcctBalChanges",
-                column: "CardInfoId",
-                unique: true);
+                column: "CardInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AcctBalChanges_DetailsId",
                 schema: "nepc",
                 table: "AcctBalChanges",
-                column: "DetailsId",
-                unique: true);
+                column: "DetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AcqFinAuths_DetailsId",
                 schema: "nepc",
                 table: "AcqFinAuths",
-                column: "DetailsId",
-                unique: true);
+                column: "DetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AcqFinAuths_MerchantInfoId",
                 schema: "nepc",
                 table: "AcqFinAuths",
-                column: "MerchantInfoId",
-                unique: true);
+                column: "MerchantInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardInfoLimitWrappers_CardInfoId",
@@ -899,21 +896,25 @@ namespace Aggregator.DataAccess.Migrations
                 name: "IX_CardStatusChanges_CardInfoId",
                 schema: "nepc",
                 table: "CardStatusChanges",
-                column: "CardInfoId",
-                unique: true);
+                column: "CardInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CardStatusChanges_DetailsId",
                 schema: "nepc",
                 table: "CardStatusChanges",
-                column: "DetailsId",
-                unique: true);
+                column: "DetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CheckedLimits_IssFinAuthDetailsId",
                 schema: "nepc",
                 table: "CheckedLimits",
                 column: "IssFinAuthDetailsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExtensionParameters_NotificationExtensionId",
+                schema: "nepc",
+                table: "ExtensionParameters",
+                column: "NotificationExtensionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FinTransactions_MerchantInfoId",
@@ -933,23 +934,19 @@ namespace Aggregator.DataAccess.Migrations
                 name: "IX_IssFinAuths_CardInfoId",
                 schema: "nepc",
                 table: "IssFinAuths",
-                column: "CardInfoId",
-                unique: true,
-                filter: "[CardInfoId] IS NOT NULL");
+                column: "CardInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IssFinAuths_DetailsId",
                 schema: "nepc",
                 table: "IssFinAuths",
-                column: "DetailsId",
-                unique: true);
+                column: "DetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IssFinAuths_MerchantInfoId",
                 schema: "nepc",
                 table: "IssFinAuths",
-                column: "MerchantInfoId",
-                unique: true);
+                column: "MerchantInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotificationExtensions_AcctBalChangeNotificationId",
@@ -968,6 +965,13 @@ namespace Aggregator.DataAccess.Migrations
                 schema: "nepc",
                 table: "NotificationExtensions",
                 column: "CardStatusChangeNotificationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NotificationExtensions_ExtensionId_NotificationId",
+                schema: "nepc",
+                table: "NotificationExtensions",
+                columns: new[] { "ExtensionId", "NotificationId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotificationExtensions_IssFinAuthNotificationId",
@@ -1003,65 +1007,55 @@ namespace Aggregator.DataAccess.Migrations
                 name: "IX_OwiUserActions_CardInfoId",
                 schema: "nepc",
                 table: "OwiUserActions",
-                column: "CardInfoId",
-                unique: true,
-                filter: "[CardInfoId] IS NOT NULL");
+                column: "CardInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OwiUserActions_DetailsId",
                 schema: "nepc",
                 table: "OwiUserActions",
-                column: "DetailsId",
-                unique: true);
+                column: "DetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PinChanges_CardInfoId",
                 schema: "nepc",
                 table: "PinChanges",
-                column: "CardInfoId",
-                unique: true);
+                column: "CardInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PinChanges_DetailsId",
                 schema: "nepc",
                 table: "PinChanges",
-                column: "DetailsId",
-                unique: true);
+                column: "DetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TokenStatusChanges_CardInfoId",
                 schema: "nepc",
                 table: "TokenStatusChanges",
-                column: "CardInfoId",
-                unique: true);
+                column: "CardInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TokenStatusChanges_DetailsId",
                 schema: "nepc",
                 table: "TokenStatusChanges",
-                column: "DetailsId",
-                unique: true);
+                column: "DetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Unholds_CardInfoId",
                 schema: "nepc",
                 table: "Unholds",
-                column: "CardInfoId",
-                unique: true);
+                column: "CardInfoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Unholds_DetailsId",
                 schema: "nepc",
                 table: "Unholds",
-                column: "DetailsId",
-                unique: true);
+                column: "DetailsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Unholds_MerchantInfoId",
                 schema: "nepc",
                 table: "Unholds",
-                column: "MerchantInfoId",
-                unique: true);
+                column: "MerchantInfoId");
         }
 
         /// <inheritdoc />

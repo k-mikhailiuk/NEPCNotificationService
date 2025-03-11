@@ -46,6 +46,22 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet.Entry(entity).State = EntityState.Detached;
     }
 
+    public void DetachCollection(IEnumerable<T> entities)
+    {
+        foreach (var entity in entities)
+        {
+            Detach(entity);
+        }
+    }
+
+    public void AttachCollection(IEnumerable<T> entities)
+    {
+        foreach (var entity in entities)
+        {
+            Attach(entity);
+        }
+    }
+
     
     public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
     {
@@ -57,5 +73,10 @@ public class Repository<T> : IRepository<T> where T : class
         return await _dbSet
             .Where(predicate)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
+    {
+        await _dbSet.AddRangeAsync(entities, cancellationToken);
     }
 }

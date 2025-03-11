@@ -7,7 +7,7 @@ public class AggregatorExtensionDtoCommandValidator : AbstractValidator<Aggregat
 {
     public AggregatorExtensionDtoCommandValidator()
     {
-        RuleFor(x=>x.ExtensionId)
+        RuleFor(x=>x.Id)
             .MinimumLength(1)
             .MaximumLength(50)
             .WithMessage("Id must be between 1 and 50 characters");

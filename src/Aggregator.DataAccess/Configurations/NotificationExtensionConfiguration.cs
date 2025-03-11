@@ -1,5 +1,4 @@
 using Aggregator.DataAccess.Entities;
-using Aggregator.DataAccess.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,9 +11,11 @@ public class NotificationExtensionConfiguration : IEntityTypeConfiguration<Notif
         builder.ToTable("NotificationExtensions");
 
         builder.HasKey(x => x.Id);
-        
-        builder.HasAlternateKey(x => x.ExtensionId);
-        
+
+        builder
+            .HasIndex(x => new { x.ExtensionId, x.NotificationId })
+            .IsUnique();
+
         builder.Property(x => x.ExtensionId).IsRequired().HasMaxLength(50);
         builder.Property(x => x.NotificationId).IsRequired();
         builder.Property(x => x.NotificationType).IsRequired();

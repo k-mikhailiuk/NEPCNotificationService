@@ -79,13 +79,12 @@ public static class ConversionExtensionsHelper
         
         return dto.Select(x => new NotificationExtension
         {
-            ExtensionId = x.ExtensionId,
+            ExtensionId = x.Id,
             NotificationType = notificationType,
             Critical = Convert.ToBoolean(x.Critical),
             NotificationId = notificationId,
             ExtensionParameters = x.Parameters?.Select(p => new ExtensionParameter
             {
-                NotificationExtensionId = x.Id,
                 Name = p.Name,
                 Value = p.Value
             }).ToList()

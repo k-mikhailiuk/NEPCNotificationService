@@ -17,14 +17,14 @@ public class OwiUserActionConfiguration : IEntityTypeConfiguration<OwiUserAction
         builder.Property(x=>x.CardInfoId).IsRequired(false);
         builder.Property(x=>x.DetailsId).IsRequired();
         
-        builder.HasOne(x=>x.Details)
-            .WithOne()
-            .HasForeignKey<OwiUserAction>(x=>x.DetailsId)
+        builder.HasOne(x => x.Details)
+            .WithMany()
+            .HasForeignKey(x => x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x=>x.CardInfo)
-            .WithOne()
-            .HasForeignKey<OwiUserAction>()
+            .WithMany()
+            .HasForeignKey(x=>x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

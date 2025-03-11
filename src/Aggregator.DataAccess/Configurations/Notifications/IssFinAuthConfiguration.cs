@@ -19,18 +19,18 @@ public class IssFinAuthConfiguration : IEntityTypeConfiguration<IssFinAuth>
         builder.Property(x => x.CardInfoId).IsRequired(false);
 
         builder.HasOne(x => x.Details)
-            .WithOne()
-            .HasForeignKey<IssFinAuth>(x => x.DetailsId)
+            .WithMany()
+            .HasForeignKey(x => x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(x => x.MerchantInfo)
-            .WithOne()
-            .HasForeignKey<IssFinAuth>(x => x.MerchantInfoId)
+        builder.HasOne(x=>x.MerchantInfo)
+            .WithMany()
+            .HasForeignKey(x=>x.MerchantInfoId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CardInfo)
-            .WithOne()
-            .HasForeignKey<IssFinAuth>(x => x.CardInfoId)
+            .WithMany()
+            .HasForeignKey(x => x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

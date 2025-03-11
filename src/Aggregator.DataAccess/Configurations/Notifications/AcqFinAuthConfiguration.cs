@@ -17,14 +17,14 @@ public class AcqFinAuthConfiguration : IEntityTypeConfiguration<AcqFinAuth>
         builder.Property(x=>x.DetailsId).IsRequired();
         builder.Property(x=>x.MerchantInfoId).IsRequired();
         
-        builder.HasOne(x=>x.Details)
-            .WithOne()
-            .HasForeignKey<AcqFinAuth>(x=>x.DetailsId)
+        builder.HasOne(x => x.Details)
+            .WithMany()
+            .HasForeignKey(x => x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(x=>x.MerchantInfo)
-            .WithOne()
-            .HasForeignKey<AcqFinAuth>(x=>x.MerchantInfoId)
+            .WithMany()
+            .HasForeignKey(x=>x.MerchantInfoId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }
