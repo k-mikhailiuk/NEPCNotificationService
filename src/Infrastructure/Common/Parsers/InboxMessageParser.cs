@@ -1,12 +1,13 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Aggregator.DataAccess.Entities.Enum;
+using Aggregator.DTOs.Abstractions;
 
 namespace Common.Parsers;
 
 public static class InboxMessageParser
 {
-    public static object? ParseInboxMessage(string payload)
+    public static INotificationAggregatorDto? ParseInboxMessage(string payload)
     {
         try
         {
@@ -28,7 +29,7 @@ public static class InboxMessageParser
                 throw new InvalidOperationException($"Unknown notification type: {rootKey}");
             }
 
-            var deserializedObject = JsonSerializer.Deserialize(jsonObject[rootKey]!.ToJsonString(), targetType);
+            var deserializedObject = (INotificationAggregatorDto)JsonSerializer.Deserialize(jsonObject[rootKey]!.ToJsonString(), targetType);
         
             return deserializedObject;
         }

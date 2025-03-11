@@ -13,7 +13,7 @@ namespace Aggregator.Core.Extensions.Factories;
 
 public class NotificationCommandFactory : INotificationCommandFactory
 {
-    public IRequest CreateCommand(List<object> notifications)
+    public IRequest<List<long>> CreateCommand(List<object> notifications)
     {
         var notificationType = notifications.First().GetType();
         

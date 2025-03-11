@@ -40,6 +40,7 @@ public interface IUnitOfWork : IDisposable
     ILimitRepository Limit { get; }
     IMerchantInfoRepository MerchantInfo { get; }
     INotificationExtensionRepository NotificationExtension { get; }
+    IInboxArchiveMessageRepository InboxArchiveMessage { get; }
     
     Task<int> SaveChangesAsync();
 }

@@ -14,9 +14,6 @@ public static class ServiceCollectionExtensions
                                    ?? throw new InvalidOperationException("Connection string is missing");
             
             options.UseSqlServer(connectionString);
-            
-            options.EnableSensitiveDataLogging();
-            options.EnableDetailedErrors();
         });
         
         return services;

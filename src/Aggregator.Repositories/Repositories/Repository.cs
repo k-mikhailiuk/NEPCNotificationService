@@ -16,12 +16,12 @@ public class Repository<T> : IRepository<T> where T : class
         _dbSet = _context.Set<T>();
     }
 
-    public async Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken = default)
+    public async Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken)
     {
         return await _dbSet.FindAsync([id], cancellationToken: cancellationToken);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _dbSet.ToListAsync(cancellationToken);
     }
@@ -31,38 +31,16 @@ public class Repository<T> : IRepository<T> where T : class
         return await _dbSet.AnyAsync(predicate, cancellationToken);
     }
 
-    public async Task AddAsync(T entity, CancellationToken cancellationToken = default)
+    public async Task AddAsync(T entity, CancellationToken cancellationToken)
     {
         await _dbSet.AddAsync(entity, cancellationToken);
     }
-
-    public void Attach(T entity)
-    {
-        _dbSet.Attach(entity);
-    }
     
-    public void Detach(T entity)
+    public void Remove(T entity)
     {
-        _dbSet.Entry(entity).State = EntityState.Detached;
+        _dbSet.Remove(entity);
     }
 
-    public void DetachCollection(IEnumerable<T> entities)
-    {
-        foreach (var entity in entities)
-        {
-            Detach(entity);
-        }
-    }
-
-    public void AttachCollection(IEnumerable<T> entities)
-    {
-        foreach (var entity in entities)
-        {
-            Attach(entity);
-        }
-    }
-
-    
     public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
     {
         return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
@@ -77,6 +55,17 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
     {
-        await _dbSet.AddRangeAsync(entities, cancellationToken);
+        foreach (var entity in entities)
+        {
+            await AddAsync(entity, cancellationToken);
+        }
+    }
+    
+    public void RemoveRange(IEnumerable<T> entities)
+    {
+        foreach (var entity in entities)
+        {
+            Remove(entity);
+        }
     }
 }

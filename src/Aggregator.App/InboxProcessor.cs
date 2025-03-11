@@ -45,7 +45,8 @@ public class InboxProcessor : BackgroundService
         var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-        var messages = await unitOfWork.Inbox.GetUnprocessedMessagesAsync(_aggregatorOptions.BatchSize);
+        var messages =
+            await unitOfWork.Inbox.GetUnprocessedMessagesAsync(_aggregatorOptions.BatchSize, cancelationToken);
 
         if (messages.Count == 0)
         {

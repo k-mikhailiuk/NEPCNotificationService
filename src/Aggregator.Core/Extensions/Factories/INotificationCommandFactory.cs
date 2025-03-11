@@ -4,5 +4,5 @@ namespace Aggregator.Core.Extensions.Factories;
 
 public interface INotificationCommandFactory
 {
-    IRequest CreateCommand(List<object> notification);
+    IRequest<List<long>> CreateCommand(List<object> notification);
 }

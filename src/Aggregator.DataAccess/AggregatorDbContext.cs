@@ -49,6 +49,8 @@ public class AggregatorDbContext : DbContext
     public DbSet<Limit> Limits { get; set; }
     public DbSet<NotificationExtension> NotificationExtensions { get; set; }
     
+    public DbSet<InboxArchiveMessage> InboxArchiveMessages { get; set; }
+    
     public AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) : base(options)
     {
         
@@ -104,5 +106,7 @@ public class AggregatorDbContext : DbContext
         modelBuilder.ApplyConfiguration(new IssFinAuthAccountsInfoConfiguration());
         modelBuilder.ApplyConfiguration(new LimitConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationExtensionConfiguration());
+        
+        modelBuilder.ApplyConfiguration(new InboxArchiveMessageConfiguration());
     }
 }

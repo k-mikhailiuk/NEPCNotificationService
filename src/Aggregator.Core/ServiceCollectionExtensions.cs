@@ -26,31 +26,33 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCommands(this IServiceCollection services)
     {
         services.AddSingleton<IMediator, Mediator>();
-        
+
         services.AddTransient<IRequestHandler<ProcessInboxMessageCommand>, ProcessInboxMessageHandler>();
         services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>>,
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, List<long>>,
                 AcctBalChangeProcessHandler>();
         services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcqFinAuthDto>>,
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcqFinAuthDto>, List<long>>,
                 AcqFinAuthProcessHandler>();
         services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorCardStatusChangeDto>>,
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorCardStatusChangeDto>, List<long>>,
                 CardStatusChangeProcessHandler>();
         services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorIssFinAuthDto>>,
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorIssFinAuthDto>, List<long>>,
                 IssFinAuthProcessHandler>();
         services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorOwiUserActionDto>>,
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorOwiUserActionDto>, List<long>>,
                 OwiUserActionProcessHandler>();
         services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorPinChangeDto>>,
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorPinChangeDto>, List<long>>,
                 PinChangeProcessHandler>();
         services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorTokenStatusChangeDto>>,
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorTokenStatusChangeDto>, List<long>>,
                 TokenStatusChangeProcessHandler>();
-        services.AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorUnholdDto>>, UnholdProcessHandler>();
-        
+        services
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorUnholdDto>, List<long>>,
+                UnholdProcessHandler>();
+
         return services;
     }
 
@@ -58,7 +60,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddSingleton<INotificationCommandFactory, NotificationCommandFactory>();
         services.AddSingleton<NotificationEntityMapperFactory>();
-        
+
 
         return services;
     }

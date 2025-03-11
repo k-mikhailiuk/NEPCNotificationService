@@ -101,6 +101,9 @@ public class UnitOfWork : IUnitOfWork
     public INotificationExtensionRepository NotificationExtension => _notificationExtension.Value;
     private readonly Lazy<INotificationExtensionRepository> _notificationExtension;
     
+    public IInboxArchiveMessageRepository InboxArchiveMessage  => _inboxArchiveMessage.Value;
+    private readonly Lazy<IInboxArchiveMessageRepository> _inboxArchiveMessage;
+    
     public UnitOfWork(AggregatorDbContext context, IServiceProvider serviceProvider)
     {
         _context = context;
@@ -133,6 +136,7 @@ public class UnitOfWork : IUnitOfWork
         _limit = new Lazy<ILimitRepository>(() => serviceProvider.GetService<ILimitRepository>() ?? throw new InvalidOperationException());
         _merchantInfo = new Lazy<IMerchantInfoRepository>(() => serviceProvider.GetService<IMerchantInfoRepository>() ?? throw new InvalidOperationException());
         _notificationExtension = new Lazy<INotificationExtensionRepository>(() => serviceProvider.GetService<INotificationExtensionRepository>() ?? throw new InvalidOperationException());
+        _inboxArchiveMessage = new Lazy<IInboxArchiveMessageRepository>(() => serviceProvider.GetService<IInboxArchiveMessageRepository>() ?? throw new InvalidOperationException());
     }
 
     public async Task<int> SaveChangesAsync() => await _context.SaveChangesAsync();

@@ -23,4 +23,7 @@ public interface INotification
     /// Время создания уведомления (YYYYMMDDHH24MISS) во временной зоне ПЦ
     /// </summary>
     public DateTimeOffset Time { get; set; }
+    
+    /// <inheritdoc cref="NotificationExtension" />
+    public List<NotificationExtension>? Extensions { get; set; }
 }
