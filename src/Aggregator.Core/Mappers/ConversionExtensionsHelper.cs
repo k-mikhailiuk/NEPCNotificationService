@@ -54,8 +54,15 @@ public static class ConversionExtensionsHelper
         return moneyEntity;
     }
 
-    public static CardIdentifier MapCardIdentifier(List<AggregatorCardIdentifierDto> dto)
+    public static CardIdentifier MapCardIdentifier(List<AggregatorCardIdentifierDto>? dto)
     {
+        if(dto == null)
+            return new CardIdentifier
+            {
+                CardIdentifierType = null,
+                CardIdentifierValue = null
+            };
+        
         return dto.Select(x => new CardIdentifier
             {
                 CardIdentifierType =

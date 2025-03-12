@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aggregator.DataAccess.Migrations
 {
     [DbContext(typeof(AggregatorDbContext))]
-    [Migration("20250311084015_CreateEntities")]
+    [Migration("20250312045918_CreateEntities")]
     partial class CreateEntities
     {
         /// <inheritdoc />
@@ -195,7 +195,6 @@ namespace Aggregator.DataAccess.Migrations
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("AuthorizationCondition")
-                        .IsRequired()
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
@@ -215,7 +214,6 @@ namespace Aggregator.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PosEntryMode")
-                        .IsRequired()
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
 
@@ -231,12 +229,10 @@ namespace Aggregator.DataAccess.Migrations
                         .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("ServiceCode")
-                        .IsRequired()
                         .HasMaxLength(3)
                         .HasColumnType("nvarchar(3)");
 
                     b.Property<string>("ServiceId")
-                        .IsRequired()
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
@@ -453,6 +449,26 @@ namespace Aggregator.DataAccess.Migrations
                         .HasFilter("[MerchantInfoId] IS NOT NULL");
 
                     b.ToTable("FinTransactions", "nepc");
+                });
+
+            modelBuilder.Entity("Aggregator.DataAccess.Entities.InboxArchiveMessage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InboxArchiveMessages", "nepc");
                 });
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", b =>

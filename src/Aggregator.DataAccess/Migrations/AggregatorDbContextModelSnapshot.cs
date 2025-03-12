@@ -192,7 +192,6 @@ namespace Aggregator.DataAccess.Migrations
                         .HasColumnType("nvarchar(1)");
 
                     b.Property<string>("AuthorizationCondition")
-                        .IsRequired()
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
@@ -212,7 +211,6 @@ namespace Aggregator.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PosEntryMode")
-                        .IsRequired()
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
 
@@ -228,12 +226,10 @@ namespace Aggregator.DataAccess.Migrations
                         .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("ServiceCode")
-                        .IsRequired()
                         .HasMaxLength(3)
                         .HasColumnType("nvarchar(3)");
 
                     b.Property<string>("ServiceId")
-                        .IsRequired()
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 

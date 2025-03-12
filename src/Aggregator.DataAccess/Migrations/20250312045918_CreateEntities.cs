@@ -39,10 +39,10 @@ namespace Aggregator.DataAccess.Migrations
                     ConvMoney_Amount = table.Column<long>(type: "bigint", nullable: true),
                     ConvMoney_Currency = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true),
                     PhysTerm = table.Column<bool>(type: "bit", nullable: false),
-                    AuthorizationCondition = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
-                    PosEntryMode = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: false),
-                    ServiceId = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
-                    ServiceCode = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: false),
+                    AuthorizationCondition = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: true),
+                    PosEntryMode = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
+                    ServiceId = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: true),
+                    ServiceCode = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true),
                     CardIdentifier_CardIdentifierType = table.Column<int>(type: "int", nullable: true),
                     CardIdentifier_CardIdentifierValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -90,6 +90,21 @@ namespace Aggregator.DataAccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CardStatusChangeDetails", x => x.CardStatusChangeDetailsId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InboxArchiveMessages",
+                schema: "nepc",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Timestamp = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InboxArchiveMessages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -1075,6 +1090,10 @@ namespace Aggregator.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "ExtensionParameters",
+                schema: "nepc");
+
+            migrationBuilder.DropTable(
+                name: "InboxArchiveMessages",
                 schema: "nepc");
 
             migrationBuilder.DropTable(

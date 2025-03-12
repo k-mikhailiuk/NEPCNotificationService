@@ -10,6 +10,12 @@ namespace Aggregator.Core.Mappers.Notifications;
 public class UnholdEntityMapper : INotificationMapper<Unhold, AggregatorUnholdDto>
 {
     private readonly ILogger<UnholdEntityMapper> _logger;
+
+    public UnholdEntityMapper(ILogger<UnholdEntityMapper> logger)
+    {
+        _logger = logger;
+    }
+
     public Unhold Map(AggregatorUnholdDto dto)
     {
         if (dto == null)

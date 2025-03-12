@@ -62,7 +62,7 @@ public class AcqFinAuthEntityMapper : INotificationMapper<AcqFinAuth, Aggregator
             ResponseCode = dto.ResponseCode,
             ApprovalCode = dto.ApprovalCode,
             Rrn = dto.RRN,
-            AcqFee = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AcqFee>(dto.AcqFee),
+            AcqFee =  ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AcqFee>(dto.AcqFee),
             AcqFeeDirection = dto.AcqFeeDirection,
             ConvMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<ConvMoney>(dto.ConvMoney),
             PhysTerm = Convert.ToBoolean(dto.PhysTerm),

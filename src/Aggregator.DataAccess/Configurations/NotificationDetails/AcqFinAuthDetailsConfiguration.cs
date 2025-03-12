@@ -46,10 +46,10 @@ public class AcqFinAuthDetailsConfiguration : IEntityTypeConfiguration<AcqFinAut
         });
         
         builder.Property(x => x.PhysTerm).IsRequired();
-        builder.Property(x => x.AuthorizationCondition).IsRequired().HasMaxLength(12);
-        builder.Property(x => x.PosEntryMode).IsRequired().HasMaxLength(4);
-        builder.Property(x => x.ServiceId).IsRequired().HasMaxLength(12);
-        builder.Property(x => x.ServiceCode).IsRequired().HasMaxLength(3);
+        builder.Property(x => x.AuthorizationCondition).IsRequired(false).HasMaxLength(12);
+        builder.Property(x => x.PosEntryMode).IsRequired(false).HasMaxLength(4);
+        builder.Property(x => x.ServiceId).IsRequired(false).HasMaxLength(12);
+        builder.Property(x => x.ServiceCode).IsRequired(false).HasMaxLength(3);
 
         builder.OwnsOne(x => x.CardIdentifier);
     }
