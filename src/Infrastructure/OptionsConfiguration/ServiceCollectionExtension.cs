@@ -35,4 +35,10 @@ public static class ServiceCollectionExtension
         
         return services.Configure<string>(options => options = connectionString);
     }
+    
+    public static IServiceCollection AddNotificationProcessorOptions(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services.Configure<NotificationProcessorOptions>(configuration.GetSection(NotificationProcessorOptions.NotificationProcessor));
+    }
 }

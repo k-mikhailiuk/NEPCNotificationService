@@ -9,17 +9,33 @@ namespace DataIngrestorApi.App.Controllers;
 public class NotificationsController : ControllerBase
 {
     private readonly IMessageProcessor _messageProcessor;
-    
-    public NotificationsController(IMessageProcessor messageProcessor)
+    private readonly ILogger<NotificationsController> _logger;
+
+    public NotificationsController(IMessageProcessor messageProcessor, ILogger<NotificationsController> logger)
     {
         _messageProcessor = messageProcessor;
+        _logger = logger;
     }
-    
+
     [HttpPost("receive")]
-    public async Task<IActionResult> Receive([FromBody] NotificationRequestDto  request)
+    public async Task<IActionResult> Receive([FromBody] NotificationRequestDto request,
+        [FromHeader(Name = "X-CS-Instance")] string instance,
+        [FromHeader(Name = "X-CS-RequestId")] long requestId,
+        [FromHeader(Name = "X-CS-RequestTime")] string requestTime,
+        [FromHeader(Name = "User-Agent")] string userAgent,
+        [FromHeader(Name = "Host")] string? host)
     {
         try
         {
+            if (string.IsNullOrEmpty(instance) || requestId == null || string.IsNullOrEmpty(requestTime) || string.IsNullOrEmpty(userAgent) || string.IsNullOrEmpty(userAgent))
+            {
+                return BadRequest("Missing requires headers.");
+            }
+
+            var contentType = HttpContext.Request.ContentType;
+            _logger.LogInformation("Processing request: Instance={Instance}, RequestId={RequestId}, RequestTime={RequestTime}, ContentType={ContentType}, UserAgent={UserAgent}, Host={Host}",
+                instance, requestId, requestTime, contentType, userAgent, host);
+
             await _messageProcessor.ProcessBatchAsync(request);
             return Ok();
         }

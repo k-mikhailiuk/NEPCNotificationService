@@ -1,16 +1,23 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Worker">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-NotificationService.App-79f398b8-28a9-4572-8400-eff672917cfc</UserSecretsId>
     </PropertyGroup>
     <ItemGroup>
-        <None Update="..\shared\appsettings.json">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <Link>appsettings.json</Link>
-        </None>
+        <None Include="..\..\shared\appsettings.json" Link="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+        <None Include="..\..\shared\appsettings.Development.json" Link="appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
-
+    <ItemGroup>
+        <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1"/>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
+      <ProjectReference Include="..\Aggregator.Repositories\Aggregator.Repositories.csproj" />
+      <ProjectReference Include="..\Infrastructure\OptionsConfiguration\OptionsConfiguration.csproj" />
+      <ProjectReference Include="..\NotificationService.Core\NotificationService.Core.csproj" />
+    </ItemGroup>
 </Project>
