@@ -19,6 +19,9 @@
         <None Include="..\..\shared\appsettings.Development.json" Link="appsettings.Development.json" CopyToOutputDirectory="Always" />
     </ItemGroup>
     <ItemGroup>
+        <None Include="wwwroot\swagger\*" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+    <ItemGroup>
       <ProjectReference Include="..\DataIngrestorApi.DataAccess\DataIngrestorApi.DataAccess.csproj" />
       <ProjectReference Include="..\DataIngrestorApi.DTOs\DataIngrestorApi.DTOs.csproj" />
       <ProjectReference Include="..\DataIngrestorApi.Services\DataIngrestorApi.Services.csproj" />
