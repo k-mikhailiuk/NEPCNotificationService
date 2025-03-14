@@ -82,7 +82,7 @@ public static class ConversionExtensionsHelper
             return null;
         }
 
-        Console.WriteLine($"Mapping NotificationExtension");
+        Console.WriteLine("Mapping NotificationExtension");
         
         return dto.Select(x => new NotificationExtension
         {

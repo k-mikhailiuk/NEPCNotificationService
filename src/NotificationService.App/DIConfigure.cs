@@ -16,5 +16,6 @@ public static class DIConfigure
         services.AddAggregatorDbContext(configuration);
         services.AddRepositories();
         services.AddMessageSender();
+        services.AddNotificationProcessorOptions(configuration);
     }
 }

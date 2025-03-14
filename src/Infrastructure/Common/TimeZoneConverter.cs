@@ -9,7 +9,7 @@ public static class TimeZoneConverter
     {
         const string format = "yyyyMMddHHmmss";
         if (!DateTime.TryParseExact(stringDateTime, format, CultureInfo.InvariantCulture, DateTimeStyles.None,
-                out DateTime localDateTime))
+                out var localDateTime))
         {
             throw new FormatException($"Input string '{stringDateTime}' is not in the correct format '{format}'.");
         }

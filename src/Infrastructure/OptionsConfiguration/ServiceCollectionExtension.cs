@@ -41,4 +41,10 @@ public static class ServiceCollectionExtension
     {
         return services.Configure<NotificationProcessorOptions>(configuration.GetSection(NotificationProcessorOptions.NotificationProcessor));
     }
+    
+    public static IServiceCollection AddNotificationAviabilityOptions(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services.Configure<NotificationAviabilityOptions>(configuration.GetSection(NotificationAviabilityOptions.NotificationAviability));
+    }
 }

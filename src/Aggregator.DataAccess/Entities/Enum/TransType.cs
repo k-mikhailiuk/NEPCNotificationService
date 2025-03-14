@@ -65,7 +65,7 @@ public enum TransType
     PURCHASE_WITH_ELECTRONIC_CERTIFICATE = 741,
     
     [Description("Покупка за счет средств ЭС")]
-    PURCHASE_BY_ELECTRONIC_CERTIFICATE_ONLY = 745,
+    PURCHASE_BY_ELECTRONIC_CERTITIFCATE_ONLY = 745,
     
     [Description("Возврат покупки за счет средств ЭС")]
     RETURN_REFAUND_BY_ELECTRONIC_CERTIFICATE = 746,

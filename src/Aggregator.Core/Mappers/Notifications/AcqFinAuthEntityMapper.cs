@@ -45,7 +45,7 @@ public class AcqFinAuthEntityMapper : INotificationMapper<AcqFinAuth, Aggregator
             return null;
         }
 
-        _logger.LogInformation($"Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}", dto.Id, dto.TransactionTime);
+        _logger.LogInformation("Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}", dto.Id, dto.TransactionTime);
 
         return new AcqFinAuthDetails
         {
