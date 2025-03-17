@@ -1,6 +1,5 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions.Factories;
-using Aggregator.DataAccess;
 using Aggregator.DataAccess.Entities;
 using Aggregator.Repositories.Abstractions;
 using Common.Parsers;
@@ -22,7 +21,7 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
 
     public ProcessInboxMessageHandler(ILogger<ProcessInboxMessageHandler> logger, IMediator mediator,
         INotificationCommandFactory commandFactory, IServiceProvider serviceProvider
-        )
+    )
     {
         _logger = logger;
         _mediator = mediator;
@@ -95,7 +94,7 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
 
         using var scope = _serviceProvider.CreateScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        
+
         var inClause = string.Join(",", messageIds);
 
         var messages = await unitOfWork

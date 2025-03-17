@@ -48,7 +48,7 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken)
     {
-        if (ids == null || ids.Count == 0)
+        if (ids.Count == 0)
             return [];
 
         var inClause = string.Join(",", ids);
