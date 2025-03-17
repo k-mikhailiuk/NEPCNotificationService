@@ -35,7 +35,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         await _dbSet.AddAsync(entity, cancellationToken);
     }
-    
+
     public void Remove(T entity)
     {
         _dbSet.Remove(entity);
@@ -45,12 +45,33 @@ public class Repository<T> : IRepository<T> where T : class
     {
         return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
     }
-    
-    public async Task<List<T>> GetListAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+
+    public async Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken)
     {
-        return await _dbSet
-            .Where(predicate)
-            .ToListAsync(cancellationToken);
+        if (ids == null || ids.Count == 0)
+            return [];
+
+        var inClause = string.Join(",", ids);
+
+        var entityType = _context.Model.FindEntityType(typeof(T));
+        if (entityType == null)
+            throw new InvalidOperationException($"Не удалось найти метаданные для типа {typeof(T).Name}.");
+
+        var tableName = entityType.GetTableName();
+        var schema = entityType.GetSchema();
+        var fullTableName = string.IsNullOrEmpty(schema)
+            ? $"[{tableName}]"
+            : $"[{schema}].[{tableName}]";
+
+        var keyProperty = entityType.FindPrimaryKey()?.Properties.FirstOrDefault();
+        if (keyProperty == null)
+            throw new InvalidOperationException($"Тип {typeof(T).Name} не имеет первичного ключа.");
+
+        var keyColumnName = keyProperty.GetColumnName();
+
+        var sql = $"SELECT * FROM {fullTableName} WHERE [{keyColumnName}] IN ({inClause})";
+
+        return await _context.Set<T>().FromSqlRaw(sql).ToListAsync(cancellationToken);
     }
 
     public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
@@ -60,7 +81,7 @@ public class Repository<T> : IRepository<T> where T : class
             await AddAsync(entity, cancellationToken);
         }
     }
-    
+
     public void RemoveRange(IEnumerable<T> entities)
     {
         foreach (var entity in entities)

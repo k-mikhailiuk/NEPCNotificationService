@@ -1,10 +1,12 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
+using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DTOs.AcqFinAuth;
 using Aggregator.Repositories.Abstractions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
@@ -49,13 +51,17 @@ public class AcqFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
     {
         foreach (var entity in entities)
         {
-            var existing =
-                await unitOfWork.AcqFinAuth.ExistsAsync(x => x.NotificationId == entity.NotificationId,
-                    cancellationToken);
-            if (!existing)
+            var idsToCheck = new List<long> { entity.NotificationId };
+
+            var existingList = await unitOfWork.AcqFinAuth
+                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+
+            if (existingList.Count == 0)
+            {
                 await unitOfWork.AcqFinAuth.AddAsync(entity, cancellationToken);
+            }
             
-            await unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
     
@@ -70,8 +76,8 @@ public class AcqFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
             .ToList();
 
         var existingDetailsList = await unitOfWork.AcqFinAuthDetails
-            .GetListAsync(d => allDetailsIds.Contains(d.AcqFinAuthDetailsId), cancellationToken);
-
+            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
+        
         var detailsCache = existingDetailsList.ToDictionary(d => d.AcqFinAuthDetailsId, d => d);
 
         foreach (var entity in entities)
@@ -97,9 +103,9 @@ public class AcqFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
             .Select(e => e.MerchantInfo.Id)
             .Distinct()
             .ToList();
-
+        
         var existingMerchants = await unitOfWork.MerchantInfo
-            .GetListAsync(m => allMerchantIds.Contains(m.Id), cancellationToken);
+            .GetListByIdsRawSqlAsync(allMerchantIds, cancellationToken);
 
         var merchantCache = existingMerchants.ToDictionary(m => m.Id, m => m);
 

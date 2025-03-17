@@ -10,7 +10,7 @@ public interface IRepository<T> where T : class
     Task AddAsync(T entity, CancellationToken cancellationToken = default);
     void Remove(T entity);
     Task<T?> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
-    Task<List<T>> GetListAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+    Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken = default);
     Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
     void RemoveRange(IEnumerable<T> entities);
 }

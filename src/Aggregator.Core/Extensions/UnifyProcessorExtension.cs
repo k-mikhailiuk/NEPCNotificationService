@@ -1,6 +1,7 @@
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.Repositories.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Extensions;
 
@@ -27,10 +28,15 @@ public static class UnifyProcessorExtension<T> where T : INotification
         }
 
         var allExtensionIds = extensionKeys.Select(k => k.extId).Distinct().ToList();
-        var partialList = await unitOfWork.NotificationExtension
-            .GetListAsync(x => allExtensionIds.Contains(x.ExtensionId),
-                cancellationToken);
+        
+        if(allExtensionIds.Count == 0)
+            return;
+        
+        var inClause = string.Join(",", allExtensionIds);
+        var sql = $"SELECT * FROM [nepc].[NotificationExtension] WHERE [ExtensionId] IN ({inClause})";
 
+        var partialList = await unitOfWork.FromSql<NotificationExtension>(sql).ToListAsync(cancellationToken);
+        
         var existingExtensions = partialList
             .Where(x => extensionKeys.Contains((x.ExtensionId, x.NotificationId)))
             .ToList();

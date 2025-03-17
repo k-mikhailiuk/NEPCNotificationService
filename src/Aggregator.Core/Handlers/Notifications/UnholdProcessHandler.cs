@@ -48,13 +48,16 @@ public class UnholdProcessHandler : IRequestHandler<ProcessNotificationCommand<A
     {
         foreach (var entity in entities)
         {
-            var existing =
-                await unitOfWork.Unhold.ExistsAsync(x => x.NotificationId == entity.NotificationId,
-                    cancellationToken);
-            if (!existing)
-                await unitOfWork.Unhold.AddAsync(entity, cancellationToken);
+            var idsToCheck = new List<long> { entity.NotificationId };
 
-            await unitOfWork.SaveChangesAsync();
+            var existingList = await unitOfWork.Unhold
+                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+
+            if (existingList.Count == 0)
+            {
+                await unitOfWork.Unhold.AddAsync(entity, cancellationToken);
+            }
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -69,7 +72,7 @@ public class UnholdProcessHandler : IRequestHandler<ProcessNotificationCommand<A
             .ToList();
 
         var existingDetailsList = await unitOfWork.UnholdDetails
-            .GetListAsync(d => allDetailsIds.Contains(d.UnholdDetailsId), cancellationToken);
+            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.UnholdDetailsId, d => d);
 

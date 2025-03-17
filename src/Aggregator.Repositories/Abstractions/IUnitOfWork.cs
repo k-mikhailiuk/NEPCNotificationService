@@ -42,5 +42,7 @@ public interface IUnitOfWork : IDisposable
     INotificationExtensionRepository NotificationExtension { get; }
     IInboxArchiveMessageRepository InboxArchiveMessage { get; }
     
-    Task<int> SaveChangesAsync();
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+    
+    IQueryable<T> FromSql<T>(string sql, params object[] parameters) where T : class;
 }

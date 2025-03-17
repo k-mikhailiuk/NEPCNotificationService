@@ -49,13 +49,16 @@ public class PinChangeProcessHandler : IRequestHandler<ProcessNotificationComman
     {
         foreach (var entity in entities)
         {
-            var existing =
-                await unitOfWork.PinChange.ExistsAsync(x => x.NotificationId == entity.NotificationId,
-                    cancellationToken);
-            if (!existing)
-                await unitOfWork.PinChange.AddAsync(entity, cancellationToken);
+            var idsToCheck = new List<long> { entity.NotificationId };
 
-            await unitOfWork.SaveChangesAsync();
+            var existingList = await unitOfWork.PinChange
+                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+
+            if (existingList.Count == 0)
+            {
+                await unitOfWork.PinChange.AddAsync(entity, cancellationToken);
+            }
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -70,7 +73,7 @@ public class PinChangeProcessHandler : IRequestHandler<ProcessNotificationComman
             .ToList();
 
         var existingDetailsList = await unitOfWork.PinChangeDetails
-            .GetListAsync(d => allDetailsIds.Contains(d.PinChangeDetailsId), cancellationToken);
+            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.PinChangeDetailsId, d => d);
 

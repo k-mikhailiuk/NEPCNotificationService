@@ -1,14 +1,20 @@
 using Aggregator.App;
 
-var builder = Host.CreateApplicationBuilder(args);
+AppContext.SetSwitch("Microsoft.EntityFrameworkCore.UseLegacyContainsTranslation", true);
 
-builder.Configuration.Sources.Clear();
-builder.Configuration.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: false, reloadOnChange: true);
-
-var services = builder.Services;
-services.RegisterServices(builder.Configuration);
-
-builder.Services.AddHostedService<InboxProcessor>();
+var builder = Host.CreateDefaultBuilder(args)
+    .UseWindowsService()
+    .ConfigureAppConfiguration(config =>
+    {
+        config.Sources.Clear();
+        config.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: false,
+            reloadOnChange: true);
+    })
+    .ConfigureServices((ctx, services) =>
+    {
+        services.RegisterServices(ctx.Configuration);
+        services.AddHostedService<InboxProcessor>();
+    });
 
 var host = builder.Build();
 host.Run();

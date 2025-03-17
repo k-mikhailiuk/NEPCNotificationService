@@ -51,13 +51,16 @@ public class
     {
         foreach (var entity in entities)
         {
-            var existing =
-                await unitOfWork.TokenStatusChange.ExistsAsync(x => x.NotificationId == entity.NotificationId,
-                    cancellationToken);
-            if (!existing)
-                await unitOfWork.TokenStatusChange.AddAsync(entity, cancellationToken);
+            var idsToCheck = new List<long> { entity.NotificationId };
 
-            await unitOfWork.SaveChangesAsync();
+            var existingList = await unitOfWork.TokenStatusChange
+                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+
+            if (existingList.Count == 0)
+            {
+                await unitOfWork.TokenStatusChange.AddAsync(entity, cancellationToken);
+            }
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -72,7 +75,7 @@ public class
             .ToList();
 
         var existingDetailsList = await unitOfWork.TokenStatusChangeDetails
-            .GetListAsync(d => allDetailsIds.Contains(d.TokenStatusChangeDetailsId), cancellationToken);
+            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.TokenStatusChangeDetailsId, d => d);
 

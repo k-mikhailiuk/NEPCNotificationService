@@ -4,6 +4,7 @@ using Aggregator.DataAccess;
 using Aggregator.DataAccess.Entities;
 using Aggregator.Repositories.Abstractions;
 using Common.Parsers;
+using DataIngrestorApi.DataAccess.Entities;
 using DataIngrestorApi.DataAccess.Entities.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,8 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
     private readonly IServiceProvider _serviceProvider;
 
     public ProcessInboxMessageHandler(ILogger<ProcessInboxMessageHandler> logger, IMediator mediator,
-        INotificationCommandFactory commandFactory, IServiceProvider serviceProvider)
+        INotificationCommandFactory commandFactory, IServiceProvider serviceProvider
+        )
     {
         _logger = logger;
         _mediator = mediator;
@@ -62,7 +64,7 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
                 notificationType.Name);
         }
 
-        await UpdateStatusAsync(processedMessages.Keys, InboxMessageStatus.InProgress, cancellationToken);
+        await UpdateStatusAsync(processedMessages.Keys.ToList(), InboxMessageStatus.InProgress, cancellationToken);
 
         _logger.LogInformation("Set in progress status messages: {MessagesCount}", processedMessages.Count);
 
@@ -85,17 +87,19 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
         }
     }
 
-    private async Task UpdateStatusAsync(IEnumerable<long> messageIds, InboxMessageStatus newStatus,
+    private async Task UpdateStatusAsync(List<long> messageIds, InboxMessageStatus newStatus,
         CancellationToken cancellationToken)
     {
-        if (!messageIds.Any())
+        if (messageIds.Count == 0)
             return;
 
         using var scope = _serviceProvider.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        
+        var inClause = string.Join(",", messageIds);
 
-        var messages = await dbContext.InboxMessages
-            .Where(m => messageIds.Contains(m.Id))
+        var messages = await unitOfWork
+            .FromSql<InboxMessage>($"SELECT * FROM [nepc].[InboxMessages] WHERE Id IN ({inClause})")
             .ToListAsync(cancellationToken);
 
         foreach (var msg in messages)
@@ -103,7 +107,7 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
             msg.Status = newStatus;
         }
 
-        await dbContext.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Updated {count} messages to status={status}", messages.Count, newStatus);
     }
@@ -111,25 +115,26 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
     private async Task CompleteMessageProcessingAsync(List<long> messageIds, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get {count} processed messages", messageIds.Count);
-        
+
         await UpdateStatusAsync(messageIds, InboxMessageStatus.Completed, cancellationToken);
 
         using var scope = _serviceProvider.CreateScope();
 
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-        var inboxMessages = await unitOfWork.Inbox.GetByIdsAsync(messageIds, cancellationToken);
-        
-        var inboxArchive = inboxMessages.Select(inboxMessage => InboxArchiveMessage.Create(inboxMessage.Payload)).ToList();
-        
+        var inboxMessages = await unitOfWork.Inbox.GetListByIdsRawSqlAsync(messageIds, cancellationToken);
+
+        var inboxArchive = inboxMessages.Select(inboxMessage => InboxArchiveMessage.Create(inboxMessage.Payload))
+            .ToList();
+
         await unitOfWork.InboxArchiveMessage.AddRangeAsync(inboxArchive, cancellationToken);
-        
+
         _logger.LogInformation("{count} messages successfully added to archive", inboxArchive.Count);
-        
+
         unitOfWork.Inbox.RemoveRange(inboxMessages);
-        
+
         _logger.LogInformation("{count} messages successfully removed from inbox", inboxMessages.Count);
-        
-        await unitOfWork.SaveChangesAsync();
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

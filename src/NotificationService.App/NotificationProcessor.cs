@@ -42,7 +42,6 @@ public class NotificationProcessor : BackgroundService
     private async Task ProcessNotificationAsync(CancellationToken cancelationToken)
     {
         var notificationReceiver = _serviceProvider.GetService<INotificationReceiver>();
-        var notificationBuilder = _serviceProvider.GetService<INotificationBuilder>();
         var notificationSender = _serviceProvider.GetRequiredService<INotificationSender>();
 
         //var messages = await notificationReceiver.GetNotificationsAsync();

@@ -55,13 +55,16 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
         {
             await ProcessDetailsLimitsAsync(entity.Details, unitOfWork, cancellationToken);
             
-            var existing =
-                await unitOfWork.IssFinAuth.ExistsAsync(x => x.NotificationId == entity.NotificationId,
-                    cancellationToken);
-            if (!existing)
+            var idsToCheck = new List<long> { entity.NotificationId };
+
+            var existingList = await unitOfWork.IssFinAuth
+                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+
+            if (existingList.Count == 0)
+            {
                 await unitOfWork.IssFinAuth.AddAsync(entity, cancellationToken);
-            
-            await unitOfWork.SaveChangesAsync();
+            }
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -76,7 +79,7 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
             .ToList();
 
         var existingDetailsList = await unitOfWork.IssFinAuthDetails
-            .GetListAsync(d => allDetailsIds.Contains(d.IssFinAuthDetailsId), cancellationToken);
+            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.IssFinAuthDetailsId, d => d);
 
@@ -105,7 +108,7 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
             .ToList();
 
         var existingMerchants = await unitOfWork.MerchantInfo
-            .GetListAsync(m => allMerchantIds.Contains(m.Id), cancellationToken);
+            .GetListByIdsRawSqlAsync(allMerchantIds, cancellationToken);
 
         var merchantCache = existingMerchants.ToDictionary(m => m.Id, m => m);
 
@@ -171,7 +174,7 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
         }
 
         var existingLimits = await unitOfWork.Limit
-            .GetListAsync(l => limitIds.Contains(l.LimitId), cancellationToken);
+            .GetListByIdsRawSqlAsync(limitIds.ToList(), cancellationToken);
 
         var limitCache = existingLimits.ToDictionary(l => l.LimitId, l => l);
 

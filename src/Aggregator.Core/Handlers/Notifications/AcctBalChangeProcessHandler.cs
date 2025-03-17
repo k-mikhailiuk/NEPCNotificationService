@@ -50,13 +50,16 @@ public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCo
     {
         foreach (var entity in entities)
         {
-            var existing =
-                await unitOfWork.AcctBalChange.ExistsAsync(x => x.NotificationId == entity.NotificationId,
-                    cancellationToken);
-            if (!existing)
-                await unitOfWork.AcctBalChange.AddAsync(entity, cancellationToken);
+            var idsToCheck = new List<long> { entity.NotificationId };
 
-            await unitOfWork.SaveChangesAsync();
+            var existingList = await unitOfWork.AcctBalChange
+                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+
+            if (existingList.Count == 0)
+            {
+                await unitOfWork.AcctBalChange.AddAsync(entity, cancellationToken);
+            }
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -71,7 +74,7 @@ public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCo
             .ToList();
 
         var existingDetailsList = await unitOfWork.AcctBalChangeDetails
-            .GetListAsync(d => allDetailsIds.Contains(d.AcctBalChangeDetailsId), cancellationToken);
+            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.AcctBalChangeDetailsId, d => d);
 
@@ -117,7 +120,7 @@ public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCo
         }
 
         var existingLimits = await unitOfWork.Limit
-            .GetListAsync(l => limitIds.Contains(l.LimitId), cancellationToken);
+            .GetListByIdsRawSqlAsync(limitIds.ToList(), cancellationToken);
 
         var limitCache = existingLimits.ToDictionary(l => l.LimitId, l => l);
 

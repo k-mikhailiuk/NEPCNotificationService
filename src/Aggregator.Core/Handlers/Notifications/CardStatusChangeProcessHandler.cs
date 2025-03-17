@@ -50,13 +50,16 @@ public class CardStatusChangeProcessHandler : IRequestHandler<ProcessNotificatio
     {
         foreach (var entity in entities)
         {
-            var existing =
-                await unitOfWork.CardStatusChange.ExistsAsync(x => x.NotificationId == entity.NotificationId,
-                    cancellationToken);
-            if (!existing)
-                await unitOfWork.CardStatusChange.AddAsync(entity, cancellationToken);
+            var idsToCheck = new List<long> { entity.NotificationId };
 
-            await unitOfWork.SaveChangesAsync();
+            var existingList = await unitOfWork.CardStatusChange
+                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+
+            if (existingList.Count == 0)
+            {
+                await unitOfWork.CardStatusChange.AddAsync(entity, cancellationToken);
+            }
+            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -69,9 +72,9 @@ public class CardStatusChangeProcessHandler : IRequestHandler<ProcessNotificatio
             .Select(e => e.Details.CardStatusChangeDetailsId)
             .Distinct()
             .ToList();
-
+        
         var existingDetailsList = await unitOfWork.CardStatusChangeDetails
-            .GetListAsync(d => allDetailsIds.Contains(d.CardStatusChangeDetailsId), cancellationToken);
+            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.CardStatusChangeDetailsId, d => d);
 
