@@ -41,6 +41,7 @@ public interface IUnitOfWork : IDisposable
     IMerchantInfoRepository MerchantInfo { get; }
     INotificationExtensionRepository NotificationExtension { get; }
     IInboxArchiveMessageRepository InboxArchiveMessage { get; }
+    INotificationMessageRepository NotificationMessage { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     

@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Aggregator.Core.Extensions.Factories;
+namespace Aggregator.Core.Extensions.Factories.Abstractions;
 
 public interface INotificationCommandFactory
 {

@@ -1,11 +1,14 @@
 using Aggregator.Core.Behaviors;
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions.Factories;
+using Aggregator.Core.Extensions.Factories.Abstractions;
 using Aggregator.Core.Handlers;
 using Aggregator.Core.Handlers.Notifications;
 using Aggregator.Core.Mappers;
 using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.Core.Mappers.Notifications;
+using Aggregator.Core.Services;
+using Aggregator.Core.Services.Abstractions;
 using Aggregator.Core.Validators.Notifications;
 using Aggregator.DTOs.AcctBalChange;
 using Aggregator.DTOs.AcqFinAuth;
@@ -59,8 +62,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddFactories(this IServiceCollection services)
     {
         services.AddSingleton<INotificationCommandFactory, NotificationCommandFactory>();
+        services.AddSingleton<INotificationMessageBuilderFactory, NotificationMessageBuilderFactory>();
         services.AddSingleton<NotificationEntityMapperFactory>();
-
 
         return services;
     }
@@ -91,6 +94,18 @@ public static class ServiceCollectionExtensions
             .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<,>)))
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
+
+        return services;
+    }
+
+    public static IServiceCollection AddNotificationMessageBuilders(this IServiceCollection services)
+    {
+        services.Scan(scan => scan
+            .FromAssemblyOf<IssFinAuthNotificationMessageBuilder>()
+            .AddClasses(classes => classes.AssignableTo(typeof(INotificationMessageBuilder<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime()
+        );
 
         return services;
     }

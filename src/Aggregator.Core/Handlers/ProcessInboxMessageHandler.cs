@@ -1,7 +1,8 @@
 using Aggregator.Core.Commands;
-using Aggregator.Core.Extensions.Factories;
+using Aggregator.Core.Extensions.Factories.Abstractions;
 using Aggregator.DataAccess.Entities;
 using Aggregator.Repositories.Abstractions;
+using Common;
 using Common.Parsers;
 using DataIngrestorApi.DataAccess.Entities;
 using DataIngrestorApi.DataAccess.Entities.Enums;
@@ -18,15 +19,17 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
     private readonly IMediator _mediator;
     private readonly INotificationCommandFactory _commandFactory;
     private readonly IServiceProvider _serviceProvider;
+    private readonly INotificationMessageBuilderFactory _notificationMessageBuilderFactory;
 
     public ProcessInboxMessageHandler(ILogger<ProcessInboxMessageHandler> logger, IMediator mediator,
-        INotificationCommandFactory commandFactory, IServiceProvider serviceProvider
-    )
+        INotificationCommandFactory commandFactory, IServiceProvider serviceProvider,
+        INotificationMessageBuilderFactory notificationMessageBuilderFactory)
     {
         _logger = logger;
         _mediator = mediator;
         _commandFactory = commandFactory;
         _serviceProvider = serviceProvider;
+        _notificationMessageBuilderFactory = notificationMessageBuilderFactory;
     }
 
     public async Task Handle(ProcessInboxMessageCommand request, CancellationToken cancellationToken)
@@ -78,6 +81,15 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
                     processedMessages.FirstOrDefault(x => x.Value == processedNotificationId).Key).ToList();
 
                 await CompleteMessageProcessingAsync(inboxMessageIds, cancellationToken);
+                
+                NotificationTypeMapper.AggregatorTypeEntityTypeMapping.TryGetValue(type,
+                    out var notificationEntityType);
+
+                if (notificationEntityType == null)
+                    throw new InvalidOperationException($"Unknown aggregatorNotification type: {type}");
+
+                await CompositeAndSaveNotificationMessageAsync(notificationEntityType, processedNotificationsIds,
+                    cancellationToken);
             }
             catch (NotSupportedException ex)
             {
@@ -134,6 +146,23 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
 
         _logger.LogInformation("{count} messages successfully removed from inbox", inboxMessages.Count);
 
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task CompositeAndSaveNotificationMessageAsync(Type entityNotificationsType,
+        List<long> notificationIds,
+        CancellationToken cancellationToken)
+    {
+        var builder = _notificationMessageBuilderFactory.CreateNotificationMessageBuilder(entityNotificationsType);
+        
+        var messages=await builder.BuildNotificationAsync(notificationIds, cancellationToken);
+        
+        using var scope = _serviceProvider.CreateScope();
+
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+        await unitOfWork.NotificationMessage.AddRangeAsync(messages, cancellationToken);
+        
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

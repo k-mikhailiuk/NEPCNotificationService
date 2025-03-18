@@ -104,6 +104,9 @@ public class UnitOfWork : IUnitOfWork
 
     public IInboxArchiveMessageRepository InboxArchiveMessage => _inboxArchiveMessage.Value;
     private readonly Lazy<IInboxArchiveMessageRepository> _inboxArchiveMessage;
+    
+    public INotificationMessageRepository NotificationMessage => _notificationMessage.Value;
+    private readonly Lazy<INotificationMessageRepository> _notificationMessage;
 
     public UnitOfWork(AggregatorDbContext context, IServiceProvider serviceProvider)
     {
@@ -168,6 +171,8 @@ public class UnitOfWork : IUnitOfWork
             serviceProvider.GetService<INotificationExtensionRepository>() ?? throw new InvalidOperationException());
         _inboxArchiveMessage = new Lazy<IInboxArchiveMessageRepository>(() =>
             serviceProvider.GetService<IInboxArchiveMessageRepository>() ?? throw new InvalidOperationException());
+        _notificationMessage = new Lazy<INotificationMessageRepository>(() =>
+            serviceProvider.GetService<INotificationMessageRepository>() ?? throw new InvalidOperationException());
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) =>

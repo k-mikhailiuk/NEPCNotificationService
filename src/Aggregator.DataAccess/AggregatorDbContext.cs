@@ -51,6 +51,8 @@ public class AggregatorDbContext : DbContext
     
     public DbSet<InboxArchiveMessage> InboxArchiveMessages { get; set; }
     
+    public DbSet<NotificationMessage> NotificationMessages { get; set; }
+    
     public AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) : base(options)
     {
         
@@ -108,5 +110,6 @@ public class AggregatorDbContext : DbContext
         modelBuilder.ApplyConfiguration(new NotificationExtensionConfiguration());
         
         modelBuilder.ApplyConfiguration(new InboxArchiveMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new NotificationMessageConfiguration());
     }
 }

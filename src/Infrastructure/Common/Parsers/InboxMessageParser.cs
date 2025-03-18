@@ -24,7 +24,7 @@ public static class InboxMessageParser
             }
 
             if (!Enum.TryParse(rootKey, out NotificationType detectedType) || 
-                !NotificationTypeMapper.MappingDictionary.TryGetValue(detectedType, out var targetType))
+                !NotificationTypeMapper.EnumAggregatorTypeMapping.TryGetValue(detectedType, out var targetType))
             {
                 throw new InvalidOperationException($"Unknown notification type: {rootKey}");
             }

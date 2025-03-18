@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace DataIngrestorApi.App.Controllers;
 
 [ApiController]
-[Route("[controller]")]
 public class NotificationsController : ControllerBase
 {
     private readonly IMessageProcessor _messageProcessor;
@@ -37,6 +36,30 @@ public class NotificationsController : ControllerBase
                 instance, requestId, requestTime, contentType, userAgent, host);
 
             await _messageProcessor.ProcessBatchAsync(request);
+            return Ok();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error. Exception: {ex}");
+        }
+    }
+    
+    [HttpPost("echo")]
+    public IActionResult Echo([FromBody] string request,
+        [FromHeader(Name = "Content-Type")] string contentType,
+        [FromHeader(Name = "User-Agent")] string userAgent)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(contentType) || string.IsNullOrEmpty(userAgent))
+            {
+                return BadRequest("Missing requires headers.");
+            }
+            _logger.LogInformation("receivedMessage is : {request}", request);
             return Ok();
         }
         catch (ArgumentException ex)
