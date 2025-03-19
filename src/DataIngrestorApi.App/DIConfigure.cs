@@ -18,7 +18,10 @@ public static class DIConfigure
     {
         services.AddJsonSerializeOptions();
         services.AddSwagger();
-        services.AddControllers();
+        services.AddControllers(options =>
+        {
+            options.InputFormatters.Insert(0, new PlainTextInputFormatter());
+        });
         services.AddEndpointsApiExplorer();
         services.AddHealthCheck();
         services.AddMessageProcessor();

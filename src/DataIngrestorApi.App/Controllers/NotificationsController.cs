@@ -49,9 +49,10 @@ public class NotificationsController : ControllerBase
     }
     
     [HttpPost("echo")]
-    public IActionResult Echo([FromBody] string request,
-        [FromHeader(Name = "Content-Type")] string contentType,
-        [FromHeader(Name = "User-Agent")] string userAgent)
+    public IActionResult Echo(
+        [FromBody] string? request,
+        [FromHeader(Name = "Content-Type")] string? contentType,
+        [FromHeader(Name = "User-Agent")] string? userAgent)
     {
         try
         {

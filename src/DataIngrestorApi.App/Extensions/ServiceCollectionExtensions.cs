@@ -13,6 +13,7 @@ public static class ServiceCollectionExtensions
                 Title = "DataIngrestorApi",
                 Version = "v1"
             });
+            option.OperationFilter<ContentTypeHeaderOperationFilter>();
         });
 
         return services;
