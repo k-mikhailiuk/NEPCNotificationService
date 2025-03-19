@@ -1,7 +1,5 @@
 using Aggregator.App;
 
-AppContext.SetSwitch("Microsoft.EntityFrameworkCore.UseLegacyContainsTranslation", true);
-
 var builder = Host.CreateDefaultBuilder(args)
     .UseWindowsService()
     .ConfigureAppConfiguration(config =>

@@ -51,4 +51,11 @@ public static class ServiceCollectionExtension
         return services.Configure<NotificationMessageOptions>(
             configuration.GetSection(NotificationMessageOptions.NotificationMessage));
     }
+    
+    public static IServiceCollection AddAdminUserOptions(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        return services.Configure<AdminUserOptions>(
+            configuration.GetSection(AdminUserOptions.AdminUser));
+    }
 }
