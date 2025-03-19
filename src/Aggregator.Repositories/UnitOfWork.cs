@@ -183,6 +183,21 @@ public class UnitOfWork : IUnitOfWork
         return _context.Set<T>().FromSqlRaw(sql, parameters);
     }
 
+    public void BeginTransactionAsync()
+    {
+        _context.Database.BeginTransactionAsync();
+    }
+
+    public void CommitTransactionAsync()
+    {
+        _context.Database.CommitTransactionAsync();
+    }
+
+    public void RollbackTransactionAsync()
+    {
+        _context.Database.RollbackTransactionAsync();
+    }
+
     public void Dispose()
     {
         _context.Dispose();

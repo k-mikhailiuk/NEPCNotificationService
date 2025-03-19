@@ -34,6 +34,10 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
 
     public async Task Handle(ProcessInboxMessageCommand request, CancellationToken cancellationToken)
     {
+        using var scope = _serviceProvider.CreateScope();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        unitOfWork.BeginTransactionAsync();
+        
         _logger.LogInformation("Processing inbox messages: {MessageCount}", request.Messages.Count());
 
         var notificationsByType = new Dictionary<Type, List<object>>();
@@ -66,7 +70,8 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
                 notificationType.Name);
         }
 
-        await UpdateStatusAsync(processedMessages.Keys.ToList(), InboxMessageStatus.InProgress, cancellationToken);
+        await UpdateStatusAsync(processedMessages.Keys.ToList(), InboxMessageStatus.InProgress, unitOfWork,
+            cancellationToken);
 
         _logger.LogInformation("Set in progress status messages: {MessagesCount}", processedMessages.Count);
 
@@ -80,8 +85,8 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
                 var inboxMessageIds = processedNotificationsIds.Select(processedNotificationId =>
                     processedMessages.FirstOrDefault(x => x.Value == processedNotificationId).Key).ToList();
 
-                await CompleteMessageProcessingAsync(inboxMessageIds, cancellationToken);
-                
+                await CompleteMessageProcessingAsync(inboxMessageIds, unitOfWork, cancellationToken);
+
                 NotificationTypeMapper.AggregatorTypeEntityTypeMapping.TryGetValue(type,
                     out var notificationEntityType);
 
@@ -89,23 +94,24 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
                     throw new InvalidOperationException($"Unknown aggregatorNotification type: {type}");
 
                 await CompositeAndSaveNotificationMessageAsync(notificationEntityType, processedNotificationsIds,
+                    unitOfWork,
                     cancellationToken);
+                
+                unitOfWork.CommitTransactionAsync();
             }
             catch (NotSupportedException ex)
             {
                 _logger.LogWarning(ex.Message);
+                unitOfWork.RollbackTransactionAsync();
             }
         }
     }
 
-    private async Task UpdateStatusAsync(List<long> messageIds, InboxMessageStatus newStatus,
+    private async Task UpdateStatusAsync(List<long> messageIds, InboxMessageStatus newStatus, IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
         if (messageIds.Count == 0)
             return;
-
-        using var scope = _serviceProvider.CreateScope();
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         var inClause = string.Join(",", messageIds);
 
@@ -123,15 +129,12 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
         _logger.LogInformation("Updated {count} messages to status={status}", messages.Count, newStatus);
     }
 
-    private async Task CompleteMessageProcessingAsync(List<long> messageIds, CancellationToken cancellationToken)
+    private async Task CompleteMessageProcessingAsync(List<long> messageIds, IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get {count} processed messages", messageIds.Count);
 
-        await UpdateStatusAsync(messageIds, InboxMessageStatus.Completed, cancellationToken);
-
-        using var scope = _serviceProvider.CreateScope();
-
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        await UpdateStatusAsync(messageIds, InboxMessageStatus.Completed, unitOfWork, cancellationToken);
 
         var inboxMessages = await unitOfWork.Inbox.GetListByIdsRawSqlAsync(messageIds, cancellationToken);
 
@@ -151,18 +154,15 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
 
     private async Task CompositeAndSaveNotificationMessageAsync(Type entityNotificationsType,
         List<long> notificationIds,
+        IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
         var builder = _notificationMessageBuilderFactory.CreateNotificationMessageBuilder(entityNotificationsType);
-        
-        var messages=await builder.BuildNotificationAsync(notificationIds, cancellationToken);
-        
-        using var scope = _serviceProvider.CreateScope();
 
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var messages = await builder.BuildNotificationAsync(notificationIds, cancellationToken);
 
         await unitOfWork.NotificationMessage.AddRangeAsync(messages, cancellationToken);
-        
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

@@ -32,8 +32,9 @@ public static class UnifyProcessorExtension<T> where T : INotification
         if(allExtensionIds.Count == 0)
             return;
         
-        var inClause = string.Join(",", allExtensionIds);
-        var sql = $"SELECT * FROM [nepc].[NotificationExtension] WHERE [ExtensionId] IN ({inClause})";
+        var inClause = string.Join(", ", allExtensionIds.Select(x => $"'{x}'"));
+
+        var sql = $"SELECT * FROM [nepc].[NotificationExtensions] WHERE [ExtensionId] IN ({inClause})";
 
         var partialList = await unitOfWork.FromSql<NotificationExtension>(sql).ToListAsync(cancellationToken);
         

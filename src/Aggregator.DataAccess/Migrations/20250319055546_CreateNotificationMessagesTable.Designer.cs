@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aggregator.DataAccess.Migrations
 {
     [DbContext(typeof(AggregatorDbContext))]
-    [Migration("20250318114307_CreateNotificationMessagesTable")]
+    [Migration("20250319055546_CreateNotificationMessagesTable")]
     partial class CreateNotificationMessagesTable
     {
         /// <inheritdoc />
@@ -747,7 +747,10 @@ namespace Aggregator.DataAccess.Migrations
             modelBuilder.Entity("Aggregator.DataAccess.Entities.NotificationMessage", b =>
                 {
                     b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Message")
                         .IsRequired()

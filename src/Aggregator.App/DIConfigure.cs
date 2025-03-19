@@ -22,5 +22,6 @@ public static class DIConfigure
         services.AddValidators();
         services.AddMappers();
         services.AddNotificationMessageBuilders();
+        services.AddNotificationMessageOptions(configuration);
     }
 }

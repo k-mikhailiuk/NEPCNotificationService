@@ -6,12 +6,14 @@ namespace OptionsConfiguration;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddKafkaMessageProducerOptions(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddKafkaMessageProducerOptions(this IServiceCollection services,
+        IConfiguration configuration)
     {
         return services.Configure<KafkaProducerOptions>(configuration.GetSection(KafkaProducerOptions.KafkaProducer));
     }
 
-    public static IServiceCollection AddKafkaMessageConsumerOptions(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddKafkaMessageConsumerOptions(this IServiceCollection services,
+        IConfiguration configuration)
     {
         return services.Configure<KafkaConsumerOptions>(configuration.GetSection(KafkaConsumerOptions.KafkaConsumer));
     }
@@ -31,20 +33,22 @@ public static class ServiceCollectionExtension
         IConfiguration configuration)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Connection string is missing");
-        
+                               ?? throw new InvalidOperationException("Connection string is missing");
+
         return services.Configure<string>(options => options = connectionString);
     }
-    
+
     public static IServiceCollection AddNotificationProcessorOptions(this IServiceCollection services,
         IConfiguration configuration)
     {
-        return services.Configure<NotificationProcessorOptions>(configuration.GetSection(NotificationProcessorOptions.NotificationProcessor));
+        return services.Configure<NotificationProcessorOptions>(
+            configuration.GetSection(NotificationProcessorOptions.NotificationProcessor));
     }
-    
-    public static IServiceCollection AddNotificationAviabilityOptions(this IServiceCollection services,
+
+    public static IServiceCollection AddNotificationMessageOptions(this IServiceCollection services,
         IConfiguration configuration)
     {
-        return services.Configure<NotificationAviabilityOptions>(configuration.GetSection(NotificationAviabilityOptions.NotificationAviability));
+        return services.Configure<NotificationMessageOptions>(
+            configuration.GetSection(NotificationMessageOptions.NotificationMessage));
     }
 }

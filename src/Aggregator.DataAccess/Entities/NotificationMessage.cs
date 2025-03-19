@@ -11,7 +11,7 @@ public class NotificationMessage
     /// <summary>
     /// Уникальный идентификатор
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
     /// <summary>

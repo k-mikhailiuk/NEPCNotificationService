@@ -744,7 +744,10 @@ namespace Aggregator.DataAccess.Migrations
             modelBuilder.Entity("Aggregator.DataAccess.Entities.NotificationMessage", b =>
                 {
                     b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Message")
                         .IsRequired()

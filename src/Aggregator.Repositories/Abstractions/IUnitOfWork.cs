@@ -46,4 +46,10 @@ public interface IUnitOfWork : IDisposable
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     
     IQueryable<T> FromSql<T>(string sql, params object[] parameters) where T : class;
+    
+    void BeginTransactionAsync();
+    
+    void CommitTransactionAsync();
+    
+    void RollbackTransactionAsync();
 }
