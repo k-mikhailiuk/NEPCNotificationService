@@ -1,0 +1,29 @@
+using ControlPanel.DataAccess.Entites;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace ControlPanel.DataAccess.Configurations;
+
+public class NotificationMessageTextDirectoryConfiguration : IEntityTypeConfiguration<NotificationMessageTextDirectory>
+{
+    public void Configure(EntityTypeBuilder<NotificationMessageTextDirectory> builder)
+    {
+        builder.ToTable("NotificationMessageTextDirectories");
+
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.MessageTextRu).IsRequired(false);
+        builder.Property(x => x.MessageTextEn).IsRequired(false);
+        builder.Property(x => x.MessageTextKg).IsRequired(false);
+        builder.Property(x => x.NotificationType).IsRequired().HasConversion<byte>();
+        builder.Property(x => x.OperationType).IsRequired(false).HasConversion<int>();
+
+        builder.HasIndex(n => n.NotificationType)
+            .IsUnique()
+            .HasFilter("OperationType IS NULL");
+
+        builder.HasIndex(n => new { n.NotificationType, n.OperationType })
+            .IsUnique()
+            .HasFilter("OperationType IS NOT NULL");
+    }
+}

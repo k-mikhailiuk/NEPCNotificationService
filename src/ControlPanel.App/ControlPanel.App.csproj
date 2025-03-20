@@ -19,6 +19,7 @@
       </PackageReference>
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\ControlPanel.Core\ControlPanel.Core.csproj" />
       <ProjectReference Include="..\ControlPanel.DataAccess\ControlPanel.DataAccess.csproj" />
       <ProjectReference Include="..\Infrastructure\OptionsConfiguration\OptionsConfiguration.csproj" />
     </ItemGroup>

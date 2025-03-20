@@ -1,10 +1,11 @@
 using ControlPanel.App;
-using ControlPanel.DataAccess;
+using ControlPanel.DataAccess.DataSeeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.Sources.Clear();
-builder.Configuration.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: false, reloadOnChange: true);
+builder.Configuration.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: false,
+    reloadOnChange: true);
 
 builder.Services.RegisterServices(builder.Configuration);
 
@@ -18,8 +19,14 @@ if (!app.Environment.IsDevelopment())
 
 using (var scope = app.Services.CreateScope())
 {
-    var seeder = scope.ServiceProvider.GetRequiredService<IdentityDataSeeder>();
-    await seeder.SeedDefaultUserAsync(app.Services);
+    var identityDataSeeder = scope.ServiceProvider.GetRequiredService<IdentityDataSeeder>();
+    var keyWordsDataSeeder = scope.ServiceProvider.GetRequiredService<KeyWordsDataSeeder>();
+    var notificationMessageTextDirectoriesDataSeeder =
+        scope.ServiceProvider.GetRequiredService<NotificationMessageTextDirectoriesDataSeeder>();
+
+    await identityDataSeeder.SeedDefaultUserAsync(app.Services);
+    await keyWordsDataSeeder.SeedKeyWordsAsync();
+    await notificationMessageTextDirectoriesDataSeeder.SeedNotificationTextAsync();
 }
 
 app.UseHttpsRedirection();

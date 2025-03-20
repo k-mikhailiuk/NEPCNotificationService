@@ -1,4 +1,4 @@
-namespace ControlPanel.App.Models;
+namespace ControlPanel.App.Models.ViewModels;
 
 public class ErrorViewModel
 {

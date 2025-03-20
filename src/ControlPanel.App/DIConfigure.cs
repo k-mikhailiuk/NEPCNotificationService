@@ -1,3 +1,4 @@
+using ControlPanel.Core;
 using ControlPanel.DataAccess;
 using Microsoft.AspNetCore.Identity;
 using OptionsConfiguration;
@@ -16,7 +17,9 @@ public static class DIConfigure
         services.AddAdminUserOptions(configuration);
         services.AddControllersWithViews();
         services.ConfigureIdentity(configuration);
-        services.AddIdentityDataSeeder();
+        services.AddDataSeeders();
+        services.AddRepositories();
+        services.AddServices();
     }
 
     private static void ConfigureIdentity(this IServiceCollection services, IConfiguration configuration)

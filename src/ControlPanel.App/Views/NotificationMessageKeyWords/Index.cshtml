@@ -1,0 +1,151 @@
+@model IEnumerable<ControlPanel.DataAccess.Entites.NotificationMessageKeyWord>
+
+@{
+    ViewBag.Title = "Справочник ключевых слов";
+    Layout = "_Layout";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="accordion" id="keywordAccordion">
+    @foreach (var group in Model.GroupBy(x => x.NotificationType))
+    {
+        // Уникальные идентификаторы для каждой секции
+        var headingId = $"heading_{group.Key}";
+        var collapseId = $"collapse_{group.Key}";
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="@headingId">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#@collapseId"
+                        aria-expanded="false"
+                        aria-controls="@collapseId">
+                    @group.Key
+                </button>
+            </h2>
+            <div id="@collapseId" class="accordion-collapse collapse" 
+                 aria-labelledby="@headingId"
+                 data-bs-parent="#keywordAccordion">
+                <div class="accordion-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th style="width: 150px;">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in group)
+                        {
+                            <tr data-id="@item.Id">
+                                <td>@item.KeyWord</td>
+                                <td class="desc-cell">@item.Description</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-secondary edit-btn">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Находим все кнопки "Редактировать"
+            document.querySelectorAll('.edit-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const row = btn.closest('tr');
+                    const descCell = row.querySelector('.desc-cell');
+                    const originalText = descCell.innerText.trim();
+                    const rowId = row.dataset.id; // наш Id из data-id
+
+                    // Проверяем, не в режиме ли мы уже редактирования
+                    const isEditing = row.classList.contains('editing');
+
+                    if (!isEditing) {
+                        // Входим в режим редактирования
+                        row.classList.add('editing');
+
+                        // Превращаем текст в input
+                        descCell.innerHTML = `
+                            <input type="text" class="form-control form-control-sm desc-input" 
+                                   value="${originalText}" />
+                        `;
+
+                        // Меняем кнопку на "Сохранить" (зелёная)
+                        btn.classList.remove('btn-secondary');
+                        btn.classList.add('btn-success');
+                        btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+
+                        // Добавляем рядом кнопку "Отмена" (красная)
+                        const cancelBtn = document.createElement('button');
+                        cancelBtn.type = 'button';
+                        cancelBtn.classList.add('btn', 'btn-sm', 'btn-danger', 'ms-1', 'cancel-btn');
+                        cancelBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+                        btn.parentNode.appendChild(cancelBtn);
+
+                        // Обработка клика на "Отмена"
+                        cancelBtn.addEventListener('click', function() {
+                            // Откатываем изменения
+                            descCell.innerText = originalText;
+                            row.classList.remove('editing');
+                            btn.classList.remove('btn-success');
+                            btn.classList.add('btn-secondary');
+                            btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+                            cancelBtn.remove();
+                        });
+                    } else {
+                        // Сейчас кнопка — "Сохранить"
+                        const input = row.querySelector('.desc-input');
+                        const newText = input.value.trim();
+
+                        // Делаем AJAX-запрос на сохранение
+                        fetch('@Url.Action("UpdateDescription", "NotificationMessageKeyWords")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ 
+                                id: parseInt(rowId), 
+                                description: newText 
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not OK');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                // Успешно сохранено, обновляем ячейку
+                                descCell.innerText = newText;
+                                row.classList.remove('editing');
+                                btn.classList.remove('btn-success');
+                                btn.classList.add('btn-secondary');
+                                btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+                                const cancelBtn = row.querySelector('.cancel-btn');
+                                if (cancelBtn) cancelBtn.remove();
+                            } else {
+                                alert('Сохранение не удалось!');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Ошибка при сохранении. См. консоль.');
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

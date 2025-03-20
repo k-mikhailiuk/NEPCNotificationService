@@ -4,6 +4,7 @@ using ControlPanel.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControlPanel.DataAccess.Migrations
 {
     [DbContext(typeof(ControlPanelDbContext))]
-    partial class ControlPanelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250320043919_AddNotificationKeyWordsTable")]
+    partial class AddNotificationKeyWordsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,42 +47,6 @@ namespace ControlPanel.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("NotificationMessageKeyWords", "nepc");
-                });
-
-            modelBuilder.Entity("ControlPanel.DataAccess.Entites.NotificationMessageTextDirectory", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("MessageTextEn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MessageTextKg")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MessageTextRu")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte>("NotificationType")
-                        .HasColumnType("tinyint");
-
-                    b.Property<int?>("OperationType")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NotificationType")
-                        .IsUnique()
-                        .HasFilter("OperationType IS NULL");
-
-                    b.HasIndex("NotificationType", "OperationType")
-                        .IsUnique()
-                        .HasFilter("OperationType IS NOT NULL");
-
-                    b.ToTable("NotificationMessageTextDirectories", "nepc");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

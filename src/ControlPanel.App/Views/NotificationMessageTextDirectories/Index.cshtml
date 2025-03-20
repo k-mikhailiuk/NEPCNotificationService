@@ -1,0 +1,186 @@
+@model IEnumerable<ControlPanel.DataAccess.Entites.NotificationMessageTextDirectory>
+
+@{
+    ViewBag.Title = "Справочник текста уведомлений";
+    Layout = "_Layout";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="accordion" id="keywordAccordion">
+    @foreach (var group in Model.GroupBy(x => x.NotificationType))
+    {
+        // Уникальные идентификаторы для каждой секции
+        var headingId = $"heading_{group.Key}";
+        var collapseId = $"collapse_{group.Key}";
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="@headingId">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#@collapseId"
+                        aria-expanded="false"
+                        aria-controls="@collapseId">
+                    @group.Key
+                </button>
+            </h2>
+            <div id="@collapseId" class="accordion-collapse collapse"
+                 aria-labelledby="@headingId"
+                 data-bs-parent="#keywordAccordion">
+                <div class="accordion-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Подтип</th>
+                            <th>Текст сообщения на русском</th>
+                            <th>Текст сообщения на английском</th>
+                            <th>Текст сообщения на кыргызском</th>
+                            <th style="width: 150px;">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in group)
+                        {
+                            <tr data-id="@item.Id">
+                                @if (item.OperationType == null)
+                                {
+                                    <td>@item.NotificationType</td>
+                                }
+                                else
+                                {
+                                    <td>@item.OperationType</td>
+                                }
+                                <td class="desc-cell-ru">@item.MessageTextRu</td>
+                                <td class="desc-cell-en">@item.MessageTextEn</td>
+                                <td class="desc-cell-kg">@item.MessageTextKg</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-secondary edit-btn">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Находим все кнопки "Редактировать"
+            document.querySelectorAll('.edit-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    const row = btn.closest('tr');
+                    const descCellRu = row.querySelector('.desc-cell-ru');
+                    const descCellEn = row.querySelector('.desc-cell-en');
+                    const descCellKg = row.querySelector('.desc-cell-kg');
+                    const originalTextRu = descCellRu.innerText.trim();
+                    const originalTextEn = descCellEn.innerText.trim();
+                    const originalTextKg = descCellKg.innerText.trim();
+                    const rowId = row.dataset.id; // наш Id из data-id
+
+                    // Проверяем, не в режиме ли мы уже редактирования
+                    const isEditing = row.classList.contains('editing');
+
+                    if (!isEditing) {
+                        // Входим в режим редактирования
+                        row.classList.add('editing');
+
+                        // Превращаем текст в input
+                        descCellRu.innerHTML = `
+                            <input type="text" class="form-control form-control-sm desc-inputRu" 
+                                   value="${originalTextRu}" />
+                        `;
+
+                        descCellEn.innerHTML = `
+                            <input type="text" class="form-control form-control-sm desc-inputEn" 
+                                   value="${originalTextEn}" />
+                        `;
+
+                        descCellKg.innerHTML = `
+                            <input type="text" class="form-control form-control-sm desc-inputKg" 
+                                   value="${originalTextKg}" />
+                        `;
+
+                        // Меняем кнопку на "Сохранить" (зелёная)
+                        btn.classList.remove('btn-secondary');
+                        btn.classList.add('btn-success');
+                        btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+
+                        // Добавляем рядом кнопку "Отмена" (красная)
+                        const cancelBtn = document.createElement('button');
+                        cancelBtn.type = 'button';
+                        cancelBtn.classList.add('btn', 'btn-sm', 'btn-danger', 'ms-1', 'cancel-btn');
+                        cancelBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+                        btn.parentNode.appendChild(cancelBtn);
+
+                        // Обработка клика на "Отмена"
+                        cancelBtn.addEventListener('click', function() {
+                            // Откатываем изменения
+                            descCellRu.innerText = originalTextRu;
+                            descCellEn.innerText = originalTextEn;
+                            descCellKg.innerText = originalTextKg;
+                            row.classList.remove('editing');
+                            btn.classList.remove('btn-success');
+                            btn.classList.add('btn-secondary');
+                            btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+                            cancelBtn.remove();
+                        });
+                    } else {
+                        // Сейчас кнопка — "Сохранить"
+                        const inputRu = row.querySelector('.desc-inputRu');
+                        const inputEn = row.querySelector('.desc-inputEn');
+                        const inputKg = row.querySelector('.desc-inputKg');
+                        const newTextRu = inputRu.value.trim();
+                        const newTextEn = inputEn.value.trim();
+                        const newTextKg = inputKg.value.trim();
+
+                        // Делаем AJAX-запрос на сохранение
+                        fetch('@Url.Action("UpdateMessageTexts", "NotificationMessageTextDirectories")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: parseInt(rowId),
+                                MessageTextRu: newTextRu,
+                                MessageTextEn: newTextEn,
+                                MessageTextKg: newTextKg,
+                            })
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not OK');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    // Успешно сохранено, обновляем ячейку
+                                    descCellRu.innerText = newTextRu;
+                                    descCellEn.innerText = newTextEn;
+                                    descCellKg.innerText = newTextKg;
+                                    row.classList.remove('editing');
+                                    btn.classList.remove('btn-success');
+                                    btn.classList.add('btn-secondary');
+                                    btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+                                    const cancelBtn = row.querySelector('.cancel-btn');
+                                    if (cancelBtn) cancelBtn.remove();
+                                } else {
+                                    alert('Сохранение не удалось!');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Ошибка при сохранении. См. консоль.');
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+}

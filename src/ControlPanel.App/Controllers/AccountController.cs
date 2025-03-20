@@ -1,4 +1,4 @@
-using ControlPanel.App.ViewModels.Account;
+using ControlPanel.App.Models.ViewModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 

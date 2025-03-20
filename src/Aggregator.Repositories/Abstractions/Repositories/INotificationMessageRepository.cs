@@ -1,7 +1,6 @@
 using Aggregator.DataAccess.Entities;
-using Aggregator.Repositories.Abstractions.Repositories;
 
-namespace Aggregator.Repositories.Abstractions;
+namespace Aggregator.Repositories.Abstractions.Repositories;
 
 public interface INotificationMessageRepository : IRepository<NotificationMessage>
 {

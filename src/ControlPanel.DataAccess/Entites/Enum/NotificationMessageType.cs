@@ -1,0 +1,14 @@
+namespace ControlPanel.DataAccess.Entites.Enum;
+
+public enum NotificationMessageType
+{
+    Undefined = 0,
+    IssFinAuth = 1,
+    AcqFinAuth = 2,
+    CardStatusChange = 3,
+    PinChange = 4,
+    OwiUserAction = 5,
+    Unhold = 6,
+    AcctBalChange = 7,
+    TokenStatusChange = 8
+}
