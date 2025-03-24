@@ -7,6 +7,7 @@ using Aggregator.Repositories.Abstractions.Repositories.OwiUserAction;
 using Aggregator.Repositories.Abstractions.Repositories.PinChange;
 using Aggregator.Repositories.Abstractions.Repositories.TokenStatusChange;
 using Aggregator.Repositories.Abstractions.Repositories.Unhold;
+using ControlPanel.DataAccess.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Abstractions;
 
@@ -42,6 +43,9 @@ public interface IUnitOfWork : IDisposable
     INotificationExtensionRepository NotificationExtension { get; }
     IInboxArchiveMessageRepository InboxArchiveMessage { get; }
     INotificationMessageRepository NotificationMessage { get; }
+    INotificationMessageKeyWordsRepository NotificationMessageKeyWords { get; }
+    
+    INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     

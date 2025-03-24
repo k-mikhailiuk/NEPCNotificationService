@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
+      <ProjectReference Include="..\ControlPanel.DataAccess\ControlPanel.DataAccess.csproj" />
     </ItemGroup>
 
     <ItemGroup>

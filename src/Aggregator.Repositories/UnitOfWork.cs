@@ -9,6 +9,7 @@ using Aggregator.Repositories.Abstractions.Repositories.OwiUserAction;
 using Aggregator.Repositories.Abstractions.Repositories.PinChange;
 using Aggregator.Repositories.Abstractions.Repositories.TokenStatusChange;
 using Aggregator.Repositories.Abstractions.Repositories.Unhold;
+using ControlPanel.DataAccess.Abstractions.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -107,6 +108,12 @@ public class UnitOfWork : IUnitOfWork
     
     public INotificationMessageRepository NotificationMessage => _notificationMessage.Value;
     private readonly Lazy<INotificationMessageRepository> _notificationMessage;
+    
+    public INotificationMessageKeyWordsRepository NotificationMessageKeyWords => _notificationMessageKeyWords.Value;
+    private readonly Lazy<INotificationMessageKeyWordsRepository> _notificationMessageKeyWords;
+
+    public INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories => _notificationMessageTextDirectories.Value;
+    private readonly Lazy<INotificationMessageTextDirectoriesRepository> _notificationMessageTextDirectories;
 
     public UnitOfWork(AggregatorDbContext context, IServiceProvider serviceProvider)
     {
@@ -173,6 +180,11 @@ public class UnitOfWork : IUnitOfWork
             serviceProvider.GetService<IInboxArchiveMessageRepository>() ?? throw new InvalidOperationException());
         _notificationMessage = new Lazy<INotificationMessageRepository>(() =>
             serviceProvider.GetService<INotificationMessageRepository>() ?? throw new InvalidOperationException());
+        
+        _notificationMessageKeyWords = new Lazy<INotificationMessageKeyWordsRepository>(() =>
+            serviceProvider.GetService<INotificationMessageKeyWordsRepository>() ?? throw new InvalidOperationException());
+        _notificationMessageTextDirectories = new Lazy<INotificationMessageTextDirectoriesRepository>(() =>
+            serviceProvider.GetService<INotificationMessageTextDirectoriesRepository>() ?? throw new InvalidOperationException());
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) =>
