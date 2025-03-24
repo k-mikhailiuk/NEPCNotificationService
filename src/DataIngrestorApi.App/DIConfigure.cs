@@ -20,7 +20,7 @@ public static class DIConfigure
         services.AddSwagger();
         services.AddControllers(options =>
         {
-            options.InputFormatters.Insert(0, new PlainTextInputFormatter());
+            options.InputFormatters.Add(new CustomTextPlainInputFormatter());
         });
         services.AddEndpointsApiExplorer();
         services.AddHealthCheck();
