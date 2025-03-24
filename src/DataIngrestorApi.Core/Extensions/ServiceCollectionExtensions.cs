@@ -1,11 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using DataIngrestorApi.Services.Health;
-using DataIngrestorApi.Services.Health.Abstractions;
-using DataIngrestorApi.Services.MessageProcessor.Abstractions;
+using DataIngrestorApi.Core.Health;
+using DataIngrestorApi.Core.Health.Abstractions;
+using DataIngrestorApi.Core.MessageProcessor.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DataIngrestorApi.Services.Extensions;
+namespace DataIngrestorApi.Core.Extensions;
 
 public static class ServiceCollectionExtensions
 {

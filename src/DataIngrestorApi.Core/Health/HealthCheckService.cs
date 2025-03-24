@@ -1,8 +1,8 @@
 using Common.Health.Dtos;
-using DataIngrestorApi.Services.Health.Abstractions;
+using DataIngrestorApi.Core.Health.Abstractions;
 using MessagingBroker.HealthCheck.Abstractions;
 
-namespace DataIngrestorApi.Services.Health;
+namespace DataIngrestorApi.Core.Health;
 
 public class HealthCheckService : IHealthCheckService
 {

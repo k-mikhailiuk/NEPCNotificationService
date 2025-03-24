@@ -24,7 +24,7 @@
     <ItemGroup>
       <ProjectReference Include="..\DataIngrestorApi.DataAccess\DataIngrestorApi.DataAccess.csproj" />
       <ProjectReference Include="..\DataIngrestorApi.DTOs\DataIngrestorApi.DTOs.csproj" />
-      <ProjectReference Include="..\DataIngrestorApi.Services\DataIngrestorApi.Services.csproj" />
+      <ProjectReference Include="..\DataIngrestorApi.Core\DataIngrestorApi.Core.csproj" />
       <ProjectReference Include="..\Infrastructure\Common\Common.csproj" />
       <ProjectReference Include="..\Infrastructure\MessagingBroker\MessagingBroker.csproj" />
     </ItemGroup>

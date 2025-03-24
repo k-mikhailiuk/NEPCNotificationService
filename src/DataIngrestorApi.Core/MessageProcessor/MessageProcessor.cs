@@ -1,11 +1,11 @@
 using System.Text.Json;
+using DataIngrestorApi.Core.MessageProcessor.Abstractions;
 using DataIngrestorApi.DataAccess;
 using DataIngrestorApi.DataAccess.Entities;
 using DataIngrestorApi.DTOs;
-using DataIngrestorApi.Services.MessageProcessor.Abstractions;
 using Microsoft.Extensions.Logging;
 
-namespace DataIngrestorApi.Services.MessageProcessor;
+namespace DataIngrestorApi.Core.MessageProcessor;
 
 /// <summary>
 /// Класс-обработчик полученных сообщений

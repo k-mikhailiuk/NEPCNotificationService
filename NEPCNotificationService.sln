@@ -12,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "KIT", "KIT", "{53440ED9-EC8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OptionsConfiguration", "src\Infrastructure\OptionsConfiguration\OptionsConfiguration.csproj", "{6559E63E-9734-46A2-9C6B-82D1EDCDCB10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataIngrestorApi.Services", "src\DataIngrestorApi.Services\DataIngrestorApi.Services.csproj", "{15C85FC4-804E-4D81-B26B-812D5F5E73D8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataIngrestorApi.Core", "src\DataIngrestorApi.Core\DataIngrestorApi.Core.csproj", "{15C85FC4-804E-4D81-B26B-812D5F5E73D8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "src\Infrastructure\Common\Common.csproj", "{AC6DA5B8-2E4D-4D1D-AAB1-1D9F543EA487}"
 EndProject

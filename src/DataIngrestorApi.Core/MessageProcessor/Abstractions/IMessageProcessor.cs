@@ -1,6 +1,6 @@
 using DataIngrestorApi.DTOs;
 
-namespace DataIngrestorApi.Services.MessageProcessor.Abstractions;
+namespace DataIngrestorApi.Core.MessageProcessor.Abstractions;
 
 public interface IMessageProcessor
 {

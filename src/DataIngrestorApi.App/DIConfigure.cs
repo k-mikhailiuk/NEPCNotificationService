@@ -1,6 +1,6 @@
 using DataIngrestorApi.App.Extensions;
 using DataIngrestorApi.DataAccess;
-using DataIngrestorApi.Services.Extensions;
+using DataIngrestorApi.Core.Extensions;
 using OptionsConfiguration;
 
 namespace DataIngrestorApi.App;

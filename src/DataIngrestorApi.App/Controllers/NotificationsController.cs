@@ -1,5 +1,5 @@
 using DataIngrestorApi.DTOs;
-using DataIngrestorApi.Services.MessageProcessor.Abstractions;
+using DataIngrestorApi.Core.MessageProcessor.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataIngrestorApi.App.Controllers;

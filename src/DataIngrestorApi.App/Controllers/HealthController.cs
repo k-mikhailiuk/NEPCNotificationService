@@ -1,6 +1,6 @@
 using Common.Health.Dtos;
-using DataIngrestorApi.Services.Health;
-using DataIngrestorApi.Services.Health.Abstractions;
+using DataIngrestorApi.Core.Health;
+using DataIngrestorApi.Core.Health.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataIngrestorApi.App.Controllers;
