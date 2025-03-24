@@ -15,6 +15,8 @@ public class NotificationMessageTextDirectory
     public string? MessageTextRu { get; set; }
     public string? MessageTextEn { get; set; }
     public string? MessageTextKg { get; set; }
+    
+    public bool IsNeedSend { get; set; }
 
     public static NotificationMessageTextDirectory Create(NotificationMessageType type,
         NotificationOperationType? operationType = null)
@@ -25,7 +27,8 @@ public class NotificationMessageTextDirectory
         return new NotificationMessageTextDirectory
         {
             NotificationType = type,
-            OperationType = operationType
+            OperationType = operationType,
+            IsNeedSend = false
         };
     }
 }

@@ -14,7 +14,8 @@
                 OperationType = item.OperationType?.ToString(),
                 MessageTextRu = item.MessageTextRu,
                 MessageTextEn = item.MessageTextEn,
-                MessageTextKg = item.MessageTextKg
+                MessageTextKg = item.MessageTextKg,
+                IssNeedSend = item.IsNeedSend
             }).ToList()
         );
 
@@ -57,6 +58,11 @@
             <textarea id="textKg" class="form-control" rows="2"></textarea>
         </div>
 
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="isNeedSendCheckbox" />
+            <label class="form-check-label" for="isNeedSendCheckbox">Отправлять уведомление?</label>
+        </div>
+
         <button type="button" id="saveBtn" class="btn btn-primary">Сохранить</button>
     </div>
 </div>
@@ -70,10 +76,10 @@
         const textRu = document.getElementById('textRu');
         const textEn = document.getElementById('textEn');
         const textKg = document.getElementById('textKg');
+        const isNeedSendCheckbox = document.getElementById('isNeedSendCheckbox'); // <-- ВАЖНО
         const saveBtn = document.getElementById('saveBtn');
 
         let currentItem = null;
-
 
         notificationTypeSelect.addEventListener('change', function () {
             const selectedNotificationType = this.value;
@@ -83,6 +89,7 @@
             textRu.value = '';
             textEn.value = '';
             textKg.value = '';
+            isNeedSendCheckbox.checked = false; // <-- Сбрасываем чекбокс
             currentItem = null;
 
             if (!selectedNotificationType || !data[selectedNotificationType]) {
@@ -102,12 +109,11 @@
                 fillFields(currentItem);
             } else {
                 operationTypeSelect.disabled = false;
-
                 for (const it of items) {
                     if (it.OperationType !== null) {
                         const option = document.createElement('option');
                         option.value = it.OperationType;
-                        option.textContent = it.OperationType; 
+                        option.textContent = it.OperationType;
                         operationTypeSelect.appendChild(option);
                     }
                 }
@@ -130,6 +136,7 @@
                 textRu.value = '';
                 textEn.value = '';
                 textKg.value = '';
+                isNeedSendCheckbox.checked = false;
             }
         });
 
@@ -137,6 +144,7 @@
             textRu.value = item.MessageTextRu || '';
             textEn.value = item.MessageTextEn || '';
             textKg.value = item.MessageTextKg || '';
+            isNeedSendCheckbox.checked = !!item.IssNeedSend;
         }
 
         saveBtn.addEventListener('click', function () {
@@ -144,14 +152,15 @@
                 showToast('Не выбран объект для сохранения!', 'danger');
                 return;
             }
-            // Собираем данные
+
             const payload = {
                 Id: currentItem.Id,
                 MessageTextRu: textRu.value,
                 MessageTextEn: textEn.value,
-                MessageTextKg: textKg.value
+                MessageTextKg: textKg.value,
+                IsNeedSend: isNeedSendCheckbox.checked 
             };
-            // Отправляем на сервер
+
             fetch('@Url.Action("UpdateMessageTexts", "NotificationMessageTextDirectories")', {
                 method: 'POST',
                 headers: {
@@ -162,10 +171,11 @@
                 .then(resp => resp.json())
                 .then(data => {
                     if (data.success) {
-                        // Обновляем данные в currentItem
                         currentItem.MessageTextRu = textRu.value;
                         currentItem.MessageTextEn = textEn.value;
                         currentItem.MessageTextKg = textKg.value;
+                        currentItem.IssNeedSend = isNeedSendCheckbox.checked;
+
                         showToast('Сохранено успешно!', 'success');
                     } else {
                         showToast('Ошибка при сохранении!', 'danger');
@@ -178,7 +188,6 @@
         });
 
         function showToast(message, type = 'success', delay = 3000) {
-            // Проверяем, есть ли контейнер для toast'ов, если нет — создаём
             let container = document.getElementById('toastContainer');
             if (!container) {
                 container = document.createElement('div');
@@ -187,7 +196,6 @@
                 document.body.appendChild(container);
             }
 
-            // Создаём элемент toast
             const toastEl = document.createElement('div');
             toastEl.className = `toast align-items-center text-bg-${type} border-0`;
             toastEl.setAttribute('role', 'alert');
@@ -195,22 +203,20 @@
             toastEl.setAttribute('aria-atomic', 'true');
 
             toastEl.innerHTML = `
-        <div class="d-flex">
-            <div class="toast-body">
-                ${message}
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" 
-                    data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-    `;
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                            data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
 
             container.appendChild(toastEl);
 
-            // Инициализируем toast через Bootstrap
-            const bsToast = new bootstrap.Toast(toastEl, {delay: delay});
+            const bsToast = new bootstrap.Toast(toastEl, { delay: delay });
             bsToast.show();
 
-            // После скрытия удаляем элемент
             toastEl.addEventListener('hidden.bs.toast', () => {
                 toastEl.remove();
             });

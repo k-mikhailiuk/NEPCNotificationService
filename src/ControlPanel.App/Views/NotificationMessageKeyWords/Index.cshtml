@@ -10,7 +10,6 @@
 <div class="accordion" id="keywordAccordion">
     @foreach (var group in Model.GroupBy(x => x.NotificationType))
     {
-        // Генерируем уникальные id для кнопки и панели
         var btnId = $"btn_{group.Key}";
         var collapseId = $"collapse_{group.Key}";
 
@@ -57,42 +56,34 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // ====== ЛОГИКА РЕДАКТИРОВАНИЯ ======
             document.querySelectorAll('.edit-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () {
                     const row = btn.closest('tr');
                     const descCell = row.querySelector('.desc-cell');
                     const originalText = descCell.innerText.trim();
-                    const rowId = row.dataset.id; // наш Id из data-id
+                    const rowId = row.dataset.id; 
 
-                    // Проверяем, не в режиме ли мы уже редактирования
                     const isEditing = row.classList.contains('editing');
 
                     if (!isEditing) {
-                        // Входим в режим редактирования
                         row.classList.add('editing');
 
-                        // Превращаем текст в input
                         descCell.innerHTML = `
                             <input type="text" class="form-control form-control-sm desc-input" 
                                    value="${originalText}" />
                         `;
 
-                        // Меняем кнопку на "Сохранить" (зелёная)
                         btn.classList.remove('btn-secondary');
                         btn.classList.add('btn-success');
                         btn.innerHTML = '<i class="bi bi-check-lg"></i>';
 
-                        // Добавляем рядом кнопку "Отмена" (красная)
                         const cancelBtn = document.createElement('button');
                         cancelBtn.type = 'button';
                         cancelBtn.classList.add('btn', 'btn-sm', 'btn-danger', 'ms-1', 'cancel-btn');
                         cancelBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
                         btn.parentNode.appendChild(cancelBtn);
 
-                        // Обработка клика на "Отмена"
                         cancelBtn.addEventListener('click', function () {
-                            // Откатываем изменения
                             descCell.innerText = originalText;
                             row.classList.remove('editing');
                             btn.classList.remove('btn-success');
@@ -101,11 +92,9 @@
                             cancelBtn.remove();
                         });
                     } else {
-                        // Сейчас кнопка — "Сохранить"
                         const input = row.querySelector('.desc-input');
                         const newText = input.value.trim();
 
-                        // Делаем AJAX-запрос на сохранение
                         fetch('@Url.Action("UpdateDescription", "NotificationMessageKeyWords")', {
                             method: 'POST',
                             headers: {
@@ -144,12 +133,10 @@
                 });
             });
 
-            // ====== ЛОГИКА "АККОРДЕОНА" ВРУЧНУЮ С ПЕРЕКЛЮЧЕНИЕМ ИКОНКИ ======
             const allButtons = document.querySelectorAll('.accordion-button');
             const collapses = {};
 
             allButtons.forEach(btn => {
-                // Ключ для словаря collapses
                 const key = btn.id.replace('btn_', '');
                 const collapseEl = document.getElementById(`collapse_${key}`);
 
@@ -158,38 +145,28 @@
                     return;
                 }
 
-                // Создаём инстанс без автотоггла
                 const bsCollapse = new bootstrap.Collapse(collapseEl, { toggle: false });
 
-                // Сохраняем в словаре
                 collapses[key] = {
                     instance: bsCollapse,
                     button: btn,
                     collapseEl
                 };
 
-                // Кнопка по умолчанию имеет .collapsed (стрелка вниз).
-                // Если хотим, чтобы при старте панель была открыта, убираем .collapsed и даём .show панельке
-
                 btn.addEventListener('click', () => {
                     const isOpen = collapseEl.classList.contains('show');
 
                     if (isOpen) {
-                        // Закрываем текущую
                         bsCollapse.hide();
-                        // Добавляем кнопке класс .collapsed, чтобы стрелка смотрела вниз
                         btn.classList.add('collapsed');
                     } else {
-                        // Сначала закрываем все остальные
                         Object.entries(collapses).forEach(([otherKey, other]) => {
-                            // Если другая панель открыта — закрываем её
                             if (other.collapseEl.classList.contains('show')) {
                                 other.instance.hide();
                                 other.button.classList.add('collapsed');
                             }
                         });
                         bsCollapse.show();
-                        // Убираем у кнопки класс .collapsed (стрелка вверх)
                         btn.classList.remove('collapsed');
                     }
                 });
@@ -197,7 +174,6 @@
         });
 
         function showToast(message, type = 'success', delay = 3000) {
-            // Проверяем, есть ли контейнер для toast'ов, если нет — создаём
             let container = document.getElementById('toastContainer');
             if (!container) {
                 container = document.createElement('div');
@@ -206,7 +182,6 @@
                 document.body.appendChild(container);
             }
 
-            // Создаём элемент toast
             const toastEl = document.createElement('div');
             toastEl.className = `toast align-items-center text-bg-${type} border-0`;
             toastEl.setAttribute('role', 'alert');
@@ -225,11 +200,9 @@
 
             container.appendChild(toastEl);
 
-            // Инициализируем toast через Bootstrap
             const bsToast = new bootstrap.Toast(toastEl, {delay: delay});
             bsToast.show();
 
-            // После скрытия удаляем элемент
             toastEl.addEventListener('hidden.bs.toast', () => {
                 toastEl.remove();
             });

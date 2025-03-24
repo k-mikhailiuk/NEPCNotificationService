@@ -17,6 +17,7 @@ public class NotificationMessageTextDirectoryConfiguration : IEntityTypeConfigur
         builder.Property(x => x.MessageTextKg).IsRequired(false);
         builder.Property(x => x.NotificationType).IsRequired().HasConversion<byte>();
         builder.Property(x => x.OperationType).IsRequired(false).HasConversion<int>();
+        builder.Property(x => x.IsNeedSend).IsRequired();
 
         builder.HasIndex(n => n.NotificationType)
             .IsUnique()

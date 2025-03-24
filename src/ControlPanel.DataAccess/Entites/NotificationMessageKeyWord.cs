@@ -13,7 +13,7 @@ public class NotificationMessageKeyWord
     public string? Description { get; set; }
     
     public NotificationMessageType NotificationType { get; set; }
-
+    
     public static NotificationMessageKeyWord Create(string keyWord, NotificationMessageType type, string? description = null)
     {
         if (string.IsNullOrWhiteSpace(keyWord))

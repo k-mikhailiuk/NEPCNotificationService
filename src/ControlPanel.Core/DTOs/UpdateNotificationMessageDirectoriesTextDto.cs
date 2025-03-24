@@ -6,4 +6,6 @@ public class UpdateNotificationMessageDirectoriesTextDto
     public string? MessageTextRu { get; set; }
     public string? MessageTextEn { get; set; }
     public string? MessageTextKg { get; set; }
+    
+    public bool IsNeedSend { get; set; }
 }

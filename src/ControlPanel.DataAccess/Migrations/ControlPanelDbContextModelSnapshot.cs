@@ -54,6 +54,9 @@ namespace ControlPanel.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<bool>("IsNeedSend")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MessageTextEn")
                         .HasColumnType("nvarchar(max)");
 

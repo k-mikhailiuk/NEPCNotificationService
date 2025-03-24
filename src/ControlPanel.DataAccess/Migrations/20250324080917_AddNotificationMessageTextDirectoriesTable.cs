@@ -21,7 +21,8 @@ namespace ControlPanel.DataAccess.Migrations
                     OperationType = table.Column<int>(type: "int", nullable: true),
                     MessageTextRu = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     MessageTextEn = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MessageTextKg = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    MessageTextKg = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsNeedSend = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

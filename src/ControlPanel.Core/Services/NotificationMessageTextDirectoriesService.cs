@@ -30,6 +30,7 @@ public class NotificationMessageTextDirectoriesService : INotificationMessageTex
         entity.MessageTextRu = dto.MessageTextRu;
         entity.MessageTextEn = dto.MessageTextEn;
         entity.MessageTextKg = dto.MessageTextKg;
+        entity.IsNeedSend = dto.IsNeedSend;
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControlPanel.DataAccess.Migrations
 {
     [DbContext(typeof(ControlPanelDbContext))]
-    [Migration("20250320111751_AddNotificationMessageTextDirectoriesTable")]
+    [Migration("20250324080917_AddNotificationMessageTextDirectoriesTable")]
     partial class AddNotificationMessageTextDirectoriesTable
     {
         /// <inheritdoc />
@@ -56,6 +56,9 @@ namespace ControlPanel.DataAccess.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("IsNeedSend")
+                        .HasColumnType("bit");
 
                     b.Property<string>("MessageTextEn")
                         .HasColumnType("nvarchar(max)");
