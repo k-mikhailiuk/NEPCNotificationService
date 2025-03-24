@@ -55,7 +55,7 @@ public class AggregatorDbContext : DbContext
     
     public AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) : base(options)
     {
-        
+
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

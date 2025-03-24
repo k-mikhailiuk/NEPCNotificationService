@@ -42,8 +42,8 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
         await UnifyProcessorExtension<IssFinAuth>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork, cancellationToken);
 
         await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
-        
-        return entities.Select(x=>x.NotificationId).ToList();
+
+        return entities.Select(x => x.NotificationId).ToList();
     }
 
     private static async Task ProcessEntitiesAsync(
@@ -131,17 +131,29 @@ public class IssFinAuthProcessHandler : IRequestHandler<ProcessNotificationComma
         IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        if (issFinAuthDetails.CheckedLimits == null)
+        if (issFinAuthDetails.CheckedLimits == null || !issFinAuthDetails.CheckedLimits.Any())
             return;
 
-        foreach (var limit in issFinAuthDetails.CheckedLimits)
-        {
-            var existingLimit = await unitOfWork.Limit.FindAsync(
-                x => x.LimitId == limit.Id, cancellationToken);
+        var allLimitIds = issFinAuthDetails.CheckedLimits
+            .Select(l => l.Id)
+            .Distinct()
+            .ToList();
 
-            if (existingLimit == null)
+        var existingLimits = await unitOfWork.CheckedLimit
+            .GetListByIdsRawSqlAsync(allLimitIds, cancellationToken);
+        var limitCache = existingLimits.ToDictionary(l => l.Id, l => l);
+
+        for (var i = 0; i < issFinAuthDetails.CheckedLimits.Count; i++)
+        {
+            var limit = issFinAuthDetails.CheckedLimits[i];
+            if (limitCache.TryGetValue(limit.Id, out var existingLimit))
+            {
+                issFinAuthDetails.CheckedLimits[i] = existingLimit;
+            }
+            else
             {
                 await unitOfWork.CheckedLimit.AddAsync(limit, cancellationToken);
+                limitCache[limit.Id] = limit;
             }
         }
     }
