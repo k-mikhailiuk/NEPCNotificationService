@@ -46,7 +46,7 @@ public static class ConversionExtensionsHelper
             return moneyEntity;
         }
 
-        moneyEntity.Amount = moneyDto.Amount;
+        moneyEntity.Amount = decimal.Round(moneyDto.Amount, 2);
         moneyEntity.Currency = moneyDto.Currency;
 
         Console.WriteLine($"{moneyEntity} was converted to {moneyEntity.GetType().Name}");
