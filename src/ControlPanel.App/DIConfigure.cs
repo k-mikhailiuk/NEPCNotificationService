@@ -1,5 +1,6 @@
 using ControlPanel.Core;
 using ControlPanel.DataAccess;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using OptionsConfiguration;
 
@@ -33,5 +34,13 @@ public static class DIConfigure
                 options.Password.RequireLowercase = false;
             })
             .AddEntityFrameworkStores<ControlPanelDbContext>();
+        
+        services.ConfigureApplicationCookie(options =>
+        {
+            options.LoginPath = "/Account/Login";
+            options.LogoutPath = "/Account/Logout";
+        });
+        
+        services.AddAuthorization();
     }
 }

@@ -10,23 +10,20 @@
 <div class="accordion" id="keywordAccordion">
     @foreach (var group in Model.GroupBy(x => x.NotificationType))
     {
-        // Уникальные идентификаторы для каждой секции
-        var headingId = $"heading_{group.Key}";
+        // Генерируем уникальные id для кнопки и панели
+        var btnId = $"btn_{group.Key}";
         var collapseId = $"collapse_{group.Key}";
 
         <div class="accordion-item">
-            <h2 class="accordion-header" id="@headingId">
-                <button class="accordion-button collapsed" type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#@collapseId"
-                        aria-expanded="false"
-                        aria-controls="@collapseId">
+            <h2 class="accordion-header" id="heading_@group.Key">
+                <button class="accordion-button collapsed"
+                        type="button"
+                        id="@btnId">
                     @group.Key
                 </button>
             </h2>
-            <div id="@collapseId" class="accordion-collapse collapse" 
-                 aria-labelledby="@headingId"
-                 data-bs-parent="#keywordAccordion">
+            <div id="@collapseId" class="accordion-collapse collapse"
+                 aria-labelledby="heading_@group.Key">
                 <div class="accordion-body">
                     <table class="table">
                         <thead>
@@ -59,10 +56,10 @@
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Находим все кнопки "Редактировать"
-            document.querySelectorAll('.edit-btn').forEach(function(btn) {
-                btn.addEventListener('click', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            // ====== ЛОГИКА РЕДАКТИРОВАНИЯ ======
+            document.querySelectorAll('.edit-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
                     const row = btn.closest('tr');
                     const descCell = row.querySelector('.desc-cell');
                     const originalText = descCell.innerText.trim();
@@ -94,7 +91,7 @@
                         btn.parentNode.appendChild(cancelBtn);
 
                         // Обработка клика на "Отмена"
-                        cancelBtn.addEventListener('click', function() {
+                        cancelBtn.addEventListener('click', function () {
                             // Откатываем изменения
                             descCell.innerText = originalText;
                             row.classList.remove('editing');
@@ -114,38 +111,128 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ 
-                                id: parseInt(rowId), 
-                                description: newText 
+                            body: JSON.stringify({
+                                id: parseInt(rowId),
+                                description: newText
                             })
                         })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not OK');
+                            .then(response => {
+                                if (!response.ok) {
+                                    showToast('Network response was not OK', 'danger');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    descCell.innerText = newText;
+                                    row.classList.remove('editing');
+                                    btn.classList.remove('btn-success');
+                                    btn.classList.add('btn-secondary');
+                                    btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+                                    const cancelBtn = row.querySelector('.cancel-btn');
+                                    if (cancelBtn) cancelBtn.remove();
+                                    showToast('Сохранено успешно!', 'success');
+                                } else {
+                                    showToast('Сохранение не удалось!', 'danger');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                showToast('Ошибка при сохранении. См. консоль.', 'danger');
+                            });
+                    }
+                });
+            });
+
+            // ====== ЛОГИКА "АККОРДЕОНА" ВРУЧНУЮ С ПЕРЕКЛЮЧЕНИЕМ ИКОНКИ ======
+            const allButtons = document.querySelectorAll('.accordion-button');
+            const collapses = {};
+
+            allButtons.forEach(btn => {
+                // Ключ для словаря collapses
+                const key = btn.id.replace('btn_', '');
+                const collapseEl = document.getElementById(`collapse_${key}`);
+
+                if (!collapseEl) {
+                    console.warn("Не найден collapse для", btn.id);
+                    return;
+                }
+
+                // Создаём инстанс без автотоггла
+                const bsCollapse = new bootstrap.Collapse(collapseEl, { toggle: false });
+
+                // Сохраняем в словаре
+                collapses[key] = {
+                    instance: bsCollapse,
+                    button: btn,
+                    collapseEl
+                };
+
+                // Кнопка по умолчанию имеет .collapsed (стрелка вниз).
+                // Если хотим, чтобы при старте панель была открыта, убираем .collapsed и даём .show панельке
+
+                btn.addEventListener('click', () => {
+                    const isOpen = collapseEl.classList.contains('show');
+
+                    if (isOpen) {
+                        // Закрываем текущую
+                        bsCollapse.hide();
+                        // Добавляем кнопке класс .collapsed, чтобы стрелка смотрела вниз
+                        btn.classList.add('collapsed');
+                    } else {
+                        // Сначала закрываем все остальные
+                        Object.entries(collapses).forEach(([otherKey, other]) => {
+                            // Если другая панель открыта — закрываем её
+                            if (other.collapseEl.classList.contains('show')) {
+                                other.instance.hide();
+                                other.button.classList.add('collapsed');
                             }
-                            return response.json();
-                        })
-                        .then(data => {
-                            if (data.success) {
-                                // Успешно сохранено, обновляем ячейку
-                                descCell.innerText = newText;
-                                row.classList.remove('editing');
-                                btn.classList.remove('btn-success');
-                                btn.classList.add('btn-secondary');
-                                btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
-                                const cancelBtn = row.querySelector('.cancel-btn');
-                                if (cancelBtn) cancelBtn.remove();
-                            } else {
-                                alert('Сохранение не удалось!');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Ошибка при сохранении. См. консоль.');
                         });
+                        bsCollapse.show();
+                        // Убираем у кнопки класс .collapsed (стрелка вверх)
+                        btn.classList.remove('collapsed');
                     }
                 });
             });
         });
+
+        function showToast(message, type = 'success', delay = 3000) {
+            // Проверяем, есть ли контейнер для toast'ов, если нет — создаём
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.className = 'toast-container position-fixed top-0 end-0 p-3';
+                document.body.appendChild(container);
+            }
+
+            // Создаём элемент toast
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+            toastEl.setAttribute('role', 'alert');
+            toastEl.setAttribute('aria-live', 'assertive');
+            toastEl.setAttribute('aria-atomic', 'true');
+
+            toastEl.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+
+            container.appendChild(toastEl);
+
+            // Инициализируем toast через Bootstrap
+            const bsToast = new bootstrap.Toast(toastEl, {delay: delay});
+            bsToast.show();
+
+            // После скрытия удаляем элемент
+            toastEl.addEventListener('hidden.bs.toast', () => {
+                toastEl.remove();
+            });
+        }
     </script>
 }

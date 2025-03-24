@@ -37,7 +37,7 @@ public class AccountController : Controller
             if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                 return Redirect(model.ReturnUrl);
             else
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "NotificationMessageKeyWords");
         }
 
         ModelState.AddModelError(string.Empty, "Неверная попытка входа.");
@@ -49,6 +49,6 @@ public class AccountController : Controller
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "NotificationMessageKeyWords");
     }
 }
