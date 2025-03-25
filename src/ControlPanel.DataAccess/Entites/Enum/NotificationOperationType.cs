@@ -66,6 +66,12 @@ public enum NotificationOperationType
 
     [Description("Пре-авторизация в POS")]
     PRE_PURCHASE_AUTHORIZATION = 736,
+    
+    [Description("Завершение пре-авторизации POS")]
+    POS_PRE_PURCH_CMPL = 737,
+    
+    [Description("Увеличение пре-авторизации POS")]
+    POS_INCR_PRE_PURCH = 739,
 
     [Description("Покупка за счет собственных средств при оплате с использованием ЭС")]
     PURCHASE_WITH_ELECTRONIC_CERTIFICATE = 741,
@@ -78,9 +84,15 @@ public enum NotificationOperationType
 
     [Description("Возврат покупки за счет собственных средств при оплате использованием ЭС")]
     RETURN_REFAUND_WITH_ELECTRONIC_CERTIFICATE = 747,
+    
+    [Description("Credit Adjustment (ручной реверсал на операцию, совершенную в АТМ, по карте VISA)")]
+    VSMS_CREDITADJ = 750,
 
     [Description("Онлайн пополнение банком")]
     EPOS_CREDIT_ONLINE = 760,
+    
+    [Description("SMS-chargeback (Chargeback на операцию, совершенную в АТМ, по карте VISA)")]
+    VSMS_CHARGEBACK = 767,
 
     [Description("Оплата в торговом терминале")]
     PURCHASE = 774,

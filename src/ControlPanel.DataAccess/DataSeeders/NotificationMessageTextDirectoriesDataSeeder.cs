@@ -7,10 +7,9 @@ namespace ControlPanel.DataAccess.DataSeeders;
 public class NotificationMessageTextDirectoriesDataSeeder
 {
     private readonly ControlPanelDbContext _context;
-    
-    private readonly NotificationOperationType[] operationTypes = [
-        NotificationOperationType.DECREASE_AUTHORIZATION_AMOUNT,
-        NotificationOperationType.INCREASE_AUTHORIZATION_AMOUNT,
+
+    private static readonly NotificationOperationType[] UnholdIssFinAuthOperationTypes =
+    [
         NotificationOperationType.UTIL_PAYMENT,
         NotificationOperationType.SBP_С2С_DEBIT,
         NotificationOperationType.SBP_С2B_DEBIT,
@@ -45,7 +44,33 @@ public class NotificationMessageTextDirectoriesDataSeeder
         NotificationOperationType.EPOS_CREDIT,
         NotificationOperationType.EPOS_DEBIT,
         NotificationOperationType.D2C_PAYMENT
-    ]; 
+    ];
+    
+    private static readonly NotificationOperationType[] AcqFinAuthOperationTypes =
+    [
+        NotificationOperationType.UTIL_PAYMENT,
+        NotificationOperationType.CASH_IN,
+        NotificationOperationType.EPOS_PURCHASE,
+        NotificationOperationType.EPOS_REFUND,
+        NotificationOperationType.ATM_WDL,
+        NotificationOperationType.BALINQ,
+        NotificationOperationType.PRE_PURCHASE_AUTHORIZATION,
+        NotificationOperationType.POS_PRE_PURCH_CMPL,
+        NotificationOperationType.POS_INCR_PRE_PURCH,
+        NotificationOperationType.VSMS_CREDITADJ,
+        NotificationOperationType.VSMS_CHARGEBACK,
+        NotificationOperationType.PURCHASE,
+        NotificationOperationType.REFUND,
+        NotificationOperationType.POS_CASH_ADVANCE_PVN,
+        NotificationOperationType.P2P_DEBIT,
+        NotificationOperationType.P2P_CREDIT,
+    ];
+    
+    private static readonly NotificationOperationType[] AcctBalChangeOperationTypes =
+    [
+        NotificationOperationType.DECREASE_AUTHORIZATION_AMOUNT,
+        NotificationOperationType.INCREASE_AUTHORIZATION_AMOUNT
+    ];
 
     public NotificationMessageTextDirectoriesDataSeeder(ControlPanelDbContext context)
     {
@@ -55,32 +80,33 @@ public class NotificationMessageTextDirectoriesDataSeeder
     public async Task SeedNotificationTextAsync()
     {
         await SeedParameterizedNotificationTextsAsync(
-            NotificationMessageType.IssFinAuth);
+            NotificationMessageType.IssFinAuth, UnholdIssFinAuthOperationTypes);
 
         await SeedParameterizedNotificationTextsAsync(
-            NotificationMessageType.AcqFinAuth);
+            NotificationMessageType.AcqFinAuth, AcqFinAuthOperationTypes);
 
         await SeedParameterizedNotificationTextsAsync(
-            NotificationMessageType.Unhold);
-        
+            NotificationMessageType.Unhold, UnholdIssFinAuthOperationTypes);
+
         await SeedParameterizedNotificationTextsAsync(
-            NotificationMessageType.AcctBalChange);
+            NotificationMessageType.AcctBalChange, AcctBalChangeOperationTypes);
 
         await SeedNonParameterizedNotificationTextAsync(
             NotificationMessageType.CardStatusChange);
 
         await SeedNonParameterizedNotificationTextAsync(
             NotificationMessageType.PinChange);
-        
+
         await SeedNonParameterizedNotificationTextAsync(
             NotificationMessageType.TokenStatusChange);
-        
+
         await SeedNonParameterizedNotificationTextAsync(
             NotificationMessageType.OwiUserAction);
     }
 
     private async Task SeedParameterizedNotificationTextsAsync(
         NotificationMessageType type,
+        NotificationOperationType[] operationTypes,
         CancellationToken cancellationToken = default)
     {
         var existingOperationTypes = await _context.NotificationMessageTextDirectories
@@ -103,7 +129,7 @@ public class NotificationMessageTextDirectoriesDataSeeder
             await _context.SaveChangesAsync(cancellationToken);
         }
     }
-    
+
     private async Task SeedNonParameterizedNotificationTextAsync(
         NotificationMessageType type,
         CancellationToken cancellationToken = default)
