@@ -3,6 +3,7 @@ using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
+using Aggregator.DTOs;
 using Aggregator.DTOs.AcctBalChange;
 using Microsoft.Extensions.Logging;
 
@@ -32,7 +33,9 @@ public class AcctBalChangeEntityMapper : INotificationMapper<AcctBalChange, Aggr
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.AcctBalChange),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo)
+            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            AccountsInfo = MapAccountsInfo(dto.AccountsInfo),
+            NotificationType = NotificationType.AcctBalChange,
         };
 
         return notification;
@@ -72,6 +75,49 @@ public class AcctBalChangeEntityMapper : INotificationMapper<AcctBalChange, Aggr
             AccountAmount = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AccountAmount>(dto.AccountAmount),
             Direction = dto.Direction,
             AccountBalance = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AccountBalance>(dto.AccountBalance),
+            
         };
+    }
+    
+     private List<AcctBalChangeAccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto)
+    {
+        if (dto == null || dto.Count == 0)
+        {
+            _logger.LogInformation("AccountsInfo is null");
+            return null;
+        }
+
+        _logger.LogInformation($"Mapping AccountsInfo");
+
+        return dto.Select(x => new AcctBalChangeAccountsInfo
+        {
+            AccountsInfoId = x.Id,
+            Type = x.Type,
+            AviableBalance = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AviableBalance>(x.AvailableBalance),
+            ExceedLimit = x.ExceedLimit != null
+                ? ConversionExtensionsHelper.ConvertMoneyDtoToEntity<ExceedLimitMoney>(x.ExceedLimit)
+                : new ExceedLimitMoney { Amount = null, Currency = null },
+            Limits = x.Limits != null
+                ? x.Limits
+                    .Select(l => new AccountsInfoLimitWrapper
+                    {
+                        LimitType = l.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
+                        LimitId = l.AmtLimit?.Id ?? l.CntLimit?.Id ?? 0,
+                        Limit = new Limit
+                        {
+                            LimitId = l.AmtLimit?.Id ?? l.CntLimit?.Id ?? 0,
+                            LimitType = l.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
+                            Currency = l.AmtLimit?.Currency ?? null,
+                            CycleLength = l.AmtLimit != null ? l.AmtLimit.CycleLength : 0,
+                            CycleType = l.AmtLimit != null ? l.AmtLimit.CycleType : null,
+                            EndTime = l.AmtLimit != null
+                                ? ConversionExtensionsHelper.SafeConvertTime(l.AmtLimit.EndTime)
+                                : ConversionExtensionsHelper.SafeConvertTime(l.CntLimit.EndTime),
+                            TrsValue = l.AmtLimit != null ? l.AmtLimit.TrsAmount : l.CntLimit.TrsValue,
+                            UsedValue = l.AmtLimit != null ? l.AmtLimit.UsedAmount : l.CntLimit.UsedValue
+                        }
+                    }).ToList()
+                : null,
+        }).ToList();
     }
 }

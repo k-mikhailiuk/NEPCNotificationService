@@ -9,6 +9,8 @@ public class NotificationMessageTextDirectoriesDataSeeder
     private readonly ControlPanelDbContext _context;
     
     private readonly NotificationOperationType[] operationTypes = [
+        NotificationOperationType.DECREASE_AUTHORIZATION_AMOUNT,
+        NotificationOperationType.INCREASE_AUTHORIZATION_AMOUNT,
         NotificationOperationType.UTIL_PAYMENT,
         NotificationOperationType.SBP_С2С_DEBIT,
         NotificationOperationType.SBP_С2B_DEBIT,

@@ -22,7 +22,8 @@ public class MessageProcessor : IMessageProcessor
     /// <param name="logger">Логгер для записи событий и ошибок</param>
     /// <param name="context">Экземпляр <see cref="IngressApiDbContext"/> для работы с базой данных.</param>
     /// <param name="jsonOptions">Настройки сериализации JSON.</param>
-    public MessageProcessor(ILogger<MessageProcessor> logger, IngressApiDbContext context, JsonSerializerOptions jsonOptions)
+    public MessageProcessor(ILogger<MessageProcessor> logger, IngressApiDbContext context,
+        JsonSerializerOptions jsonOptions)
     {
         _logger = logger;
         _context = context;
@@ -41,9 +42,11 @@ public class MessageProcessor : IMessageProcessor
             return;
         }
 
-        var messages = request.Batch
-            .Select(batchItem => InboxMessage.Create(batchItem, _jsonOptions))
-            .ToList();
+        var messages = (from batch in request.Batch
+            where batch.IssFinAuth != null || batch.AcqFinAuth != null || batch.CardStatusChange != null ||
+                  batch.PinChange != null || batch.Unhold != null || batch.OwiUserAction != null ||
+                  batch.TokenStatusChange != null || batch.AcctBalChange != null
+            select InboxMessage.Create(batch, _jsonOptions)).ToList();
 
         await using var transaction = await _context.Database.BeginTransactionAsync();
         await _context.InboxMessages.AddRangeAsync(messages);

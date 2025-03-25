@@ -30,7 +30,8 @@ public class OwiUserActionEntityMapper : INotificationMapper<OwiUserAction, Aggr
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.OwiUserAction),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo)
+            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            NotificationType = NotificationType.OwiUserAction,
         };
 
         return notification;

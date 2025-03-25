@@ -31,7 +31,8 @@ public class PinChangeEntityMapper : INotificationMapper<PinChange, AggregatorPi
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.PinChange),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo)
+            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            NotificationType = NotificationType.PinChange,
         };
 
         return notification;

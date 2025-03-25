@@ -7,7 +7,6 @@ using Aggregator.Repositories.Abstractions.Repositories.OwiUserAction;
 using Aggregator.Repositories.Abstractions.Repositories.PinChange;
 using Aggregator.Repositories.Abstractions.Repositories.TokenStatusChange;
 using Aggregator.Repositories.Abstractions.Repositories.Unhold;
-using ControlPanel.DataAccess.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Abstractions;
 

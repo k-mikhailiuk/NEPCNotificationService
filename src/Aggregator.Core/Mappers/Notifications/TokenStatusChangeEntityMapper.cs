@@ -30,7 +30,8 @@ public class TokenStatusChangeEntityMapper : INotificationMapper<TokenStatusChan
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.TokenStatusChange),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo)
+            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            NotificationType = NotificationType.TokenStatusChange,
         };
 
         return notification;

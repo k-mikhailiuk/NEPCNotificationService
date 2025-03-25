@@ -17,7 +17,7 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
 
         RuleFor(x => x.IssInstId)
             .Length(4)
-            .WithMessage("issInstId must be exactly 4 characters");
+            .WithMessage("IssInstId must be exactly 4 characters");
 
         RuleFor(x => x.CorrespondingAccount)
             .Length(4)

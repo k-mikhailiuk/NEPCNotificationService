@@ -31,7 +31,8 @@ public class AcqFinAuthEntityMapper : INotificationMapper<AcqFinAuth, Aggregator
             Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.AcqFinAuth),
-            MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo)
+            MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo),
+            NotificationType = NotificationType.AcqFinAuth,
         };
 
         return notification;

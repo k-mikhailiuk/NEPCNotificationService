@@ -36,6 +36,7 @@ public class IssFinAuthEntityMapper : INotificationMapper<IssFinAuth, Aggregator
             MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo),
             AccountsInfo = MapAccountsInfo(dto.AccountsInfo),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.IssFinAuth),
+            NotificationType = NotificationType.IssFinAuth,
         };
 
         return notification;

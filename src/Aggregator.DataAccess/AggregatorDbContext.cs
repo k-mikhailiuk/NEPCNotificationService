@@ -10,6 +10,7 @@ using Aggregator.DataAccess.Entities.OwiUserAction;
 using Aggregator.DataAccess.Entities.PinChange;
 using Aggregator.DataAccess.Entities.TokenChangeStatus;
 using Aggregator.DataAccess.Entities.Unhold;
+using ControlPanel.DataAccess.Entites;
 using DataIngrestorApi.DataAccess.Configurations;
 using DataIngrestorApi.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,9 @@ public class AggregatorDbContext : DbContext
     
     public DbSet<NotificationMessage> NotificationMessages { get; set; }
     
+    public DbSet<NotificationMessageTextDirectory> NotificationMessageTextDirectories { get; set; }
+    public DbSet<NotificationMessageKeyWord> NotificationMessageKeyWords { get; set; }
+    
     public AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) : base(options)
     {
 
@@ -64,6 +68,12 @@ public class AggregatorDbContext : DbContext
         
         modelBuilder.Entity<InboxMessage>()
             .ToTable("InboxMessages", "nepc", t => t.ExcludeFromMigrations());
+        
+        modelBuilder.Entity<NotificationMessageKeyWord>()
+            .ToTable("NotificationMessageKeyWords", "nepc", t => t.ExcludeFromMigrations());
+        
+        modelBuilder.Entity<NotificationMessageTextDirectory>()
+            .ToTable("NotificationMessageTextDirectories", "nepc", t => t.ExcludeFromMigrations());
 
         ApplyNotificationConfigurations(modelBuilder);
         ApplyNotificationDetailsConfigurations(modelBuilder);

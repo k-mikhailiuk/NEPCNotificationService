@@ -11,6 +11,7 @@ public interface IRepository<T> where T : class
     void Remove(T entity);
     Task<T?> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
     Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken = default);
+    Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
     Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
     void RemoveRange(IEnumerable<T> entities);
 }

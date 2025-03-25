@@ -32,7 +32,8 @@ public class UnholdEntityMapper : INotificationMapper<Unhold, AggregatorUnholdDt
             Details = MapDetails(dto.Details),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.Unhold),
             CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
-            MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo)
+            MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo),
+            NotificationType = NotificationType.Unhold,
         };
 
         return notification;

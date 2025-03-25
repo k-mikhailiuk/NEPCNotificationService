@@ -1,6 +1,6 @@
 namespace ControlPanel.DataAccess.Entites.Enum;
 
-public enum NotificationMessageType
+public enum NotificationMessageType : byte
 {
     Undefined = 0,
     IssFinAuth = 1,

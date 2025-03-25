@@ -74,6 +74,45 @@ public class Repository<T> : IRepository<T> where T : class
         return await _context.Set<T>().FromSqlRaw(sql).ToListAsync(cancellationToken);
     }
 
+    public async Task<List<T>> GetListByIdsRawSqlAsync(
+        List<long> ids,
+        CancellationToken cancellationToken,
+        params Expression<Func<T, object>>[] includes)
+    {
+        if (ids.Count == 0)
+            return [];
+
+        var inClause = string.Join(",", ids);
+
+        var entityType = _context.Model.FindEntityType(typeof(T));
+        if (entityType == null)
+            throw new InvalidOperationException($"Не удалось найти метаданные для типа {typeof(T).Name}.");
+
+        var tableName = entityType.GetTableName();
+        var schema = entityType.GetSchema();
+        var fullTableName = string.IsNullOrEmpty(schema)
+            ? $"[{tableName}]"
+            : $"[{schema}].[{tableName}]";
+
+        var keyProperty = entityType.FindPrimaryKey()?.Properties.FirstOrDefault();
+        if (keyProperty == null)
+            throw new InvalidOperationException($"Тип {typeof(T).Name} не имеет первичного ключа.");
+
+        var keyColumnName = keyProperty.GetColumnName();
+
+        var sql = $"SELECT * FROM {fullTableName} WHERE [{keyColumnName}] IN ({inClause})";
+
+        var query = _context.Set<T>().FromSqlRaw(sql);
+
+        foreach (var include in includes)
+        {
+            query = query.Include(include);
+        }
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
+
     public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
     {
         foreach (var entity in entities)

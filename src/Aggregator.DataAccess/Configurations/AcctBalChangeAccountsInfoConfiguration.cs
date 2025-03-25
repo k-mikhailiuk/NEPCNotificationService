@@ -25,7 +25,7 @@ public class AcctBalChangeAccountsInfoConfiguration : IEntityTypeConfiguration<A
         builder.OwnsOne(x => x.ExceedLimit, parameters =>
         {
             parameters.Property(x => x.Amount).IsRequired(false);
-            parameters.Property(x => x.Currency).IsRequired().HasMaxLength(3);
+            parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
         });
         
         builder.HasMany(x=>x.Limits)

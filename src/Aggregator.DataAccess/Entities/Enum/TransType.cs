@@ -4,6 +4,12 @@ namespace Aggregator.DataAccess.Entities.Enum;
 
 public enum TransType
 {
+    [Description("Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был уменьшен остаток на счете карты (лимит авторизации).")]
+    DECREASE_AUTHORIZATION_AMOUNT = 432,
+    
+    [Description("Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был увеличен остаток на счете карты (лимит авторизации).")]
+    INCREASE_AUTHORIZATION_AMOUNT = 433,
+    
     [Description("Оплата Услуг")]
     UTIL_PAYMENT = 508,
     

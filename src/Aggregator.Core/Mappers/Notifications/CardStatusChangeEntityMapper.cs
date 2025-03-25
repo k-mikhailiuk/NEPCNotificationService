@@ -31,6 +31,7 @@ public class CardStatusChangeEntityMapper : INotificationMapper<CardStatusChange
             Details = MapDetails(dto.Details),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.CardStatusChange),
             CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            NotificationType = NotificationType.CardStatusChange,
         };
 
         return notification;
