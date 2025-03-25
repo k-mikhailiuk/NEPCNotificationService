@@ -26,7 +26,7 @@ public class NotificationsController : ControllerBase
     {
         try
         {
-            if (string.IsNullOrEmpty(instance) || requestId == null || string.IsNullOrEmpty(requestTime) || string.IsNullOrEmpty(userAgent) || string.IsNullOrEmpty(userAgent))
+            if (string.IsNullOrEmpty(instance) || requestId == 0 || string.IsNullOrEmpty(requestTime) || string.IsNullOrEmpty(userAgent) || string.IsNullOrEmpty(userAgent))
             {
                 return BadRequest("Missing requires headers.");
             }
