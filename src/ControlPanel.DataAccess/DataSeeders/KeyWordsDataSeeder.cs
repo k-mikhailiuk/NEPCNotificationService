@@ -56,7 +56,8 @@ public class KeyWordsDataSeeder
             "{USEDAMOUNT}",
             "{AMOUNTLIMIT_CURRENCY}",
             "{TRSVALUE}",
-            "{USEDVALUE}"
+            "{USEDVALUE}",
+            "{RESPONSECODE}"
         };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.IssFinAuth, placeholders, cancellationToken);
@@ -68,15 +69,15 @@ public class KeyWordsDataSeeder
         {
             "{TRANSTYPE}",
             "{REVERSAL}",
-            "{PANMASK}",
-            "{EXPDATE}",
+            "{PAN}",
             "{AUTHMONEY_AMOUNT}",
             "{AUTHMONEY_CURRENCY}",
             "{LOCALTIME}",
             "{RRN}",
             "{TERMINALID}",
             "{NAME}",
-            "{CITY}"
+            "{CITY}",
+            "{RESPONSECODE}"
         };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.AcqFinAuth, placeholders, cancellationToken);
@@ -128,7 +129,7 @@ public class KeyWordsDataSeeder
             "{TERMINALID}",
             "{NAME}",
             "{CITY}",
-            "{COUNTRY}",
+            "{COUNTRY}"
         };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.Unhold, placeholders, cancellationToken);
@@ -141,7 +142,7 @@ public class KeyWordsDataSeeder
             "{TRANSATIONTIME}",
             "{PAN}",
             "{EXPDATE}",
-            "{ACTION}",
+            "{ACTION}"
         };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.Unhold, placeholders, cancellationToken);
@@ -153,6 +154,12 @@ public class KeyWordsDataSeeder
         {
             "{REVERSAL}",
             "{TRANSATIONTIME}",
+            "{ACCOUNTID}",
+            "{PAN}",
+            "{ACCOUNT_AMOUNT}",
+            "{ACCOUNT_CURRENCY}",
+            "{ACCOUNTBALANCE_AMOUNT}",
+            "{ACCOUNTBALANCE_CURRENCY}",
         };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.Unhold, placeholders, cancellationToken);
