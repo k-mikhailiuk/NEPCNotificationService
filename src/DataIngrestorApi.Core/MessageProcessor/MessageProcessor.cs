@@ -49,6 +49,7 @@ public class MessageProcessor : IMessageProcessor
             select InboxMessage.Create(batch, _jsonOptions)).ToList();
 
         await using var transaction = await _context.Database.BeginTransactionAsync();
+        
         await _context.InboxMessages.AddRangeAsync(messages);
         await _context.SaveChangesAsync();
         await transaction.CommitAsync();

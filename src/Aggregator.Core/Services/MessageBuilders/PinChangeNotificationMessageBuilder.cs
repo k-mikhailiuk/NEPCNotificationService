@@ -8,16 +8,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsConfiguration;
 
-namespace Aggregator.Core.Services;
+namespace Aggregator.Core.Services.MessageBuilders;
 
 public class PinChangeNotificationMessageBuilder : INotificationMessageBuilder<PinChange>
 {
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IKeyWordBuilder<PinChange> _keyWordBuilder;
 
-    public PinChangeNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions, IServiceProvider serviceProvider)
+    public PinChangeNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
+        IServiceProvider serviceProvider, IKeyWordBuilder<PinChange> keyWordBuilder)
     {
         _serviceProvider = serviceProvider;
+        _keyWordBuilder = keyWordBuilder;
         _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
@@ -25,15 +28,16 @@ public class PinChangeNotificationMessageBuilder : INotificationMessageBuilder<P
         CancellationToken cancellationToken)
     {
         var list = new List<NotificationMessage>();
-        
+
         using var scope = _serviceProvider.CreateScope();
-        
+
         using var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
-        
-        if(unitOfWork == null)
+
+        if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
 
-        var messages = await unitOfWork.PinChange.GetListByIdsRawSqlAsync(notificationIds, cancellationToken, x=>x.Details);
+        var messages =
+            await unitOfWork.PinChange.GetListByIdsRawSqlAsync(notificationIds, cancellationToken, x => x.Details);
 
         var messageText = await unitOfWork.NotificationMessageTextDirectories.FindAsync(
             x => x.NotificationType == NotificationMessageType.PinChange, cancellationToken);
@@ -49,7 +53,7 @@ public class PinChangeNotificationMessageBuilder : INotificationMessageBuilder<P
             select new NotificationMessage
             {
                 Title = _notificationMessageOptions.Title, Status = NotificationMessageStatus.New,
-                Message = messageText.MessageTextRu,
+                Message = _keyWordBuilder.BuildKeyWordsAsync(messageText.MessageTextRu, message)
             });
 
         return list;

@@ -136,21 +136,39 @@ public class KeyWordsDataSeeder
     
     private async Task SeedOwiUserActionKeyWordsAsync(CancellationToken cancellationToken = default)
     {
-        var placeholders = Array.Empty<string>();
+        var placeholders = new[]
+        {
+            "{TRANSATIONTIME}",
+            "{PAN}",
+            "{EXPDATE}",
+            "{ACTION}",
+        };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.Unhold, placeholders, cancellationToken);
     }
     
     private async Task SeedAcctBalChangeKeyWordsAsync(CancellationToken cancellationToken = default)
     {
-        var placeholders = Array.Empty<string>();
+        var placeholders = new[]
+        {
+            "{REVERSAL}",
+            "{TRANSATIONTIME}",
+        };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.Unhold, placeholders, cancellationToken);
     }
     
     private async Task SeedTokenStatusChangeKeyWordsAsync(CancellationToken cancellationToken = default)
     {
-        var placeholders = Array.Empty<string>();
+        var placeholders = new[]
+        {
+            "{PAYMENTSYSTEM}",
+            "{STATUS}",
+            "{CHANGEDATE}",
+            "{DPANEXPDATE}",
+            "{DEVICENAME}",
+            "{DEVICEID}",
+        };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.Unhold, placeholders, cancellationToken);
     }

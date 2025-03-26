@@ -4,10 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ControlPanel.DataAccess.DataSeeders;
 
-public class NotificationMessageTextDirectoriesDataSeeder
+public class NotificationMessageTextDirectoriesDataSeeder(ControlPanelDbContext context)
 {
-    private readonly ControlPanelDbContext _context;
-
     private static readonly NotificationOperationType[] UnholdIssFinAuthOperationTypes =
     [
         NotificationOperationType.UTIL_PAYMENT,
@@ -72,11 +70,6 @@ public class NotificationMessageTextDirectoriesDataSeeder
         NotificationOperationType.INCREASE_AUTHORIZATION_AMOUNT
     ];
 
-    public NotificationMessageTextDirectoriesDataSeeder(ControlPanelDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task SeedNotificationTextAsync()
     {
         await SeedParameterizedNotificationTextsAsync(
@@ -109,7 +102,7 @@ public class NotificationMessageTextDirectoriesDataSeeder
         NotificationOperationType[] operationTypes,
         CancellationToken cancellationToken = default)
     {
-        var existingOperationTypes = await _context.NotificationMessageTextDirectories
+        var existingOperationTypes = await context.NotificationMessageTextDirectories
             .Where(x => x.NotificationType == type && x.OperationType.HasValue)
             .Select(x => x.OperationType!.Value)
             .ToListAsync(cancellationToken);
@@ -125,8 +118,8 @@ public class NotificationMessageTextDirectoriesDataSeeder
 
         if (newEntries.Count != 0)
         {
-            await _context.NotificationMessageTextDirectories.AddRangeAsync(newEntries, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.NotificationMessageTextDirectories.AddRangeAsync(newEntries, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -134,14 +127,14 @@ public class NotificationMessageTextDirectoriesDataSeeder
         NotificationMessageType type,
         CancellationToken cancellationToken = default)
     {
-        var exists = await _context.NotificationMessageTextDirectories
+        var exists = await context.NotificationMessageTextDirectories
             .AnyAsync(x => x.NotificationType == type && x.OperationType == null, cancellationToken);
 
         if (!exists)
         {
             var entry = NotificationMessageTextDirectory.Create(type);
-            await _context.NotificationMessageTextDirectories.AddAsync(entry, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.NotificationMessageTextDirectories.AddAsync(entry, cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }

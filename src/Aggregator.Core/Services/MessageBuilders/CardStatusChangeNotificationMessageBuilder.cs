@@ -1,23 +1,26 @@
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities;
+using Aggregator.DataAccess.Entities.CardStatusChange;
 using Aggregator.DataAccess.Entities.Enum;
-using Aggregator.DataAccess.Entities.OwiUserAction;
 using Aggregator.Repositories.Abstractions;
 using ControlPanel.DataAccess.Entites.Enum;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsConfiguration;
 
-namespace Aggregator.Core.Services;
+namespace Aggregator.Core.Services.MessageBuilders;
 
-public class OwiUserActionNotificationMessageBuilder : INotificationMessageBuilder<OwiUserAction>
+public class CardStatusChangeNotificationMessageBuilder : INotificationMessageBuilder<CardStatusChange>
 {
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IKeyWordBuilder<CardStatusChange> _keyWordBuilder;
 
-    public OwiUserActionNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions, IServiceProvider serviceProvider)
+    public CardStatusChangeNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
+        IServiceProvider serviceProvider, IKeyWordBuilder<CardStatusChange> keyWordBuilder)
     {
         _serviceProvider = serviceProvider;
+        _keyWordBuilder = keyWordBuilder;
         _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
@@ -27,16 +30,18 @@ public class OwiUserActionNotificationMessageBuilder : INotificationMessageBuild
         var list = new List<NotificationMessage>();
 
         using var scope = _serviceProvider.CreateScope();
-        
+
         using var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
-        
-        if(unitOfWork == null)
+
+        if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
 
-        var messages = await unitOfWork.OwiUserAction.GetListByIdsRawSqlAsync(notificationIds, cancellationToken, x=>x.Details);
+        var messages =
+            await unitOfWork.CardStatusChange.GetListByIdsRawSqlAsync(notificationIds, cancellationToken,
+                x => x.Details);
 
         var messageText = await unitOfWork.NotificationMessageTextDirectories.FindAsync(
-            x => x.NotificationType == NotificationMessageType.OwiUserAction, cancellationToken);
+            x => x.NotificationType == NotificationMessageType.CardStatusChange, cancellationToken);
 
         if (messageText == null)
             throw new NullReferenceException();
@@ -49,7 +54,7 @@ public class OwiUserActionNotificationMessageBuilder : INotificationMessageBuild
             select new NotificationMessage
             {
                 Title = _notificationMessageOptions.Title, Status = NotificationMessageStatus.New,
-                Message = messageText.MessageTextRu,
+                Message = _keyWordBuilder.BuildKeyWordsAsync(messageText.MessageTextRu, message)
             });
 
         return list;

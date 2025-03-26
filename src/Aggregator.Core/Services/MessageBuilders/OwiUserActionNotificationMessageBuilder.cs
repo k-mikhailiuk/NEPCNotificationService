@@ -1,24 +1,26 @@
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.Enum;
-using Aggregator.DataAccess.Entities.TokenChangeStatus;
+using Aggregator.DataAccess.Entities.OwiUserAction;
 using Aggregator.Repositories.Abstractions;
 using ControlPanel.DataAccess.Entites.Enum;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsConfiguration;
 
-namespace Aggregator.Core.Services;
+namespace Aggregator.Core.Services.MessageBuilders;
 
-public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageBuilder<TokenStatusChange>
+public class OwiUserActionNotificationMessageBuilder : INotificationMessageBuilder<OwiUserAction>
 {
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IKeyWordBuilder<OwiUserAction> _keyWordBuilder;
 
-    public TokenStatusChangeNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider)
+    public OwiUserActionNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
+        IServiceProvider serviceProvider, IKeyWordBuilder<OwiUserAction> keyWordBuilder)
     {
         _serviceProvider = serviceProvider;
+        _keyWordBuilder = keyWordBuilder;
         _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
@@ -34,10 +36,14 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
         if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
 
-        var messages = await unitOfWork.TokenStatusChange.GetListByIdsRawSqlAsync(notificationIds, cancellationToken, x=>x.Details);
+        var messages =
+            await unitOfWork.OwiUserAction.GetListByIdsRawSqlAsync(notificationIds,
+                cancellationToken, 
+                x => x.Details,
+                x=>x.CardInfo);
 
         var messageText = await unitOfWork.NotificationMessageTextDirectories.FindAsync(
-            x => x.NotificationType == NotificationMessageType.TokenStatusChange, cancellationToken);
+            x => x.NotificationType == NotificationMessageType.OwiUserAction, cancellationToken);
 
         if (messageText == null)
             throw new NullReferenceException();
@@ -50,7 +56,7 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
             select new NotificationMessage
             {
                 Title = _notificationMessageOptions.Title, Status = NotificationMessageStatus.New,
-                Message = messageText.MessageTextRu,
+                Message = _keyWordBuilder.BuildKeyWordsAsync(messageText.MessageTextRu, message)
             });
 
         return list;
