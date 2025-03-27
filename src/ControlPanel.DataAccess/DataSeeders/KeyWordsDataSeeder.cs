@@ -145,7 +145,7 @@ public class KeyWordsDataSeeder
             "{ACTION}"
         };
         
-        await SeedKeyWordsForTypeAsync(NotificationMessageType.Unhold, placeholders, cancellationToken);
+        await SeedKeyWordsForTypeAsync(NotificationMessageType.OwiUserAction, placeholders, cancellationToken);
     }
     
     private async Task SeedAcctBalChangeKeyWordsAsync(CancellationToken cancellationToken = default)
@@ -162,7 +162,7 @@ public class KeyWordsDataSeeder
             "{ACCOUNTBALANCE_CURRENCY}",
         };
         
-        await SeedKeyWordsForTypeAsync(NotificationMessageType.Unhold, placeholders, cancellationToken);
+        await SeedKeyWordsForTypeAsync(NotificationMessageType.AcctBalChange, placeholders, cancellationToken);
     }
     
     private async Task SeedTokenStatusChangeKeyWordsAsync(CancellationToken cancellationToken = default)
@@ -177,7 +177,7 @@ public class KeyWordsDataSeeder
             "{DEVICEID}",
         };
         
-        await SeedKeyWordsForTypeAsync(NotificationMessageType.Unhold, placeholders, cancellationToken);
+        await SeedKeyWordsForTypeAsync(NotificationMessageType.TokenStatusChange, placeholders, cancellationToken);
     }
     
     private async Task SeedKeyWordsForTypeAsync(NotificationMessageType type, string[] placeholders, CancellationToken cancellationToken = default)

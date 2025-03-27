@@ -28,4 +28,9 @@ public class NotificationMessage
     /// Статус
     /// </summary>
     public NotificationMessageStatus Status { get; set; }
+    
+    /// <summary>
+    /// Id клиента АБС
+    /// </summary>
+    public long CustomerId { get; set; }
 }

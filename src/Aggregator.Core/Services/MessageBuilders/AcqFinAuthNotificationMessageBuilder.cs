@@ -1,9 +1,12 @@
+using System.Data;
 using Aggregator.Core.Services.Abstractions;
+using Aggregator.DataAccess;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.Repositories.Abstractions;
 using ControlPanel.DataAccess.Entites.Enum;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsConfiguration;
@@ -33,8 +36,13 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
 
         using var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
+        using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+
         if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
+        
+        if (context == null)
+            throw new ArgumentNullException(nameof(context));
 
         var messages =
             await unitOfWork.AcqFinAuth.GetListByIdsRawSqlAsync(notificationIds,
@@ -53,17 +61,47 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
 
             if (!messageText.IsNeedSend)
                 continue;
-
+            
+            //TODO тут TerminalId
+            // var customerId = await GetCustomerId(message.Details.AccountId, context, cancellationToken);
+            //
+            // if (customerId == null)
+            //     continue;
+            
             var notificationMessage = new NotificationMessage
             {
                 Title = _notificationMessageOptions.Title,
                 Status = NotificationMessageStatus.New,
-                Message = _keyWordBuilder.BuildKeyWordsAsync(messageText.MessageTextRu, message)
+                Message = _keyWordBuilder.BuildKeyWordsAsync(messageText.MessageTextRu, message),
+                CustomerId = 1,
             };
 
             list.Add(notificationMessage);
         }
 
         return list;
+    }
+    
+    private async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
+    {
+        var connection = context.Database.GetDbConnection();
+
+        if (connection.State != ConnectionState.Open)
+            await connection.OpenAsync(cancellationToken);
+
+        using var command = connection.CreateCommand();
+            
+        command.CommandText =
+            @$"SELECT accounts.CustomerID
+            FROM dbo.Accounts accounts 
+            where AccountNo = 
+                  SUBSTRING(CAST({accountId} AS VARCHAR(50)), 4, LEN(CAST({accountId} as VARCHAR(50))) - 6)";
+            
+        var result = await command.ExecuteScalarAsync(cancellationToken);
+    
+        if(result == null || result == DBNull.Value)
+            return null;
+    
+        return Convert.ToInt64(result);
     }
 }

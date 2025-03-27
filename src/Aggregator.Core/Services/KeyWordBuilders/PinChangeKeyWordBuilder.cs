@@ -16,7 +16,6 @@ public class PinChangeKeyWordBuilder : IKeyWordBuilder<PinChange>
             { "{STATUS}", entity.Details.Status == "OK" ? "Успешно" : "Неуспешно" },
             { "{SERVICE}", entity.Details.Service }
         };
-
         return KeyWordReplacer.ReplacePlaceholders(message, replacements);
     }
 }

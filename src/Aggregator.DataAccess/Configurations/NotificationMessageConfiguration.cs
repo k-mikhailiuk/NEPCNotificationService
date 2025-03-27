@@ -14,6 +14,7 @@ public class NotificationMessageConfiguration : IEntityTypeConfiguration<Notific
         
         builder.Property(x => x.Title).IsRequired();
         builder.Property(x => x.Message).IsRequired();
-        builder.Property(x=>x.Status).IsRequired().HasConversion<byte>();;
+        builder.Property(x=>x.Status).IsRequired().HasConversion<byte>();
+        builder.Property(x=>x.CustomerId).IsRequired();
     }
 }
