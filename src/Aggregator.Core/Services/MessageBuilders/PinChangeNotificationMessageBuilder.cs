@@ -62,7 +62,7 @@ public class PinChangeNotificationMessageBuilder : INotificationMessageBuilder<P
             if (!messageText.IsNeedSend)
                 return list;
             
-            var customerId = await GetCustomerId(message.CardInfo.CardIdentifier.CardIdentifierValue, context, cancellationToken);
+            var customerId = await GetCustomerId(message.Details.CardIdentifier.CardIdentifierValue, context, cancellationToken);
 
             if(customerId == null)
                 continue;
@@ -90,11 +90,15 @@ public class PinChangeNotificationMessageBuilder : INotificationMessageBuilder<P
 
         using var command = connection.CreateCommand();
             
-        command.CommandText =
-            @$"SELECT accounts.CustomerID
-            FROM dbo.Accounts accounts 
-            where AccountNo = 
-                  SUBSTRING(CAST({accountId} AS VARCHAR(50)), 4, LEN(CAST({accountId} as VARCHAR(50))) - 11)";
+        command.CommandText = @"
+        SELECT accounts.CustomerID
+        FROM dbo.Accounts accounts 
+        WHERE AccountNo = SUBSTRING(CAST(@accountId AS VARCHAR(50)), 4, LEN(CAST(@accountId AS VARCHAR(50))) - 11)";
+
+        var parameter = command.CreateParameter();
+        parameter.ParameterName = "@accountId";
+        parameter.Value = accountId;
+        command.Parameters.Add(parameter);
             
         var result = await command.ExecuteScalarAsync(cancellationToken);
     

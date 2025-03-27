@@ -90,11 +90,15 @@ public class OwiUserActionNotificationMessageBuilder : INotificationMessageBuild
 
         using var command = connection.CreateCommand();
             
-        command.CommandText =
-            @$"SELECT accounts.CustomerID
-            FROM dbo.Accounts accounts 
-            where AccountNo = 
-                  SUBSTRING(CAST({accountId} AS VARCHAR(50)), 4, LEN(CAST({accountId} as VARCHAR(50))) - 11)";
+        command.CommandText = @"
+        SELECT accounts.CustomerID
+        FROM dbo.Accounts accounts 
+        WHERE AccountNo = SUBSTRING(CAST(@accountId AS VARCHAR(50)), 4, LEN(CAST(@accountId AS VARCHAR(50))) - 11)";
+
+        var parameter = command.CreateParameter();
+        parameter.ParameterName = "@accountId";
+        parameter.Value = accountId;
+        command.Parameters.Add(parameter);
             
         var result = await command.ExecuteScalarAsync(cancellationToken);
     
