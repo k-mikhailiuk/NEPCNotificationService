@@ -19,5 +19,6 @@
       <ProjectReference Include="..\Aggregator.Repositories\Aggregator.Repositories.csproj" />
       <ProjectReference Include="..\Infrastructure\OptionsConfiguration\OptionsConfiguration.csproj" />
       <ProjectReference Include="..\NotificationService.Core\NotificationService.Core.csproj" />
+      <ProjectReference Include="..\NotificationService.DataAccess\NotificationService.DataAccess.csproj" />
     </ItemGroup>
 </Project>

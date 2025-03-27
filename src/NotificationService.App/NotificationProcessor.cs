@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using NotificationService.Core.Services.Abstractions;
+using NotificationService.DataAccess;
 using OptionsConfiguration;
 
 namespace NotificationService.App;
@@ -41,13 +42,14 @@ public class NotificationProcessor : BackgroundService
 
     private async Task ProcessNotificationAsync(CancellationToken cancelationToken)
     {
-        var notificationReceiver = _serviceProvider.GetService<INotificationReceiver>();
-        var notificationSender = _serviceProvider.GetRequiredService<INotificationSender>();
-
+        var context = _serviceProvider.GetRequiredService<NotificationServiceDbContext>();
+        
+        
+        
         //var messages = await notificationReceiver.GetNotificationsAsync();
 
         //var buildedNotifications = await notificationBuilder.BuildNotificationAsync(messages);
-        
+
         //await notificationSender.SendNotificationAsync(buildedNotifications);
     }
 }

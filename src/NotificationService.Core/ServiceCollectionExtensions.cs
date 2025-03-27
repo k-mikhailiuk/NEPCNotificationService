@@ -8,7 +8,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddMessageSender(this IServiceCollection services)
     {
-        services.AddScoped<INotificationSender, NotificationSender>();
+        services.AddScoped<INotificationMessageSender, NotificationMessageSender>();
         return services;
     }
 }
