@@ -40,7 +40,7 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
 
         if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
-        
+
         if (context == null)
             throw new ArgumentNullException(nameof(context));
 
@@ -48,7 +48,7 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
             await unitOfWork.AcqFinAuth.GetListByIdsRawSqlAsync(notificationIds,
                 cancellationToken,
                 x => x.Details,
-                x=>x.MerchantInfo);
+                x => x.MerchantInfo);
 
         foreach (var message in messages)
         {
@@ -61,19 +61,18 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
 
             if (!messageText.IsNeedSend)
                 continue;
-            
-            //TODO тут TerminalId
-            // var customerId = await GetCustomerId(message.Details.AccountId, context, cancellationToken);
-            //
-            // if (customerId == null)
-            //     continue;
-            
+
+            var customerId = await GetCustomerId(message.MerchantInfo.TerminalId, context, cancellationToken);
+
+            if (customerId == null)
+                continue;
+
             var notificationMessage = new NotificationMessage
             {
                 Title = _notificationMessageOptions.Title,
                 Status = NotificationMessageStatus.New,
                 Message = _keyWordBuilder.BuildKeyWordsAsync(messageText.MessageTextRu, message),
-                CustomerId = 1,
+                CustomerId = customerId.Value,
             };
 
             list.Add(notificationMessage);
@@ -81,8 +80,9 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
 
         return list;
     }
-    
-    private async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
+
+    private async Task<long?> GetCustomerId(string terminalId, AggregatorDbContext context,
+        CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();
 
@@ -90,22 +90,25 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
             await connection.OpenAsync(cancellationToken);
 
         using var command = connection.CreateCommand();
-            
+
         command.CommandText = @"
-        SELECT accounts.CustomerID
-        FROM dbo.Accounts accounts 
-        WHERE AccountNo = SUBSTRING(CAST(@accountId AS VARCHAR(50)), 4, LEN(CAST(@accountId AS VARCHAR(50))) - 6)";
+            SELECT o.AccountNoIncome,
+        a.CustomerId
+            FROM Cards.Offices o
+        JOIN Accounts a
+            ON a.AccountNo = o.AccountNoIncome
+        WHERE o.DeviceCode = @terminalId";
 
         var parameter = command.CreateParameter();
-        parameter.ParameterName = "@accountId";
-        parameter.Value = accountId;
+        parameter.ParameterName = "@terminalId";
+        parameter.Value = terminalId;
         command.Parameters.Add(parameter);
-            
+
         var result = await command.ExecuteScalarAsync(cancellationToken);
-    
-        if(result == null || result == DBNull.Value)
+
+        if (result == null || result == DBNull.Value)
             return null;
-    
+
         return Convert.ToInt64(result);
     }
 }
