@@ -18,7 +18,7 @@ public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
         var replacements = new Dictionary<string, string>
         {
             { "{TRANSATIONTIME}", entity.Details.TransactionTime.ToString() },
-            { "{PAN}", entity.CardInfo?.CardIdentifier.CardIdentifierValue ?? string.Empty },
+            { "{PAN}", PanMask.MaskPan(entity.CardInfo?.CardIdentifier.CardIdentifierValue) },
             { "{EXPDATE}", entity.CardInfo?.ExpDate ?? string.Empty },
             { "{ACTION}", GetActionName(entity.Details.Action)  }
         };

@@ -13,7 +13,7 @@ public class AcctBalChangeKeyWordBuilder : IKeyWordBuilder<AcctBalChange>
             { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : "Отмена" },
             { "{TRANSATIONTIME}", entity.Details.TransactionTime.ToString() },
             { "{ACCOUNTID}", entity.Details.AccountId },
-            { "{PAN}", entity.CardInfo?.CardIdentifier.CardIdentifierValue ?? string.Empty },
+            { "{PAN}", PanMask.MaskPan(entity.CardInfo?.CardIdentifier.CardIdentifierValue) },
             { "{ACCOUNT_AMOUNT}", entity.Details.AccountAmount.Amount.ToString() ?? string.Empty },
             { "{ACCOUNT_CURRENCY}", entity.Details.AccountAmount.Currency ?? string.Empty },
             { "{ACCOUNTBALANCE_AMOUNT}", entity.Details.AccountBalance.Amount.ToString() ?? string.Empty },

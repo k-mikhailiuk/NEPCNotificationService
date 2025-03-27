@@ -34,7 +34,7 @@ public class CardStatusChangeKeyWordBuilder : IKeyWordBuilder<CardStatusChange>
     {
         var replacements = new Dictionary<string, string>
         {
-            { "{ACCTLDPANTAIL}", entity.Details.CardIdentifier.CardIdentifierValue ?? string.Empty },
+            { "{ACCTLDPANTAIL}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
             { "{CHANGEDATE}", entity.Details.ChangeDate.ToString() },
             { "{EXPDATE}", entity.Details.ExpDate },
             { "{NEWSTATUS}", GetStatusName(entity.Details.NewStatus) },

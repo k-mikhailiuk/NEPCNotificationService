@@ -13,7 +13,7 @@ public class IssFinAuthKeyWordBuilder : IKeyWordBuilder<IssFinAuth>
         {
             { "{TRANSTYPE}", ((TransType)entity.Details.TransType).GetDescription() },
             { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : "Отмена" },
-            { "{PAN}", entity.Details.CardIdentifier.CardIdentifierValue ?? string.Empty },
+            { "{PAN}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
             { "{EXPDATE}", entity.CardInfo?.ExpDate ?? string.Empty },
             { "{ACCOUNTID}", entity.Details.AccountId ?? string.Empty },
             { "{AUTHMONEY_AMOUNT}", entity.Details.AuthMoney.Amount.ToString() ?? string.Empty },

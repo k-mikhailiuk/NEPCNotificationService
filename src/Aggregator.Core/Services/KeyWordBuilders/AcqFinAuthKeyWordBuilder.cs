@@ -13,7 +13,7 @@ public class AcqFinAuthKeyWordBuilder: IKeyWordBuilder<AcqFinAuth>
         {
             { "{TRANSTYPE}", ((TransType)entity.Details.TransType).GetDescription() },
             { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : "Отмена" },
-            { "{PAN}", entity.Details.CardIdentifier.CardIdentifierValue ?? string.Empty },
+            { "{PAN}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
             { "{AUTHMONEY_AMOUNT}", entity.Details.AuthMoney.Amount.ToString() ?? string.Empty },
             { "{AUTHMONEY_CURRENCY}", entity.Details.AuthMoney.Currency ?? string.Empty },
             { "{LOCALTIME}", entity.Details.LocalTime.ToString() },
