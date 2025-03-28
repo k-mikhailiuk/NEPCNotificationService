@@ -92,8 +92,7 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
         using var command = connection.CreateCommand();
 
         command.CommandText = @"
-            SELECT o.AccountNoIncome,
-        a.CustomerId
+            SELECT a.CustomerId
             FROM Cards.Offices o
         JOIN Accounts a
             ON a.AccountNo = o.AccountNoIncome

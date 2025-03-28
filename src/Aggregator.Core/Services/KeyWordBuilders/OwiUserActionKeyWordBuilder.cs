@@ -1,6 +1,7 @@
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities.OwiUserAction;
 using Common;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
@@ -30,6 +31,6 @@ public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
     {
         return ActionMap.TryGetValue(action, out var name)
             ? name
-            : "addRedPathExclusion";
+            : action;
     }
 }

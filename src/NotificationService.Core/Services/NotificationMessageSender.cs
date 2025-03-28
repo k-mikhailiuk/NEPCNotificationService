@@ -12,38 +12,46 @@ public class NotificationMessageSender(IServiceProvider serviceProvider) : INoti
 {
     public async Task<bool> SendAsync(NotificationMessage message, CancellationToken cancellationToken = default)
     {
-        using var scope = serviceProvider.CreateScope();
+        try
+        {
+            using var scope = serviceProvider.CreateScope();
 
-        await using var context = scope.ServiceProvider.GetRequiredService<NotificationServiceDbContext>();
-        
-        var connection = context.Database.GetDbConnection();
+            await using var context = scope.ServiceProvider.GetRequiredService<NotificationServiceDbContext>();
 
-        if (connection.State != ConnectionState.Open)
-            await connection.OpenAsync(cancellationToken);
+            var connection = context.Database.GetDbConnection();
 
-        await using var command = connection.CreateCommand();
-            
-        command.CommandText = @"
-        SELECT tokens.Token
-        FROM PushNotification.NotificationTokens tokens 
-        WHERE CustomerID = @customerId";
+            if (connection.State != ConnectionState.Open)
+                await connection.OpenAsync(cancellationToken);
 
-        var parameter = command.CreateParameter();
-        parameter.ParameterName = "@customerId";
-        parameter.Value = message.CustomerId;
-        command.Parameters.Add(parameter);
-            
-        var result = await command.ExecuteScalarAsync(cancellationToken);
-    
-        if(result == null || result == DBNull.Value)
+            await using var command = connection.CreateCommand();
+
+            command.CommandText = @"
+                SELECT tokens.Token
+                FROM PushNotification.NotificationTokens tokens 
+                WHERE CustomerID = @customerId";
+
+            var parameter = command.CreateParameter();
+            parameter.ParameterName = "@customerId";
+            parameter.Value = message.CustomerId;
+            command.Parameters.Add(parameter);
+
+            var result = await command.ExecuteScalarAsync(cancellationToken);
+
+            if (result == null || result == DBNull.Value)
+                return false;
+
+            var sendResult = await SendMessageAsync(message, result.ToString(), cancellationToken);
+
+            return !string.IsNullOrEmpty(sendResult);
+        }
+        catch (Exception e)
+        {
             return false;
-        
-        var sendResult = await SendMessageAsync(message, result.ToString(), cancellationToken);
-        
-        return !string.IsNullOrEmpty(sendResult);
+        }
     }
 
-    private static async Task<string> SendMessageAsync(NotificationMessage message, string token, CancellationToken cancellationToken = default)
+    private static async Task<string> SendMessageAsync(NotificationMessage message, string token,
+        CancellationToken cancellationToken = default)
     {
         var fcmMessage = new Message
         {
@@ -58,7 +66,7 @@ public class NotificationMessageSender(IServiceProvider serviceProvider) : INoti
 
         var messaging = FirebaseMessaging.DefaultInstance;
         var result = await messaging.SendAsync(fcmMessage, cancellationToken);
-            
+
         return result;
     }
 }
