@@ -35,14 +35,22 @@ public class NotificationMessageSender(IServiceProvider serviceProvider) : INoti
             parameter.Value = message.CustomerId;
             command.Parameters.Add(parameter);
 
-            var result = await command.ExecuteScalarAsync(cancellationToken);
+            var reader = await command.ExecuteReaderAsync(cancellationToken);
 
-            if (result == null || result == DBNull.Value)
+            var tokens = new List<string>();
+
+            while (await reader.ReadAsync(cancellationToken))
+            {
+                var token = reader.GetString(0);
+                tokens.Add(token);
+            }
+
+            if (tokens.Count == 0)
+            {
                 return false;
+            }
 
-            var sendResult = await SendMessageAsync(message, result.ToString(), cancellationToken);
-
-            return !string.IsNullOrEmpty(sendResult);
+            return await SendMessageAsync(message, tokens, cancellationToken);
         }
         catch (Exception e)
         {
@@ -50,23 +58,29 @@ public class NotificationMessageSender(IServiceProvider serviceProvider) : INoti
         }
     }
 
-    private static async Task<string> SendMessageAsync(NotificationMessage message, string token,
+    private static async Task<bool> SendMessageAsync(NotificationMessage message, List<string> tokens,
         CancellationToken cancellationToken = default)
     {
-        var fcmMessage = new Message
+        foreach (var token in tokens)
         {
-            Token = token,
-
-            Notification = new Notification
+            var fcmMessage = new Message
             {
-                Title = message.Title,
-                Body = message.Message
-            }
-        };
+                Token = token,
 
-        var messaging = FirebaseMessaging.DefaultInstance;
-        var result = await messaging.SendAsync(fcmMessage, cancellationToken);
+                Notification = new Notification
+                {
+                    Title = message.Title,
+                    Body = message.Message
+                }
+            };
 
-        return result;
+            var messaging = FirebaseMessaging.DefaultInstance;
+            var result = await messaging.SendAsync(fcmMessage, cancellationToken);
+            
+            if(string.IsNullOrEmpty(result))
+                return false;
+        }
+        
+        return true;
     }
 }
