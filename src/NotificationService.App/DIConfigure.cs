@@ -1,5 +1,3 @@
-using Aggregator.DataAccess;
-using Aggregator.Repositories;
 using NotificationService.Core;
 using NotificationService.DataAccess;
 using OptionsConfiguration;
@@ -15,6 +13,7 @@ public static class DIConfigure
     {
         services.AddDatabaseConnectionString(configuration);
         services.AddNotificationServiceDbContext(configuration);
+        services.AddNotificationServiceRepositories();
         services.AddMessageSender();
         services.AddNotificationProcessorOptions(configuration);
     }

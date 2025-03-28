@@ -46,4 +46,9 @@ public enum CardIdentifierType
     /// EAN13 карты (Штрих-код)
     /// </summary>
     ean13 = 8,
+    
+    /// <summary>
+    /// Маскированный номер карты или токена
+    /// </summary>
+    panMask = 9
 }

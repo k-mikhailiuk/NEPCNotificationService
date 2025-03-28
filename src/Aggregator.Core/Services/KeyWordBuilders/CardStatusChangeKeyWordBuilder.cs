@@ -30,11 +30,11 @@ public class CardStatusChangeKeyWordBuilder : IKeyWordBuilder<CardStatusChange>
     };
 
     
-    public string BuildKeyWordsAsync(string message, CardStatusChange entity)
+    public string BuildKeyWordsAsync(string? message, CardStatusChange entity)
     {
         var replacements = new Dictionary<string, string>
         {
-            { "{ACCTLDPANTAIL}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
+            { "{ACCTIDPANTAIL}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
             { "{CHANGEDATE}", entity.Details.ChangeDate.ToString() },
             { "{EXPDATE}", entity.Details.ExpDate },
             { "{NEWSTATUS}", GetStatusName(entity.Details.NewStatus) },

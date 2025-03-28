@@ -13,7 +13,7 @@ public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
         ["resetPinCounter"] = "Сброс счетчика ПИНа",
     };
     
-    public string BuildKeyWordsAsync(string message, OwiUserAction entity)
+    public string BuildKeyWordsAsync(string? message, OwiUserAction entity)
     {
         var replacements = new Dictionary<string, string>
         {
@@ -30,6 +30,6 @@ public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
     {
         return ActionMap.TryGetValue(action, out var name)
             ? name
-            : "Неизвестное действие";
+            : "addRedPathExclusion";
     }
 }

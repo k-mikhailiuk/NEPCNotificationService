@@ -37,8 +37,8 @@ public class AcctBalChangeDetailsConfiguration : IEntityTypeConfiguration<AcctBa
         });
         
         builder.HasOne(x=>x.FinTrans)
-            .WithOne()
-            .HasForeignKey<AcctBalChangeDetails>(x=>x.FinTransId)
+            .WithMany()
+            .HasForeignKey(x=>x.FinTransId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

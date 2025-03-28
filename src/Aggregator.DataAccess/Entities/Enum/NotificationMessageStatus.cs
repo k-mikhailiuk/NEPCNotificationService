@@ -1,6 +1,6 @@
 namespace Aggregator.DataAccess.Entities.Enum;
 
-public enum NotificationMessageStatus
+public enum NotificationMessageStatus : byte
 {
     Undefined = 0,
     New = 1,

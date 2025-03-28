@@ -6,7 +6,7 @@ namespace Aggregator.Core.Services.KeyWordBuilders;
 
 public class AcctBalChangeKeyWordBuilder : IKeyWordBuilder<AcctBalChange>
 {
-    public string BuildKeyWordsAsync(string message, AcctBalChange entity)
+    public string BuildKeyWordsAsync(string? message, AcctBalChange entity)
     {
         var replacements = new Dictionary<string, string>
         {

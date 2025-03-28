@@ -6,11 +6,11 @@ namespace Aggregator.Core.Services.KeyWordBuilders;
 
 public class PinChangeKeyWordBuilder : IKeyWordBuilder<PinChange>
 {
-    public string BuildKeyWordsAsync(string message, PinChange entity)
+    public string BuildKeyWordsAsync(string? message, PinChange entity)
     {
         var replacements = new Dictionary<string, string>
         {
-            { "{ACCTLDPANTAIL}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
+            { "{ACCTIDPANTAIL}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
             { "{TRANSATIONTIME}", entity.Details.TransactionTime.ToString() },
             { "{EXPDATE}", entity.Details.ExpDate },
             { "{STATUS}", entity.Details.Status == "OK" ? "Успешно" : "Неуспешно" },

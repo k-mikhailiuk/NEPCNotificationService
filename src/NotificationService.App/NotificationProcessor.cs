@@ -1,6 +1,8 @@
+using Aggregator.DataAccess.Entities.Enum;
 using Microsoft.Extensions.Options;
 using NotificationService.Core.Services.Abstractions;
 using NotificationService.DataAccess;
+using NotificationService.DataAccess.Abstractions;
 using OptionsConfiguration;
 
 namespace NotificationService.App;
@@ -22,7 +24,7 @@ public class NotificationProcessor : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken cancelationToken)
     {
         _logger.LogInformation("Notification processor started");
-        
+
         FirebaseInitializer.Init(_notificationProcessorOptions.FirebaseCredentialsFilePath);
 
         while (!cancelationToken.IsCancellationRequested)
@@ -42,14 +44,24 @@ public class NotificationProcessor : BackgroundService
 
     private async Task ProcessNotificationAsync(CancellationToken cancelationToken)
     {
-        var context = _serviceProvider.GetRequiredService<NotificationServiceDbContext>();
-        
-        
-        
-        //var messages = await notificationReceiver.GetNotificationsAsync();
+        using var scope = _serviceProvider.CreateScope();
 
-        //var buildedNotifications = await notificationBuilder.BuildNotificationAsync(messages);
+        var context = scope.ServiceProvider.GetRequiredService<NotificationServiceDbContext>();
 
-        //await notificationSender.SendNotificationAsync(buildedNotifications);
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+
+        var messages =
+            await unitOfWork.NotificationMessages.GetAllWithConditionAsync(x =>
+                x.Status == NotificationMessageStatus.New, cancelationToken);
+
+        var sender = scope.ServiceProvider.GetRequiredService<INotificationMessageSender>();
+        foreach (var message in messages)
+        {
+            var sendResult = await sender.SendAsync(message, cancelationToken);
+            
+            message.Status = sendResult ? NotificationMessageStatus.Success : NotificationMessageStatus.Failure;
+        }
+        
+        await unitOfWork.SaveChangesAsync(cancelationToken);
     }
 }

@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NotificationService.DataAccess.Abstractions;
+using Scrutor;
 
 namespace NotificationService.DataAccess;
 
@@ -15,6 +17,20 @@ public static class ServiceCollectionExtensions
             
             options.UseSqlServer(connectionString);
         });
+        
+        return services;
+    }
+    
+    public static IServiceCollection AddNotificationServiceRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        services.Scan(scan => scan
+            .FromAssemblyOf<IUnitOfWork>()
+            .AddClasses(classes => classes.InNamespaces("NotificationService.DataAccess"))
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
         
         return services;
     }

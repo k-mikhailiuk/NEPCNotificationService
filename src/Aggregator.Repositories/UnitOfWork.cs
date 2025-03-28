@@ -209,6 +209,19 @@ public class UnitOfWork : IUnitOfWork
         _context.Database.RollbackTransactionAsync();
     }
 
+    public void Attach<TEntity>(TEntity entity) where TEntity : class
+    {
+        if (entity == null)
+            throw new ArgumentNullException(nameof(entity));
+    
+        var entry = _context.Entry(entity);
+        if (entry.State == EntityState.Detached)
+        {
+            _context.Attach(entity);
+        }
+    }
+
+
     public void Dispose()
     {
         _context.Dispose();

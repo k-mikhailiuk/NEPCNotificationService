@@ -2,7 +2,7 @@ namespace NotificationService.DataAccess.Abstractions;
 
 public interface IUnitOfWork : IDisposable
 {
-    INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories { get; }
+    INotificationMessagesRepository NotificationMessages { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

@@ -7,7 +7,7 @@ namespace Aggregator.Core.Services.KeyWordBuilders;
 
 public class UnholdKeyWordBuilder : IKeyWordBuilder<Unhold>
 {
-    public string BuildKeyWordsAsync(string message, Unhold entity)
+    public string BuildKeyWordsAsync(string? message, Unhold entity)
     {
         var replacements = new Dictionary<string, string>
         {

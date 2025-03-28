@@ -1,14 +1,18 @@
 using NotificationService.App;
 
-var builder = Host.CreateApplicationBuilder(args);
-
-builder.Configuration.Sources.Clear();
-builder.Configuration.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: false, reloadOnChange: true);
-
-var services = builder.Services;
-services.RegisterServices(builder.Configuration);
-
-builder.Services.AddHostedService<NotificationProcessor>();
+var builder = Host.CreateDefaultBuilder(args)
+    .UseWindowsService()
+    .ConfigureAppConfiguration(config =>
+    {
+        config.Sources.Clear();
+        config.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: false,
+            reloadOnChange: true);
+    })
+    .ConfigureServices((ctx, services) =>
+    {
+        services.RegisterServices(ctx.Configuration);
+        services.AddHostedService<NotificationProcessor>();
+    });
 
 var host = builder.Build();
 host.Run();

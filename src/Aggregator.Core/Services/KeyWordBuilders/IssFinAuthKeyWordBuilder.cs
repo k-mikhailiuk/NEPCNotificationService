@@ -7,7 +7,7 @@ namespace Aggregator.Core.Services.KeyWordBuilders;
 
 public class IssFinAuthKeyWordBuilder : IKeyWordBuilder<IssFinAuth>
 {
-    public string BuildKeyWordsAsync(string message, IssFinAuth entity)
+    public string BuildKeyWordsAsync(string? message, IssFinAuth entity)
     {
         var replacements = new Dictionary<string, string>
         {

@@ -55,4 +55,5 @@ public interface IUnitOfWork : IDisposable
     void CommitTransactionAsync();
     
     void RollbackTransactionAsync();
+    void Attach<TEntity>(TEntity entity) where TEntity : class;
 }

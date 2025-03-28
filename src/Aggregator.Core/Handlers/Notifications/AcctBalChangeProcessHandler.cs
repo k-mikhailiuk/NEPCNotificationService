@@ -9,7 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
-public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, List<long>>
+public class
+    AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, List<long>>
 {
     private readonly NotificationEntityMapperFactory _mapperFactory;
     private readonly IServiceProvider _serviceProvider;
@@ -36,11 +37,12 @@ public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCo
 
         await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
 
-        await UnifyProcessorExtension<AcctBalChange>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork, cancellationToken);
+        await UnifyProcessorExtension<AcctBalChange>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
+            cancellationToken);
 
         await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
-        
-        return entities.Select(x=>x.NotificationId).ToList();
+
+        return entities.Select(x => x.NotificationId).ToList();
     }
 
     private static async Task ProcessEntitiesAsync(
@@ -59,6 +61,7 @@ public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCo
             {
                 await unitOfWork.AcctBalChange.AddAsync(entity, cancellationToken);
             }
+
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }
     }
@@ -76,10 +79,30 @@ public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCo
         var existingDetailsList = await unitOfWork.AcctBalChangeDetails
             .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
 
+        var finTransIds = entities
+            .Select(e => e.Details.FinTrans.FinTransactionId)
+            .Distinct()
+            .ToList();
+
+        var existingTrans = await unitOfWork.FinTransaction
+            .GetListByIdsRawSqlAsync(finTransIds, cancellationToken);
+
         var detailsCache = existingDetailsList.ToDictionary(d => d.AcctBalChangeDetailsId, d => d);
+        var finTransCache = existingTrans.ToDictionary(ft => ft.FinTransactionId, ft => ft);
 
         foreach (var entity in entities)
         {
+            var ftId = entity.Details.FinTrans.FinTransactionId;
+            if (finTransCache.TryGetValue(ftId, out var existingFinTrans))
+            {
+                entity.Details.FinTrans = existingFinTrans;
+                unitOfWork.Attach(existingFinTrans);
+            }
+            else
+            {
+                finTransCache[ftId] = entity.Details.FinTrans;
+            }
+
             var dId = entity.Details.AcctBalChangeDetailsId;
             if (detailsCache.TryGetValue(dId, out var existingDet))
             {
@@ -91,6 +114,7 @@ public class AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCo
             }
         }
     }
+
 
     private static async Task PreloadAndUnifyLimitsAsync(
         List<AcctBalChange> entities,

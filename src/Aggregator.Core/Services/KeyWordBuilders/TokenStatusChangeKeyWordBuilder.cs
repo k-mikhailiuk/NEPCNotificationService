@@ -14,7 +14,7 @@ public class TokenStatusChangeKeyWordBuilder : IKeyWordBuilder<TokenStatusChange
         ['L'] = "Заблокированный",
     };
     
-    public string BuildKeyWordsAsync(string message, TokenStatusChange entity)
+    public string BuildKeyWordsAsync(string? message, TokenStatusChange entity)
     {
         var replacements = new Dictionary<string, string>
         {
