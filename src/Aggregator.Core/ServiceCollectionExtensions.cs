@@ -7,6 +7,7 @@ using Aggregator.Core.Handlers.Notifications;
 using Aggregator.Core.Mappers;
 using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.Core.Mappers.Notifications;
+using Aggregator.Core.Services;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.Core.Services.KeyWordBuilders;
 using Aggregator.Core.Services.MessageBuilders;
@@ -114,6 +115,9 @@ public static class ServiceCollectionExtensions
             .AsImplementedInterfaces()
             .WithTransientLifetime()
         );
+
+        services.AddTransient<ICurrencyReplacer, CurrencyReplacer>();
+        services.AddTransient<ILanguageSelector, LanguageSelector>();
 
         return services;
     }

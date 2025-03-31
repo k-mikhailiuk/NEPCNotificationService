@@ -18,12 +18,14 @@ public class PinChangeNotificationMessageBuilder : INotificationMessageBuilder<P
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
     private readonly IKeyWordBuilder<PinChange> _keyWordBuilder;
+    private readonly ILanguageSelector _languageSelector;
 
     public PinChangeNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<PinChange> keyWordBuilder)
+        IServiceProvider serviceProvider, IKeyWordBuilder<PinChange> keyWordBuilder, ILanguageSelector languageSelector)
     {
         _serviceProvider = serviceProvider;
         _keyWordBuilder = keyWordBuilder;
+        _languageSelector = languageSelector;
         _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
@@ -67,11 +69,24 @@ public class PinChangeNotificationMessageBuilder : INotificationMessageBuilder<P
             if(customerId == null)
                 continue;
             
+            var language = (Language)await _languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
+            
+            if (language == Language.Undefined)
+                continue;
+            
+            var localizeMessage = language switch
+            {
+                Language.Russian => messageText.MessageTextRu,
+                Language.English => messageText.MessageTextEn,
+                Language.Kyrgyz => messageText.MessageTextKg,
+                _ => messageText.MessageTextRu
+            };
+            
             var notificationMessage = new NotificationMessage
             {
                 Title = _notificationMessageOptions.Title,
                 Status = NotificationMessageStatus.New,
-                Message = _keyWordBuilder.BuildKeyWordsAsync(messageText.MessageTextRu, message),
+                Message = await _keyWordBuilder.BuildKeyWordsAsync(localizeMessage, message, language),
                 CustomerId = customerId.Value,
             };
 
