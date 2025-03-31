@@ -1,12 +1,10 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
-using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DTOs.AcqFinAuth;
 using Aggregator.Repositories.Abstractions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;

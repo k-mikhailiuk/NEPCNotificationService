@@ -55,11 +55,15 @@ public class NotificationProcessor : BackgroundService
                 x.Status == NotificationMessageStatus.New, cancelationToken);
 
         var sender = scope.ServiceProvider.GetRequiredService<INotificationMessageSender>();
+        var saver = scope.ServiceProvider.GetRequiredService<INotificationHistorySaver>();
         foreach (var message in messages)
         {
             var sendResult = await sender.SendAsync(message, cancelationToken);
             
             message.Status = sendResult ? NotificationMessageStatus.Success : NotificationMessageStatus.Failure;
+            
+            if(message.Status == NotificationMessageStatus.Success)
+                await saver.SaveAsync(message, cancelationToken);
         }
         
         await unitOfWork.SaveChangesAsync(cancelationToken);

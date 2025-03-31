@@ -18,7 +18,7 @@ public class NotificationMessageSender(IServiceProvider serviceProvider) : INoti
 
             await using var context = scope.ServiceProvider.GetRequiredService<NotificationServiceDbContext>();
 
-            var connection = context.Database.GetDbConnection();
+            await using var connection = context.Database.GetDbConnection();
 
             if (connection.State != ConnectionState.Open)
                 await connection.OpenAsync(cancellationToken);

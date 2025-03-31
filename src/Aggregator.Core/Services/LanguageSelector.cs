@@ -2,20 +2,32 @@ using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services;
 
 public class LanguageSelector : ILanguageSelector
 {
-    public async Task<long?> GetLanguageId(long customerId, AggregatorDbContext context,
+    private readonly IServiceProvider _serviceProvider;
+
+    public LanguageSelector(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    public async Task<long?> GetLanguageId(long customerId,
         CancellationToken cancellationToken)
     {
-        var connection = context.Database.GetDbConnection();
+        var scope = _serviceProvider.CreateScope();
+        
+        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        
+        await using var connection = context.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
             await connection.OpenAsync(cancellationToken);
 
-        using var command = connection.CreateCommand();
+        await using var command = connection.CreateCommand();
 
         command.CommandText = @"
             SELECT pns.LanguageId

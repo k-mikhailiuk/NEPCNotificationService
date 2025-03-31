@@ -15,9 +15,9 @@ public class CurrencyReplacer(IServiceProvider serviceProvider) : ICurrencyRepla
         
         using var scope = serviceProvider.CreateScope();
 
-        using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
         
-        var connection = context.Database.GetDbConnection();
+        await using var connection = context.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
             await connection.OpenAsync(cancellationToken);

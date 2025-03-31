@@ -14,7 +14,7 @@ public static class DIConfigure
         services.AddDatabaseConnectionString(configuration);
         services.AddNotificationServiceDbContext(configuration);
         services.AddNotificationServiceRepositories();
-        services.AddMessageSender();
+        services.AddNotificationMessageServices();
         services.AddNotificationProcessorOptions(configuration);
     }
 }

@@ -66,7 +66,12 @@ public class CardStatusChangeNotificationMessageBuilder : INotificationMessageBu
             if(customerId == null)
                 continue;
             
-            var language = (Language)await _languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
+            var languageId = await _languageSelector.GetLanguageId(customerId.Value, cancellationToken);
+
+            var language = Language.Russian;
+            
+            if(languageId != null)
+                language = (Language)languageId;
             
             if (language == Language.Undefined)
                 continue;
@@ -95,12 +100,12 @@ public class CardStatusChangeNotificationMessageBuilder : INotificationMessageBu
     
     private async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
     {
-        var connection = context.Database.GetDbConnection();
+        await using var connection = context.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
             await connection.OpenAsync(cancellationToken);
 
-        using var command = connection.CreateCommand();
+        await using var command = connection.CreateCommand();
             
         command.CommandText = @"
         SELECT accounts.CustomerID
