@@ -45,7 +45,7 @@ public class MessageProcessor : IMessageProcessor
         var messages = (from batch in request.Batch
             where batch.IssFinAuth != null || batch.AcqFinAuth != null || batch.CardStatusChange != null ||
                   batch.PinChange != null || batch.Unhold != null || batch.OwiUserAction != null ||
-                  batch.TokenStatusChange != null || batch.AcctBalChange != null
+                  batch.TokenStatusChange != null || batch.AcctBalChange != null || batch.AcsOtp != null
             select InboxMessage.Create(batch, _jsonOptions)).ToList();
 
         await using var transaction = await _context.Database.BeginTransactionAsync();

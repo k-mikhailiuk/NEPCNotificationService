@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using DataIngrestorApi.DTOs.AcctBalChange;
 using DataIngrestorApi.DTOs.AcqFinAuth;
+using DataIngrestorApi.DTOs.AcsOtp;
 using DataIngrestorApi.DTOs.CardStatusChange;
 using DataIngrestorApi.DTOs.IssFinAuth;
 using DataIngrestorApi.DTOs.OwiUserAction;
@@ -54,4 +55,9 @@ public class NotificationWrapperDto
     /// Уведомление об изменении лимита авторизации по факту финансовой обработки
     /// </summary>
     public AcctBalChangeDto? AcctBalChange { get; set; }
+    
+    /// <summary>
+    /// Уведомление об изменении лимита авторизации по факту финансовой обработки
+    /// </summary>
+    public AcsOtpDto? AcsOtp { get; set; }
 }

@@ -32,5 +32,8 @@ public enum NotificationType
     OwiUserAction = 7,
     
     /// <inheritdoc cref="Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange" />
-    AcctBalChange = 8
+    AcctBalChange = 8,
+    
+    /// <inheritdoc cref="Aggregator.DataAccess.Entities.AcsOtp.AcsOtp" />
+    AcsOtp = 9
 }
