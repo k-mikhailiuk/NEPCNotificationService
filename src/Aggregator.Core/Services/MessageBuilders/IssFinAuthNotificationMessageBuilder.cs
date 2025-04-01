@@ -18,14 +18,12 @@ public class IssFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
     private readonly IKeyWordBuilder<IssFinAuth> _keyWordBuilder;
-    private readonly ILanguageSelector _languageSelector;
     
     public IssFinAuthNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<IssFinAuth> keyWordBuilder, ILanguageSelector languageSelector)
+        IServiceProvider serviceProvider, IKeyWordBuilder<IssFinAuth> keyWordBuilder)
     {
         _serviceProvider = serviceProvider;
         _keyWordBuilder = keyWordBuilder;
-        _languageSelector = languageSelector;
         _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
@@ -38,7 +36,9 @@ public class IssFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
         
         using var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
-        using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        
+        await using var connection = context.Database.GetDbConnection(); 
 
         if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
@@ -78,7 +78,9 @@ public class IssFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
             if(customerId == null)
                 continue;
             
-            var languageId = await _languageSelector.GetLanguageId(customerId.Value, cancellationToken);
+            var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
+            
+            var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
 
             var language = Language.Russian;
             
@@ -112,7 +114,7 @@ public class IssFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
 
     private static async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
     {
-        await using var connection = context.Database.GetDbConnection();
+        var connection = context.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
             await connection.OpenAsync(cancellationToken);

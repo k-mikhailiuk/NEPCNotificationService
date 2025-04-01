@@ -1,7 +1,6 @@
-using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
-using Microsoft.EntityFrameworkCore;
+using Aggregator.Repositories.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services;
@@ -17,26 +16,15 @@ public class CurrencyReplacer(IServiceProvider serviceProvider) : ICurrencyRepla
 
         await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
         
-        await using var connection = context.Database.GetDbConnection();
-
-        if (connection.State != ConnectionState.Open)
-            await connection.OpenAsync(cancellationToken);
-
-        await using var command = connection.CreateCommand();
-
-        command.CommandText = @"
-                SELECT currencies.Symbol
-                FROM dbo.Currencies currencies 
-                WHERE CurrencyID = @currencyID";
-
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         
-        var parameter = command.CreateParameter();
-        parameter.ParameterName = "@currencyID";
-        parameter.Value = currency;
-        command.Parameters.Add(parameter);
-
-        var symbol = await command.ExecuteScalarAsync(cancellationToken);
+        int.TryParse(currency, out var currencyCode);
         
-        return symbol is null ? string.Empty : symbol.ToString();
+        if(currencyCode == 0)
+            return string.Empty;
+        
+        var currencyFromDb = await unitOfWork.Currencies.GetByCodeAsync(currencyCode, cancellationToken);
+        
+        return currencyFromDb is null ? string.Empty : currencyFromDb.CurrencySymbol;
     }
 }

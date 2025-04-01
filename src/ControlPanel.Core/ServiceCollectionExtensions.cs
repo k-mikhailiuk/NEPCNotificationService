@@ -10,6 +10,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<INotificationMessageKeyWordsService, NotificationMessageKeyWordsService>();
         services.AddTransient<INotificationMessageTextDirectoriesService, NotificationMessageTextDirectoriesService>();
+        services.AddTransient<ICurrenciesService, CurrenciesService>();
 
         return services;
     }

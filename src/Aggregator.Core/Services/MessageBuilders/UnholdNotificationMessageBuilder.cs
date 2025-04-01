@@ -18,14 +18,12 @@ public class UnholdNotificationMessageBuilder : INotificationMessageBuilder<Unho
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
     private readonly IKeyWordBuilder<Unhold> _keyWordBuilder;
-    private readonly ILanguageSelector _languageSelector;
 
     public UnholdNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<Unhold> keyWordBuilder, ILanguageSelector languageSelector)
+        IServiceProvider serviceProvider, IKeyWordBuilder<Unhold> keyWordBuilder)
     {
         _serviceProvider = serviceProvider;
         _keyWordBuilder = keyWordBuilder;
-        _languageSelector = languageSelector;
         _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
@@ -38,7 +36,9 @@ public class UnholdNotificationMessageBuilder : INotificationMessageBuilder<Unho
 
         using var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
-        using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        
+        await using var connection = context.Database.GetDbConnection(); 
 
         if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
@@ -69,10 +69,11 @@ public class UnholdNotificationMessageBuilder : INotificationMessageBuilder<Unho
             if(customerId == null)
                 continue;
 
-            var languageId = await _languageSelector.GetLanguageId(customerId.Value, cancellationToken);
-
-            var language = Language.Russian;
+            var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
             
+            var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
+            
+            var language = Language.Russian;
             if(languageId != null)
                 language = (Language)languageId;
             
@@ -101,9 +102,9 @@ public class UnholdNotificationMessageBuilder : INotificationMessageBuilder<Unho
         return list;
     }
     
-    private async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
+    private static async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
     {
-        await using var connection = context.Database.GetDbConnection();
+        var connection = context.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
             await connection.OpenAsync(cancellationToken);

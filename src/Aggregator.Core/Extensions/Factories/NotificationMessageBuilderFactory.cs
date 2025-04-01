@@ -1,4 +1,3 @@
-using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions.Factories.Abstractions;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities.Abstract;

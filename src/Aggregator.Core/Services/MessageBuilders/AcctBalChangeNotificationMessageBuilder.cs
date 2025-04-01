@@ -18,14 +18,12 @@ public class AcctBalChangeNotificationMessageBuilder : INotificationMessageBuild
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
     private readonly IKeyWordBuilder<AcctBalChange> _keyWordBuilder;
-    private readonly ILanguageSelector _languageSelector;
 
     public AcctBalChangeNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<AcctBalChange> keyWordBuilder, ILanguageSelector languageSelector)
+        IServiceProvider serviceProvider, IKeyWordBuilder<AcctBalChange> keyWordBuilder)
     {
         _serviceProvider = serviceProvider;
         _keyWordBuilder = keyWordBuilder;
-        _languageSelector = languageSelector;
         _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
@@ -38,7 +36,9 @@ public class AcctBalChangeNotificationMessageBuilder : INotificationMessageBuild
 
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         
-        using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        
+        await using var connection = context.Database.GetDbConnection(); 
 
         if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
@@ -68,8 +68,10 @@ public class AcctBalChangeNotificationMessageBuilder : INotificationMessageBuild
 
             if(customerId == null)
                 continue;
+
+            var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
             
-            var languageId = await _languageSelector.GetLanguageId(customerId.Value, cancellationToken);
+            var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
 
             var language = Language.Russian;
             
@@ -101,9 +103,9 @@ public class AcctBalChangeNotificationMessageBuilder : INotificationMessageBuild
         return list;
     }
     
-    private async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
+    private static async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
     {
-        await using var connection = context.Database.GetDbConnection();
+        var connection = context.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
             await connection.OpenAsync(cancellationToken);

@@ -46,6 +46,8 @@ public interface IUnitOfWork : IDisposable
     
     INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories { get; }
     
+    ICurrenciesRepository Currencies { get; }
+    
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     
     IQueryable<T> FromSql<T>(string sql, params object[] parameters) where T : class;

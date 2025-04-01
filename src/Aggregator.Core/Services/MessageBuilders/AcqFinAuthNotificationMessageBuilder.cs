@@ -18,14 +18,12 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
     private readonly IKeyWordBuilder<AcqFinAuth> _keyWordBuilder;
-    private readonly ILanguageSelector _languageSelector;
 
     public AcqFinAuthNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<AcqFinAuth> keyWordBuilder, ILanguageSelector languageSelector)
+        IServiceProvider serviceProvider, IKeyWordBuilder<AcqFinAuth> keyWordBuilder)
     {
         _serviceProvider = serviceProvider;
         _keyWordBuilder = keyWordBuilder;
-        _languageSelector = languageSelector;
         _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
@@ -36,10 +34,10 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
 
         using var scope = _serviceProvider.CreateScope();
 
-        using var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-        using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
-
+        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        
         if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
 
@@ -69,7 +67,7 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
             if (customerId == null)
                 continue;
 
-            var languageId = await _languageSelector.GetLanguageId(customerId.Value, cancellationToken);
+            var languageId = await GetLanguageId(customerId.Value, context, cancellationToken);
 
             var language = Language.Russian;
             
@@ -104,7 +102,7 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
     private async Task<long?> GetCustomerId(string terminalId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {
-        await using var connection = context.Database.GetDbConnection();
+        var connection = context.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
             await connection.OpenAsync(cancellationToken);
@@ -129,5 +127,33 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
             return null;
 
         return Convert.ToInt64(result);
+    }
+    
+    private static async Task<long?> GetLanguageId(long customerId, AggregatorDbContext context,
+        CancellationToken cancellationToken)
+    {
+        var connection = context.Database.GetDbConnection();
+        
+        if (connection.State != ConnectionState.Open)
+            await connection.OpenAsync(cancellationToken);
+
+        await using var command = connection.CreateCommand();
+
+        command.CommandText = @"
+            SELECT pns.LanguageId
+            FROM PushNotification.Settings pns
+            WHERE pns.CustomerID = @customerId";
+
+        var parameter = command.CreateParameter();
+        parameter.ParameterName = "@customerId";
+        parameter.Value = customerId;
+        command.Parameters.Add(parameter);
+
+        var result = await command.ExecuteScalarAsync(cancellationToken);
+
+        if (result == null || result == DBNull.Value)
+            return null;
+
+        return Convert.ToByte(result);
     }
 }

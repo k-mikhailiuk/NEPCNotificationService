@@ -7,6 +7,7 @@ public interface IUnitOfWork : IDisposable
     INotificationMessageKeyWordsRepository NotificationMessageKeyWords { get; }
     
     INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories { get; }
+    ICurrenciesRepository Currencies { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     

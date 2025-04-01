@@ -14,6 +14,9 @@ public class UnitOfWork : IUnitOfWork
 
     public INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories => _notificationMessageTextDirectories.Value;
     private readonly Lazy<INotificationMessageTextDirectoriesRepository> _notificationMessageTextDirectories;
+    
+    public ICurrenciesRepository Currencies => _currencies.Value;
+    private readonly Lazy<ICurrenciesRepository> _currencies;
 
     public UnitOfWork(ControlPanelDbContext context, IServiceProvider serviceProvider)
     {
@@ -24,6 +27,9 @@ public class UnitOfWork : IUnitOfWork
         
         _notificationMessageTextDirectories = new Lazy<INotificationMessageTextDirectoriesRepository>(() =>
             serviceProvider.GetService<INotificationMessageTextDirectoriesRepository>() ?? throw new InvalidOperationException());
+        
+        _currencies = new Lazy<ICurrenciesRepository>(() =>
+            serviceProvider.GetService<ICurrenciesRepository>() ?? throw new InvalidOperationException());
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) =>

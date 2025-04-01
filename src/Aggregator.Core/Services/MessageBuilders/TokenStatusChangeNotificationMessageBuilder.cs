@@ -18,14 +18,12 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
     private readonly IKeyWordBuilder<TokenStatusChange> _keyWordBuilder;
-    private readonly ILanguageSelector _languageSelector;
 
     public TokenStatusChangeNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<TokenStatusChange> keyWordBuilder, ILanguageSelector languageSelector)
+        IServiceProvider serviceProvider, IKeyWordBuilder<TokenStatusChange> keyWordBuilder)
     {
         _serviceProvider = serviceProvider;
         _keyWordBuilder = keyWordBuilder;
-        _languageSelector = languageSelector;
         _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
@@ -38,7 +36,9 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
 
         using var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
-        using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
+        
+        await using var connection = context.Database.GetDbConnection(); 
 
         if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
@@ -67,8 +67,10 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
             if (customerId == null)
                 continue;
             
-            var languageId = await _languageSelector.GetLanguageId(customerId.Value, cancellationToken);
-
+            var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
+            
+            var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
+            
             var language = Language.Russian;
             
             if(languageId != null)
@@ -102,7 +104,7 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
     private async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {
-        await using var connection = context.Database.GetDbConnection();
+        var connection = context.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
             await connection.OpenAsync(cancellationToken);

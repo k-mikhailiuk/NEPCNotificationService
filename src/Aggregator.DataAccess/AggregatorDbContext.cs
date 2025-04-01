@@ -10,6 +10,7 @@ using Aggregator.DataAccess.Entities.OwiUserAction;
 using Aggregator.DataAccess.Entities.PinChange;
 using Aggregator.DataAccess.Entities.TokenChangeStatus;
 using Aggregator.DataAccess.Entities.Unhold;
+using ControlPanel.DataAccess.Configurations;
 using ControlPanel.DataAccess.Entites;
 using DataIngrestorApi.DataAccess.Configurations;
 using DataIngrestorApi.DataAccess.Entities;
@@ -56,6 +57,7 @@ public class AggregatorDbContext : DbContext
     
     public DbSet<NotificationMessageTextDirectory> NotificationMessageTextDirectories { get; set; }
     public DbSet<NotificationMessageKeyWord> NotificationMessageKeyWords { get; set; }
+    public DbSet<Currency> Currencies { get; set; }
     
     public AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) : base(options)
     {
@@ -71,6 +73,9 @@ public class AggregatorDbContext : DbContext
         
         modelBuilder.Entity<NotificationMessageKeyWord>()
             .ToTable("NotificationMessageKeyWords", "nepc", t => t.ExcludeFromMigrations());
+        
+        modelBuilder.Entity<Currency>()
+            .ToTable("Currencies", "nepc", t => t.ExcludeFromMigrations());
         
         modelBuilder.Entity<NotificationMessageTextDirectory>()
             .ToTable("NotificationMessageTextDirectories", "nepc", t => t.ExcludeFromMigrations());
@@ -121,5 +126,6 @@ public class AggregatorDbContext : DbContext
         
         modelBuilder.ApplyConfiguration(new InboxArchiveMessageConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationMessageConfiguration());
+        modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
     }
 }

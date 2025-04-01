@@ -82,7 +82,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
             {
                 "{AMOUNTLIMIT_CURRENCY}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(", ", entity.CardInfo.Limits.Select(async limit => await currencyReplacer.ReplaceCurrency(limit.Limit.Currency)))
+                    ? string.Join(", ", await Task.WhenAll(entity.CardInfo.Limits.Select(limit => currencyReplacer.ReplaceCurrency(limit.Limit.Currency))))
                     : string.Empty
             },
             {
