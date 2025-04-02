@@ -3,6 +3,7 @@ using Aggregator.Repositories.Abstractions;
 using Aggregator.Repositories.Abstractions.Repositories;
 using Aggregator.Repositories.Abstractions.Repositories.AcctBalChange;
 using Aggregator.Repositories.Abstractions.Repositories.AcqFinAuth;
+using Aggregator.Repositories.Abstractions.Repositories.AcsOtp;
 using Aggregator.Repositories.Abstractions.Repositories.CardStatusChange;
 using Aggregator.Repositories.Abstractions.Repositories.IssFinAuth;
 using Aggregator.Repositories.Abstractions.Repositories.OwiUserAction;
@@ -116,6 +117,9 @@ public class UnitOfWork : IUnitOfWork
     
     public ICurrenciesRepository Currencies => _currencies.Value;
     private readonly Lazy<ICurrenciesRepository> _currencies;
+    
+    public IAcsOtpRepository AcsOtps => _acsOtps.Value;
+    private readonly Lazy<IAcsOtpRepository> _acsOtps;
 
     public UnitOfWork(AggregatorDbContext context, IServiceProvider serviceProvider)
     {
@@ -189,6 +193,9 @@ public class UnitOfWork : IUnitOfWork
             serviceProvider.GetService<INotificationMessageTextDirectoriesRepository>() ?? throw new InvalidOperationException());
         _currencies = new Lazy<ICurrenciesRepository>(() =>
             serviceProvider.GetService<ICurrenciesRepository>() ?? throw new InvalidOperationException());
+        
+        _acsOtps = new Lazy<IAcsOtpRepository>(() =>
+            serviceProvider.GetService<IAcsOtpRepository>() ?? throw new InvalidOperationException());
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) =>

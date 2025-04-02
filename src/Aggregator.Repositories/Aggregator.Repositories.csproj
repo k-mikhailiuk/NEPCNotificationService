@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
       <ProjectReference Include="..\ControlPanel.DataAccess\ControlPanel.DataAccess.csproj" />
+      <ProjectReference Include="..\Infrastructure\Common\Common.csproj" />
     </ItemGroup>
 
     <ItemGroup>

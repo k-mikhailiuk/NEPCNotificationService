@@ -1,6 +1,9 @@
-namespace DataIngrestorApi.DTOs.AcsOtp;
+namespace Aggregator.DTOs.AcsOtp;
 
-public class AcsOtpMerchantInfo
+/// <summary>
+/// Информация о мерчанте
+/// </summary>
+public class AggregatorAcsOtpMerchantInfoDto
 {
     /// <summary>
     /// Идентификатор мерчанта

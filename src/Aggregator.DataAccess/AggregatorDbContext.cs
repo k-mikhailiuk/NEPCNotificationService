@@ -4,9 +4,11 @@ using Aggregator.DataAccess.Configurations.Notifications;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
+using Aggregator.DataAccess.Entities.AcsOtp;
 using Aggregator.DataAccess.Entities.CardStatusChange;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DataAccess.Entities.OwiUserAction;
+using Aggregator.DataAccess.Entities.OwnedEntities;
 using Aggregator.DataAccess.Entities.PinChange;
 using Aggregator.DataAccess.Entities.TokenChangeStatus;
 using Aggregator.DataAccess.Entities.Unhold;
@@ -58,6 +60,8 @@ public class AggregatorDbContext : DbContext
     public DbSet<NotificationMessageTextDirectory> NotificationMessageTextDirectories { get; set; }
     public DbSet<NotificationMessageKeyWord> NotificationMessageKeyWords { get; set; }
     public DbSet<Currency> Currencies { get; set; }
+    
+    public DbSet<AcsOtp> AcsOtps { get; set; }
     
     public AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) : base(options)
     {
@@ -127,5 +131,7 @@ public class AggregatorDbContext : DbContext
         modelBuilder.ApplyConfiguration(new InboxArchiveMessageConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationMessageConfiguration());
         modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
+        
+        modelBuilder.ApplyConfiguration(new AcsOtpConfiguration());
     }
 }

@@ -1,6 +1,7 @@
 using Aggregator.Repositories.Abstractions.Repositories;
 using Aggregator.Repositories.Abstractions.Repositories.AcctBalChange;
 using Aggregator.Repositories.Abstractions.Repositories.AcqFinAuth;
+using Aggregator.Repositories.Abstractions.Repositories.AcsOtp;
 using Aggregator.Repositories.Abstractions.Repositories.CardStatusChange;
 using Aggregator.Repositories.Abstractions.Repositories.IssFinAuth;
 using Aggregator.Repositories.Abstractions.Repositories.OwiUserAction;
@@ -47,6 +48,7 @@ public interface IUnitOfWork : IDisposable
     INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories { get; }
     
     ICurrenciesRepository Currencies { get; }
+    IAcsOtpRepository AcsOtps { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     

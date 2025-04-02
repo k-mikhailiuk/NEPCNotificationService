@@ -1,14 +1,14 @@
-namespace Aggregator.DTOs.AcsOtp;
+using Microsoft.EntityFrameworkCore;
 
-/// <summary>
-/// Информация о мерчанте
-/// </summary>
-public class AggregatorAcsOtpMerchantInfo
+namespace Aggregator.DataAccess.Entities.OwnedEntities;
+
+[Owned]
+public class AcsOtpMerchantInfo
 {
     /// <summary>
     /// Идентификатор мерчанта
     /// </summary>
-    public string Id { get; set; }
+    public string MerchantId { get; set; }
     
     /// <summary>
     /// Имя мерчанта

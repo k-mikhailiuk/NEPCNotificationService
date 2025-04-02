@@ -32,7 +32,7 @@ public class AggregatorAcsOtpDto : INotificationAggregatorDto
     /// <summary>
     /// Информация о мерчанте
     /// </summary>
-    public AggregatorAcsOtpMerchantInfo MerchantInfo { get; set; }
+    public AggregatorAcsOtpMerchantInfoDto MerchantInfo { get; set; }
     
     /// <summary>
     /// Список расширений

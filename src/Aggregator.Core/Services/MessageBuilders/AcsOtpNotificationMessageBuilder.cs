@@ -2,7 +2,7 @@ using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
 using Aggregator.DataAccess.Entities;
-using Aggregator.DataAccess.Entities.AcqFinAuth;
+using Aggregator.DataAccess.Entities.AcsOtp;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.Repositories.Abstractions;
 using ControlPanel.DataAccess.Entites.Enum;
@@ -13,18 +13,18 @@ using OptionsConfiguration;
 
 namespace Aggregator.Core.Services.MessageBuilders;
 
-public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<AcqFinAuth>
+public class AcsOtpNotificationMessageBuilder : INotificationMessageBuilder<AcsOtp>
 {
     private readonly NotificationMessageOptions _notificationMessageOptions;
     private readonly IServiceProvider _serviceProvider;
-    private readonly IKeyWordBuilder<AcqFinAuth> _keyWordBuilder;
+    private readonly IKeyWordBuilder<AcsOtp> _keyWordBuilder;
 
-    public AcqFinAuthNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<AcqFinAuth> keyWordBuilder)
+    public AcsOtpNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
+        IServiceProvider serviceProvider, IKeyWordBuilder<AcsOtp> keyWordBuilder)
     {
+        _notificationMessageOptions = notificationMessageOptions.Value;
         _serviceProvider = serviceProvider;
         _keyWordBuilder = keyWordBuilder;
-        _notificationMessageOptions = notificationMessageOptions.Value;
     }
 
     public async Task<List<NotificationMessage>> BuildNotificationAsync(List<long> notificationIds,
@@ -37,7 +37,7 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
-        
+
         if (unitOfWork == null)
             throw new ArgumentNullException(nameof(unitOfWork));
 
@@ -45,16 +45,14 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
             throw new ArgumentNullException(nameof(context));
 
         var messages =
-            await unitOfWork.AcqFinAuth.GetListByIdsRawSqlAsync(notificationIds,
+            await unitOfWork.AcsOtps.GetListByIdsRawSqlWithDecryptionAsync(notificationIds,
                 cancellationToken,
-                x => x.Details,
-                x => x.MerchantInfo);
+                x=>x.CardInfo);
 
         foreach (var message in messages)
         {
             var messageText = await unitOfWork.NotificationMessageTextDirectories.FindAsync(
-                x => x.NotificationType == NotificationMessageType.AcqFinAuth &&
-                     (int)x.OperationType! == message.Details.TransType, cancellationToken);
+                x => x.NotificationType == NotificationMessageType.AcsOtp, cancellationToken);
 
             if (messageText == null)
                 continue;
@@ -62,23 +60,24 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
             if (!messageText.IsNeedSend)
                 continue;
 
-            var customerId = await GetCustomerId(message.MerchantInfo.TerminalId, context, cancellationToken);
+            var customerId = await GetCustomerId(message.CardInfo.CardIdentifier.CardIdentifierValue, context,
+                cancellationToken);
 
             if (customerId == null)
                 continue;
 
             var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
-            
+
             var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
 
             var language = Language.Russian;
-            
-            if(languageId != null)
+
+            if (languageId != null)
                 language = (Language)languageId;
-            
+
             if (language == Language.Undefined)
                 continue;
-            
+
             var localizeMessage = language switch
             {
                 Language.Russian => messageText.MessageTextRu,
@@ -101,7 +100,7 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
         return list;
     }
 
-    private async Task<long?> GetCustomerId(string terminalId, AggregatorDbContext context,
+    private static async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();
@@ -112,15 +111,13 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
         await using var command = connection.CreateCommand();
 
         command.CommandText = @"
-            SELECT a.CustomerId
-            FROM Cards.Offices o
-        JOIN Accounts a
-            ON a.AccountNo = o.AccountNoIncome
-        WHERE o.DeviceCode = @terminalId";
+        SELECT accounts.CustomerID
+        FROM dbo.Accounts accounts 
+        WHERE AccountNo = SUBSTRING(CAST(@accountId AS VARCHAR(50)), 4, LEN(CAST(@accountId AS VARCHAR(50))) - 11)";
 
         var parameter = command.CreateParameter();
-        parameter.ParameterName = "@terminalId";
-        parameter.Value = terminalId;
+        parameter.ParameterName = "@accountId";
+        parameter.Value = accountId;
         command.Parameters.Add(parameter);
 
         var result = await command.ExecuteScalarAsync(cancellationToken);

@@ -95,6 +95,9 @@ public class NotificationMessageTextDirectoriesDataSeeder(ControlPanelDbContext 
 
         await SeedNonParameterizedNotificationTextAsync(
             NotificationMessageType.OwiUserAction);
+        
+        await SeedNonParameterizedNotificationTextAsync(
+            NotificationMessageType.AcsOtp);
     }
 
     private async Task SeedParameterizedNotificationTextsAsync(

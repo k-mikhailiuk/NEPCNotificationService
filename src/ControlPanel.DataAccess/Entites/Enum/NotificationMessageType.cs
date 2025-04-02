@@ -10,5 +10,6 @@ public enum NotificationMessageType : byte
     OwiUserAction = 5,
     Unhold = 6,
     AcctBalChange = 7,
-    TokenStatusChange = 8
+    TokenStatusChange = 8,
+    AcsOtp = 9
 }

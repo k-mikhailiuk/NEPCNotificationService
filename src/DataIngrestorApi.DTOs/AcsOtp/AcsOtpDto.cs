@@ -33,7 +33,7 @@ public class AcsOtpDto
     /// <summary>
     /// Информация о мерчанте
     /// </summary>
-    public AcsOtpMerchantInfo MerchantInfo { get; set; }
+    public AcsOtpMerchantInfoDto MerchantInfo { get; set; }
     
     /// <summary>
     /// Список расширений

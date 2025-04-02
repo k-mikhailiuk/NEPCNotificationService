@@ -23,6 +23,7 @@ public class KeyWordsDataSeeder
         await SeedOwiUserActionKeyWordsAsync();
         await SeedAcctBalChangeKeyWordsAsync();
         await SeedTokenStatusChangeKeyWordsAsync();
+        await SeedAcsOtpKeyWordsAsync();
     }
 
     private async Task SeedIssFinAuthKeyWordsAsync(CancellationToken cancellationToken = default)
@@ -178,6 +179,22 @@ public class KeyWordsDataSeeder
         };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.TokenStatusChange, placeholders, cancellationToken);
+    }
+    
+    private async Task SeedAcsOtpKeyWordsAsync(CancellationToken cancellationToken = default)
+    {
+        var placeholders = new[]
+        {
+            "{OTP}",
+            "{PAN}",
+            "{TRANSATIONTIME}",
+            "{AUTHMONEY_AMOUNT}",
+            "{AUTHMONEY_CURRENCY}",
+            "{NAME}",
+            "{URL}",
+        };
+        
+        await SeedKeyWordsForTypeAsync(NotificationMessageType.AcsOtp, placeholders, cancellationToken);
     }
     
     private async Task SeedKeyWordsForTypeAsync(NotificationMessageType type, string[] placeholders, CancellationToken cancellationToken = default)

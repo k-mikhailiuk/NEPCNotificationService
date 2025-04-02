@@ -14,6 +14,7 @@ using Aggregator.Core.Services.MessageBuilders;
 using Aggregator.Core.Validators.Notifications;
 using Aggregator.DTOs.AcctBalChange;
 using Aggregator.DTOs.AcqFinAuth;
+using Aggregator.DTOs.AcsOtp;
 using Aggregator.DTOs.CardStatusChange;
 using Aggregator.DTOs.IssFinAuth;
 using Aggregator.DTOs.OwiUserAction;
@@ -57,6 +58,9 @@ public static class ServiceCollectionExtensions
         services
             .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorUnholdDto>, List<long>>,
                 UnholdProcessHandler>();
+        services
+            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcsOtpDto>, List<long>>,
+                AcsOtpProcessHandler>();
 
         return services;
     }

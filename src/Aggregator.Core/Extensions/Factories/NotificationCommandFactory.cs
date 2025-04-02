@@ -2,6 +2,7 @@ using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions.Factories.Abstractions;
 using Aggregator.DTOs.AcctBalChange;
 using Aggregator.DTOs.AcqFinAuth;
+using Aggregator.DTOs.AcsOtp;
 using Aggregator.DTOs.CardStatusChange;
 using Aggregator.DTOs.IssFinAuth;
 using Aggregator.DTOs.OwiUserAction;
@@ -44,6 +45,9 @@ public class NotificationCommandFactory : INotificationCommandFactory
             _ when notificationType == typeof(AggregatorTokenStatusChangeDto) => 
                 new ProcessNotificationCommand<AggregatorTokenStatusChangeDto>(
                     notifications.Cast<AggregatorTokenStatusChangeDto>().ToList()),
+            _ when notificationType == typeof(AggregatorAcsOtpDto) => 
+                new ProcessNotificationCommand<AggregatorAcsOtpDto>(
+                    notifications.Cast<AggregatorAcsOtpDto>().ToList()),
             _ => throw new NotSupportedException($"Тип уведомления {notificationType.Name} не поддерживается.")
         };
     }

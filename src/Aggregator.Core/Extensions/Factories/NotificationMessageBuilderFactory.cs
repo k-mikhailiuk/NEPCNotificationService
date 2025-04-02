@@ -3,6 +3,7 @@ using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
+using Aggregator.DataAccess.Entities.AcsOtp;
 using Aggregator.DataAccess.Entities.CardStatusChange;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DataAccess.Entities.OwiUserAction;
@@ -42,6 +43,8 @@ public class NotificationMessageBuilderFactory : INotificationMessageBuilderFact
                 _serviceProvider.GetRequiredService<INotificationMessageBuilder<AcctBalChange>>(),
             _ when notificationType == typeof(TokenStatusChange) => 
                 _serviceProvider.GetRequiredService<INotificationMessageBuilder<TokenStatusChange>>(),
+            _ when notificationType == typeof(AcsOtp) => 
+                _serviceProvider.GetRequiredService<INotificationMessageBuilder<AcsOtp>>(),
            
             _ => throw new NotSupportedException($"Тип уведомления {notificationType.Name} не поддерживается.")
         };

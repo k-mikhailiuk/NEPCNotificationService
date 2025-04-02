@@ -5,7 +5,7 @@ public class AggregatorAcsOtpDetailsDto
     /// <summary>
     /// Информация о разовом пароле
     /// </summary>
-    public AggregatorOtpInfo AggregatorOtpInfo { get; set; }
+    public AggregatorOtpInfo OtpInfo { get; set; }
 
     /// <summary>
     /// Сумма операции. Может отсутствовать для нефинансовых операций
