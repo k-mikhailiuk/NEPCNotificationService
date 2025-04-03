@@ -60,7 +60,7 @@ public class AcsOtpNotificationMessageBuilder : INotificationMessageBuilder<AcsO
             if (!messageText.IsNeedSend)
                 continue;
 
-            var customerId = await GetCustomerId(message.CardInfo.CardIdentifier.CardIdentifierValue, context,
+            var customerId = await GetCustomerIdAsync(message.CardInfo.CardIdentifier.CardIdentifierValue, context,
                 cancellationToken);
 
             if (customerId == null)
@@ -68,7 +68,7 @@ public class AcsOtpNotificationMessageBuilder : INotificationMessageBuilder<AcsO
 
             var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
 
-            var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
+            var languageId = await languageSelector.GetLanguageIdAsync(customerId.Value, context, cancellationToken);
 
             var language = Language.Russian;
 
@@ -100,7 +100,7 @@ public class AcsOtpNotificationMessageBuilder : INotificationMessageBuilder<AcsO
         return list;
     }
 
-    private static async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context,
+    private static async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();

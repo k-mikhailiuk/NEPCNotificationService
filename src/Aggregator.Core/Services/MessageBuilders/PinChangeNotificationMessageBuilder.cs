@@ -64,14 +64,14 @@ public class PinChangeNotificationMessageBuilder : INotificationMessageBuilder<P
             if (!messageText.IsNeedSend)
                 return list;
             
-            var customerId = await GetCustomerId(message.Details.CardIdentifier.CardIdentifierValue, context, cancellationToken);
+            var customerId = await GetCustomerIdAsync(message.Details.CardIdentifier.CardIdentifierValue, context, cancellationToken);
 
             if(customerId == null)
                 continue;
             
             var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
             
-            var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
+            var languageId = await languageSelector.GetLanguageIdAsync(customerId.Value, context, cancellationToken);
             
             var language = Language.Russian;
             
@@ -103,7 +103,7 @@ public class PinChangeNotificationMessageBuilder : INotificationMessageBuilder<P
         return list;
     }
     
-    private static async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
+    private static async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();
 

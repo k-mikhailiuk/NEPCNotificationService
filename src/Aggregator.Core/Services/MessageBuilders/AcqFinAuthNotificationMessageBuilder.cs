@@ -62,14 +62,14 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
             if (!messageText.IsNeedSend)
                 continue;
 
-            var customerId = await GetCustomerId(message.MerchantInfo.TerminalId, context, cancellationToken);
+            var customerId = await GetCustomerIdAsync(message.MerchantInfo.TerminalId, context, cancellationToken);
 
             if (customerId == null)
                 continue;
 
             var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
             
-            var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
+            var languageId = await languageSelector.GetLanguageIdAsync(customerId.Value, context, cancellationToken);
 
             var language = Language.Russian;
             
@@ -101,7 +101,7 @@ public class AcqFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
         return list;
     }
 
-    private async Task<long?> GetCustomerId(string terminalId, AggregatorDbContext context,
+    private async Task<long?> GetCustomerIdAsync(string terminalId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();

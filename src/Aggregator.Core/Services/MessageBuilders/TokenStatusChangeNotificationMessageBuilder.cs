@@ -61,7 +61,7 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
             if (!messageText.IsNeedSend)
                 return list;
 
-            var customerId = await GetCustomerId(message.Details.CardIdentifier.CardIdentifierValue, context,
+            var customerId = await GetCustomerIdAsync(message.Details.CardIdentifier.CardIdentifierValue, context,
                 cancellationToken);
 
             if (customerId == null)
@@ -69,7 +69,7 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
             
             var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
             
-            var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
+            var languageId = await languageSelector.GetLanguageIdAsync(customerId.Value, context, cancellationToken);
             
             var language = Language.Russian;
             
@@ -101,7 +101,7 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
         return list;
     }
 
-    private async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context,
+    private async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();
@@ -114,7 +114,7 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
         command.CommandText = @"
         SELECT accounts.CustomerID
         FROM dbo.Accounts accounts 
-        WHERE AccountNo = SUBSTRING(CAST(@accountId AS VARCHAR(50)), 4, LEN(CAST(@accountId AS VARCHAR(50))) - 6)";
+        WHERE AccountNo = SUBSTRING(CAST(@accountId AS VARCHAR(50)), 4, LEN(CAST(@accountId AS VARCHAR(50))) - 11)";
 
         var parameter = command.CreateParameter();
         parameter.ParameterName = "@accountId";

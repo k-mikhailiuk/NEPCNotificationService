@@ -64,14 +64,14 @@ public class AcctBalChangeNotificationMessageBuilder : INotificationMessageBuild
             if (!messageText.IsNeedSend)
                 continue;
             
-            var customerId = await GetCustomerId(message.Details.AccountId, context, cancellationToken);
+            var customerId = await GetCustomerIdAsync(message.Details.AccountId, context, cancellationToken);
 
             if(customerId == null)
                 continue;
 
             var languageSelector = scope.ServiceProvider.GetRequiredService<ILanguageSelector>();
             
-            var languageId = await languageSelector.GetLanguageId(customerId.Value, context, cancellationToken);
+            var languageId = await languageSelector.GetLanguageIdAsync(customerId.Value, context, cancellationToken);
 
             var language = Language.Russian;
             
@@ -103,7 +103,7 @@ public class AcctBalChangeNotificationMessageBuilder : INotificationMessageBuild
         return list;
     }
     
-    private static async Task<long?> GetCustomerId(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
+    private static async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();
 

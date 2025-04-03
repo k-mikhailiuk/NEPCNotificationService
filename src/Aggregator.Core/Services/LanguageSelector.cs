@@ -7,7 +7,7 @@ namespace Aggregator.Core.Services;
 
 public class LanguageSelector : ILanguageSelector
 {
-    public async Task<long?> GetLanguageId(long customerId, AggregatorDbContext context,
+    public async Task<long?> GetLanguageIdAsync(long customerId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();
