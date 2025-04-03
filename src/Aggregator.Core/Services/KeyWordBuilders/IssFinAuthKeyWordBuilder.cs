@@ -48,25 +48,25 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
             {
                 "{CYCLETYPE}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(" ", entity.CardInfo.Limits.Select(limit => limit.Limit.CycleType))
+                    ? string.Join(string.Empty, entity.CardInfo.Limits.Select(limit => limit.Limit.CycleType))
                     : string.Empty
             },
             {
                 "{CYCLELENGTH}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(" ", entity.CardInfo.Limits.Select(limit => limit.Limit.CycleLength))
+                    ? string.Join(string.Empty, entity.CardInfo.Limits.Select(limit => limit.Limit.CycleLength is not (null or 0) ? limit.Limit.CycleLength.ToString() : string.Empty ))
                     : string.Empty
             },
             {
                 "{ENDTIME}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(" ", entity.CardInfo.Limits.Select(limit => limit.Limit.EndTime))
+                    ? string.Join(string.Empty, entity.CardInfo.Limits.Select(limit => limit.Limit.EndTime))
                     : string.Empty
             },
             {
                 "{TRSAMOUNT}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(" ",
+                    ? string.Join(string.Empty,
                         entity.CardInfo.Limits.Select(limit =>
                             limit.LimitType == LimitType.AmtLimit ? limit.Limit.TrsValue.ToString() : string.Empty))
                     : string.Empty
@@ -74,7 +74,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
             {
                 "{USEDAMOUNT}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(" ",
+                    ? string.Join(string.Empty,
                         entity.CardInfo.Limits.Select(limit =>
                             limit.LimitType == LimitType.AmtLimit ? limit.Limit.UsedValue.ToString() : string.Empty))
                     : string.Empty
@@ -82,13 +82,13 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
             {
                 "{AMOUNTLIMIT_CURRENCY}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(" ", await Task.WhenAll(entity.CardInfo.Limits.Select(limit => currencyReplacer.ReplaceCurrency(limit.Limit.Currency))))
+                    ? string.Join(string.Empty, await Task.WhenAll(entity.CardInfo.Limits.Select(limit => currencyReplacer.ReplaceCurrency(limit.Limit.Currency))))
                     : string.Empty
             },
             {
                 "{TRSVALUE}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(" ",
+                    ? string.Join(string.Empty,
                         entity.CardInfo.Limits.Select(limit =>
                             limit.LimitType == LimitType.CntLimit ? limit.Limit.TrsValue.ToString() : string.Empty))
                     : string.Empty
@@ -96,7 +96,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
             {
                 "{USEDVALUE}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(" ",
+                    ? string.Join(string.Empty,
                         entity.CardInfo.Limits.Select(limit =>
                             limit.LimitType == LimitType.CntLimit ? limit.Limit.UsedValue.ToString() : string.Empty))
                     : string.Empty

@@ -37,12 +37,14 @@ public class Limit
     /// <summary>
     /// Пороговое (выставленное) значение лимита
     /// </summary>
-    public long TrsValue { get; set; }
+    [Column(TypeName = "decimal(15,2)")]
+    public decimal TrsValue { get; set; }
     
     /// <summary>
     /// Текущее (накопленное) значение по лимиту
     /// </summary>
-    public long UsedValue { get; set; }
+    [Column(TypeName = "decimal(15,2)")]
+    public decimal UsedValue { get; set; }
     
     /// <summary>
     /// Тип лимита

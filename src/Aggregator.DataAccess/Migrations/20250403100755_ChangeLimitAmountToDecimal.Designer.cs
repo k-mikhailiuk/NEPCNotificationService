@@ -4,6 +4,7 @@ using Aggregator.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aggregator.DataAccess.Migrations
 {
     [DbContext(typeof(AggregatorDbContext))]
-    partial class AggregatorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250403100755_ChangeLimitAmountToDecimal")]
+    partial class ChangeLimitAmountToDecimal
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
