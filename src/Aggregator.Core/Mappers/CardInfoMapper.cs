@@ -38,8 +38,8 @@ public static class CardInfoMapper
                             EndTime = x.AmtLimit != null
                                 ? ConversionExtensionsHelper.SafeConvertTime(x.AmtLimit.EndTime)
                                 : ConversionExtensionsHelper.SafeConvertTime(x.CntLimit.EndTime),
-                            TrsValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.TrsAmount, 2) / 100 : decimal.Round(x.CntLimit.TrsValue, 2) / 100,
-                            UsedValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.UsedAmount, 2) / 100 : decimal.Round(x.CntLimit.UsedValue, 2) / 100
+                            TrsValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.TrsAmount, 2) / 100 : x.CntLimit.TrsValue,
+                            UsedValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.UsedAmount, 2) / 100 : x.CntLimit.UsedValue,
                         }
                     }).ToList()
                 : null,

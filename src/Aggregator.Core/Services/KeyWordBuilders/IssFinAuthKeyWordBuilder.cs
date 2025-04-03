@@ -90,7 +90,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
                     ? string.Join(string.Empty,
                         entity.CardInfo.Limits.Select(limit =>
-                            limit.LimitType == LimitType.CntLimit ? limit.Limit.TrsValue.ToString() : string.Empty))
+                            limit.LimitType == LimitType.CntLimit ? ((int)limit.Limit.TrsValue).ToString() : string.Empty))
                     : string.Empty
             },
             {
@@ -98,7 +98,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
                     ? string.Join(string.Empty,
                         entity.CardInfo.Limits.Select(limit =>
-                            limit.LimitType == LimitType.CntLimit ? limit.Limit.UsedValue.ToString() : string.Empty))
+                            limit.LimitType == LimitType.CntLimit ? ((int)limit.Limit.UsedValue).ToString() : string.Empty))
                     : string.Empty
             },
             { "{RESPONSECODE}", entity.Details.ResponseCode == -1 ? string.Empty : responseCodeMap[language] }
