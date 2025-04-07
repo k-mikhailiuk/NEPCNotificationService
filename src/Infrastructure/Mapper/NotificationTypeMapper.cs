@@ -18,7 +18,7 @@ using Aggregator.DTOs.PinChange;
 using Aggregator.DTOs.TokenStausChange;
 using Aggregator.DTOs.Unhold;
 
-namespace Common;
+namespace Mapper;
 
 public static class NotificationTypeMapper
 {

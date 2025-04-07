@@ -50,15 +50,8 @@ public class KeyWordsDataSeeder
             "{NAME}",
             "{CITY}",
             "{COUNTRY}",
-            "{CYCLETYPE}",
-            "{CYCLELENGTH}",
-            "{ENDTIME}",
-            "{TRSAMOUNT}",
-            "{USEDAMOUNT}",
-            "{AMOUNTLIMIT_CURRENCY}",
-            "{TRSVALUE}",
-            "{USEDVALUE}",
-            "{RESPONSECODE}"
+            "{RESPONSECODE}",
+            "{LIMIT}"
         };
         
         await SeedKeyWordsForTypeAsync(NotificationMessageType.IssFinAuth, placeholders, cancellationToken);

@@ -2,6 +2,7 @@ using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DataAccess.Entities.Enum;
 using Common;
+using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
@@ -22,10 +23,10 @@ public class AcctBalChangeKeyWordBuilder(ICurrencyReplacer currencyReplacer) : I
             { "{TRANSATIONTIME}", entity.Details.TransactionTime.ToString() },
             { "{ACCOUNTID}", entity.Details.AccountId },
             { "{PAN}", PanMask.MaskPan(entity.CardInfo?.CardIdentifier.CardIdentifierValue) },
-            { "{ACCOUNT_AMOUNT}", entity.Details.AccountAmount.Amount.ToString() ?? string.Empty },
-            { "{ACCOUNT_CURRENCY}", await currencyReplacer.ReplaceCurrency(entity.Details.AccountAmount.Currency) },
-            { "{ACCOUNTBALANCE_AMOUNT}", entity.Details.AccountBalance.Amount.ToString() ?? string.Empty },
-            { "{ACCOUNTBALANCE_CURRENCY}", await currencyReplacer.ReplaceCurrency(entity.Details.AccountBalance.Currency) }
+            { "{ACCOUNT_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AccountAmount.Amount) },
+            { "{ACCOUNT_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountAmount.Currency) },
+            { "{ACCOUNTBALANCE_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AccountBalance.Amount) },
+            { "{ACCOUNTBALANCE_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountBalance.Currency) }
         };
 
         return KeyWordReplacer.ReplacePlaceholders(message, replacements);

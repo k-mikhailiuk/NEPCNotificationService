@@ -2,6 +2,7 @@ using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.PinChange;
 using Common;
+using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 

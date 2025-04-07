@@ -2,6 +2,7 @@ using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities.AcsOtp;
 using Aggregator.DataAccess.Entities.Enum;
 using Common;
+using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
@@ -14,8 +15,8 @@ public class AcsOtpKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKeyWord
             { "{OTP}", entity.Details.OtpInfo.Otp },
             { "{PAN}", PanMask.MaskPan(entity.CardInfo.CardIdentifier.CardIdentifierValue) },
             { "{TRANSATIONTIME}", entity.Details.TransactionTime.ToString() },
-            { "{AUTHMONEY_AMOUNT}", entity.Details.AuthMoney.Amount.ToString() ?? string.Empty },
-            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrency(entity.Details.AuthMoney.Currency) },
+            { "{AUTHMONEY_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AuthMoney.Amount) },
+            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AuthMoney.Currency) },
             { "{NAME}", entity.MerchantInfo.Name },
             { "{URL}", entity.MerchantInfo.Url },
         };

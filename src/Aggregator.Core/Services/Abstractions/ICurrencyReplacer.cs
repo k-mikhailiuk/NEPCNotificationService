@@ -2,5 +2,5 @@ namespace Aggregator.Core.Services.Abstractions;
 
 public interface ICurrencyReplacer
 {
-    public Task<string?> ReplaceCurrency(string currency, CancellationToken cancellationToken = default);
+    public Task<string?> ReplaceCurrencyAsync(string currency, CancellationToken cancellationToken = default);
 }

@@ -23,7 +23,6 @@ public static class DIConfigure
             options.InputFormatters.Add(new CustomTextPlainInputFormatter());
         });
         services.AddEndpointsApiExplorer();
-        services.AddHealthCheck();
         services.AddMessageProcessor();
         services.AddDatabaseConnectionString(configuration);
         services.AddIngressApiDbContext(configuration);

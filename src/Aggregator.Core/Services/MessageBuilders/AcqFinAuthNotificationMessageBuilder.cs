@@ -5,6 +5,7 @@ using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.Repositories.Abstractions;
+using Common.Enums;
 using ControlPanel.DataAccess.Entites.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

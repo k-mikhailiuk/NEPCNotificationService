@@ -2,6 +2,7 @@ using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DataAccess.Entities.Enum;
 using Common;
+using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
@@ -25,11 +26,11 @@ public class AcqFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
         
        var replacements = new Dictionary<string, string>
         {
-            { "{TRANSTYPE}", ((TransType)entity.Details.TransType).GetDescription() },
+            { "{TRANSTYPE}", ((TransType)entity.Details.TransType).GetDescription(language) },
             { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : reversalLanguageMap[language] },
             { "{PAN}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
-            { "{AUTHMONEY_AMOUNT}", entity.Details.AuthMoney.Amount.ToString() ?? string.Empty },
-            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrency(entity.Details.AuthMoney.Currency) },
+            { "{AUTHMONEY_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AuthMoney.Amount) },
+            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AuthMoney.Currency) },
             { "{LOCALTIME}", entity.Details.LocalTime.ToString() },
             { "{RRN}", entity.Details.Rrn ?? string.Empty },
             { "{TERMINALID}", entity.MerchantInfo.TerminalId ?? string.Empty },

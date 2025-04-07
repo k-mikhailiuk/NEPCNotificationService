@@ -1,4 +1,4 @@
-namespace Aggregator.DataAccess.Entities.Enum;
+namespace Common.Enums;
 
 public enum Language : byte
 {

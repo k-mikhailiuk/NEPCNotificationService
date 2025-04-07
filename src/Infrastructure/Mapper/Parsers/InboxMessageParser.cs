@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DTOs.Abstractions;
 
-namespace Common.Parsers;
+namespace Mapper.Parsers;
 
 public static class InboxMessageParser
 {

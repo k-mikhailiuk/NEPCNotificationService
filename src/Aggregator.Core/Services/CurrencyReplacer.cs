@@ -7,7 +7,7 @@ namespace Aggregator.Core.Services;
 
 public class CurrencyReplacer(IServiceProvider serviceProvider) : ICurrencyReplacer
 {
-    public async Task<string?> ReplaceCurrency(string currency, CancellationToken cancellationToken = default)
+    public async Task<string?> ReplaceCurrencyAsync(string currency, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(currency))
             return string.Empty;

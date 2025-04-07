@@ -1,126 +1,170 @@
-using System.ComponentModel;
+using Common;
 
 namespace Aggregator.DataAccess.Entities.Enum;
 
 public enum TransType
 {
-    [Description("Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был уменьшен остаток на счете карты (лимит авторизации).")]
+    [MultiLanguageDescription(
+        "Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был уменьшен остаток на счете карты (лимит авторизации).",
+        "Авторизация чеги төмөндөтүү", "Decreasing the authorization limit")]
     DECREASE_AUTHORIZATION_AMOUNT = 432,
-    
-    [Description("Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был увеличен остаток на счете карты (лимит авторизации).")]
+
+    [MultiLanguageDescription(
+        "Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был увеличен остаток на счете карты (лимит авторизации).",
+        "Авторизация чегин көтөрүү", "Increasing the authorization limit")]
     INCREASE_AUTHORIZATION_AMOUNT = 433,
-    
-    [Description("Оплата Услуг")]
+
+    [MultiLanguageDescription("Оплата Услуг", "кырг", "англ")]
     UTIL_PAYMENT = 508,
 
-    [Description("Отправка перевода С2С по СБП с карты Банка")]
+    [MultiLanguageDescription("Отправка перевода С2С по СБП с карты Банка",
+        "Банк картасынан СБП аркылуу C2C трансфертин жөнөтүү", "Sending C2C transfer via SBP from the Bank's card")]
     SBP_С2С_DEBIT = 512,
 
-    [Description("Отправка перевода С2B по СБП с карты Банка")]
+    [MultiLanguageDescription("Отправка перевода С2B по СБП с карты Банка",
+        "Банк картасынан СБП аркылуу C2B трансфертин жөнөтүү",
+        "Sending C2B transfer via SBP from the Bank's card")]
     SBP_С2B_DEBIT = 513,
 
-    [Description("Зачисление денежных средств на карты МИР от имени Оператора")]
+    [MultiLanguageDescription("Зачисление денежных средств на карты МИР от имени Оператора",
+        "Оператор тарабынан МИР карталарына акча каражатын кредиттөө",
+        "Credit of funds to MIR cards on behalf of the Operator")]
     G2C_PAYMENT = 554,
 
-    [Description("Внесение средств через ATM\\PVN")]
+    [MultiLanguageDescription("Внесение средств через ATM\\PVN", "ATM/PVN аркылуу акча салуу",
+        "Deposit of funds through ATM/PVN")]
     CASH_IN = 618,
 
-    [Description("Перевод на карту Банка в сети СБП (Система Быстрых Платежей)")]
+    [MultiLanguageDescription("Перевод на карту Банка в сети СБП (Система Быстрых Платежей)",
+        "СБП тармагындагы Банк картасына трансферт (Жылдам төлөмдөр системасы)",
+        "Transfer to the Bank's card in the SBP network (System of Fast Payments)")]
     SBP_CREDIT = 622,
 
-    [Description("Часть выдачи наличных для покупки с выдачей наличных")]
+    [MultiLanguageDescription("Часть выдачи наличных для покупки с выдачей наличных",
+        "Наличные алуу үчүн сатып алуу боюнча калыбына келтирүү",
+        "Part of cash withdrawal for purchase with cash issuance")]
     CASH_BACK_PART = 653,
 
-    [Description("Онлайн списание банком")]
+    [MultiLanguageDescription("Онлайн списание банком", "Банк тарабынан онлайн алым", "Online charge by the bank")]
     EPOS_DEBIT_ONLINE = 659,
 
-    [Description("Предавторизация в е-POS")]
+    [MultiLanguageDescription("Предавторизация в е-POS", "e-POS системасында алдын ала авторизация",
+        "Pre-authorization in e-POS")]
     PRE_EPURCHASE_AUTH = 677,
 
-    [Description("Оплата в интернете")]
+    [MultiLanguageDescription("Оплата в интернете", "Интернет аркылуу төлөө", "Payment online")]
     EPOS_PURCHASE = 680,
 
-    [Description("Возврат товара для MO/TO")]
+    [MultiLanguageDescription("Возврат товара для MO/TO", "MO/TO үчүн товарды кайтаруу", "Goods return for MO/TO")]
     EPOS_REFUND = 681,
 
-    [Description("Пополнение из АБС (Банком)")]
+    [MultiLanguageDescription("Пополнение из АБС (Банком)", "АБС (Банк тарабынан) толуктоо",
+        "Replenishment from the ABS (by the Bank)")]
     FAKE_CREDIT = 687,
 
-    [Description("Списание из АБС (Банком)")]
+    [MultiLanguageDescription("Списание из АБС (Банком)", "АБС (Банк тарабынан) каражатты чыгаруу",
+        "Charge from the ABS (by the Bank)")]
     FAKE_DEBIT = 688,
 
-    [Description("Зачисление средств на карту")]
+    [MultiLanguageDescription("Зачисление средств на карту", "Картка акча каражатын кредиттөө",
+        "Credit of funds to the card")]
     PAYMENT = 698,
 
-    [Description("Получение наличных в банкомате")]
+    [MultiLanguageDescription("Получение наличных в банкомате", "Банкоматтан акча алуу", "Cash withdrawal from ATM")]
     ATM_WDL = 700,
 
-    [Description("Запрос баланса")]
+    [MultiLanguageDescription("Запрос баланса", "Баланс боюнча суроо", "Balance inquiry")]
     BALINQ = 702,
 
-    [Description("Пополнение по сохраненным реквизитам карты")]
+    [MultiLanguageDescription("Пополнение по сохраненным реквизитам карты",
+        "Сакталган картанын реквизиттери боюнча толуктоо", "Replenishment by saved card details")]
     COF_CASH_DEPOSIT = 711,
 
-    [Description("Пополнение карты МИР наличными без предъявления карты")]
+    [MultiLanguageDescription("Пополнение карты МИР наличными без предъявления карты",
+        "МИР картасын акча менен картаны көрсөтпөстөн толуктоо",
+        "Replenishment of MIR card with cash without presenting the card")]
     CNP_CASH_IN = 712,
 
-    [Description("Пре-авторизация в POS")]
+    [MultiLanguageDescription("Пре-авторизация в POS", "POS терминалында алдын ала авторизация",
+        "Pre-authorization in POS")]
     PRE_PURCHASE_AUTHORIZATION = 736,
-    
-    [Description("Завершение пре-авторизации POS")]
+
+    [MultiLanguageDescription("Завершение пре-авторизации POS", "POS терминалында алдын ала авторизацияны аяктоо",
+        "Completion of pre-authorization in POS")]
     POS_PRE_PURCH_CMPL = 737,
-    
-    [Description("Увеличение пре-авторизации POS")]
+
+    [MultiLanguageDescription("Увеличение пре-авторизации POS", "POS терминалында алдын ала авторизацияны жогорулатуу",
+        "Increase in pre-authorization in POS")]
     POS_INCR_PRE_PURCH = 739,
 
-    [Description("Покупка за счет собственных средств при оплате с использованием ЭС")]
+    [MultiLanguageDescription("Покупка за счет собственных средств при оплате с использованием ЭС",
+        "ЭС аркылуу төлөөдө өз каражаттары менен сатып алуу", "Purchase with own funds when paying with E-money")]
     PURCHASE_WITH_ELECTRONIC_CERTIFICATE = 741,
 
-    [Description("Покупка за счет средств ЭС")]
+    [MultiLanguageDescription("Покупка за счет средств ЭС", "ЭС каражаттары менен сатып алуу",
+        "Purchase with E-money funds")]
     PURCHASE_BY_ELECTRONIC_CERTITIFCATE_ONLY = 745,
 
-    [Description("Возврат покупки за счет средств ЭС")]
+    [MultiLanguageDescription("Возврат покупки за счет средств ЭС", "ЭС каражаттары менен сатып алууну кайтаруу",
+        "Return of purchase with E-money funds")]
     RETURN_REFAUND_BY_ELECTRONIC_CERTIFICATE = 746,
 
-    [Description("Возврат покупки за счет собственных средств при оплате использованием ЭС")]
+    [MultiLanguageDescription("Возврат покупки за счет собственных средств при оплате использованием ЭС",
+        "ЭС аркылуу төлөөдө өз каражаттары менен сатып алууну кайтаруу",
+        "Return of purchase with own funds when paying using E-money")]
     RETURN_REFAUND_WITH_ELECTRONIC_CERTIFICATE = 747,
-    
-    [Description("Credit Adjustment (ручной реверсал на операцию, совершенную в АТМ, по карте VISA)")]
+
+    [MultiLanguageDescription("Credit Adjustment (ручной реверсал на операцию, совершенную в АТМ, по карте VISA)",
+        "Кредиттик жөнгө салуу (VISA картасы менен ATMде жасалган транзакцияны кол менен артка кайтаруу)",
+        "Credit Adjustment (manual reversal of a transaction made at ATM, using VISA card)")]
     VSMS_CREDITADJ = 750,
 
-    [Description("Онлайн пополнение банком")]
+    [MultiLanguageDescription("Онлайн пополнение банком", "Банк тарабынан онлайн толуктоо",
+        "Online deposit by the bank")]
     EPOS_CREDIT_ONLINE = 760,
-    
-    [Description("SMS-chargeback (Chargeback на операцию, совершенную в АТМ, по карте VISA)")]
+
+    [MultiLanguageDescription("SMS-chargeback (Chargeback на операцию, совершенную в АТМ, по карте VISA)",
+        "SMS-кайтаруу (ATMде VISA картасы менен жасалган транзакция боюнча кайтаруу)",
+        "SMS-chargeback (Chargeback on a transaction made at ATM, using VISA card)")]
     VSMS_CHARGEBACK = 767,
 
-    [Description("Оплата в торговом терминале")]
+    [MultiLanguageDescription("Оплата в торговом терминале", "Сатуу терминалында төлөм",
+        "Payment in a point of sale terminal")]
     PURCHASE = 774,
 
-    [Description("Операция возврата по безналичной операции")]
+    [MultiLanguageDescription("Операция возврата по безналичной операции", "Натыйжасыз операция үчүн товарды кайтаруу",
+        "Return operation for cashless transaction")]
     REFUND = 775,
 
-    [Description("Покупка с выдачей наличных")]
+    [MultiLanguageDescription("Покупка с выдачей наличных", "Накталуу акча берүү менен сатып алуу",
+        "Purchase with cash withdrawal")]
     PURCHASE_WITH_CASHBACK = 776,
 
-    [Description("Получение наличных в кассовом терминале")]
+    [MultiLanguageDescription("Получение наличных в кассовом терминале", "Кассалык терминалдан акча алуу",
+        "Cash withdrawal from a cashier terminal")]
     POS_CASH_ADVANCE_PVN = 777,
 
-    [Description("P2P  (перевод карта-карта)")]
+    [MultiLanguageDescription("P2P  (перевод карта-карта)", "P2P (картадан картага трансфер)",
+        "P2P (card-to-card transfer)")]
     P2P_DEBIT = 781,
 
-    [Description("Запрос баланса (в POS)")]
+    [MultiLanguageDescription("Запрос баланса (в POS)", "Баланс боюнча суроо", "Balance inquiry (in POS)")]
     POS_BALANCE_INQ = 784,
 
-    [Description("P-to-P (перевод карта-карта)")]
+    [MultiLanguageDescription("P-to-P (перевод карта-карта)", "P-to-P (картадан картага трансфер)",
+        "P-to-P (card-to-card transfer)")]
     P2P_CREDIT = 785,
 
-    [Description("Оф-лайн Пополнение (Банком)")]
+    [MultiLanguageDescription("Оф-лайн Пополнение (Банком)", "Офлайн толуктоо (Банк тарабынан)",
+        "Offline Replenishment (by the Bank)")]
     EPOS_CREDIT = 888,
 
-    [Description("Оф-лайн Списание (Банком)")]
+    [MultiLanguageDescription("Оф-лайн Списание (Банком)", "Офлайн алым (Банк тарабынан)",
+        "Offline Charge (by the Bank)")]
     EPOS_DEBIT = 889,
 
-    [Description("Зачисление денежных средств на карты МИР от имени Оператора (Выплата АСВ)\n")]
+    [MultiLanguageDescription("Зачисление денежных средств на карты МИР от имени Оператора (Выплата АСВ)",
+        "Оператор тарабынан МИР карталарына акча каражатын кредиттөө (АСВ төлөмү)",
+        "Credit of funds to MIR cards on behalf of the Operator (ASV payment)")]
     D2C_PAYMENT = 898
 }

@@ -15,10 +15,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
+      <ProjectReference Include="..\Aggregator.DTOs\Aggregator.DTOs.csproj" />
       <ProjectReference Include="..\Aggregator.Repositories\Aggregator.Repositories.csproj" />
       <ProjectReference Include="..\DataIngrestorApi.DataAccess\DataIngrestorApi.DataAccess.csproj" />
       <ProjectReference Include="..\DataIngrestorApi.DTOs\DataIngrestorApi.DTOs.csproj" />
       <ProjectReference Include="..\Infrastructure\Common\Common.csproj" />
+      <ProjectReference Include="..\Infrastructure\Mapper\Mapper.csproj" />
       <ProjectReference Include="..\Infrastructure\OptionsConfiguration\OptionsConfiguration.csproj" />
     </ItemGroup>
 

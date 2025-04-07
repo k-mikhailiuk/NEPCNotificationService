@@ -1,5 +1,6 @@
 using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.Enum;
+using Common.Enums;
 
 namespace Aggregator.Core.Services.Abstractions;
 
