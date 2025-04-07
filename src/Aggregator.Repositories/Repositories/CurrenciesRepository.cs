@@ -1,6 +1,7 @@
 using Aggregator.DataAccess;
 using Aggregator.Repositories.Abstractions;
 using ControlPanel.DataAccess.Entites;
+using ControlPanel.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Repositories.Repositories;

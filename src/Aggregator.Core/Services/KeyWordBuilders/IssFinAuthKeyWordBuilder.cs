@@ -7,7 +7,7 @@ using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
-public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKeyWordBuilder<IssFinAuth>
+public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimitIdReplacer limitIdReplacer) : IKeyWordBuilder<IssFinAuth>
 {
     public async Task<string> BuildKeyWordsAsync(string? message, IssFinAuth entity, Language language)
     {
@@ -69,6 +69,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
     private async Task<string> GetLimitMessageAsync(CardInfoLimitWrapper limit, Language language)
     {
         {
+            var limitId = await limitIdReplacer.ReplaceLimitIdAsync(limit.LimitId, language);
             var cycleType = limit.Limit.CycleType;
             var cycleLength = limit.Limit.CycleLength is not (null or 0)
                 ? limit.Limit.CycleLength.ToString()
@@ -88,13 +89,13 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
                         case Language.Undefined:
                             return string.Empty;
                         case Language.Russian:
-                            details = $"Сумма лимита: {trsAmount} {currency}\nИспользовано: {usedAmount} {currency}";
+                            details = $"Лимит: {limitId}\nСумма лимита: {trsAmount} {currency}\nИспользовано: {usedAmount} {currency}";
                             break;
                         case Language.Kyrgyz:
-                            details = $"Лимит суммасы: {trsAmount} {currency}\nКолдонулду: {usedAmount} {currency}";
+                            details = $"Лимит: {limitId}\nЛимит суммасы: {trsAmount} {currency}\nКолдонулду: {usedAmount} {currency}";
                             break;
                         case Language.English:
-                            details = $"Limit amount: {trsAmount} {currency}\nUsed: {usedAmount} {currency}";
+                            details = $"Limit: {limitId}\nLimit amount: {trsAmount} {currency}\nUsed: {usedAmount} {currency}";
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(language), language, null);

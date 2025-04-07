@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using ControlPanel.DataAccess.Entites.Enum;
 
-namespace ControlPanel.DataAccess.Entites;
+namespace ControlPanel.DataAccess.Entities;
 
 public class NotificationMessageKeyWord
 {

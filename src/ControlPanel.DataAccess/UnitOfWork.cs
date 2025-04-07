@@ -17,6 +17,8 @@ public class UnitOfWork : IUnitOfWork
     
     public ICurrenciesRepository Currencies => _currencies.Value;
     private readonly Lazy<ICurrenciesRepository> _currencies;
+    public ILimitIdDescriptionDirectoriesRepository LimitIdDescriptionDirectories => _limitIdDescriptionDirectories.Value;
+    private readonly Lazy<ILimitIdDescriptionDirectoriesRepository> _limitIdDescriptionDirectories;
 
     public UnitOfWork(ControlPanelDbContext context, IServiceProvider serviceProvider)
     {
@@ -30,6 +32,9 @@ public class UnitOfWork : IUnitOfWork
         
         _currencies = new Lazy<ICurrenciesRepository>(() =>
             serviceProvider.GetService<ICurrenciesRepository>() ?? throw new InvalidOperationException());
+        
+        _limitIdDescriptionDirectories = new Lazy<ILimitIdDescriptionDirectoriesRepository>(() =>
+            serviceProvider.GetService<ILimitIdDescriptionDirectoriesRepository>() ?? throw new InvalidOperationException());
     }
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) =>

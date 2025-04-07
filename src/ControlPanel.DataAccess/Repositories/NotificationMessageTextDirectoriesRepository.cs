@@ -1,5 +1,6 @@
 using ControlPanel.DataAccess.Abstractions.Repositories;
 using ControlPanel.DataAccess.Entites;
+using ControlPanel.DataAccess.Entities;
 
 namespace ControlPanel.DataAccess.Repositories;
 

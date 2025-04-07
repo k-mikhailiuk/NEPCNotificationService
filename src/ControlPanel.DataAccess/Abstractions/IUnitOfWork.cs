@@ -8,6 +8,7 @@ public interface IUnitOfWork : IDisposable
     
     INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories { get; }
     ICurrenciesRepository Currencies { get; }
+    ILimitIdDescriptionDirectoriesRepository LimitIdDescriptionDirectories { get; }
     
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     

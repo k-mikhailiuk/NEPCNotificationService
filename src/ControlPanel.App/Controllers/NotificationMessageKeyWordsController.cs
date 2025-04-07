@@ -6,18 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace ControlPanel.App.Controllers;
 
 [Authorize]
-public class NotificationMessageKeyWordsController : Controller
+public class NotificationMessageKeyWordsController(
+    INotificationMessageKeyWordsService notificationMessageKeyWordsService)
+    : Controller
 {
-    private readonly INotificationMessageKeyWordsService _notificationMessageKeyWordsService;
-
-    public NotificationMessageKeyWordsController(INotificationMessageKeyWordsService notificationMessageKeyWordsService)
-    {
-        _notificationMessageKeyWordsService = notificationMessageKeyWordsService;
-    }
-
     public async Task<IActionResult> Index(CancellationToken cancellationToken = default)
     {
-        var viewModels = await _notificationMessageKeyWordsService.GetKeyWordsAsync(cancellationToken);
+        var viewModels = await notificationMessageKeyWordsService.GetKeyWordsAsync(cancellationToken);
         
         return View(viewModels);
     }
@@ -25,7 +20,7 @@ public class NotificationMessageKeyWordsController : Controller
     [HttpPost]
     public async Task<IActionResult> UpdateDescription([FromBody] UpdateNotificationMessageKeyWordsDescriptionDto dto, CancellationToken cancellationToken = default)
     {
-        await _notificationMessageKeyWordsService.UpdateDescriptionAsync(dto, cancellationToken);
+        await notificationMessageKeyWordsService.UpdateDescriptionAsync(dto, cancellationToken);
         return Ok(new { success = true });
     }
 }

@@ -1,0 +1,27 @@
+@model IEnumerable<ControlPanel.DataAccess.Entities.LimitIdDescriptionDirectory>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>LimitId</th>
+        <th>Наименование</th>
+        <th>Описание (RU)</th>
+        <th>Описание (KG)</th>
+        <th>Описание (EN)</th>
+        <th>Тип(ы) транзакций</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var limit in Model)
+    {
+        <tr>
+            <td>@limit.Id</td>
+            <td>@limit.Name</td>
+            <td>@limit.DescriptionRu</td>
+            <td>@limit.DescriptionKg</td>
+            <td>@limit.DescriptionEn</td>
+            <td>@limit.TransactionTypes</td>
+        </tr>
+    }
+    </tbody>
+</table>

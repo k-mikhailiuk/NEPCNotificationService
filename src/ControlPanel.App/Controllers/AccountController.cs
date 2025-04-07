@@ -4,15 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ControlPanel.App.Controllers;
 
-public class AccountController : Controller
+public class AccountController(SignInManager<IdentityUser> signInManager) : Controller
 {
-    private readonly SignInManager<IdentityUser> _signInManager;
-
-    public AccountController(SignInManager<IdentityUser> signInManager)
-    {
-        _signInManager = signInManager;
-    }
-    
     [HttpGet]
     public IActionResult Login(string returnUrl = null)
     {
@@ -30,7 +23,7 @@ public class AccountController : Controller
         if (!ModelState.IsValid)
             return View(model);
 
-        var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
+        var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
 
         if (result.Succeeded)
         {
@@ -48,7 +41,7 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
-        await _signInManager.SignOutAsync();
+        await signInManager.SignOutAsync();
         return RedirectToAction("Index", "NotificationMessageKeyWords");
     }
 }

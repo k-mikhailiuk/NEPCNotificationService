@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ControlPanel.DataAccess.Entites;
+namespace ControlPanel.DataAccess.Entities;
 
 public class Currency
 {

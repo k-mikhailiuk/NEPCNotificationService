@@ -1,5 +1,5 @@
 using ControlPanel.DataAccess.Configurations;
-using ControlPanel.DataAccess.Entites;
+using ControlPanel.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +11,7 @@ public class ControlPanelDbContext : IdentityDbContext<IdentityUser>
     public DbSet<NotificationMessageKeyWord> NotificationMessageKeyWords { get; set; }
     public DbSet<NotificationMessageTextDirectory> NotificationMessageTextDirectories { get; set; }
     public DbSet<Currency> Currencies { get; set; }
+    public DbSet<LimitIdDescriptionDirectory> LimitIdDescriptionDirectories { get; set; }
     
     public ControlPanelDbContext(DbContextOptions<ControlPanelDbContext> options)
         : base(options)
@@ -26,5 +27,6 @@ public class ControlPanelDbContext : IdentityDbContext<IdentityUser>
         modelBuilder.ApplyConfiguration(new NotificationMessageKeyWordConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationMessageTextDirectoryConfiguration());
         modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
+        modelBuilder.ApplyConfiguration(new LimitIdDescriptionDirectoryConfiguration());
     }
 }

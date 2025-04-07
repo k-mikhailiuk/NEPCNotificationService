@@ -120,6 +120,9 @@ public class UnitOfWork : IUnitOfWork
     
     public IAcsOtpRepository AcsOtps => _acsOtps.Value;
     private readonly Lazy<IAcsOtpRepository> _acsOtps;
+    
+    public ILimitIdDescriptionDirectoriesRepository LimitIdDescriptionDirectories => _limitIdDescriptionDirectories.Value;
+    private readonly Lazy<ILimitIdDescriptionDirectoriesRepository> _limitIdDescriptionDirectories;
 
     public UnitOfWork(AggregatorDbContext context, IServiceProvider serviceProvider)
     {
@@ -193,6 +196,8 @@ public class UnitOfWork : IUnitOfWork
             serviceProvider.GetService<INotificationMessageTextDirectoriesRepository>() ?? throw new InvalidOperationException());
         _currencies = new Lazy<ICurrenciesRepository>(() =>
             serviceProvider.GetService<ICurrenciesRepository>() ?? throw new InvalidOperationException());
+        _limitIdDescriptionDirectories = new Lazy<ILimitIdDescriptionDirectoriesRepository>(() =>
+            serviceProvider.GetService<ILimitIdDescriptionDirectoriesRepository>() ?? throw new InvalidOperationException());
         
         _acsOtps = new Lazy<IAcsOtpRepository>(() =>
             serviceProvider.GetService<IAcsOtpRepository>() ?? throw new InvalidOperationException());

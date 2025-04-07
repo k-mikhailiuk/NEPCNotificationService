@@ -44,9 +44,8 @@ public interface IUnitOfWork : IDisposable
     IInboxArchiveMessageRepository InboxArchiveMessage { get; }
     INotificationMessageRepository NotificationMessage { get; }
     INotificationMessageKeyWordsRepository NotificationMessageKeyWords { get; }
-    
     INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories { get; }
-    
+    ILimitIdDescriptionDirectoriesRepository LimitIdDescriptionDirectories { get; }
     ICurrenciesRepository Currencies { get; }
     IAcsOtpRepository AcsOtps { get; }
     

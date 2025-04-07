@@ -2,48 +2,42 @@ using ControlPanel.Core.DTOs;
 using ControlPanel.Core.Services.Contracts;
 using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Entites;
+using ControlPanel.DataAccess.Entities;
 
 namespace ControlPanel.Core.Services;
 
-public class CurrenciesService : ICurrenciesService
+public class CurrenciesService(IUnitOfWork unitOfWork) : ICurrenciesService
 {
-    private readonly IUnitOfWork _unitOfWork;
-
-    public CurrenciesService(IUnitOfWork unitOfWork)
-    {
-        _unitOfWork = unitOfWork;
-    }
-
     public async Task<List<Currency>> GetCurrenciesAsync(CancellationToken cancellationToken)
     {
-        var keywords = await _unitOfWork.Currencies.GetAllAsync(cancellationToken);
+        var currencies = await unitOfWork.Currencies.GetAllAsync(cancellationToken);
         
-        return keywords.ToList();
+        return currencies.ToList();
     }
 
     public async Task CreateCurrency(AddCurrencyDto dto, CancellationToken cancellationToken)
     {
         var currency = Currency.Create(dto.CurrencyCode, dto.CurrencyName, dto.CurrencySymbol);
         
-        await _unitOfWork.Currencies.AddAsync(currency, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.Currencies.AddAsync(currency, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
     
     public async Task EditCurrency(EditCurrencyDto dto, CancellationToken cancellationToken)
     {
-        var currency = await _unitOfWork.Currencies.GetByCodeAsync(dto.CurrencyCode, cancellationToken);
+        var currency = await unitOfWork.Currencies.GetByCodeAsync(dto.CurrencyCode, cancellationToken);
         
         currency.CurrencyName = dto.CurrencyName;
         currency.CurrencySymbol = dto.CurrencySymbol;
         
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
     
     public async Task DeleteCurrency(int currencyCode, CancellationToken cancellationToken)
     {
-        var currency = await _unitOfWork.Currencies.GetByCodeAsync(currencyCode, cancellationToken);
+        var currency = await unitOfWork.Currencies.GetByCodeAsync(currencyCode, cancellationToken);
 
-        if (currency != null) _unitOfWork.Currencies.Remove(currency);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        if (currency != null) unitOfWork.Currencies.Remove(currency);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

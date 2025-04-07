@@ -1,4 +1,5 @@
 using ControlPanel.DataAccess.Entites;
+using ControlPanel.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

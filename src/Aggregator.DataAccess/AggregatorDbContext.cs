@@ -8,12 +8,11 @@ using Aggregator.DataAccess.Entities.AcsOtp;
 using Aggregator.DataAccess.Entities.CardStatusChange;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DataAccess.Entities.OwiUserAction;
-using Aggregator.DataAccess.Entities.OwnedEntities;
 using Aggregator.DataAccess.Entities.PinChange;
 using Aggregator.DataAccess.Entities.TokenChangeStatus;
 using Aggregator.DataAccess.Entities.Unhold;
 using ControlPanel.DataAccess.Configurations;
-using ControlPanel.DataAccess.Entites;
+using ControlPanel.DataAccess.Entities;
 using DataIngrestorApi.DataAccess.Configurations;
 using DataIngrestorApi.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -60,6 +59,7 @@ public class AggregatorDbContext : DbContext
     public DbSet<NotificationMessageTextDirectory> NotificationMessageTextDirectories { get; set; }
     public DbSet<NotificationMessageKeyWord> NotificationMessageKeyWords { get; set; }
     public DbSet<Currency> Currencies { get; set; }
+    public DbSet<LimitIdDescriptionDirectory> LimitIdDescriptionDirectories { get; set; }
     
     public DbSet<AcsOtp> AcsOtps { get; set; }
     
@@ -84,6 +84,9 @@ public class AggregatorDbContext : DbContext
         modelBuilder.Entity<NotificationMessageTextDirectory>()
             .ToTable("NotificationMessageTextDirectories", "nepc", t => t.ExcludeFromMigrations());
 
+        modelBuilder.Entity<LimitIdDescriptionDirectory>()
+            .ToTable("LimitIdDescriptionDirectories", "nepc", t => t.ExcludeFromMigrations());
+        
         ApplyNotificationConfigurations(modelBuilder);
         ApplyNotificationDetailsConfigurations(modelBuilder);
         ApplyAdditionalConfigurations(modelBuilder);
