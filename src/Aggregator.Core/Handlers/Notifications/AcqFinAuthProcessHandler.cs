@@ -9,26 +9,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
-public class AcqFinAuthProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorAcqFinAuthDto>, List<long>>
+public class AcqFinAuthProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
+    : IRequestHandler<ProcessNotificationCommand<AggregatorAcqFinAuthDto>, List<long>>
 {
-    private readonly NotificationEntityMapperFactory _mapperFactory;
-    private readonly IServiceProvider _serviceProvider;
-
-    public AcqFinAuthProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
-    {
-        _mapperFactory = mapperFactory;
-        _serviceProvider = serviceProvider;
-    }
-
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorAcqFinAuthDto> request, CancellationToken cancellationToken)
     {
         var dtos = request.Notifications;
         
-        var mapper = _mapperFactory.GetMapper<AcqFinAuth, AggregatorAcqFinAuthDto>();
+        var mapper = mapperFactory.GetMapper<AcqFinAuth, AggregatorAcqFinAuthDto>();
 
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
         
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);

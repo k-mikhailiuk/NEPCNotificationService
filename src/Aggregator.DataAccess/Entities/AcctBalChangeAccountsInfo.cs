@@ -11,4 +11,6 @@ public class AcctBalChangeAccountsInfo : AccountsInfo
     /// Уникальный идентификатор AcctBalChange
     /// </summary>
     public long AcctBalChangeId { get; set; }
+    
+    public AcctBalChange.AcctBalChange AcctBalChange { get; set; }
 }

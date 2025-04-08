@@ -9,26 +9,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
-public class OwiUserActionProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorOwiUserActionDto>, List<long>>
+public class OwiUserActionProcessHandler(
+    NotificationEntityMapperFactory mapperFactory,
+    IServiceProvider serviceProvider)
+    : IRequestHandler<ProcessNotificationCommand<AggregatorOwiUserActionDto>, List<long>>
 {
-    private readonly NotificationEntityMapperFactory _mapperFactory;
-    private readonly IServiceProvider _serviceProvider;
-
-    public OwiUserActionProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
-    {
-        _mapperFactory = mapperFactory;
-        _serviceProvider = serviceProvider;
-    }
-
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorOwiUserActionDto> request, CancellationToken cancellationToken)
     {
         var dtos = request.Notifications;
         
-        var mapper = _mapperFactory.GetMapper<OwiUserAction, AggregatorOwiUserActionDto>();
+        var mapper = mapperFactory.GetMapper<OwiUserAction, AggregatorOwiUserActionDto>();
 
         var entities = dtos.Select(dto => mapper.Map(dto)). ToList();
         
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);

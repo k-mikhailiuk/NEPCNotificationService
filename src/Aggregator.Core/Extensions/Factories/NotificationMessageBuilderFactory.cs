@@ -14,37 +14,30 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Extensions.Factories;
 
-public class NotificationMessageBuilderFactory : INotificationMessageBuilderFactory
+public class NotificationMessageBuilderFactory(IServiceProvider serviceProvider) : INotificationMessageBuilderFactory
 {
-    private readonly IServiceProvider _serviceProvider;
-
-    public NotificationMessageBuilderFactory(IServiceProvider serviceProvider)
-    {
-        _serviceProvider = serviceProvider;
-    }
-
     public INotificationMessageBuilder<INotification> CreateNotificationMessageBuilder(Type notificationType)
     {
         return notificationType switch
         {
             _ when notificationType == typeof(IssFinAuth) => 
-                _serviceProvider.GetRequiredService<INotificationMessageBuilder<IssFinAuth>>(),
+                serviceProvider.GetRequiredService<INotificationMessageBuilder<IssFinAuth>>(),
             _ when notificationType == typeof(AcqFinAuth) => 
-                _serviceProvider.GetRequiredService<INotificationMessageBuilder<AcqFinAuth>>(),
+                serviceProvider.GetRequiredService<INotificationMessageBuilder<AcqFinAuth>>(),
             _ when notificationType == typeof(CardStatusChange) => 
-                _serviceProvider.GetRequiredService<INotificationMessageBuilder<CardStatusChange>>(),
+                serviceProvider.GetRequiredService<INotificationMessageBuilder<CardStatusChange>>(),
             _ when notificationType == typeof(PinChange) => 
-                _serviceProvider.GetRequiredService<INotificationMessageBuilder<PinChange>>(),
+                serviceProvider.GetRequiredService<INotificationMessageBuilder<PinChange>>(),
             _ when notificationType == typeof(OwiUserAction) => 
-                _serviceProvider.GetRequiredService<INotificationMessageBuilder<OwiUserAction>>(),
+                serviceProvider.GetRequiredService<INotificationMessageBuilder<OwiUserAction>>(),
             _ when notificationType == typeof(Unhold) => 
-                _serviceProvider.GetRequiredService<INotificationMessageBuilder<Unhold>>(),
+                serviceProvider.GetRequiredService<INotificationMessageBuilder<Unhold>>(),
             _ when notificationType == typeof(AcctBalChange) => 
-                _serviceProvider.GetRequiredService<INotificationMessageBuilder<AcctBalChange>>(),
+                serviceProvider.GetRequiredService<INotificationMessageBuilder<AcctBalChange>>(),
             _ when notificationType == typeof(TokenStatusChange) => 
-                _serviceProvider.GetRequiredService<INotificationMessageBuilder<TokenStatusChange>>(),
+                serviceProvider.GetRequiredService<INotificationMessageBuilder<TokenStatusChange>>(),
             _ when notificationType == typeof(AcsOtp) => 
-                _serviceProvider.GetRequiredService<INotificationMessageBuilder<AcsOtp>>(),
+                serviceProvider.GetRequiredService<INotificationMessageBuilder<AcsOtp>>(),
            
             _ => throw new NotSupportedException($"Тип уведомления {notificationType.Name} не поддерживается.")
         };

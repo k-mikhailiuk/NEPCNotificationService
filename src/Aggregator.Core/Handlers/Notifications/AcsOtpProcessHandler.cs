@@ -8,26 +8,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
-public class AcsOtpProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorAcsOtpDto>, List<long>>
+public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
+    : IRequestHandler<ProcessNotificationCommand<AggregatorAcsOtpDto>, List<long>>
 {
-    private readonly NotificationEntityMapperFactory _mapperFactory;
-    private readonly IServiceProvider _serviceProvider;
-
-    public AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
-    {
-        _mapperFactory = mapperFactory;
-        _serviceProvider = serviceProvider;
-    }
-    
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorAcsOtpDto> request, CancellationToken cancellationToken)
     {
         var dtos = request.Notifications;
 
-        var mapper = _mapperFactory.GetMapper<AcsOtp, AggregatorAcsOtpDto>();
+        var mapper = mapperFactory.GetMapper<AcsOtp, AggregatorAcsOtpDto>();
 
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);

@@ -14,26 +14,20 @@ using OptionsConfiguration;
 
 namespace Aggregator.Core.Services.MessageBuilders;
 
-public class IssFinAuthNotificationMessageBuilder : INotificationMessageBuilder<IssFinAuth>
+public class IssFinAuthNotificationMessageBuilder(
+    IOptions<NotificationMessageOptions> notificationMessageOptions,
+    IServiceProvider serviceProvider,
+    IKeyWordBuilder<IssFinAuth> keyWordBuilder)
+    : INotificationMessageBuilder<IssFinAuth>
 {
-    private readonly NotificationMessageOptions _notificationMessageOptions;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IKeyWordBuilder<IssFinAuth> _keyWordBuilder;
-    
-    public IssFinAuthNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<IssFinAuth> keyWordBuilder)
-    {
-        _serviceProvider = serviceProvider;
-        _keyWordBuilder = keyWordBuilder;
-        _notificationMessageOptions = notificationMessageOptions.Value;
-    }
+    private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
 
     public async Task<List<NotificationMessage>> BuildNotificationAsync(List<long> notificationIds,
         CancellationToken cancellationToken)
     {
         var list = new List<NotificationMessage>();
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         
         using var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
@@ -103,7 +97,7 @@ public class IssFinAuthNotificationMessageBuilder : INotificationMessageBuilder<
             {
                 Title = _notificationMessageOptions.Title,
                 Status = NotificationMessageStatus.New,
-                Message = await _keyWordBuilder.BuildKeyWordsAsync(localizeMessage, message, language),
+                Message = await keyWordBuilder.BuildKeyWordsAsync(localizeMessage, message, language),
                 CustomerId = customerId.Value,
             };
 

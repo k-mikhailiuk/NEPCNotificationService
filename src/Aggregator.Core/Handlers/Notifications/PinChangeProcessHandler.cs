@@ -9,27 +9,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
-public class PinChangeProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorPinChangeDto>, List<long>>
+public class PinChangeProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
+    : IRequestHandler<ProcessNotificationCommand<AggregatorPinChangeDto>, List<long>>
 {
-    private readonly NotificationEntityMapperFactory _mapperFactory;
-    private readonly IServiceProvider _serviceProvider;
-
-    public PinChangeProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
-    {
-        _mapperFactory = mapperFactory;
-        _serviceProvider = serviceProvider;
-    }
-
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorPinChangeDto> request,
         CancellationToken cancellationToken)
     {
         var dtos = request.Notifications;
 
-        var mapper = _mapperFactory.GetMapper<PinChange, AggregatorPinChangeDto>();
+        var mapper = mapperFactory.GetMapper<PinChange, AggregatorPinChangeDto>();
 
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);

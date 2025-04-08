@@ -10,27 +10,19 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Aggregator.Core.Handlers.Notifications;
 
 public class
-    AcctBalChangeProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, List<long>>
+    AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
+    : IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, List<long>>
 {
-    private readonly NotificationEntityMapperFactory _mapperFactory;
-    private readonly IServiceProvider _serviceProvider;
-
-    public AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
-    {
-        _mapperFactory = mapperFactory;
-        _serviceProvider = serviceProvider;
-    }
-
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorAcctBalChangeDto> request,
         CancellationToken cancellationToken)
     {
         var dtos = request.Notifications;
 
-        var mapper = _mapperFactory.GetMapper<AcctBalChange, AggregatorAcctBalChangeDto>();
+        var mapper = mapperFactory.GetMapper<AcctBalChange, AggregatorAcctBalChangeDto>();
 
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
@@ -129,7 +121,7 @@ public class
             {
                 foreach (var lw in entity.CardInfo.Limits)
                 {
-                    limitIds.Add(lw.Limit.LimitId);
+                    limitIds.Add(lw.Limit.Id);
                 }
             }
 
@@ -138,7 +130,7 @@ public class
                 if (accInfo.Limits == null) continue;
                 foreach (var lw in accInfo.Limits)
                 {
-                    limitIds.Add(lw.Limit.LimitId);
+                    limitIds.Add(lw.Limit.Id);
                 }
             }
         }
@@ -146,7 +138,7 @@ public class
         var existingLimits = await unitOfWork.Limit
             .GetListByIdsRawSqlAsync(limitIds.ToList(), cancellationToken);
 
-        var limitCache = existingLimits.ToDictionary(l => l.LimitId, l => l);
+        var limitCache = existingLimits.ToDictionary(l => l.Id, l => l);
 
         foreach (var entity in entities)
         {
@@ -154,13 +146,14 @@ public class
             {
                 foreach (var lw in entity.CardInfo.Limits)
                 {
-                    var lid = lw.Limit.LimitId;
+                    var lid = lw.Limit.Id;
                     if (limitCache.TryGetValue(lid, out var existingLim))
                     {
                         lw.Limit = existingLim;
                     }
                     else
                     {
+                        await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
                         limitCache[lid] = lw.Limit;
                     }
                 }
@@ -173,13 +166,14 @@ public class
 
                 foreach (var lw in accInfo.Limits)
                 {
-                    var lid = lw.Limit.LimitId;
+                    var lid = lw.Limit.Id;
                     if (limitCache.TryGetValue(lid, out var existingLim))
                     {
                         lw.Limit = existingLim;
                     }
                     else
                     {
+                        await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
                         limitCache[lid] = lw.Limit;
                     }
                 }

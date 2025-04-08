@@ -9,9 +9,14 @@ namespace Aggregator.DataAccess.Entities;
 public class Limit
 {
     /// <summary>
+    /// Уникальный идентификатор для бд
+    /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long Id { get; set; }
+    
+    /// <summary>
     /// Идентификатор лимита
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long LimitId { get; set; }
     
     /// <summary>

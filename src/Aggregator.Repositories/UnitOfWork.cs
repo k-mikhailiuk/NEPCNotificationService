@@ -17,7 +17,7 @@ namespace Aggregator.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly AggregatorDbContext _context;
+    protected AggregatorDbContext _context { get; }
 
     public IInboxRepository Inbox => _inbox.Value;
     private readonly Lazy<IInboxRepository> _inbox;
@@ -127,7 +127,7 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(AggregatorDbContext context, IServiceProvider serviceProvider)
     {
         _context = context;
-
+        
         _inbox = new Lazy<IInboxRepository>(() =>
             serviceProvider.GetService<IInboxRepository>() ?? throw new InvalidOperationException());
         _acctBalChangeDetails = new Lazy<IAcctBalChangeDetailsRepository>(() =>

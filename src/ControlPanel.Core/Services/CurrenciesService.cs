@@ -1,7 +1,6 @@
 using ControlPanel.Core.DTOs;
 using ControlPanel.Core.Services.Contracts;
 using ControlPanel.DataAccess.Abstractions;
-using ControlPanel.DataAccess.Entites;
 using ControlPanel.DataAccess.Entities;
 
 namespace ControlPanel.Core.Services;

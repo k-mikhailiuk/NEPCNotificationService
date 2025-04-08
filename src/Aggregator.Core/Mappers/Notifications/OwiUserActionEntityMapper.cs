@@ -6,20 +6,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
-public class OwiUserActionEntityMapper : INotificationMapper<OwiUserAction, AggregatorOwiUserActionDto>
+public class OwiUserActionEntityMapper(ILogger<OwiUserActionEntityMapper> logger)
+    : INotificationMapper<OwiUserAction, AggregatorOwiUserActionDto>
 {
-    private readonly ILogger<OwiUserActionEntityMapper> _logger;
-
-    public OwiUserActionEntityMapper(ILogger<OwiUserActionEntityMapper> logger)
-    {
-        _logger = logger;
-    }
-
     public OwiUserAction Map(AggregatorOwiUserActionDto dto)
     {
         if (dto == null)
         {
-            _logger.LogWarning("AggregatorOwiUserActionDto is null");
+            logger.LogWarning("AggregatorOwiUserActionDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorOwiUserActionDto is null");
         }
 
@@ -41,11 +35,11 @@ public class OwiUserActionEntityMapper : INotificationMapper<OwiUserAction, Aggr
     {
         if (dto == null)
         {
-            _logger.LogInformation("Details is null");
+            logger.LogInformation("Details is null");
             return null;
         }
 
-        _logger.LogInformation("Mapping CardStatusChangeDetails:");
+        logger.LogInformation("Mapping CardStatusChangeDetails:");
 
         return new OwiUserActionDetails
         {

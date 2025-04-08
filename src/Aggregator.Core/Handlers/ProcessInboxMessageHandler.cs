@@ -13,32 +13,21 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Handlers;
 
-public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCommand>
+public class ProcessInboxMessageHandler(
+    ILogger<ProcessInboxMessageHandler> logger,
+    IMediator mediator,
+    INotificationCommandFactory commandFactory,
+    IServiceProvider serviceProvider,
+    INotificationMessageBuilderFactory notificationMessageBuilderFactory)
+    : IRequestHandler<ProcessInboxMessageCommand>
 {
-    private readonly ILogger<ProcessInboxMessageHandler> _logger;
-    private readonly IMediator _mediator;
-    private readonly INotificationCommandFactory _commandFactory;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly INotificationMessageBuilderFactory _notificationMessageBuilderFactory;
-
-    public ProcessInboxMessageHandler(ILogger<ProcessInboxMessageHandler> logger, IMediator mediator,
-        INotificationCommandFactory commandFactory, IServiceProvider serviceProvider,
-        INotificationMessageBuilderFactory notificationMessageBuilderFactory)
-    {
-        _logger = logger;
-        _mediator = mediator;
-        _commandFactory = commandFactory;
-        _serviceProvider = serviceProvider;
-        _notificationMessageBuilderFactory = notificationMessageBuilderFactory;
-    }
-
     public async Task Handle(ProcessInboxMessageCommand request, CancellationToken cancellationToken)
     {
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         unitOfWork.BeginTransactionAsync();
         
-        _logger.LogInformation("Processing inbox messages: {MessageCount}", request.Messages.Count());
+        logger.LogInformation("Processing inbox messages: {MessageCount}", request.Messages.Count());
 
         var notificationsByType = new Dictionary<Type, List<object>>();
 
@@ -50,7 +39,7 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
 
             if (notification == null)
             {
-                _logger.LogWarning("Не удалось распарсить уведомление. Id={messageId}", message.Id);
+                logger.LogWarning("Не удалось распарсить уведомление. Id={messageId}", message.Id);
                 continue;
             }
 
@@ -66,21 +55,21 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
 
             notificationList.Add(notification);
 
-            _logger.LogInformation("Parsed notification: Id={messageId}, Type={notificationType}", message.Id,
+            logger.LogInformation("Parsed notification: Id={messageId}, Type={notificationType}", message.Id,
                 notificationType.Name);
         }
 
         await UpdateStatusAsync(processedMessages.Keys.ToList(), InboxMessageStatus.InProgress, unitOfWork,
             cancellationToken);
 
-        _logger.LogInformation("Set in progress status messages: {MessagesCount}", processedMessages.Count);
+        logger.LogInformation("Set in progress status messages: {MessagesCount}", processedMessages.Count);
 
         foreach (var (type, notifications) in notificationsByType)
         {
             try
             {
-                var command = _commandFactory.CreateCommand(notifications);
-                var processedNotificationsIds = await _mediator.Send(command, cancellationToken);
+                var command = commandFactory.CreateCommand(notifications);
+                var processedNotificationsIds = await mediator.Send(command, cancellationToken);
 
                 var inboxMessageIds = processedNotificationsIds.Select(processedNotificationId =>
                     processedMessages.FirstOrDefault(x => x.Value == processedNotificationId).Key).ToList();
@@ -101,7 +90,7 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
             }
             catch (NotSupportedException ex)
             {
-                _logger.LogWarning(ex.Message);
+                logger.LogWarning(ex.Message);
                 unitOfWork.RollbackTransactionAsync();
             }
         }
@@ -126,13 +115,13 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation("Updated {count} messages to status={status}", messages.Count, newStatus);
+        logger.LogInformation("Updated {count} messages to status={status}", messages.Count, newStatus);
     }
 
     private async Task CompleteMessageProcessingAsync(List<long> messageIds, IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Get {count} processed messages", messageIds.Count);
+        logger.LogInformation("Get {count} processed messages", messageIds.Count);
 
         await UpdateStatusAsync(messageIds, InboxMessageStatus.Completed, unitOfWork, cancellationToken);
 
@@ -143,11 +132,11 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
 
         await unitOfWork.InboxArchiveMessage.AddRangeAsync(inboxArchive, cancellationToken);
 
-        _logger.LogInformation("{count} messages successfully added to archive", inboxArchive.Count);
+        logger.LogInformation("{count} messages successfully added to archive", inboxArchive.Count);
 
         unitOfWork.Inbox.RemoveRange(inboxMessages);
 
-        _logger.LogInformation("{count} messages successfully removed from inbox", inboxMessages.Count);
+        logger.LogInformation("{count} messages successfully removed from inbox", inboxMessages.Count);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -157,7 +146,7 @@ public class ProcessInboxMessageHandler : IRequestHandler<ProcessInboxMessageCom
         IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        var builder = _notificationMessageBuilderFactory.CreateNotificationMessageBuilder(entityNotificationsType);
+        var builder = notificationMessageBuilderFactory.CreateNotificationMessageBuilder(entityNotificationsType);
 
         var messages = await builder.BuildNotificationAsync(notificationIds, cancellationToken);
 

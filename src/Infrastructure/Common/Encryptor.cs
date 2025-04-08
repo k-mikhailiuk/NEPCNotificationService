@@ -7,8 +7,7 @@ namespace Common;
 /// </summary>
 public static class Encryptor
 {
-    private static readonly byte[] Key = new byte[16]
-        { 225, 62, 18, 122, 77, 71, 7, 193, 217, 113, 61, 146, 98, 175, 82, 108 };
+    private static readonly byte[] Key = [225, 62, 18, 122, 77, 71, 7, 193, 217, 113, 61, 146, 98, 175, 82, 108];
 
     /// <summary>
     /// Шифрование
@@ -35,7 +34,7 @@ public static class Encryptor
         byte[] encrypted;
         byte[] IV;
 
-        using (Aes aesAlg = Aes.Create())
+        using (var aesAlg = Aes.Create())
         {
             aesAlg.Key = key;
 
@@ -46,14 +45,12 @@ public static class Encryptor
 
             var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
 
-            // Create the streams used for encryption. 
             using (var msEncrypt = new MemoryStream())
             {
                 using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                 {
                     using (var swEncrypt = new StreamWriter(csEncrypt))
                     {
-                        //Write all data to the stream.
                         swEncrypt.Write(plainText);
                     }
 
@@ -66,49 +63,32 @@ public static class Encryptor
         Array.Copy(IV, 0, combinedIvCt, 0, IV.Length);
         Array.Copy(encrypted, 0, combinedIvCt, IV.Length, encrypted.Length);
 
-        // Return the encrypted bytes from the memory stream. 
         return combinedIvCt;
     }
 
     static string DecryptStringFromBytes_Aes(byte[] cipherTextCombined, byte[] key)
     {
-        // Declare the string used to hold 
-        // the decrypted text. 
-        string plaintext = null;
+        string plaintext;
 
-        // Create an Aes object 
-        // with the specified key and IV. 
-        using (Aes aesAlg = Aes.Create())
-        {
-            aesAlg.Key = key;
+        using var aesAlg = Aes.Create();
+        aesAlg.Key = key;
 
-            byte[] IV = new byte[aesAlg.BlockSize / 8];
-            byte[] cipherText = new byte[cipherTextCombined.Length - IV.Length];
+        var IV = new byte[aesAlg.BlockSize / 8];
+        var cipherText = new byte[cipherTextCombined.Length - IV.Length];
 
-            Array.Copy(cipherTextCombined, IV, IV.Length);
-            Array.Copy(cipherTextCombined, IV.Length, cipherText, 0, cipherText.Length);
+        Array.Copy(cipherTextCombined, IV, IV.Length);
+        Array.Copy(cipherTextCombined, IV.Length, cipherText, 0, cipherText.Length);
 
-            aesAlg.IV = IV;
+        aesAlg.IV = IV;
 
-            aesAlg.Mode = CipherMode.CBC;
+        aesAlg.Mode = CipherMode.CBC;
 
-            // Create a decrytor to perform the stream transform.
-            ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+        var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
-            // Create the streams used for decryption. 
-            using (var msDecrypt = new MemoryStream(cipherText))
-            {
-                using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                {
-                    using (var srDecrypt = new StreamReader(csDecrypt))
-                    {
-                        // Read the decrypted bytes from the decrypting stream
-                        // and place them in a string.
-                        plaintext = srDecrypt.ReadToEnd();
-                    }
-                }
-            }
-        }
+        using var msDecrypt = new MemoryStream(cipherText);
+        using var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
+        using var srDecrypt = new StreamReader(csDecrypt);
+        plaintext = srDecrypt.ReadToEnd();
 
         return plaintext;
     }

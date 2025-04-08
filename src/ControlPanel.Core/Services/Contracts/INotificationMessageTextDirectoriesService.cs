@@ -1,5 +1,4 @@
 using ControlPanel.Core.DTOs;
-using ControlPanel.DataAccess.Entites;
 using ControlPanel.DataAccess.Entities;
 
 namespace ControlPanel.Core.Services.Contracts;

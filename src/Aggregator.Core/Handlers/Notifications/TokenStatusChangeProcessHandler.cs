@@ -10,28 +10,21 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Aggregator.Core.Handlers.Notifications;
 
 public class
-    TokenStatusChangeProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorTokenStatusChangeDto>, List<long>>
-{
-    private readonly NotificationEntityMapperFactory _mapperFactory;
-    private readonly IServiceProvider _serviceProvider;
-
-    public TokenStatusChangeProcessHandler(NotificationEntityMapperFactory mapperFactory,
+    TokenStatusChangeProcessHandler(
+        NotificationEntityMapperFactory mapperFactory,
         IServiceProvider serviceProvider)
-    {
-        _mapperFactory = mapperFactory;
-        _serviceProvider = serviceProvider;
-    }
-
+    : IRequestHandler<ProcessNotificationCommand<AggregatorTokenStatusChangeDto>, List<long>>
+{
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorTokenStatusChangeDto> request,
         CancellationToken cancellationToken)
     {
         var dtos = request.Notifications;
 
-        var mapper = _mapperFactory.GetMapper<TokenStatusChange, AggregatorTokenStatusChangeDto>();
+        var mapper = mapperFactory.GetMapper<TokenStatusChange, AggregatorTokenStatusChangeDto>();
 
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);

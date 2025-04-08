@@ -6,20 +6,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
-public class TokenStatusChangeEntityMapper : INotificationMapper<TokenStatusChange, AggregatorTokenStatusChangeDto>
+public class TokenStatusChangeEntityMapper(ILogger<TokenStatusChangeEntityMapper> logger)
+    : INotificationMapper<TokenStatusChange, AggregatorTokenStatusChangeDto>
 {
-    private readonly ILogger<TokenStatusChangeEntityMapper> _logger;
-
-    public TokenStatusChangeEntityMapper(ILogger<TokenStatusChangeEntityMapper> logger)
-    {
-        _logger = logger;
-    }
-
     public TokenStatusChange Map(AggregatorTokenStatusChangeDto dto)
     {
         if (dto == null)
         {
-            _logger.LogWarning("AggregatorTokenStatusChangeDto is null");
+            logger.LogWarning("AggregatorTokenStatusChangeDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorTokenStatusChangeDto is null");
         }
 
@@ -41,11 +35,11 @@ public class TokenStatusChangeEntityMapper : INotificationMapper<TokenStatusChan
     {
         if (dto == null)
         {
-            _logger.LogInformation("Details is null");
+            logger.LogInformation("Details is null");
             return null;
         }
 
-        _logger.LogInformation("Mapping TokenStatusChangeDetails");
+        logger.LogInformation("Mapping TokenStatusChangeDetails");
 
         return new TokenStatusChangeDetails
         {

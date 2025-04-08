@@ -14,26 +14,20 @@ using OptionsConfiguration;
 
 namespace Aggregator.Core.Services.MessageBuilders;
 
-public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageBuilder<TokenStatusChange>
+public class TokenStatusChangeNotificationMessageBuilder(
+    IOptions<NotificationMessageOptions> notificationMessageOptions,
+    IServiceProvider serviceProvider,
+    IKeyWordBuilder<TokenStatusChange> keyWordBuilder)
+    : INotificationMessageBuilder<TokenStatusChange>
 {
-    private readonly NotificationMessageOptions _notificationMessageOptions;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IKeyWordBuilder<TokenStatusChange> _keyWordBuilder;
-
-    public TokenStatusChangeNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<TokenStatusChange> keyWordBuilder)
-    {
-        _serviceProvider = serviceProvider;
-        _keyWordBuilder = keyWordBuilder;
-        _notificationMessageOptions = notificationMessageOptions.Value;
-    }
+    private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
 
     public async Task<List<NotificationMessage>> BuildNotificationAsync(List<long> notificationIds,
         CancellationToken cancellationToken)
     {
         var list = new List<NotificationMessage>();
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
 
         using var unitOfWork = scope.ServiceProvider.GetService<IUnitOfWork>();
 
@@ -92,7 +86,7 @@ public class TokenStatusChangeNotificationMessageBuilder : INotificationMessageB
             {
                 Title = _notificationMessageOptions.Title,
                 Status = NotificationMessageStatus.New,
-                Message = await _keyWordBuilder.BuildKeyWordsAsync(localizeMessage, message, language),
+                Message = await keyWordBuilder.BuildKeyWordsAsync(localizeMessage, message, language),
                 CustomerId = customerId.Value,
             };
 

@@ -14,26 +14,20 @@ using OptionsConfiguration;
 
 namespace Aggregator.Core.Services.MessageBuilders;
 
-public class AcsOtpNotificationMessageBuilder : INotificationMessageBuilder<AcsOtp>
+public class AcsOtpNotificationMessageBuilder(
+    IOptions<NotificationMessageOptions> notificationMessageOptions,
+    IServiceProvider serviceProvider,
+    IKeyWordBuilder<AcsOtp> keyWordBuilder)
+    : INotificationMessageBuilder<AcsOtp>
 {
-    private readonly NotificationMessageOptions _notificationMessageOptions;
-    private readonly IServiceProvider _serviceProvider;
-    private readonly IKeyWordBuilder<AcsOtp> _keyWordBuilder;
-
-    public AcsOtpNotificationMessageBuilder(IOptions<NotificationMessageOptions> notificationMessageOptions,
-        IServiceProvider serviceProvider, IKeyWordBuilder<AcsOtp> keyWordBuilder)
-    {
-        _notificationMessageOptions = notificationMessageOptions.Value;
-        _serviceProvider = serviceProvider;
-        _keyWordBuilder = keyWordBuilder;
-    }
+    private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
 
     public async Task<List<NotificationMessage>> BuildNotificationAsync(List<long> notificationIds,
         CancellationToken cancellationToken)
     {
         var list = new List<NotificationMessage>();
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
 
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
@@ -91,7 +85,7 @@ public class AcsOtpNotificationMessageBuilder : INotificationMessageBuilder<AcsO
             {
                 Title = _notificationMessageOptions.Title,
                 Status = NotificationMessageStatus.New,
-                Message = await _keyWordBuilder.BuildKeyWordsAsync(localizeMessage, message, language),
+                Message = await keyWordBuilder.BuildKeyWordsAsync(localizeMessage, message, language),
                 CustomerId = customerId.Value,
             };
 

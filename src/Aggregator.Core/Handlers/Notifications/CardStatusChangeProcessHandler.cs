@@ -9,28 +9,21 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
-public class CardStatusChangeProcessHandler : IRequestHandler<ProcessNotificationCommand<AggregatorCardStatusChangeDto>, List<long>>
+public class CardStatusChangeProcessHandler(
+    NotificationEntityMapperFactory mapperFactory,
+    IServiceProvider serviceProvider)
+    : IRequestHandler<ProcessNotificationCommand<AggregatorCardStatusChangeDto>, List<long>>
 {
-    private readonly NotificationEntityMapperFactory _mapperFactory;
-    private readonly IServiceProvider _serviceProvider;
-
-    public CardStatusChangeProcessHandler(NotificationEntityMapperFactory mapperFactory,
-        IServiceProvider serviceProvider)
-    {
-        _mapperFactory = mapperFactory;
-        _serviceProvider = serviceProvider;
-    }
-
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorCardStatusChangeDto> request,
         CancellationToken cancellationToken)
     {
         var dtos = request.Notifications;
 
-        var mapper = _mapperFactory.GetMapper<CardStatusChange, AggregatorCardStatusChangeDto>();
+        var mapper = mapperFactory.GetMapper<CardStatusChange, AggregatorCardStatusChangeDto>();
 
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);

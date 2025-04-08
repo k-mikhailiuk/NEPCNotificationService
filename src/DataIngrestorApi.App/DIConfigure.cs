@@ -10,7 +10,6 @@ namespace DataIngrestorApi.App;
 /// </summary>
 public static class DIConfigure
 {
-    
     /// <summary>
     /// Register custom services
     /// </summary>
@@ -27,13 +26,4 @@ public static class DIConfigure
         services.AddDatabaseConnectionString(configuration);
         services.AddIngressApiDbContext(configuration);
     }
-
-    // private static void RegisterKafka(this IServiceCollection services, IConfiguration configuration)
-    // {
-    //     services.AddKafkaConfigProvider();
-    //     services.AddProducer<KafkaMessageProducer>();
-    //     services.AddKafkaTopics(configuration);
-    //     services.AddKafkaMessageProducerOptions(configuration);
-    //     services.AddProducerHealthCheck();
-    // }
 }

@@ -9,20 +9,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
-public class AcctBalChangeEntityMapper : INotificationMapper<AcctBalChange, AggregatorAcctBalChangeDto>
+public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger)
+    : INotificationMapper<AcctBalChange, AggregatorAcctBalChangeDto>
 {
-    private readonly ILogger<AcctBalChangeEntityMapper> _logger;
-
-    public AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger)
-    {
-        _logger = logger;
-    }
-
     public AcctBalChange Map(AggregatorAcctBalChangeDto dto)
     {
         if (dto == null)
         {
-            _logger.LogWarning("AcctBalChangeDto is null");
+            logger.LogWarning("AcctBalChangeDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorCardStatusChangeDto is null");
         }
 
@@ -45,11 +39,11 @@ public class AcctBalChangeEntityMapper : INotificationMapper<AcctBalChange, Aggr
     {
         if (dto == null)
         {
-            _logger.LogInformation("Details is null");
+            logger.LogInformation("Details is null");
             return null;
         }
 
-        _logger.LogInformation("Mapping CardStatusChangeDetails:");
+        logger.LogInformation("Mapping CardStatusChangeDetails:");
 
         return new AcctBalChangeDetails
         {
@@ -83,11 +77,11 @@ public class AcctBalChangeEntityMapper : INotificationMapper<AcctBalChange, Aggr
     {
         if (dto == null || dto.Count == 0)
         {
-            _logger.LogInformation("AccountsInfo is null");
+            logger.LogInformation("AccountsInfo is null");
             return null;
         }
 
-        _logger.LogInformation($"Mapping AccountsInfo");
+        logger.LogInformation($"Mapping AccountsInfo");
 
         return dto.Select(x => new AcctBalChangeAccountsInfo
         {
@@ -97,27 +91,23 @@ public class AcctBalChangeEntityMapper : INotificationMapper<AcctBalChange, Aggr
             ExceedLimit = x.ExceedLimit != null
                 ? ConversionExtensionsHelper.ConvertMoneyDtoToEntity<ExceedLimitMoney>(x.ExceedLimit)
                 : new ExceedLimitMoney { Amount = null, Currency = null },
-            Limits = x.Limits != null
-                ? x.Limits
-                    .Select(l => new AccountsInfoLimitWrapper
-                    {
-                        LimitType = l.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
-                        LimitId = l.AmtLimit?.Id ?? l.CntLimit?.Id ?? 0,
-                        Limit = new Limit
-                        {
-                            LimitId = l.AmtLimit?.Id ?? l.CntLimit?.Id ?? 0,
-                            LimitType = l.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
-                            Currency = l.AmtLimit?.Currency ?? null,
-                            CycleLength = l.AmtLimit != null ? l.AmtLimit.CycleLength : 0,
-                            CycleType = l.AmtLimit != null ? l.AmtLimit.CycleType : null,
-                            EndTime = l.AmtLimit != null
-                                ? ConversionExtensionsHelper.SafeConvertTime(l.AmtLimit.EndTime)
-                                : ConversionExtensionsHelper.SafeConvertTime(l.CntLimit.EndTime),
-                            TrsValue = l.AmtLimit != null ? l.AmtLimit.TrsAmount : l.CntLimit.TrsValue,
-                            UsedValue = l.AmtLimit != null ? l.AmtLimit.UsedAmount : l.CntLimit.UsedValue
-                        }
-                    }).ToList()
-                : null,
+            Limits = x.Limits?.Select(l => new AccountsInfoLimitWrapper
+            {
+                LimitType = l.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
+                Limit = new Limit
+                {
+                    LimitId = l.AmtLimit?.Id ?? l.CntLimit?.Id ?? 0,
+                    LimitType = l.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
+                    Currency = l.AmtLimit?.Currency ?? null,
+                    CycleLength = l.AmtLimit != null ? l.AmtLimit.CycleLength : 0,
+                    CycleType = l.AmtLimit?.CycleType,
+                    EndTime = l.AmtLimit != null
+                        ? ConversionExtensionsHelper.SafeConvertTime(l.AmtLimit.EndTime)
+                        : ConversionExtensionsHelper.SafeConvertTime(l.CntLimit.EndTime),
+                    TrsValue = l.AmtLimit?.TrsAmount ?? l.CntLimit.TrsValue,
+                    UsedValue = l.AmtLimit?.UsedAmount ?? l.CntLimit.UsedValue
+                }
+            }).ToList(),
         }).ToList();
     }
 }

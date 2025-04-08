@@ -5,17 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace DataIngrestorApi.App.Controllers;
 
 [ApiController]
-public class NotificationsController : ControllerBase
+public class NotificationsController(IMessageProcessor messageProcessor, ILogger<NotificationsController> logger)
+    : ControllerBase
 {
-    private readonly IMessageProcessor _messageProcessor;
-    private readonly ILogger<NotificationsController> _logger;
-
-    public NotificationsController(IMessageProcessor messageProcessor, ILogger<NotificationsController> logger)
-    {
-        _messageProcessor = messageProcessor;
-        _logger = logger;
-    }
-
     [HttpPost("receive")]
     public async Task<IActionResult> Receive([FromBody] NotificationRequestDto request,
         [FromHeader(Name = "X-CS-Instance")] string instance,
@@ -32,10 +24,10 @@ public class NotificationsController : ControllerBase
             }
 
             var contentType = HttpContext.Request.ContentType;
-            _logger.LogInformation("Processing request: Instance={Instance}, RequestId={RequestId}, RequestTime={RequestTime}, ContentType={ContentType}, UserAgent={UserAgent}, Host={Host}",
+            logger.LogInformation("Processing request: Instance={Instance}, RequestId={RequestId}, RequestTime={RequestTime}, ContentType={ContentType}, UserAgent={UserAgent}, Host={Host}",
                 instance, requestId, requestTime, contentType, userAgent, host);
 
-            await _messageProcessor.ProcessBatchAsync(request);
+            await messageProcessor.ProcessBatchAsync(request);
             return Ok();
         }
         catch (ArgumentException ex)
@@ -60,7 +52,7 @@ public class NotificationsController : ControllerBase
             {
                 return BadRequest("Missing requires headers.");
             }
-            _logger.LogInformation("receivedMessage is : {request}", request);
+            logger.LogInformation("receivedMessage is : {request}", request);
             return Ok();
         }
         catch (ArgumentException ex)

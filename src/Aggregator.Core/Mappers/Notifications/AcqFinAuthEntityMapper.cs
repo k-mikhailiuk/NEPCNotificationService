@@ -7,20 +7,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
-public class AcqFinAuthEntityMapper : INotificationMapper<AcqFinAuth, AggregatorAcqFinAuthDto>
+public class AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
+    : INotificationMapper<AcqFinAuth, AggregatorAcqFinAuthDto>
 {
-    private readonly ILogger<AcqFinAuthEntityMapper> _logger;
-
-    public AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
-    {
-        _logger = logger;
-    }
-
     public AcqFinAuth Map(AggregatorAcqFinAuthDto dto)
     {
         if (dto == null)
         {
-            _logger.LogWarning("AcqFinAuthDto is null");
+            logger.LogWarning("AcqFinAuthDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorAcqFinAuthDto is null");
         }
 
@@ -42,11 +36,11 @@ public class AcqFinAuthEntityMapper : INotificationMapper<AcqFinAuth, Aggregator
     {
         if (dto == null)
         {
-            _logger.LogInformation("Details is null");
+            logger.LogInformation("Details is null");
             return null;
         }
 
-        _logger.LogInformation("Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}", dto.Id, dto.TransactionTime);
+        logger.LogInformation("Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}", dto.Id, dto.TransactionTime);
 
         return new AcqFinAuthDetails
         {

@@ -10,7 +10,6 @@ public static class EnumExtensions
         if (field == null)
             return value.ToString();
 
-        // Пытаемся получить наш атрибут MultiLanguageDescriptionAttribute
         var attribute = 
             (MultiLanguageDescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(MultiLanguageDescriptionAttribute));
 

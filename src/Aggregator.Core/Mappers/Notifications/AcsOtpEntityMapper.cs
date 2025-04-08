@@ -7,20 +7,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
-public class AcsOtpEntityMapper : INotificationMapper<AcsOtp, AggregatorAcsOtpDto>
+public class AcsOtpEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
+    : INotificationMapper<AcsOtp, AggregatorAcsOtpDto>
 {
-    private readonly ILogger<CardStatusChangeEntityMapper> _logger;
-
-    public AcsOtpEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
-    {
-        _logger = logger;
-    }
-    
     public AcsOtp Map(AggregatorAcsOtpDto dto)
     {
         if (dto == null)
         {
-            _logger.LogWarning("AggregatorCardStatusChangeDto is null");
+            logger.LogWarning("AggregatorCardStatusChangeDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorCardStatusChangeDto is null");
         }
 

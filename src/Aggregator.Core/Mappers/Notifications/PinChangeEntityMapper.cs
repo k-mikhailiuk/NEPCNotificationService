@@ -6,20 +6,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
-public class PinChangeEntityMapper : INotificationMapper<PinChange, AggregatorPinChangeDto>
+public class PinChangeEntityMapper(ILogger<PinChangeEntityMapper> logger)
+    : INotificationMapper<PinChange, AggregatorPinChangeDto>
 {
-    private readonly ILogger<PinChangeEntityMapper> _logger;
-
-    public PinChangeEntityMapper(ILogger<PinChangeEntityMapper> logger)
-    {
-        _logger = logger;
-    }
-
     public PinChange Map(AggregatorPinChangeDto dto)
     {
         if (dto == null)
         {
-            _logger.LogWarning("AggregatorPinChangeDto is null");
+            logger.LogWarning("AggregatorPinChangeDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorPinChangeDto is null");
 
         }
@@ -42,11 +36,11 @@ public class PinChangeEntityMapper : INotificationMapper<PinChange, AggregatorPi
     {
         if (dto == null)
         {
-            _logger.LogInformation("PinChangeDetailsDto is null");
+            logger.LogInformation("PinChangeDetailsDto is null");
             return null;
         }
 
-        _logger.LogInformation($"Mapping PinChangeDetails: TransactionTime={dto.TransactionTime}", dto.TransactionTime);
+        logger.LogInformation($"Mapping PinChangeDetails: TransactionTime={dto.TransactionTime}", dto.TransactionTime);
 
         return new PinChangeDetails()
         {

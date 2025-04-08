@@ -12,7 +12,7 @@ public class CardInfoLimitWrapperConfiguration : IEntityTypeConfiguration<CardIn
         
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id).UseIdentityColumn();
+        builder.Property(x => x.Id).UseIdentityColumn().ValueGeneratedOnAdd();
         builder.Property(x => x.LimitType).IsRequired().HasConversion<byte>();
         builder.Property(x => x.CardInfoId).IsRequired();
         builder.Property(x => x.LimitId).IsRequired();

@@ -6,20 +6,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
-public class CardStatusChangeEntityMapper : INotificationMapper<CardStatusChange, AggregatorCardStatusChangeDto>
+public class CardStatusChangeEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
+    : INotificationMapper<CardStatusChange, AggregatorCardStatusChangeDto>
 {
-    private readonly ILogger<CardStatusChangeEntityMapper> _logger;
-
-    public CardStatusChangeEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
-    {
-        _logger = logger;
-    }
-
     public CardStatusChange Map(AggregatorCardStatusChangeDto dto)
     {
         if (dto == null)
         {
-            _logger.LogWarning("AggregatorCardStatusChangeDto is null");
+            logger.LogWarning("AggregatorCardStatusChangeDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorCardStatusChangeDto is null");
         }
 
@@ -41,11 +35,11 @@ public class CardStatusChangeEntityMapper : INotificationMapper<CardStatusChange
     {
         if (dto == null)
         {
-            _logger.LogInformation("Details is null");
+            logger.LogInformation("Details is null");
             return null;
         }
 
-        _logger.LogInformation("Mapping CardStatusChangeDetails:");
+        logger.LogInformation("Mapping CardStatusChangeDetails:");
 
         return new CardStatusChangeDetails
         {

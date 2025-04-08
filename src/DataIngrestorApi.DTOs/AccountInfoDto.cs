@@ -28,5 +28,5 @@ public class AccountInfoDto
     /// <summary>
     /// Тип - контейнер лимитов
     /// </summary>
-    public LimitWrapperDto[]? limits { get; set; }
+    public LimitWrapperDto[]? Limits { get; set; }
 }

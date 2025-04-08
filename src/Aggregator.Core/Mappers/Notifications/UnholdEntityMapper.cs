@@ -7,20 +7,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
-public class UnholdEntityMapper : INotificationMapper<Unhold, AggregatorUnholdDto>
+public class UnholdEntityMapper(ILogger<UnholdEntityMapper> logger) : INotificationMapper<Unhold, AggregatorUnholdDto>
 {
-    private readonly ILogger<UnholdEntityMapper> _logger;
-
-    public UnholdEntityMapper(ILogger<UnholdEntityMapper> logger)
-    {
-        _logger = logger;
-    }
-
     public Unhold Map(AggregatorUnholdDto dto)
     {
         if (dto == null)
         {
-            _logger.LogWarning("AggregatorUnholdDto is null");
+            logger.LogWarning("AggregatorUnholdDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorUnholdDto is null");
         }
 
@@ -43,11 +36,11 @@ public class UnholdEntityMapper : INotificationMapper<Unhold, AggregatorUnholdDt
     {
         if (dto == null)
         {
-            _logger.LogInformation("AggregatorUnholdDetailsDto is null");
+            logger.LogInformation("AggregatorUnholdDetailsDto is null");
             return null;
         }
 
-        _logger.LogWarning($"Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}");
+        logger.LogWarning($"Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}");
 
         return new UnholdDetails
         {

@@ -22,27 +22,23 @@ public static class CardInfoMapper
             RefPan = dto.RefPan,
             ContractId = dto.ContractId,
             MobilePhone = dto.MobilePhone,
-            Limits = dto.Limits != null
-                ? dto.Limits
-                    .Select(x => new CardInfoLimitWrapper
-                    {
-                        LimitType = x.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
-                        LimitId = x.AmtLimit != null ? x.AmtLimit.Id : x.CntLimit.Id,
-                        Limit = new Limit
-                        {
-                            LimitId = x.AmtLimit != null ? x.AmtLimit.Id : x.CntLimit.Id,
-                            LimitType = x.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
-                            Currency = x.AmtLimit?.Currency ?? null,
-                            CycleLength = x.AmtLimit != null ? x.AmtLimit.CycleLength : 0,
-                            CycleType = x.AmtLimit != null ? x.AmtLimit.CycleType : null,
-                            EndTime = x.AmtLimit != null
-                                ? ConversionExtensionsHelper.SafeConvertTime(x.AmtLimit.EndTime)
-                                : ConversionExtensionsHelper.SafeConvertTime(x.CntLimit.EndTime),
-                            TrsValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.TrsAmount, 2) / 100 : x.CntLimit.TrsValue,
-                            UsedValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.UsedAmount, 2) / 100 : x.CntLimit.UsedValue,
-                        }
-                    }).ToList()
-                : null,
+            Limits = dto.Limits?.Select(x => new CardInfoLimitWrapper
+            {
+                LimitType = x.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
+                Limit = new Limit
+                {
+                    LimitId = x.AmtLimit?.Id ?? x.CntLimit.Id,
+                    LimitType = x.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
+                    Currency = x.AmtLimit?.Currency ?? null,
+                    CycleLength = x.AmtLimit != null ? x.AmtLimit.CycleLength : 0,
+                    CycleType = x.AmtLimit?.CycleType,
+                    EndTime = x.AmtLimit != null
+                        ? ConversionExtensionsHelper.SafeConvertTime(x.AmtLimit.EndTime)
+                        : ConversionExtensionsHelper.SafeConvertTime(x.CntLimit.EndTime),
+                    TrsValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.TrsAmount, 2) / 100 : x.CntLimit.TrsValue,
+                    UsedValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.UsedAmount, 2) / 100 : x.CntLimit.UsedValue,
+                }
+            }).ToList(),
             CardIdentifier = ConversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
         };
     }
