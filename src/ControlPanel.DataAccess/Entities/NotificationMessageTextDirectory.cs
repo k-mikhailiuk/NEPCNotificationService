@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using ControlPanel.DataAccess.Entites.Enum;
+using Microsoft.EntityFrameworkCore;
 
 namespace ControlPanel.DataAccess.Entities;
 
@@ -12,8 +13,13 @@ public class NotificationMessageTextDirectory
 
     public NotificationOperationType? OperationType { get; set; }
 
+    [Unicode]
     public string? MessageTextRu { get; set; }
+    
+    [Unicode]
     public string? MessageTextEn { get; set; }
+    
+    [Unicode]
     public string? MessageTextKg { get; set; }
     
     public bool IsNeedSend { get; set; }

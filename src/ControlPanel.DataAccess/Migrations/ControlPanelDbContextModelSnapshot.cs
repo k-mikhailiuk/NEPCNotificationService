@@ -48,21 +48,20 @@ namespace ControlPanel.DataAccess.Migrations
 
                     b.Property<string>("DescriptionEn")
                         .IsRequired()
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DescriptionKg")
                         .IsRequired()
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DescriptionRu")
                         .IsRequired()
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TransactionTypes")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -80,6 +79,7 @@ namespace ControlPanel.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Description")
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("KeyWord")
@@ -106,12 +106,15 @@ namespace ControlPanel.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("MessageTextEn")
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MessageTextKg")
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MessageTextRu")
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("NotificationType")

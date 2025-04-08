@@ -14,6 +14,4 @@ public class LimitIdDescriptionDirectory
     public string DescriptionKg { get; set; }
     
     public string DescriptionEn { get; set; }
-    
-    public string TransactionTypes { get; set; }
 }

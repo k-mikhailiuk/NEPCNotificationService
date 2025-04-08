@@ -7,7 +7,8 @@ using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
-public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimitIdReplacer limitIdReplacer) : IKeyWordBuilder<IssFinAuth>
+public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimitIdReplacer limitIdReplacer)
+    : IKeyWordBuilder<IssFinAuth>
 {
     public async Task<string> BuildKeyWordsAsync(string? message, IssFinAuth entity, Language language)
     {
@@ -43,7 +44,8 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             },
             { "{BILLINGMONEY__AMOUNT}", NumberConverter.GetConvertedString(entity.Details.BillingMoney.Amount) },
             {
-                "{BILLINGMONEY__CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.BillingMoney.Currency)
+                "{BILLINGMONEY__CURRENCY}",
+                await currencyReplacer.ReplaceCurrencyAsync(entity.Details.BillingMoney.Currency)
             },
             { "{LOCALTIME}", entity.Details.LocalTime.ToString() },
             { "{TRANSATIONTIME}", entity.Details.TransactionTime.ToString() },
@@ -68,80 +70,81 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
 
     private async Task<string> GetLimitMessageAsync(CardInfoLimitWrapper limit, Language language)
     {
+        var limitId = await limitIdReplacer.ReplaceLimitIdAsync(limit.LimitId, language);
+        var cycleType = limit.Limit.CycleType;
+        var cycleLength = limit.Limit.CycleLength is not (null or 0)
+            ? limit.Limit.CycleLength.ToString()
+            : string.Empty;
+        var endTime = limit.Limit.EndTime.ToString();
+
+        var details = string.Empty;
+        switch (limit.LimitType)
         {
-            var limitId = await limitIdReplacer.ReplaceLimitIdAsync(limit.LimitId, language);
-            var cycleType = limit.Limit.CycleType;
-            var cycleLength = limit.Limit.CycleLength is not (null or 0)
-                ? limit.Limit.CycleLength.ToString()
-                : string.Empty;
-            var endTime = limit.Limit.EndTime.ToString();
-
-            var details = string.Empty;
-            switch (limit.LimitType)
+            case LimitType.AmtLimit:
             {
-                case LimitType.AmtLimit:
+                var trsAmount = NumberConverter.GetConvertedString(limit.Limit.TrsValue);
+                var usedAmount = NumberConverter.GetConvertedString(limit.Limit.UsedValue);
+                var currency = await currencyReplacer.ReplaceCurrencyAsync(limit.Limit.Currency);
+                switch (language)
                 {
-                    var trsAmount = NumberConverter.GetConvertedString(limit.Limit.TrsValue);
-                    var usedAmount = NumberConverter.GetConvertedString(limit.Limit.UsedValue);
-                    var currency = await currencyReplacer.ReplaceCurrencyAsync(limit.Limit.Currency);
-                    switch (language)
-                    {
-                        case Language.Undefined:
-                            return string.Empty;
-                        case Language.Russian:
-                            details = $"Лимит: {limitId}\nСумма лимита: {trsAmount} {currency}\nИспользовано: {usedAmount} {currency}";
-                            break;
-                        case Language.Kyrgyz:
-                            details = $"Лимит: {limitId}\nЛимит суммасы: {trsAmount} {currency}\nКолдонулду: {usedAmount} {currency}";
-                            break;
-                        case Language.English:
-                            details = $"Limit: {limitId}\nLimit amount: {trsAmount} {currency}\nUsed: {usedAmount} {currency}";
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(language), language, null);
-                    }
-                    
-                    break;
+                    case Language.Undefined:
+                        return string.Empty;
+                    case Language.Russian:
+                        details =
+                            $"Лимит: {limitId}\nСумма лимита: {trsAmount} {currency}\nИспользовано: {usedAmount} {currency}";
+                        break;
+                    case Language.Kyrgyz:
+                        details =
+                            $"Лимит: {limitId}\nЛимит суммасы: {trsAmount} {currency}\nКолдонулду: {usedAmount} {currency}";
+                        break;
+                    case Language.English:
+                        details =
+                            $"Limit: {limitId}\nLimit amount: {trsAmount} {currency}\nUsed: {usedAmount} {currency}";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(language), language, null);
                 }
-                case LimitType.CntLimit:
-                {
-                    var trsValue = ((int)limit.Limit.TrsValue).ToString();
-                    var usedValue = ((int)limit.Limit.UsedValue).ToString();
-                    switch (language)
-                    {
-                        case Language.Undefined:
-                            return string.Empty;
-                        case Language.Russian:
-                            details = $"Количество операций: {trsValue}\nИспользовано: {usedValue}";
-                            break;
-                        case Language.Kyrgyz:
-                            details = $"Операциялардын саны: {trsValue}\nКолдонулду: {usedValue}";
-                            break;
-                        case Language.English:
-                            details = $"Number of operations: {trsValue}\nUsed: {usedValue}";
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(language), language, null);
-                    }
-                   
-                    break;
-                }
-                case LimitType.Undefined:
-                default:
-                    return string.Empty;
+
+                break;
             }
-
-            return language switch
+            case LimitType.CntLimit:
             {
-                Language.Undefined => string.Empty,
-                Language.Russian =>
-                    $"Лимит: {limit.LimitId}\nДлина цикла: {cycleType} {cycleLength}\n{details}\nДата окончания лимита: {endTime}",
-                Language.Kyrgyz =>
-                    $"Лимит: {limit.LimitId}\nЦикл узундугу: {cycleType} {cycleLength}\n{details}\nЛимиттин аяктаган күнү: {endTime}",
-                Language.English =>
-                    $"Limit: {limit.LimitId}\nCycle length: {cycleType} {cycleLength}\n{details}\nLimit expiration date: {endTime}",
-                _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
-            };
+                var trsValue = ((int)limit.Limit.TrsValue).ToString();
+                var usedValue = ((int)limit.Limit.UsedValue).ToString();
+                switch (language)
+                {
+                    case Language.Undefined:
+                        return string.Empty;
+                    case Language.Russian:
+                        details = $"Количество операций: {trsValue}\nИспользовано: {usedValue}";
+                        break;
+                    case Language.Kyrgyz:
+                        details = $"Операциялардын саны: {trsValue}\nКолдонулду: {usedValue}";
+                        break;
+                    case Language.English:
+                        details = $"Number of operations: {trsValue}\nUsed: {usedValue}";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(language), language, null);
+                }
+
+                break;
+            }
+            case LimitType.Undefined:
+            default:
+                return string.Empty;
         }
+
+        return language switch
+        {
+            Language.Undefined => string.Empty,
+            Language.Russian =>
+                $"Лимит: {limitId}\nДлина цикла: {cycleType} {cycleLength}\n{details}\nДата окончания лимита: {endTime}",
+            Language.Kyrgyz =>
+                $"Лимит: {limitId}\nЦикл узундугу: {cycleType} {cycleLength}\n{details}\nЛимиттин аяктаган күнү: {endTime}",
+            Language.English =>
+                $"Limit: {limitId}\nCycle length: {cycleType} {cycleLength}\n{details}\nLimit expiration date: {endTime}",
+            _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
+        };
     }
 }

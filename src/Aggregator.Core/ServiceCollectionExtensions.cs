@@ -122,6 +122,7 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient<ICurrencyReplacer, CurrencyReplacer>();
         services.AddTransient<ILanguageSelector, LanguageSelector>();
+        services.AddTransient<ILimitIdReplacer, LimitIdReplacer>();
 
         return services;
     }

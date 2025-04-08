@@ -5,7 +5,7 @@
 namespace ControlPanel.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedLimitIdDirectory : Migration
+    public partial class AddedLimitIdDirectories : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,8 +19,7 @@ namespace ControlPanel.DataAccess.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DescriptionRu = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DescriptionKg = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DescriptionEn = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TransactionTypes = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DescriptionEn = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
