@@ -21,7 +21,7 @@ public class LimitIdReplacer(IServiceProvider serviceProvider) : ILimitIdReplace
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         var limitIdDescription =
-            await unitOfWork.LimitIdDescriptionDirectories.GetByIdAsync(limitId, cancellationToken);
+            await unitOfWork.LimitIdDescriptionDirectories.GetByLimitCodeAsync(limitId, cancellationToken);
         
         if (limitIdDescription == null)
             return string.Empty;

@@ -7,7 +7,7 @@ public class LimitIdDescriptionDirectory
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
-    public int LimitCode { get; set; }
+    public long LimitCode { get; set; }
     
     public string Name { get; set; }
     
@@ -17,7 +17,7 @@ public class LimitIdDescriptionDirectory
     
     public string DescriptionEn { get; set; }
     
-    public static LimitIdDescriptionDirectory Create(int limitCode, string name, string descriptionRu, string descriptionKg, string descriptionEn)
+    public static LimitIdDescriptionDirectory Create(long limitCode, string name, string descriptionRu, string descriptionKg, string descriptionEn)
     {
         if (string.IsNullOrWhiteSpace(descriptionRu))
             throw new ArgumentException("DescriptionRu cannot be null or whitespace.", nameof(descriptionRu));

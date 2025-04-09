@@ -64,8 +64,8 @@ namespace ControlPanel.DataAccess.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LimitCode")
-                        .HasColumnType("int");
+                    b.Property<long>("LimitCode")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()

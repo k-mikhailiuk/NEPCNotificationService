@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControlPanel.DataAccess.Migrations
 {
     [DbContext(typeof(ControlPanelDbContext))]
-    [Migration("20250409040455_AddedLimitIdDirectories")]
+    [Migration("20250409053054_AddedLimitIdDirectories")]
     partial class AddedLimitIdDirectories
     {
         /// <inheritdoc />
@@ -67,8 +67,8 @@ namespace ControlPanel.DataAccess.Migrations
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LimitCode")
-                        .HasColumnType("int");
+                    b.Property<long>("LimitCode")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
