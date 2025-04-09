@@ -15,7 +15,9 @@ namespace ControlPanel.DataAccess.Migrations
                 schema: "nepc",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    LimitCode = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DescriptionRu = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DescriptionKg = table.Column<string>(type: "nvarchar(max)", nullable: false),

@@ -1,4 +1,5 @@
 using ControlPanel.Core.DTOs;
+using ControlPanel.Core.DTOs.Currency;
 using ControlPanel.Core.Services.Contracts;
 using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Entities;
@@ -25,6 +26,9 @@ public class CurrenciesService(IUnitOfWork unitOfWork) : ICurrenciesService
     public async Task EditCurrency(EditCurrencyDto dto, CancellationToken cancellationToken)
     {
         var currency = await unitOfWork.Currencies.GetByCodeAsync(dto.CurrencyCode, cancellationToken);
+        
+        if(currency == null)
+            return;
         
         currency.CurrencyName = dto.CurrencyName;
         currency.CurrencySymbol = dto.CurrencySymbol;

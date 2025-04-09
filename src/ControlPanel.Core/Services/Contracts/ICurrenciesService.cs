@@ -1,4 +1,5 @@
 using ControlPanel.Core.DTOs;
+using ControlPanel.Core.DTOs.Currency;
 using ControlPanel.DataAccess.Entities;
 
 namespace ControlPanel.Core.Services.Contracts;

@@ -1,4 +1,5 @@
 using ControlPanel.Core.DTOs;
+using ControlPanel.Core.DTOs.Currency;
 using ControlPanel.Core.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

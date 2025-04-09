@@ -1,4 +1,4 @@
-namespace ControlPanel.Core.DTOs;
+namespace ControlPanel.Core.DTOs.Currency;
 
 public class AddCurrencyDto
 {

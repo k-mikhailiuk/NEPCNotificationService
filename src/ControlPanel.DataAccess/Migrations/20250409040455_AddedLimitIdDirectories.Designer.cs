@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ControlPanel.DataAccess.Migrations
 {
     [DbContext(typeof(ControlPanelDbContext))]
-    [Migration("20250407113031_AddedLimitIdDirectories")]
+    [Migration("20250409040455_AddedLimitIdDirectories")]
     partial class AddedLimitIdDirectories
     {
         /// <inheritdoc />
@@ -47,7 +47,10 @@ namespace ControlPanel.DataAccess.Migrations
             modelBuilder.Entity("ControlPanel.DataAccess.Entities.LimitIdDescriptionDirectory", b =>
                 {
                     b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("DescriptionEn")
                         .IsRequired()
@@ -63,6 +66,9 @@ namespace ControlPanel.DataAccess.Migrations
                         .IsRequired()
                         .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LimitCode")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
