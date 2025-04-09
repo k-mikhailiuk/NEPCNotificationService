@@ -29,11 +29,6 @@ namespace Aggregator.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("AccountsInfoNotificationId")
-                        .HasColumnType("bigint");
-
                     b.Property<long>("CardInfoId")
                         .HasColumnType("bigint");
 
@@ -45,9 +40,8 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountsInfoNotificationId");
-
-                    b.HasIndex("LimitId");
+                    b.HasIndex("LimitId")
+                        .IsUnique();
 
                     b.ToTable("AccountsInfoLimitWrappers", "nepc");
                 });
@@ -133,10 +127,7 @@ namespace Aggregator.DataAccess.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
-                    b.Property<long>("AcctBalChangeNotificationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("NotificationId")
+                    b.Property<long>("AcctBalChangeId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Type")
@@ -144,9 +135,7 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AcctBalChangeNotificationId");
-
-                    b.HasIndex("NotificationId");
+                    b.HasIndex("AcctBalChangeId");
 
                     b.ToTable("AcctBalChangeAccountsInfos", "nepc");
                 });
@@ -606,10 +595,7 @@ namespace Aggregator.DataAccess.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
-                    b.Property<long>("IssFinAuthNotificationId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("NotificationId")
+                    b.Property<long>("IssFinAuthId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Type")
@@ -617,20 +603,15 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IssFinAuthNotificationId");
-
-                    b.HasIndex("NotificationId");
+                    b.HasIndex("IssFinAuthId");
 
                     b.ToTable("IssFinAuthAccountsInfos", "nepc");
                 });
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.Limit", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<long>("LimitId")
                         .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Currency")
                         .HasMaxLength(3)
@@ -646,9 +627,6 @@ namespace Aggregator.DataAccess.Migrations
                     b.Property<DateTimeOffset?>("EndTime")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<long>("LimitId")
-                        .HasColumnType("bigint");
-
                     b.Property<byte>("LimitType")
                         .HasColumnType("tinyint");
 
@@ -658,7 +636,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.Property<decimal>("UsedValue")
                         .HasColumnType("decimal(15,2)");
 
-                    b.HasKey("Id");
+                    b.HasKey("LimitId");
 
                     b.ToTable("Limits", "nepc");
                 });
@@ -1107,7 +1085,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.ToTable("UnholdDetails", "nepc");
                 });
 
-            modelBuilder.Entity("ControlPanel.DataAccess.Entities.Currency", b =>
+            modelBuilder.Entity("ControlPanel.DataAccess.Entites.Currency", b =>
                 {
                     b.Property<int>("CurrencyCode")
                         .HasColumnType("int");
@@ -1128,42 +1106,7 @@ namespace Aggregator.DataAccess.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ControlPanel.DataAccess.Entities.LimitIdDescriptionDirectory", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("DescriptionEn")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DescriptionKg")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DescriptionRu")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("LimitCode")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("LimitIdDescriptionDirectories", "nepc", t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
-                });
-
-            modelBuilder.Entity("ControlPanel.DataAccess.Entities.NotificationMessageKeyWord", b =>
+            modelBuilder.Entity("ControlPanel.DataAccess.Entites.NotificationMessageKeyWord", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -1189,7 +1132,7 @@ namespace Aggregator.DataAccess.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ControlPanel.DataAccess.Entities.NotificationMessageTextDirectory", b =>
+            modelBuilder.Entity("ControlPanel.DataAccess.Entites.NotificationMessageTextDirectory", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -1201,15 +1144,12 @@ namespace Aggregator.DataAccess.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("MessageTextEn")
-                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MessageTextKg")
-                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MessageTextRu")
-                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte>("NotificationType")
@@ -1259,19 +1199,19 @@ namespace Aggregator.DataAccess.Migrations
                 {
                     b.HasOne("Aggregator.DataAccess.Entities.AcctBalChangeAccountsInfo", null)
                         .WithMany("Limits")
-                        .HasForeignKey("AccountsInfoNotificationId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.IssFinAuthAccountsInfo", null)
                         .WithMany("Limits")
-                        .HasForeignKey("AccountsInfoNotificationId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.Limit", "Limit")
-                        .WithMany()
-                        .HasForeignKey("LimitId")
+                        .WithOne()
+                        .HasForeignKey("Aggregator.DataAccess.Entities.AccountsInfoLimitWrapper", "LimitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1304,7 +1244,7 @@ namespace Aggregator.DataAccess.Migrations
                         .HasForeignKey("FinTransId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AccountBalance", "AccountBalance", b1 =>
+                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AccountAmount", "AccountAmount", b1 =>
                         {
                             b1.Property<long>("AcctBalChangeDetailsId")
                                 .HasColumnType("bigint");
@@ -1324,7 +1264,7 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasForeignKey("AcctBalChangeDetailsId");
                         });
 
-                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AccountAmount", "AccountAmount", b1 =>
+                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AccountBalance", "AccountBalance", b1 =>
                         {
                             b1.Property<long>("AcctBalChangeDetailsId")
                                 .HasColumnType("bigint");
@@ -1377,15 +1317,9 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.AcctBalChangeAccountsInfo", b =>
                 {
-                    b.HasOne("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", "AcctBalChange")
-                        .WithMany()
-                        .HasForeignKey("AcctBalChangeNotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", null)
                         .WithMany("AccountsInfo")
-                        .HasForeignKey("NotificationId")
+                        .HasForeignKey("AcctBalChangeId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -1429,8 +1363,6 @@ namespace Aggregator.DataAccess.Migrations
                             b1.WithOwner()
                                 .HasForeignKey("AcctBalChangeAccountsInfoId");
                         });
-
-                    b.Navigation("AcctBalChange");
 
                     b.Navigation("AviableBalance")
                         .IsRequired();
@@ -1890,82 +1822,6 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasForeignKey("IssFinAuthDetailsId");
                         });
 
-                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.CardIdentifier", "CardIdentifier", b1 =>
-                        {
-                            b1.Property<long>("IssFinAuthDetailsId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<int?>("CardIdentifierType")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("CardIdentifierValue")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("IssFinAuthDetailsId");
-
-                            b1.ToTable("IssFinAuthDetails", "nepc");
-
-                            b1.WithOwner()
-                                .HasForeignKey("IssFinAuthDetailsId");
-                        });
-
-                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.ConvMoney", "ConvMoney", b1 =>
-                        {
-                            b1.Property<long>("IssFinAuthDetailsId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<decimal?>("Amount")
-                                .HasColumnType("decimal(15,2)");
-
-                            b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("IssFinAuthDetailsId");
-
-                            b1.ToTable("IssFinAuthDetails", "nepc");
-
-                            b1.WithOwner()
-                                .HasForeignKey("IssFinAuthDetailsId");
-                        });
-
-                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.IssFee", "IssFee", b1 =>
-                        {
-                            b1.Property<long>("IssFinAuthDetailsId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<decimal?>("Amount")
-                                .HasColumnType("decimal(15,2)");
-
-                            b1.Property<string>("Currency")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("IssFinAuthDetailsId");
-
-                            b1.ToTable("IssFinAuthDetails", "nepc");
-
-                            b1.WithOwner()
-                                .HasForeignKey("IssFinAuthDetailsId");
-                        });
-
-                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.WalletProvider", "WalletProvider", b1 =>
-                        {
-                            b1.Property<long>("IssFinAuthDetailsId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<string>("Id")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("PaymentSystem")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("IssFinAuthDetailsId");
-
-                            b1.ToTable("IssFinAuthDetails", "nepc");
-
-                            b1.WithOwner()
-                                .HasForeignKey("IssFinAuthDetailsId");
-                        });
-
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AuthMoneyDetails", "AuthMoneyDetails", b1 =>
                         {
                             b1.Property<long>("IssFinAuthDetailsId")
@@ -2042,6 +1898,82 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasForeignKey("IssFinAuthDetailsId");
                         });
 
+                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.CardIdentifier", "CardIdentifier", b1 =>
+                        {
+                            b1.Property<long>("IssFinAuthDetailsId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<int?>("CardIdentifierType")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("CardIdentifierValue")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("IssFinAuthDetailsId");
+
+                            b1.ToTable("IssFinAuthDetails", "nepc");
+
+                            b1.WithOwner()
+                                .HasForeignKey("IssFinAuthDetailsId");
+                        });
+
+                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.ConvMoney", "ConvMoney", b1 =>
+                        {
+                            b1.Property<long>("IssFinAuthDetailsId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<decimal?>("Amount")
+                                .HasColumnType("decimal(15,2)");
+
+                            b1.Property<string>("Currency")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("IssFinAuthDetailsId");
+
+                            b1.ToTable("IssFinAuthDetails", "nepc");
+
+                            b1.WithOwner()
+                                .HasForeignKey("IssFinAuthDetailsId");
+                        });
+
+                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.IssFee", "IssFee", b1 =>
+                        {
+                            b1.Property<long>("IssFinAuthDetailsId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<decimal?>("Amount")
+                                .HasColumnType("decimal(15,2)");
+
+                            b1.Property<string>("Currency")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("IssFinAuthDetailsId");
+
+                            b1.ToTable("IssFinAuthDetails", "nepc");
+
+                            b1.WithOwner()
+                                .HasForeignKey("IssFinAuthDetailsId");
+                        });
+
+                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.WalletProvider", "WalletProvider", b1 =>
+                        {
+                            b1.Property<long>("IssFinAuthDetailsId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<string>("Id")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("PaymentSystem")
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("IssFinAuthDetailsId");
+
+                            b1.ToTable("IssFinAuthDetails", "nepc");
+
+                            b1.WithOwner()
+                                .HasForeignKey("IssFinAuthDetailsId");
+                        });
+
                     b.Navigation("AccountBalance")
                         .IsRequired();
 
@@ -2073,15 +2005,9 @@ namespace Aggregator.DataAccess.Migrations
             modelBuilder.Entity("Aggregator.DataAccess.Entities.IssFinAuthAccountsInfo", b =>
                 {
                     b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", "IssFinAuth")
-                        .WithMany()
-                        .HasForeignKey("IssFinAuthNotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", null)
                         .WithMany("AccountsInfo")
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasForeignKey("IssFinAuthId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AviableBalance", "AviableBalance", b1 =>
@@ -2308,27 +2234,6 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.Unhold.UnholdDetails", b =>
                 {
-                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.UnholdMoney", "UnholdMoney", b1 =>
-                        {
-                            b1.Property<long>("UnholdDetailsId")
-                                .HasColumnType("bigint");
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("decimal(15,2)");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("nvarchar(3)");
-
-                            b1.HasKey("UnholdDetailsId");
-
-                            b1.ToTable("UnholdDetails", "nepc");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UnholdDetailsId");
-                        });
-
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AuthMoney", "AuthMoney", b1 =>
                         {
                             b1.Property<long>("UnholdDetailsId")
@@ -2378,6 +2283,27 @@ namespace Aggregator.DataAccess.Migrations
                                 .HasColumnType("decimal(15,2)");
 
                             b1.Property<string>("Currency")
+                                .HasMaxLength(3)
+                                .HasColumnType("nvarchar(3)");
+
+                            b1.HasKey("UnholdDetailsId");
+
+                            b1.ToTable("UnholdDetails", "nepc");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UnholdDetailsId");
+                        });
+
+                    b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.UnholdMoney", "UnholdMoney", b1 =>
+                        {
+                            b1.Property<long>("UnholdDetailsId")
+                                .HasColumnType("bigint");
+
+                            b1.Property<decimal>("Amount")
+                                .HasColumnType("decimal(15,2)");
+
+                            b1.Property<string>("Currency")
+                                .IsRequired()
                                 .HasMaxLength(3)
                                 .HasColumnType("nvarchar(3)");
 
