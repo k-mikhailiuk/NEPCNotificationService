@@ -1,10 +1,12 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
+using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DTOs.IssFinAuth;
 using Aggregator.Repositories.Abstractions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
@@ -28,10 +30,13 @@ public class IssFinAuthProcessHandler(
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
 
         await PreloadAndUnifyMerchantAsync(entities, unitOfWork, cancellationToken);
+        
+        await PreloadAndUnifyLimitWrappersAsync(entities, unitOfWork, cancellationToken);
 
         await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
 
-        await UnifyProcessorExtension<IssFinAuth>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork, cancellationToken);
+        await UnifyProcessorExtension<IssFinAuth>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
+            cancellationToken);
 
         await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
 
@@ -46,6 +51,8 @@ public class IssFinAuthProcessHandler(
         foreach (var entity in entities)
         {
             await ProcessDetailsLimitsAsync(entity.Details, unitOfWork, cancellationToken);
+            
+           
             
             var idsToCheck = new List<long> { entity.NotificationId };
 
@@ -181,7 +188,7 @@ public class IssFinAuthProcessHandler(
 
         var existingCardLimits = await unitOfWork.Limit
             .GetListByIdsRawSqlAsync(cardLimitIds.ToList(), cancellationToken);
-        
+
         var existingAccInfoLimits = await unitOfWork.Limit
             .GetListByIdsRawSqlAsync(accInfoLimitIds.ToList(), cancellationToken);
 
@@ -229,5 +236,25 @@ public class IssFinAuthProcessHandler(
         }
     }
 
-    
+    private static async Task PreloadAndUnifyLimitWrappersAsync(
+        List<IssFinAuth> entities,
+        IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
+    {
+        foreach (var entity in entities)
+        {
+            await unitOfWork.IssFinAuthAccountsInfo.AddRangeAsync(entity.AccountsInfo, cancellationToken);
+            
+            if (entity.CardInfo?.Limits != null)
+            {
+                await unitOfWork.CardInfoLimitWrapper.AddRangeAsync(entity.CardInfo.Limits, cancellationToken);
+            }
+            
+            foreach (var accInfo in entity.AccountsInfo)
+            {
+                if (accInfo.Limits == null) continue;
+                await unitOfWork.AccountsInfoLimitWrapper.AddRangeAsync(accInfo.Limits, cancellationToken);
+            }
+        }
+    }
 }

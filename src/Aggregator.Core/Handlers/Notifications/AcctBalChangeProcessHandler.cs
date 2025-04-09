@@ -26,6 +26,8 @@ public class
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
+        
+        await PreloadAndUnifyLimitWrappersAsync(entities, unitOfWork, cancellationToken);
 
         await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
 
@@ -176,6 +178,75 @@ public class
                         await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
                         limitCache[lid] = lw.Limit;
                     }
+                }
+            }
+        }
+    }
+    
+        private static async Task PreloadAndUnifyLimitWrappersAsync(
+        List<AcctBalChange> entities,
+        IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
+    {
+        var cardInfoWrapper = new HashSet<long>();
+        var accointsInfoWrapper = new HashSet<long>();
+
+        foreach (var entity in entities)
+        {
+            if (entity.CardInfo?.Limits != null)
+            {
+                foreach (var lw in entity.CardInfo.Limits)
+                {
+                    cardInfoWrapper.Add(lw.Id);
+                }
+            }
+
+            foreach (var accInfo in entity.AccountsInfo)
+            {
+                if (accInfo.Limits == null) continue;
+                foreach (var lw in accInfo.Limits)
+                {
+                    accointsInfoWrapper.Add(lw.Id);
+                }
+            }
+        }
+
+        var existingCardWrappers = await unitOfWork.CardInfoLimitWrapper
+            .GetListByIdsRawSqlAsync(cardInfoWrapper.ToList(), cancellationToken);
+
+        var existingAccInfoWrappers = await unitOfWork.AccountsInfoLimitWrapper
+            .GetListByIdsRawSqlAsync(accointsInfoWrapper.ToList(), cancellationToken);
+
+        var cardWrappersCache = existingCardWrappers.ToDictionary(l => l.Id, l => l);
+        var accInfoWrappersCache = existingAccInfoWrappers.ToDictionary(l => l.Id, l => l);
+
+        foreach (var entity in entities)
+        {
+            if (entity.CardInfo?.Limits != null)
+            {
+                foreach (var lw in entity.CardInfo.Limits)
+                {
+                    var lwid = lw.Id;
+
+                    if (cardWrappersCache.TryGetValue(lwid, out var existingLw)) continue;
+
+                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
+                    cardWrappersCache[lwid] = lw;
+                }
+            }
+
+            foreach (var accInfo in entity.AccountsInfo)
+            {
+                if (accInfo.Limits == null)
+                    continue;
+
+                foreach (var lw in accInfo.Limits)
+                {
+                    var lid = lw.Limit.Id;
+                    if (accInfoWrappersCache.TryGetValue(lid, out var existingLw)) continue;
+
+                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
+                    accInfoWrappersCache[lid] = lw;
                 }
             }
         }

@@ -4,6 +4,7 @@ using Aggregator.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aggregator.DataAccess.Migrations
 {
     [DbContext(typeof(AggregatorDbContext))]
-    partial class AggregatorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250409093550_AddFkToIssFinAuthAccountsInfo")]
+    partial class AddFkToIssFinAuthAccountsInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,10 +136,10 @@ namespace Aggregator.DataAccess.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
-                    b.Property<long>("AcctBalChangeNotificationId")
+                    b.Property<long>("AcctBalChangeId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("NotificationId")
+                    b.Property<long>("AcctBalChangeNotificationId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Type")
@@ -144,9 +147,9 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AcctBalChangeNotificationId");
+                    b.HasIndex("AcctBalChangeId");
 
-                    b.HasIndex("NotificationId");
+                    b.HasIndex("AcctBalChangeNotificationId");
 
                     b.ToTable("AcctBalChangeAccountsInfos", "nepc");
                 });
@@ -606,10 +609,10 @@ namespace Aggregator.DataAccess.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
-                    b.Property<long>("IssFinAuthNotificationId")
+                    b.Property<long>("IssFinAuthId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("NotificationId")
+                    b.Property<long>("IssFinAuthNotificationId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("Type")
@@ -617,9 +620,9 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IssFinAuthNotificationId");
+                    b.HasIndex("IssFinAuthId");
 
-                    b.HasIndex("NotificationId");
+                    b.HasIndex("IssFinAuthNotificationId");
 
                     b.ToTable("IssFinAuthAccountsInfos", "nepc");
                 });
@@ -1377,16 +1380,16 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.AcctBalChangeAccountsInfo", b =>
                 {
+                    b.HasOne("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", null)
+                        .WithMany("AccountsInfo")
+                        .HasForeignKey("AcctBalChangeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", "AcctBalChange")
                         .WithMany()
                         .HasForeignKey("AcctBalChangeNotificationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", null)
-                        .WithMany("AccountsInfo")
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AviableBalance", "AviableBalance", b1 =>
@@ -2072,16 +2075,16 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.IssFinAuthAccountsInfo", b =>
                 {
+                    b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", null)
+                        .WithMany("AccountsInfo")
+                        .HasForeignKey("IssFinAuthId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", "IssFinAuth")
                         .WithMany()
                         .HasForeignKey("IssFinAuthNotificationId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", null)
-                        .WithMany("AccountsInfo")
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.AviableBalance", "AviableBalance", b1 =>

@@ -28,7 +28,7 @@ public class IssFinAuthEntityMapper(ILogger<IssFinAuthEntityMapper> logger)
             Details = MapDetails(dto.Details),
             CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
             MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo),
-            AccountsInfo = MapAccountsInfo(dto.AccountsInfo),
+            AccountsInfo = MapAccountsInfo(dto.AccountsInfo, dto.Id),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.IssFinAuth),
             NotificationType = NotificationType.IssFinAuth,
         };
@@ -120,7 +120,7 @@ public class IssFinAuthEntityMapper(ILogger<IssFinAuthEntityMapper> logger)
         }
     }
 
-    private List<IssFinAuthAccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto)
+    private List<IssFinAuthAccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto, long notificationId)
     {
         if (dto == null || dto.Count == 0)
         {
@@ -133,6 +133,7 @@ public class IssFinAuthEntityMapper(ILogger<IssFinAuthEntityMapper> logger)
         return dto.Select(x => new IssFinAuthAccountsInfo
         {
             AccountsInfoId = x.Id,
+            NotificationId = notificationId,
             Type = x.Type,
             AviableBalance = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AviableBalance>(x.AvailableBalance),
             ExceedLimit = x.ExceedLimit != null

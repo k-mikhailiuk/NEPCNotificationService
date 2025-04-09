@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aggregator.DataAccess.Migrations
 {
     [DbContext(typeof(AggregatorDbContext))]
-    [Migration("20250408114623_LimitWrapperFix")]
+    [Migration("20250409093407_LimitWrapperFix")]
     partial class LimitWrapperFix
     {
         /// <inheritdoc />
@@ -34,6 +34,9 @@ namespace Aggregator.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
+                    b.Property<long>("AccountsInfoNotificationId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("CardInfoId")
                         .HasColumnType("bigint");
 
@@ -45,8 +48,9 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LimitId")
-                        .IsUnique();
+                    b.HasIndex("AccountsInfoNotificationId");
+
+                    b.HasIndex("LimitId");
 
                     b.ToTable("AccountsInfoLimitWrappers", "nepc");
                 });
@@ -1125,7 +1129,10 @@ namespace Aggregator.DataAccess.Migrations
             modelBuilder.Entity("ControlPanel.DataAccess.Entities.LimitIdDescriptionDirectory", b =>
                 {
                     b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("DescriptionEn")
                         .IsRequired()
@@ -1138,6 +1145,9 @@ namespace Aggregator.DataAccess.Migrations
                     b.Property<string>("DescriptionRu")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("LimitCode")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1247,19 +1257,19 @@ namespace Aggregator.DataAccess.Migrations
                 {
                     b.HasOne("Aggregator.DataAccess.Entities.AcctBalChangeAccountsInfo", null)
                         .WithMany("Limits")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("AccountsInfoNotificationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.IssFinAuthAccountsInfo", null)
                         .WithMany("Limits")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("AccountsInfoNotificationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Aggregator.DataAccess.Entities.Limit", "Limit")
-                        .WithOne()
-                        .HasForeignKey("Aggregator.DataAccess.Entities.AccountsInfoLimitWrapper", "LimitId")
+                        .WithMany()
+                        .HasForeignKey("LimitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

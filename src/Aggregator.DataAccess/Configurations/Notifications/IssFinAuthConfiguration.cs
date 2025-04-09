@@ -32,5 +32,10 @@ public class IssFinAuthConfiguration : IEntityTypeConfiguration<IssFinAuth>
             .WithMany()
             .HasForeignKey(x => x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        builder.HasMany(x => x.AccountsInfo)
+            .WithOne()
+            .HasForeignKey(x => x.NotificationId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

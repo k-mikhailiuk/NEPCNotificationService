@@ -28,7 +28,7 @@ public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger
             Details = MapDetails(dto.Details),
             Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.AcctBalChange),
             CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
-            AccountsInfo = MapAccountsInfo(dto.AccountsInfo),
+            AccountsInfo = MapAccountsInfo(dto.AccountsInfo, dto.Id),
             NotificationType = NotificationType.AcctBalChange,
         };
 
@@ -73,7 +73,7 @@ public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger
         };
     }
     
-     private List<AcctBalChangeAccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto)
+     private List<AcctBalChangeAccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto, long notificationId)
     {
         if (dto == null || dto.Count == 0)
         {
@@ -86,6 +86,7 @@ public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger
         return dto.Select(x => new AcctBalChangeAccountsInfo
         {
             AccountsInfoId = x.Id,
+            NotificationId = notificationId,
             Type = x.Type,
             AviableBalance = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AviableBalance>(x.AvailableBalance),
             ExceedLimit = x.ExceedLimit != null

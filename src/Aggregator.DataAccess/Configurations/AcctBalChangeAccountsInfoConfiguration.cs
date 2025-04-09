@@ -14,7 +14,7 @@ public class AcctBalChangeAccountsInfoConfiguration : IEntityTypeConfiguration<A
         
         builder.Property(x=>x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.AccountsInfoId).IsRequired().HasMaxLength(32);
-        builder.Property(x => x.AcctBalChangeId).IsRequired();
+        builder.Property(x => x.NotificationId).IsRequired();
         builder.Property(x => x.Type).IsRequired();
         
         builder.OwnsOne(x => x.AviableBalance, parameters =>
@@ -28,9 +28,9 @@ public class AcctBalChangeAccountsInfoConfiguration : IEntityTypeConfiguration<A
             parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
         });
         
-        builder.HasMany(x=>x.Limits)
+        builder.HasMany(x => x.Limits)
             .WithOne()
-            .HasForeignKey(x=>x.Id)
+            .HasForeignKey(x => x.AccountsInfoNotificationId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

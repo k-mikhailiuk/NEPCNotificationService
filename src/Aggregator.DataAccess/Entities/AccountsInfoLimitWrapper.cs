@@ -14,6 +14,8 @@ public class AccountsInfoLimitWrapper
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
+    public long AccountsInfoNotificationId { get; set; }
+    
     /// <summary>
     /// Тип лимита.
     /// </summary>

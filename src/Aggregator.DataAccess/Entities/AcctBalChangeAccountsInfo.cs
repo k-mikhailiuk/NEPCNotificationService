@@ -10,7 +10,7 @@ public class AcctBalChangeAccountsInfo : AccountsInfo
     /// <summary>
     /// Уникальный идентификатор AcctBalChange
     /// </summary>
-    public long AcctBalChangeId { get; set; }
+    public long NotificationId { get; set; }
     
     public AcctBalChange.AcctBalChange AcctBalChange { get; set; }
 }

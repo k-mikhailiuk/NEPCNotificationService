@@ -14,7 +14,7 @@ public class IssFinAuthAccountsInfoConfiguration : IEntityTypeConfiguration<IssF
         
         builder.Property(x=>x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.AccountsInfoId).IsRequired().HasMaxLength(32);
-        builder.Property(x => x.IssFinAuthId).IsRequired();
+        builder.Property(x => x.NotificationId).IsRequired();
         builder.Property(x => x.Type).IsRequired();
         
         builder.OwnsOne(x => x.AviableBalance, parameters =>
@@ -28,14 +28,9 @@ public class IssFinAuthAccountsInfoConfiguration : IEntityTypeConfiguration<IssF
             parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
         });
         
-        builder.HasMany(x=>x.Limits)
+        builder.HasMany(x => x.Limits)
             .WithOne()
-            .HasForeignKey(x=>x.Id)
+            .HasForeignKey(x => x.AccountsInfoNotificationId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder.HasOne(e => e.IssFinAuth)
-            .WithMany(i => i.AccountsInfo)
-            .HasForeignKey(e => e.IssFinAuthId)
-            .HasPrincipalKey(i => i.NotificationId); 
     }
 }

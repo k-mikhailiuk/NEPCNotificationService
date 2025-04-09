@@ -10,7 +10,7 @@ public class IssFinAuthAccountsInfo : AccountsInfo
     /// <summary>
     /// Уникальный идентификатор IssFinAuth
     /// </summary>
-    public long IssFinAuthId { get; set; }
+    public long NotificationId { get; set; }
     
     public IssFinAuth.IssFinAuth IssFinAuth { get; set; }
 }
