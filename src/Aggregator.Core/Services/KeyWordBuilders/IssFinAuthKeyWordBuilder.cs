@@ -143,11 +143,11 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
         {
             Language.Undefined => string.Empty,
             Language.Russian =>
-                $"Лимит: {limitId}\nДлина цикла: {cycleType} {cycleLength}\n{details}\nДата окончания лимита: {endTime}",
+                $"Лимит: {limitId}\nДлина цикла: {cycleLength} {cycleType}\n{details}\nДата окончания лимита: {endTime}",
             Language.Kyrgyz =>
-                $"Лимит: {limitId}\nЦикл узундугу: {cycleType} {cycleLength}\n{details}\nЛимиттин аяктаган күнү: {endTime}",
+                $"Лимит: {limitId}\nЦикл узундугу: {cycleLength} {cycleType}\n{details}\nЛимиттин аяктаган күнү: {endTime}",
             Language.English =>
-                $"Limit: {limitId}\nCycle length: {cycleType} {cycleLength}\n{details}\nLimit expiration date: {endTime}",
+                $"Limit: {limitId}\nCycle length: {cycleLength} {cycleType}\n{details}\nLimit expiration date: {endTime}",
             _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
         };
     }
