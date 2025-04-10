@@ -32,13 +32,12 @@ public interface IUnitOfWork : IDisposable
     IUnholdDetailsRepository UnholdDetails { get; }
     IUnholdRepository Unhold { get; }
     IAccountsInfoLimitWrapperRepository AccountsInfoLimitWrapper { get; }
-    IAcctBalChangeAccountsInfoRepository AcctBalChangeAccountsInfo { get; }
     ICardInfoLimitWrapperRepository CardInfoLimitWrapper { get; }
     ICardInfoRepository CardInfo { get; }
     ICheckedLimitRepository CheckedLimit { get; }
     IExtensionParameterRepository ExtensionParameter { get; }
     IFinTransactionRepository FinTransaction { get; }
-    IIssFinAuthAccountsInfoRepository IssFinAuthAccountsInfo { get; }
+    IAccountsInfoRepository AccountsInfos { get; }
     ILimitRepository Limit { get; }
     IMerchantInfoRepository MerchantInfo { get; }
     INotificationExtensionRepository NotificationExtension { get; }

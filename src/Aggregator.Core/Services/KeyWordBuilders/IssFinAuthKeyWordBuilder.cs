@@ -26,6 +26,10 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             [Language.Kyrgyz] = "Операция четке кагылды. Банкка кайрылыңыз.",
         };
 
+        var limits = entity.CardInfo.Limits.Select(lw => lw.Limit).ToList();
+
+        limits.AddRange(entity.AccountsInfo.SelectMany(x => x.Limits).Select(lw => lw.Limit));
+
         var replacements = new Dictionary<string, string>
         {
             { "{TRANSTYPE}", ((TransType)entity.Details.TransType).GetDescription(language) },
@@ -58,7 +62,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             {
                 "{LIMIT}",
                 entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(Environment.NewLine, await Task.WhenAll(entity.CardInfo.Limits.Select(async limit =>
+                    ? string.Join(Environment.NewLine, await Task.WhenAll(limits.Select(async limit =>
                         await GetLimitMessageAsync(limit, language)
                     )))
                     : string.Empty
@@ -68,23 +72,23 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
         return KeyWordReplacer.ReplacePlaceholders(message, replacements);
     }
 
-    private async Task<string> GetLimitMessageAsync(CardInfoLimitWrapper limit, Language language)
+    private async Task<string> GetLimitMessageAsync(Limit limit, Language language)
     {
-        var limitId = await limitIdReplacer.ReplaceLimitIdAsync(limit.LimitId, language);
-        var cycleType = limit.Limit.CycleType;
-        var cycleLength = limit.Limit.CycleLength is not (null or 0)
-            ? limit.Limit.CycleLength.ToString()
+        var limitId = await limitIdReplacer.ReplaceLimitIdAsync(limit.Id, language);
+        var cycleType = limit.CycleType;
+        var cycleLength = limit.CycleLength is not (null or 0)
+            ? limit.CycleLength.ToString()
             : string.Empty;
-        var endTime = limit.Limit.EndTime.ToString();
+        var endTime = limit.EndTime.ToString();
 
         var details = string.Empty;
         switch (limit.LimitType)
         {
             case LimitType.AmtLimit:
             {
-                var trsAmount = NumberConverter.GetConvertedString(limit.Limit.TrsValue);
-                var usedAmount = NumberConverter.GetConvertedString(limit.Limit.UsedValue);
-                var currency = await currencyReplacer.ReplaceCurrencyAsync(limit.Limit.Currency);
+                var trsAmount = NumberConverter.GetConvertedString(limit.TrsValue);
+                var usedAmount = NumberConverter.GetConvertedString(limit.UsedValue);
+                var currency = await currencyReplacer.ReplaceCurrencyAsync(limit.Currency);
                 switch (language)
                 {
                     case Language.Undefined:
@@ -109,8 +113,8 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             }
             case LimitType.CntLimit:
             {
-                var trsValue = ((int)limit.Limit.TrsValue).ToString();
-                var usedValue = ((int)limit.Limit.UsedValue).ToString();
+                var trsValue = ((int)limit.TrsValue).ToString();
+                var usedValue = ((int)limit.UsedValue).ToString();
                 switch (language)
                 {
                     case Language.Undefined:

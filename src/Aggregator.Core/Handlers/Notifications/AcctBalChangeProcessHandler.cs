@@ -24,12 +24,15 @@ public class
 
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        
+        await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
 
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
-        
-        await PreloadAndUnifyLimitWrappersAsync(entities, unitOfWork, cancellationToken);
 
-        await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
+        await PreloadAndUnifyAccountsInfoAsync(entities, unitOfWork, cancellationToken);
+        await PreloadAndUnifyCardInfoAsync(entities, unitOfWork, cancellationToken);
+
+        await PreloadAndUnifyLimitWrappersAsync(entities, unitOfWork, cancellationToken);
 
         await UnifyProcessorExtension<AcctBalChange>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
@@ -37,6 +40,54 @@ public class
         await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
 
         return entities.Select(x => x.NotificationId).ToList();
+    }
+
+    private static async Task PreloadAndUnifyCardInfoAsync(List<AcctBalChange> entities, IUnitOfWork unitOfWork, CancellationToken cancellationToken)
+    {
+        var allCardInfoIds = new List<long>();
+        foreach (var entity in entities)
+        {
+            if (entity.CardInfo != null)
+                allCardInfoIds.Add(entity.CardInfo.Id);
+        }
+
+        if (allCardInfoIds.Count == 0)
+            return;
+
+        var existingCardInfos = await unitOfWork.CardInfo
+            .GetListByIdsRawSqlAsync(allCardInfoIds, cancellationToken);
+
+        var cardInfoCache = existingCardInfos.ToDictionary(m => m.Id, m => m);
+
+        foreach (var cardInfo in entities.Select(e => e.CardInfo))
+        {
+            var mid = cardInfo.Id;
+
+            if (cardInfoCache.TryGetValue(mid, out _)) continue;
+
+            cardInfoCache[mid] = cardInfo;
+            await unitOfWork.CardInfo.AddAsync(cardInfo, cancellationToken);
+        }
+    }
+
+    private static async Task PreloadAndUnifyAccountsInfoAsync(List<AcctBalChange> entities, IUnitOfWork unitOfWork, CancellationToken cancellationToken)
+    {
+        var allAccountsInfoIds = entities.SelectMany(e => e.AccountsInfo.Select(a => a.Id)).ToList();
+
+        var existingAccountInfos = await unitOfWork.AccountsInfos
+            .GetListByIdsRawSqlAsync(allAccountsInfoIds, cancellationToken);
+
+        var accountInfoCache = existingAccountInfos.ToDictionary(m => m.Id, m => m);
+
+        foreach (var accountsInfo in entities.SelectMany(e => e.AccountsInfo))
+        {
+            var mid = accountsInfo.Id;
+
+            if (accountInfoCache.TryGetValue(mid, out _)) continue;
+
+            accountInfoCache[mid] = accountsInfo;
+            await unitOfWork.AccountsInfos.AddAsync(accountsInfo, cancellationToken);
+        }
     }
 
     private static async Task ProcessEntitiesAsync(
@@ -115,49 +166,13 @@ public class
         IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        var limitIds = new HashSet<long>();
-
         foreach (var entity in entities)
         {
             if (entity.CardInfo?.Limits != null)
             {
                 foreach (var lw in entity.CardInfo.Limits)
                 {
-                    limitIds.Add(lw.Limit.Id);
-                }
-            }
-
-            foreach (var accInfo in entity.AccountsInfo)
-            {
-                if (accInfo.Limits == null) continue;
-                foreach (var lw in accInfo.Limits)
-                {
-                    limitIds.Add(lw.Limit.Id);
-                }
-            }
-        }
-
-        var existingLimits = await unitOfWork.Limit
-            .GetListByIdsRawSqlAsync(limitIds.ToList(), cancellationToken);
-
-        var limitCache = existingLimits.ToDictionary(l => l.Id, l => l);
-
-        foreach (var entity in entities)
-        {
-            if (entity.CardInfo?.Limits != null)
-            {
-                foreach (var lw in entity.CardInfo.Limits)
-                {
-                    var lid = lw.Limit.Id;
-                    if (limitCache.TryGetValue(lid, out var existingLim))
-                    {
-                        lw.Limit = existingLim;
-                    }
-                    else
-                    {
-                        await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
-                        limitCache[lid] = lw.Limit;
-                    }
+                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
                 }
             }
 
@@ -168,87 +183,27 @@ public class
 
                 foreach (var lw in accInfo.Limits)
                 {
-                    var lid = lw.Limit.Id;
-                    if (limitCache.TryGetValue(lid, out var existingLim))
-                    {
-                        lw.Limit = existingLim;
-                    }
-                    else
-                    {
-                        await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
-                        limitCache[lid] = lw.Limit;
-                    }
+                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
                 }
             }
         }
     }
-    
-        private static async Task PreloadAndUnifyLimitWrappersAsync(
+
+    private static async Task PreloadAndUnifyLimitWrappersAsync(
         List<AcctBalChange> entities,
         IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        var cardInfoWrapper = new HashSet<long>();
-        var accointsInfoWrapper = new HashSet<long>();
-
-        foreach (var entity in entities)
+        foreach (var accountsInfo in entities.SelectMany(entity => entity.AccountsInfo))
         {
-            if (entity.CardInfo?.Limits != null)
-            {
-                foreach (var lw in entity.CardInfo.Limits)
-                {
-                    cardInfoWrapper.Add(lw.Id);
-                }
-            }
-
-            foreach (var accInfo in entity.AccountsInfo)
-            {
-                if (accInfo.Limits == null) continue;
-                foreach (var lw in accInfo.Limits)
-                {
-                    accointsInfoWrapper.Add(lw.Id);
-                }
-            }
+            if (accountsInfo.Limits != null)
+                await unitOfWork.AccountsInfoLimitWrapper.AddRangeAsync(accountsInfo.Limits, cancellationToken);
         }
 
-        var existingCardWrappers = await unitOfWork.CardInfoLimitWrapper
-            .GetListByIdsRawSqlAsync(cardInfoWrapper.ToList(), cancellationToken);
-
-        var existingAccInfoWrappers = await unitOfWork.AccountsInfoLimitWrapper
-            .GetListByIdsRawSqlAsync(accointsInfoWrapper.ToList(), cancellationToken);
-
-        var cardWrappersCache = existingCardWrappers.ToDictionary(l => l.Id, l => l);
-        var accInfoWrappersCache = existingAccInfoWrappers.ToDictionary(l => l.Id, l => l);
-
-        foreach (var entity in entities)
+        foreach (var cardInfos in entities.Select(entity => entity.CardInfo))
         {
-            if (entity.CardInfo?.Limits != null)
-            {
-                foreach (var lw in entity.CardInfo.Limits)
-                {
-                    var lwid = lw.Id;
-
-                    if (cardWrappersCache.TryGetValue(lwid, out var existingLw)) continue;
-
-                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
-                    cardWrappersCache[lwid] = lw;
-                }
-            }
-
-            foreach (var accInfo in entity.AccountsInfo)
-            {
-                if (accInfo.Limits == null)
-                    continue;
-
-                foreach (var lw in accInfo.Limits)
-                {
-                    var lid = lw.Limit.Id;
-                    if (accInfoWrappersCache.TryGetValue(lid, out var existingLw)) continue;
-
-                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
-                    accInfoWrappersCache[lid] = lw;
-                }
-            }
+            if (cardInfos.Limits != null)
+                await unitOfWork.CardInfoLimitWrapper.AddRangeAsync(cardInfos.Limits, cancellationToken);
         }
     }
 }

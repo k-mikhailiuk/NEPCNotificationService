@@ -4,6 +4,7 @@ using Aggregator.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aggregator.DataAccess.Migrations
 {
     [DbContext(typeof(AggregatorDbContext))]
-    partial class AggregatorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250410055558_ChangeAccountsInfoEntity")]
+    partial class ChangeAccountsInfoEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,6 +59,9 @@ namespace Aggregator.DataAccess.Migrations
                     b.HasIndex("AcctBalChangeNotificationId");
 
                     b.HasIndex("IssFinAuthNotificationId");
+
+                    b.HasIndex("AccountsInfoId", "NotificationId")
+                        .IsUnique();
 
                     b.ToTable("AccountsInfo", "nepc");
                 });

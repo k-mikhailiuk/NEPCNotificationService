@@ -1,12 +1,10 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
-using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DTOs.IssFinAuth;
 using Aggregator.Repositories.Abstractions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
@@ -27,13 +25,17 @@ public class IssFinAuthProcessHandler(
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
+        await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
+
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
 
         await PreloadAndUnifyMerchantAsync(entities, unitOfWork, cancellationToken);
-        
+
+        await PreloadAndUnifyAccountsInfoAsync(entities, unitOfWork, cancellationToken);
+        await PreloadAndUnifyCardInfoAsync(entities, unitOfWork, cancellationToken);
+
         await PreloadAndUnifyLimitWrappersAsync(entities, unitOfWork, cancellationToken);
 
-        await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
 
         await UnifyProcessorExtension<IssFinAuth>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
@@ -41,6 +43,72 @@ public class IssFinAuthProcessHandler(
         await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
 
         return entities.Select(x => x.NotificationId).ToList();
+    }
+
+    private static async Task PreloadAndUnifyCardInfoAsync(List<IssFinAuth> entities, IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
+    {
+        var allCardInfoIds = new List<long>();
+        foreach (var entity in entities)
+        {
+            if (entity.CardInfo != null)
+                allCardInfoIds.Add(entity.CardInfo.Id);
+        }
+
+        if (allCardInfoIds.Count == 0)
+            return;
+
+        var existingCardInfos = await unitOfWork.CardInfo
+            .GetListByIdsRawSqlAsync(allCardInfoIds, cancellationToken);
+
+        var cardInfoCache = existingCardInfos.ToDictionary(m => m.Id, m => m);
+
+        foreach (var cardInfo in entities.Select(e => e.CardInfo))
+        {
+            var mid = cardInfo.Id;
+
+            if (cardInfoCache.TryGetValue(mid, out _)) continue;
+
+            cardInfoCache[mid] = cardInfo;
+            await unitOfWork.CardInfo.AddAsync(cardInfo, cancellationToken);
+        }
+    }
+
+    private static async Task PreloadAndUnifyAccountsInfoAsync(List<IssFinAuth> entities, IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
+    {
+        var allAccountsInfoIds = entities.SelectMany(e => e.AccountsInfo.Select(a => a.Id)).ToList();
+
+        var existingAccountInfos = await unitOfWork.AccountsInfos
+            .GetListByIdsRawSqlAsync(allAccountsInfoIds, cancellationToken);
+
+        var accountInfoCache = existingAccountInfos.ToDictionary(m => m.Id, m => m);
+
+        foreach (var accountsInfo in entities.SelectMany(e => e.AccountsInfo))
+        {
+            var mid = accountsInfo.Id;
+
+            if (accountInfoCache.TryGetValue(mid, out _)) continue;
+
+            accountInfoCache[mid] = accountsInfo;
+            await unitOfWork.AccountsInfos.AddAsync(accountsInfo, cancellationToken);
+        }
+    }
+
+    private static async Task PreloadAndUnifyLimitWrappersAsync(List<IssFinAuth> entities, IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
+    {
+        foreach (var accountsInfo in entities.SelectMany(entity => entity.AccountsInfo))
+        {
+            if (accountsInfo.Limits != null)
+                await unitOfWork.AccountsInfoLimitWrapper.AddRangeAsync(accountsInfo.Limits, cancellationToken);
+        }
+
+        foreach (var cardInfos in entities.Select(entity => entity.CardInfo))
+        {
+            if (cardInfos.Limits != null)
+                await unitOfWork.CardInfoLimitWrapper.AddRangeAsync(cardInfos.Limits, cancellationToken);
+        }
     }
 
     private static async Task ProcessEntitiesAsync(
@@ -51,9 +119,7 @@ public class IssFinAuthProcessHandler(
         foreach (var entity in entities)
         {
             await ProcessDetailsLimitsAsync(entity.Details, unitOfWork, cancellationToken);
-            
-           
-            
+
             var idsToCheck = new List<long> { entity.NotificationId };
 
             var existingList = await unitOfWork.IssFinAuth
@@ -163,54 +229,13 @@ public class IssFinAuthProcessHandler(
         IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
-        var cardLimitIds = new HashSet<long>();
-        var accInfoLimitIds = new HashSet<long>();
-
         foreach (var entity in entities)
         {
             if (entity.CardInfo?.Limits != null)
             {
                 foreach (var lw in entity.CardInfo.Limits)
                 {
-                    cardLimitIds.Add(lw.Limit.Id);
-                }
-            }
-
-            foreach (var accInfo in entity.AccountsInfo)
-            {
-                if (accInfo.Limits == null) continue;
-                foreach (var lw in accInfo.Limits)
-                {
-                    accInfoLimitIds.Add(lw.Limit.Id);
-                }
-            }
-        }
-
-        var existingCardLimits = await unitOfWork.Limit
-            .GetListByIdsRawSqlAsync(cardLimitIds.ToList(), cancellationToken);
-
-        var existingAccInfoLimits = await unitOfWork.Limit
-            .GetListByIdsRawSqlAsync(accInfoLimitIds.ToList(), cancellationToken);
-
-        var cardLimitCache = existingCardLimits.ToDictionary(l => l.Id, l => l);
-        var accInfoLimitCache = existingAccInfoLimits.ToDictionary(l => l.Id, l => l);
-
-        foreach (var entity in entities)
-        {
-            if (entity.CardInfo?.Limits != null)
-            {
-                foreach (var lw in entity.CardInfo.Limits)
-                {
-                    var lid = lw.Limit.Id;
-                    if (cardLimitCache.TryGetValue(lid, out var existingLim))
-                    {
-                        lw.Limit = existingLim;
-                    }
-                    else
-                    {
-                        await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
-                        cardLimitCache[lid] = lw.Limit;
-                    }
+                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
                 }
             }
 
@@ -221,39 +246,8 @@ public class IssFinAuthProcessHandler(
 
                 foreach (var lw in accInfo.Limits)
                 {
-                    var lid = lw.Limit.Id;
-                    if (accInfoLimitCache.TryGetValue(lid, out var existingLim))
-                    {
-                        lw.Limit = existingLim;
-                    }
-                    else
-                    {
-                        await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
-                        accInfoLimitCache[lid] = lw.Limit;
-                    }
+                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
                 }
-            }
-        }
-    }
-
-    private static async Task PreloadAndUnifyLimitWrappersAsync(
-        List<IssFinAuth> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
-    {
-        foreach (var entity in entities)
-        {
-            await unitOfWork.IssFinAuthAccountsInfo.AddRangeAsync(entity.AccountsInfo, cancellationToken);
-            
-            if (entity.CardInfo?.Limits != null)
-            {
-                await unitOfWork.CardInfoLimitWrapper.AddRangeAsync(entity.CardInfo.Limits, cancellationToken);
-            }
-            
-            foreach (var accInfo in entity.AccountsInfo)
-            {
-                if (accInfo.Limits == null) continue;
-                await unitOfWork.AccountsInfoLimitWrapper.AddRangeAsync(accInfo.Limits, cancellationToken);
             }
         }
     }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
@@ -12,7 +13,16 @@ public class AccountsInfo
     /// <summary>
     /// Уникальный идентификатор
     /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
+    
+    /// <summary>
+    /// Уникальный идентификатор уведомления
+    /// </summary>
+    public long NotificationId { get; set; }
+    
+    /// <inheritdoc cref="NotificationType" />
+    public NotificationType NotificationType { get; set; }
     
     /// <summary>
     /// Номер счета
@@ -41,12 +51,4 @@ public class AccountsInfo
     /// Список лимитов
     /// </summary>
     public List<AccountsInfoLimitWrapper>? Limits { get; set; }
-    
-    /// <summary>
-    /// Уникальный идентификатор уведомления
-    /// </summary>
-    public long NotificationId { get; set; }
-    
-    /// <inheritdoc cref="NotificationType" />
-    public NotificationType NotificationType { get; set; }
 }

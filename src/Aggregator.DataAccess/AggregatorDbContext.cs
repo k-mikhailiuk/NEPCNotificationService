@@ -2,6 +2,7 @@ using Aggregator.DataAccess.Configurations;
 using Aggregator.DataAccess.Configurations.NotificationDetails;
 using Aggregator.DataAccess.Configurations.Notifications;
 using Aggregator.DataAccess.Entities;
+using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DataAccess.Entities.AcsOtp;
@@ -42,13 +43,12 @@ public class AggregatorDbContext : DbContext
     
     public DbSet<MerchantInfo> MerchantInfos { get; set; }
     public DbSet<AccountsInfoLimitWrapper> AccountsInfoLimitWrappers { get; set; }
-    public DbSet<AcctBalChangeAccountsInfo> AcctBalChangeAccountsInfos { get; set; }
     public DbSet<CardInfo> CardInfos { get; set; }
     public DbSet<CardInfoLimitWrapper> CardInfoLimitWrappers { get; set; }
     public DbSet<CheckedLimit> CheckedLimits { get; set; }
     public DbSet<ExtensionParameter> ExtensionParameter { get; set; }
     public DbSet<FinTransaction> FinTransactions { get; set; }
-    public DbSet<IssFinAuthAccountsInfo> IssFinAuthAccountsInfos { get; set; }
+    public DbSet<AccountsInfo> AccountsInfos { get; set; }
     public DbSet<Limit> Limits { get; set; }
     public DbSet<NotificationExtension> NotificationExtensions { get; set; }
     
@@ -121,13 +121,12 @@ public class AggregatorDbContext : DbContext
     {
         modelBuilder.ApplyConfiguration(new MerchantInfoConfiguration());
         modelBuilder.ApplyConfiguration(new AccountsInfoLimitWrapperConfiguration());
-        modelBuilder.ApplyConfiguration(new AcctBalChangeAccountsInfoConfiguration());
         modelBuilder.ApplyConfiguration(new CardInfoConfiguration());
         modelBuilder.ApplyConfiguration(new CardInfoLimitWrapperConfiguration());
         modelBuilder.ApplyConfiguration(new CheckedLimitConfiguration());
         modelBuilder.ApplyConfiguration(new ExtensionParameterConfiguration());
         modelBuilder.ApplyConfiguration(new FinTransactionConfiguration());
-        modelBuilder.ApplyConfiguration(new IssFinAuthAccountsInfoConfiguration());
+        modelBuilder.ApplyConfiguration(new AccountsInfoConfiguration());
         modelBuilder.ApplyConfiguration(new LimitConfiguration());
         modelBuilder.ApplyConfiguration(new NotificationExtensionConfiguration());
         

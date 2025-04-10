@@ -1,5 +1,6 @@
 using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.DataAccess.Entities;
+using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
@@ -73,7 +74,7 @@ public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger
         };
     }
     
-     private List<AcctBalChangeAccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto, long notificationId)
+     private List<AccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto, long notificationId)
     {
         if (dto == null || dto.Count == 0)
         {
@@ -81,12 +82,13 @@ public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger
             return null;
         }
 
-        logger.LogInformation($"Mapping AccountsInfo");
+        logger.LogInformation("Mapping AccountsInfo");
 
-        return dto.Select(x => new AcctBalChangeAccountsInfo
+        return dto.Select(x => new AccountsInfo()
         {
             AccountsInfoId = x.Id,
             NotificationId = notificationId,
+            NotificationType = NotificationType.AcctBalChange,
             Type = x.Type,
             AviableBalance = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AviableBalance>(x.AvailableBalance),
             ExceedLimit = x.ExceedLimit != null

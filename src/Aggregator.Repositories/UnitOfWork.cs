@@ -73,9 +73,6 @@ public class UnitOfWork : IUnitOfWork
     public IAccountsInfoLimitWrapperRepository AccountsInfoLimitWrapper => _accountsInfoLimitWrapper.Value;
     private readonly Lazy<IAccountsInfoLimitWrapperRepository> _accountsInfoLimitWrapper;
 
-    public IAcctBalChangeAccountsInfoRepository AcctBalChangeAccountsInfo => _acctBalChangeAccountsInfo.Value;
-    private readonly Lazy<IAcctBalChangeAccountsInfoRepository> _acctBalChangeAccountsInfo;
-
     public ICardInfoLimitWrapperRepository CardInfoLimitWrapper => _cardInfoLimitWrapper.Value;
     private readonly Lazy<ICardInfoLimitWrapperRepository> _cardInfoLimitWrapper;
 
@@ -91,8 +88,8 @@ public class UnitOfWork : IUnitOfWork
     public IFinTransactionRepository FinTransaction => _finTransaction.Value;
     private readonly Lazy<IFinTransactionRepository> _finTransaction;
 
-    public IIssFinAuthAccountsInfoRepository IssFinAuthAccountsInfo => _issFinAuthAccountsInfo.Value;
-    private readonly Lazy<IIssFinAuthAccountsInfoRepository> _issFinAuthAccountsInfo;
+    public IAccountsInfoRepository AccountsInfos => _accountsInfo.Value;
+    private readonly Lazy<IAccountsInfoRepository> _accountsInfo;
 
     public ILimitRepository Limit => _limit.Value;
     private readonly Lazy<ILimitRepository> _limit;
@@ -158,9 +155,6 @@ public class UnitOfWork : IUnitOfWork
             serviceProvider.GetService<ITokenStatusChangeDetailsRepository>() ?? throw new InvalidOperationException());
         _tokenStatusChange = new Lazy<ITokenStatusChangeRepository>(() =>
             serviceProvider.GetService<ITokenStatusChangeRepository>() ?? throw new InvalidOperationException());
-        _acctBalChangeAccountsInfo = new Lazy<IAcctBalChangeAccountsInfoRepository>(() =>
-            serviceProvider.GetService<IAcctBalChangeAccountsInfoRepository>() ??
-            throw new InvalidOperationException());
         _unholdDetails = new Lazy<IUnholdDetailsRepository>(() =>
             serviceProvider.GetService<IUnholdDetailsRepository>() ?? throw new InvalidOperationException());
         _unhold = new Lazy<IUnholdRepository>(() =>
@@ -177,8 +171,8 @@ public class UnitOfWork : IUnitOfWork
             serviceProvider.GetService<IExtensionParameterRepository>() ?? throw new InvalidOperationException());
         _finTransaction = new Lazy<IFinTransactionRepository>(() =>
             serviceProvider.GetService<IFinTransactionRepository>() ?? throw new InvalidOperationException());
-        _issFinAuthAccountsInfo = new Lazy<IIssFinAuthAccountsInfoRepository>(() =>
-            serviceProvider.GetService<IIssFinAuthAccountsInfoRepository>() ?? throw new InvalidOperationException());
+        _accountsInfo = new Lazy<IAccountsInfoRepository>(() =>
+            serviceProvider.GetService<IAccountsInfoRepository>() ?? throw new InvalidOperationException());
         _limit = new Lazy<ILimitRepository>(() =>
             serviceProvider.GetService<ILimitRepository>() ?? throw new InvalidOperationException());
         _merchantInfo = new Lazy<IMerchantInfoRepository>(() =>

@@ -21,9 +21,14 @@ public class Repository<T> : IRepository<T> where T : class
         return await _dbSet.FindAsync([id], cancellationToken: cancellationToken);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<List<T>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _dbSet.ToListAsync(cancellationToken);
+    }
+    
+    public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+    {
+        return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
     }
 
     public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)

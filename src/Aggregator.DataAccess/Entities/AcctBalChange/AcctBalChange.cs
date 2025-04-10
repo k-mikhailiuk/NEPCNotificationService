@@ -39,8 +39,8 @@ public class AcctBalChange : INotification
     /// <inheritdoc cref="CardInfo" />
     public CardInfo? CardInfo { get; set; }
     
-    /// <inheritdoc cref="AcctBalChangeAccountsInfo" />
-    public List<AcctBalChangeAccountsInfo> AccountsInfo { get; set; }
+    /// <inheritdoc cref="AccountsInfo" />
+    public List<AccountsInfo> AccountsInfo { get; set; }
     
     /// <inheritdoc cref="NotificationExtension" />
     public List<NotificationExtension>? Extensions { get; set; }

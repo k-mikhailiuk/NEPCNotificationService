@@ -1,5 +1,6 @@
 using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.DataAccess.Entities;
+using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DataAccess.Entities.OwnedEntities;
@@ -120,7 +121,7 @@ public class IssFinAuthEntityMapper(ILogger<IssFinAuthEntityMapper> logger)
         }
     }
 
-    private List<IssFinAuthAccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto, long notificationId)
+    private List<AccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto, long notificationId)
     {
         if (dto == null || dto.Count == 0)
         {
@@ -130,10 +131,11 @@ public class IssFinAuthEntityMapper(ILogger<IssFinAuthEntityMapper> logger)
 
         logger.LogInformation($"Mapping AccountsInfo");
 
-        return dto.Select(x => new IssFinAuthAccountsInfo
+        return dto.Select(x => new AccountsInfo()
         {
             AccountsInfoId = x.Id,
             NotificationId = notificationId,
+            NotificationType = NotificationType.IssFinAuth,
             Type = x.Type,
             AviableBalance = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AviableBalance>(x.AvailableBalance),
             ExceedLimit = x.ExceedLimit != null

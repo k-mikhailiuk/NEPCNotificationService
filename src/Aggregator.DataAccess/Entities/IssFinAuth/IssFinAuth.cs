@@ -40,8 +40,8 @@ public class IssFinAuth : INotification
     /// </summary>
     public CardInfo? CardInfo { get; set; }
     
-    /// <inheritdoc cref="IssFinAuthAccountsInfo" />
-    public List<IssFinAuthAccountsInfo> AccountsInfo { get; set; }
+    /// <inheritdoc cref="AccountsInfo" />
+    public List<AccountsInfo> AccountsInfo { get; set; }
     
     /// <summary>
     /// Идентификатор мерчанта

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.Enum;
 
 namespace Aggregator.DataAccess.Entities;
@@ -14,7 +15,13 @@ public class AccountsInfoLimitWrapper
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
-    public long AccountsInfoNotificationId { get; set; }
+    /// <summary>
+    /// Уникальный идентификатор аккаунта.
+    /// </summary>
+    public long AccountsInfoId { get; set; }
+    
+    /// <inheritdoc cref="AccountsInfo" />
+    public AccountsInfo AccountsInfo { get; set; }
     
     /// <summary>
     /// Тип лимита.
