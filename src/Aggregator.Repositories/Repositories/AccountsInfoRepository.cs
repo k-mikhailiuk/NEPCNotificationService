@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class AccountsInfoRepository : Repository<AccountsInfo>, IAccountsInfoRepository
-{
-    public AccountsInfoRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class AccountsInfoRepository(AggregatorDbContext context)
+    : Repository<AccountsInfo>(context), IAccountsInfoRepository;

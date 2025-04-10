@@ -1,13 +1,8 @@
 using ControlPanel.DataAccess.Abstractions.Repositories;
-using ControlPanel.DataAccess.Entites;
 using ControlPanel.DataAccess.Entities;
 
 namespace ControlPanel.DataAccess.Repositories;
 
-public class NotificationMessageKeyWordsRepository : Repository<NotificationMessageKeyWord>,
-    INotificationMessageKeyWordsRepository
-{
-    public NotificationMessageKeyWordsRepository(ControlPanelDbContext context) : base(context)
-    {
-    }
-}
+public class NotificationMessageKeyWordsRepository(ControlPanelDbContext context)
+    : Repository<NotificationMessageKeyWord>(context),
+        INotificationMessageKeyWordsRepository;

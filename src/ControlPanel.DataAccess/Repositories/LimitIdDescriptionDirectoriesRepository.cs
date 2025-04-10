@@ -3,9 +3,5 @@ using ControlPanel.DataAccess.Entities;
 
 namespace ControlPanel.DataAccess.Repositories;
 
-public class LimitIdDescriptionDirectoriesRepository : Repository<LimitIdDescriptionDirectory>, ILimitIdDescriptionDirectoriesRepository
-{
-    public LimitIdDescriptionDirectoriesRepository(ControlPanelDbContext context) : base(context)
-    {
-    }
-}
+public class LimitIdDescriptionDirectoriesRepository(ControlPanelDbContext context)
+    : Repository<LimitIdDescriptionDirectory>(context), ILimitIdDescriptionDirectoriesRepository;

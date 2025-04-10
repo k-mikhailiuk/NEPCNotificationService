@@ -4,9 +4,4 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class LimitRepository : Repository<Limit>, ILimitRepository
-{
-    public LimitRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class LimitRepository(AggregatorDbContext context) : Repository<Limit>(context), ILimitRepository;

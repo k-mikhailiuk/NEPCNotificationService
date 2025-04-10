@@ -5,12 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class LimitIdDescriptionDirectoriesRepository : Repository<LimitIdDescriptionDirectory>, ILimitIdDescriptionDirectoriesRepository
+public class LimitIdDescriptionDirectoriesRepository(AggregatorDbContext context)
+    : Repository<LimitIdDescriptionDirectory>(context), ILimitIdDescriptionDirectoriesRepository
 {
-    public LimitIdDescriptionDirectoriesRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-
     public async Task<LimitIdDescriptionDirectory?> GetByLimitCodeAsync(long limitCode, CancellationToken cancellationToken)
     {
         return await _dbSet.FirstOrDefaultAsync(x=>x.LimitCode == limitCode, cancellationToken: cancellationToken);

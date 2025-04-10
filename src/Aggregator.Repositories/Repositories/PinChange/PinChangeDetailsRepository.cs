@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories.PinChange;
 
 namespace Aggregator.Repositories.Repositories.PinChange;
 
-public class PinChangeDetailsRepository : Repository<PinChangeDetails>, IPinChangeDetailsRepository
-{
-    public PinChangeDetailsRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class PinChangeDetailsRepository(AggregatorDbContext context)
+    : Repository<PinChangeDetails>(context), IPinChangeDetailsRepository;

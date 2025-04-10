@@ -4,9 +4,4 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class CardInfoRepository : Repository<CardInfo>, ICardInfoRepository
-{
-    public CardInfoRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class CardInfoRepository(AggregatorDbContext context) : Repository<CardInfo>(context), ICardInfoRepository;

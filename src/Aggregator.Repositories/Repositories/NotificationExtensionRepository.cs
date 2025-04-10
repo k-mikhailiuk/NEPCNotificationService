@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class NotificationExtensionRepository : Repository<NotificationExtension>, INotificationExtensionRepository
-{
-    public NotificationExtensionRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class NotificationExtensionRepository(AggregatorDbContext context)
+    : Repository<NotificationExtension>(context), INotificationExtensionRepository;

@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class CardInfoLimitWrapperRepository : Repository<CardInfoLimitWrapper>, ICardInfoLimitWrapperRepository
-{
-    public CardInfoLimitWrapperRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class CardInfoLimitWrapperRepository(AggregatorDbContext context)
+    : Repository<CardInfoLimitWrapper>(context), ICardInfoLimitWrapperRepository;

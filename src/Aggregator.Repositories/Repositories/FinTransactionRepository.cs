@@ -5,9 +5,5 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class FinTransactionRepository : Repository<FinTransaction>, IFinTransactionRepository
-{
-    public FinTransactionRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class FinTransactionRepository(AggregatorDbContext context)
+    : Repository<FinTransaction>(context), IFinTransactionRepository;

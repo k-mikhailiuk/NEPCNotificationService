@@ -5,14 +5,9 @@ using OptionsConfiguration;
 
 namespace ControlPanel.DataAccess.DataSeeders;
 
-public class IdentityDataSeeder
+public class IdentityDataSeeder(IOptions<AdminUserOptions> adminUserOptions)
 {
-    private readonly AdminUserOptions _adminUserOptions;
-
-    public IdentityDataSeeder(IOptions<AdminUserOptions> adminUserOptions)
-    {
-        _adminUserOptions = adminUserOptions.Value;
-    }
+    private readonly AdminUserOptions _adminUserOptions = adminUserOptions.Value;
 
     public async Task SeedDefaultUserAsync(IServiceProvider serviceProvider)
     {

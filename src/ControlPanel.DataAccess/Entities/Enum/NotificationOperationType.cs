@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace ControlPanel.DataAccess.Entites.Enum;
+namespace ControlPanel.DataAccess.Entities.Enum;
 
 public enum NotificationOperationType
 {

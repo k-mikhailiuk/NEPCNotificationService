@@ -1,6 +1,5 @@
-using ControlPanel.DataAccess.Entites;
-using ControlPanel.DataAccess.Entites.Enum;
 using ControlPanel.DataAccess.Entities;
+using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControlPanel.DataAccess.DataSeeders;

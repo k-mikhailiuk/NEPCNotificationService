@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class InboxArchiveMessageRepository : Repository<InboxArchiveMessage> , IInboxArchiveMessageRepository
-{
-    public InboxArchiveMessageRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class InboxArchiveMessageRepository(AggregatorDbContext context)
+    : Repository<InboxArchiveMessage>(context), IInboxArchiveMessageRepository;

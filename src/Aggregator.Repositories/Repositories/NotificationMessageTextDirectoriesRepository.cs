@@ -5,10 +5,6 @@ using ControlPanel.DataAccess.Entities;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class NotificationMessageTextDirectoriesRepository : Repository<NotificationMessageTextDirectory>,
-    INotificationMessageTextDirectoriesRepository
-{
-    public NotificationMessageTextDirectoriesRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class NotificationMessageTextDirectoriesRepository(AggregatorDbContext context)
+    : Repository<NotificationMessageTextDirectory>(context),
+        INotificationMessageTextDirectoriesRepository;

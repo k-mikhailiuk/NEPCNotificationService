@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using ControlPanel.DataAccess.Entites.Enum;
+using ControlPanel.DataAccess.Entities.Enum;
 
 namespace ControlPanel.DataAccess.Entities;
 

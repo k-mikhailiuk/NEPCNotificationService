@@ -1,4 +1,4 @@
-namespace ControlPanel.DataAccess.Entites.Enum;
+namespace ControlPanel.DataAccess.Entities.Enum;
 
 public enum NotificationMessageType : byte
 {

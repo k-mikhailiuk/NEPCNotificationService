@@ -5,10 +5,6 @@ using ControlPanel.DataAccess.Entities;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class NotificationMessageKeyWordsRepository  : Repository<NotificationMessageKeyWord>,
-    INotificationMessageKeyWordsRepository
-{
-    public NotificationMessageKeyWordsRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class NotificationMessageKeyWordsRepository(AggregatorDbContext context)
+    : Repository<NotificationMessageKeyWord>(context),
+        INotificationMessageKeyWordsRepository;

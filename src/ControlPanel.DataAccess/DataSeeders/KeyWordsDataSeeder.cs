@@ -1,19 +1,11 @@
-using ControlPanel.DataAccess.Entites;
-using ControlPanel.DataAccess.Entites.Enum;
 using ControlPanel.DataAccess.Entities;
+using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
 
 namespace ControlPanel.DataAccess.DataSeeders;
 
-public class KeyWordsDataSeeder
+public class KeyWordsDataSeeder(ControlPanelDbContext context)
 {
-    private readonly ControlPanelDbContext _context;
-
-    public KeyWordsDataSeeder(ControlPanelDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task SeedKeyWordsAsync()
     {
         await SeedIssFinAuthKeyWordsAsync();
@@ -193,7 +185,7 @@ public class KeyWordsDataSeeder
     
     private async Task SeedKeyWordsForTypeAsync(NotificationMessageType type, string[] placeholders, CancellationToken cancellationToken = default)
     {
-        var existingKeyWords = await _context.NotificationMessageKeyWords
+        var existingKeyWords = await context.NotificationMessageKeyWords
             .Where(x => x.NotificationType == type)
             .Select(x => x.KeyWord)
             .ToListAsync(cancellationToken);
@@ -206,8 +198,8 @@ public class KeyWordsDataSeeder
         if (newKeyWords.Count == 0)
             return;
         
-        await _context.NotificationMessageKeyWords.AddRangeAsync(newKeyWords, cancellationToken);
+        await context.NotificationMessageKeyWords.AddRangeAsync(newKeyWords, cancellationToken);
         
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 }

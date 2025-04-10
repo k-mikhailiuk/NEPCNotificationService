@@ -6,7 +6,7 @@ using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.TokenChangeStatus;
 using Aggregator.Repositories.Abstractions;
 using Common.Enums;
-using ControlPanel.DataAccess.Entites.Enum;
+using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

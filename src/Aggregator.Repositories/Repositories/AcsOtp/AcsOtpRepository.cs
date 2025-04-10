@@ -5,12 +5,9 @@ using Common;
 
 namespace Aggregator.Repositories.Repositories.AcsOtp;
 
-public class AcsOtpRepository : Repository<DataAccess.Entities.AcsOtp.AcsOtp>, IAcsOtpRepository
+public class AcsOtpRepository(AggregatorDbContext context)
+    : Repository<DataAccess.Entities.AcsOtp.AcsOtp>(context), IAcsOtpRepository
 {
-    public AcsOtpRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-
     public async Task<List<DataAccess.Entities.AcsOtp.AcsOtp>> GetListByIdsRawSqlWithDecryptionAsync(List<long> ids,
         CancellationToken cancellationToken,
         params Expression<Func<DataAccess.Entities.AcsOtp.AcsOtp, object>>[] includes)

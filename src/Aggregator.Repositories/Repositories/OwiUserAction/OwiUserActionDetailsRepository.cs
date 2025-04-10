@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories.OwiUserAction;
 
 namespace Aggregator.Repositories.Repositories.OwiUserAction;
 
-public class OwiUserActionDetailsRepository : Repository<OwiUserActionDetails>, IOwiUserActionDetailsRepository
-{
-    public OwiUserActionDetailsRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class OwiUserActionDetailsRepository(AggregatorDbContext context)
+    : Repository<OwiUserActionDetails>(context), IOwiUserActionDetailsRepository;

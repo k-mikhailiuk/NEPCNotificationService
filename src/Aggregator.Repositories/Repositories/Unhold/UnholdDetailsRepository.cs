@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories.Unhold;
 
 namespace Aggregator.Repositories.Repositories.Unhold;
 
-public class UnholdDetailsRepository : Repository<UnholdDetails>, IUnholdDetailsRepository
-{
-    public UnholdDetailsRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class UnholdDetailsRepository(AggregatorDbContext context)
+    : Repository<UnholdDetails>(context), IUnholdDetailsRepository;

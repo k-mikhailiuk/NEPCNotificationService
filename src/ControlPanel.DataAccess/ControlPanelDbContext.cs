@@ -6,18 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ControlPanel.DataAccess;
 
-public class ControlPanelDbContext : IdentityDbContext<IdentityUser>
+public class ControlPanelDbContext(DbContextOptions<ControlPanelDbContext> options)
+    : IdentityDbContext<IdentityUser>(options)
 {
     public DbSet<NotificationMessageKeyWord> NotificationMessageKeyWords { get; set; }
     public DbSet<NotificationMessageTextDirectory> NotificationMessageTextDirectories { get; set; }
     public DbSet<Currency> Currencies { get; set; }
     public DbSet<LimitIdDescriptionDirectory> LimitIdDescriptionDirectories { get; set; }
-    
-    public ControlPanelDbContext(DbContextOptions<ControlPanelDbContext> options)
-        : base(options)
-    {
-    }
-    
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("nepc");

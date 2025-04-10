@@ -6,12 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class CurrenciesRepository : Repository<Currency>, ICurrenciesRepository
+public class CurrenciesRepository(AggregatorDbContext context) : Repository<Currency>(context), ICurrenciesRepository
 {
-    public CurrenciesRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-    
     public async Task<Currency?> GetByCodeAsync(int code, CancellationToken cancellationToken)
         => await _dbSet.FirstOrDefaultAsync(x => x.CurrencyCode == code, cancellationToken: cancellationToken);
 }

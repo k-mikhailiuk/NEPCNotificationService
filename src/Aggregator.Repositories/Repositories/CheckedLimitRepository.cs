@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class CheckedLimitRepository : Repository<CheckedLimit>, ICheckedLimitRepository
-{
-    public CheckedLimitRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class CheckedLimitRepository(AggregatorDbContext context)
+    : Repository<CheckedLimit>(context), ICheckedLimitRepository;

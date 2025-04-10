@@ -12,7 +12,7 @@ namespace NotificationService.App;
 /// </remarks>
 public static class FirebaseInitializer
 {
-    private static readonly object _lockObject = new object();
+    private static readonly object _lockObject = new();
 		
     /// <summary>
     /// Инициализирует приложение Firebase, используя JSON-файл с учётными данными, 

@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class ExtensionParameterRepository : Repository<ExtensionParameter>, IExtensionParameterRepository
-{
-    public ExtensionParameterRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class ExtensionParameterRepository(AggregatorDbContext context)
+    : Repository<ExtensionParameter>(context), IExtensionParameterRepository;

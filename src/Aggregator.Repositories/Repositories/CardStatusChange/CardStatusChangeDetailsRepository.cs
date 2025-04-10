@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories.CardStatusChange;
 
 namespace Aggregator.Repositories.Repositories.CardStatusChange;
 
-public class CardStatusChangeDetailsRepository : Repository<CardStatusChangeDetails>, ICardStatusChangeDetailsRepository
-{
-    public CardStatusChangeDetailsRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class CardStatusChangeDetailsRepository(AggregatorDbContext context)
+    : Repository<CardStatusChangeDetails>(context), ICardStatusChangeDetailsRepository;

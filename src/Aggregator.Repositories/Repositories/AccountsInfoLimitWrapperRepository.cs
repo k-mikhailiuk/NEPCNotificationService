@@ -5,9 +5,5 @@ using Aggregator.Repositories.Abstractions.Repositories;
 
 namespace Aggregator.Repositories.Repositories;
 
-public class AccountsInfoLimitWrapperRepository : Repository<AccountsInfoLimitWrapper>, IAccountsInfoLimitWrapperRepository
-{
-    public AccountsInfoLimitWrapperRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class AccountsInfoLimitWrapperRepository(AggregatorDbContext context)
+    : Repository<AccountsInfoLimitWrapper>(context), IAccountsInfoLimitWrapperRepository;

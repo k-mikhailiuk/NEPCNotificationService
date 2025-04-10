@@ -4,9 +4,5 @@ using Aggregator.Repositories.Abstractions.Repositories.AcqFinAuth;
 
 namespace Aggregator.Repositories.Repositories.AcqFinAuth;
 
-public class AcqFinAuthDetailsRepository : Repository<AcqFinAuthDetails>, IAcqFinAuthDetailsRepository
-{
-    public AcqFinAuthDetailsRepository(AggregatorDbContext context) : base(context)
-    {
-    }
-}
+public class AcqFinAuthDetailsRepository(AggregatorDbContext context)
+    : Repository<AcqFinAuthDetails>(context), IAcqFinAuthDetailsRepository;
