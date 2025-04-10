@@ -88,7 +88,7 @@ public class ProcessInboxMessageHandler(
                 
                 unitOfWork.CommitTransactionAsync();
             }
-            catch (NotSupportedException ex)
+            catch (Exception ex)
             {
                 logger.LogWarning(ex.Message);
                 unitOfWork.RollbackTransactionAsync();
