@@ -1,5 +1,8 @@
 namespace Aggregator.DTOs;
 
+/// <summary>
+/// Параметры расширения
+/// </summary>
 public class AggregatorExtensionParametersDto
 {
     /// <summary>

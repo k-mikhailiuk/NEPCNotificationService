@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Handlers;
 
+/// <summary>
+/// Обработчик команды для обработки входящих сообщений.
+/// </summary>
 public class ProcessInboxMessageHandler(
     ILogger<ProcessInboxMessageHandler> logger,
     IMediator mediator,
@@ -21,6 +24,11 @@ public class ProcessInboxMessageHandler(
     INotificationMessageBuilderFactory notificationMessageBuilderFactory)
     : IRequestHandler<ProcessInboxMessageCommand>
 {
+    /// <summary>
+    /// Обрабатывает входящие сообщения, обновляет их статус, создаёт команды уведомлений и архивирует сообщения.
+    /// </summary>
+    /// <param name="request">Команда с входящими сообщениями.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     public async Task Handle(ProcessInboxMessageCommand request, CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
@@ -74,6 +82,9 @@ public class ProcessInboxMessageHandler(
                 var inboxMessageIds = processedNotificationsIds.Select(processedNotificationId =>
                     processedMessages.FirstOrDefault(x => x.Value == processedNotificationId).Key).ToList();
 
+                if(inboxMessageIds.Count == 0)
+                    return;
+                
                 await CompleteMessageProcessingAsync(inboxMessageIds, unitOfWork, cancellationToken);
 
                 NotificationTypeMapper.AggregatorTypeEntityTypeMapping.TryGetValue(type,
@@ -96,6 +107,13 @@ public class ProcessInboxMessageHandler(
         }
     }
 
+    /// <summary>
+    /// Обновляет статус сообщений по их идентификаторам.
+    /// </summary>
+    /// <param name="messageIds">Список идентификаторов сообщений.</param>
+    /// <param name="newStatus">Новый статус сообщения.</param>
+    /// <param name="unitOfWork">Интерфейс работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private async Task UpdateStatusAsync(List<long> messageIds, InboxMessageStatus newStatus, IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
@@ -118,6 +136,12 @@ public class ProcessInboxMessageHandler(
         logger.LogInformation("Updated {count} messages to status={status}", messages.Count, newStatus);
     }
 
+    /// <summary>
+    /// Завершает обработку сообщений: обновляет статус, архивирует и удаляет сообщения.
+    /// </summary>
+    /// <param name="messageIds">Список идентификаторов сообщений.</param>
+    /// <param name="unitOfWork">Интерфейс работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private async Task CompleteMessageProcessingAsync(List<long> messageIds, IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
@@ -141,6 +165,13 @@ public class ProcessInboxMessageHandler(
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Композитирует и сохраняет сообщение уведомления.
+    /// </summary>
+    /// <param name="entityNotificationsType">Тип сущности уведомления.</param>
+    /// <param name="notificationIds">Список идентификаторов уведомлений.</param>
+    /// <param name="unitOfWork">Интерфейс работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private async Task CompositeAndSaveNotificationMessageAsync(Type entityNotificationsType,
         List<long> notificationIds,
         IUnitOfWork unitOfWork,

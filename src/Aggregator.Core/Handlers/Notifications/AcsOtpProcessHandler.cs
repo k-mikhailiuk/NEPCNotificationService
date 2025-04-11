@@ -8,9 +8,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
+/// <summary>
+/// Обработчик команды уведомления для AcsOtp.
+/// </summary>
 public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
     : IRequestHandler<ProcessNotificationCommand<AggregatorAcsOtpDto>, List<long>>
 {
+    /// <summary>
+    /// Обрабатывает команду уведомления, выполняет маппинг DTO в сущности и сохраняет их в БД.
+    /// </summary>
+    /// <param name="request">Команда уведомления с коллекцией DTO.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Список идентификаторов уведомлений.</returns>
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorAcsOtpDto> request, CancellationToken cancellationToken)
     {
         var dtos = request.Notifications;
@@ -27,6 +36,12 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
         return entities.Select(x=>x.NotificationId).ToList();
     }
     
+    /// <summary>
+    /// Обрабатывает сущности AcsOtp, добавляя их в БД, если они отсутствуют.
+    /// </summary>
+    /// <param name="entities">Список сущностей AcsOtp.</param>
+    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task ProcessEntitiesAsync(
         List<AcsOtp> entities,
         IUnitOfWork unitOfWork,

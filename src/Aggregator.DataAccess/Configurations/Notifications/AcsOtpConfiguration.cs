@@ -4,8 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aggregator.DataAccess.Configurations.Notifications;
 
+/// <summary>
+/// Конфигурация сущности <see cref="AcsOtp"/> для Entity Framework.
+/// </summary>
+/// <remarks>
+/// Определяет настройки таблицы, первичный ключ, свойства и связи для сущности <see cref="AcsOtp"/>.
+/// </remarks>
 public class AcsOtpConfiguration : IEntityTypeConfiguration<AcsOtp>
 {
+    /// <summary>
+    /// Настраивает конфигурацию для сущности <see cref="AcsOtp"/>.
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации для сущности <see cref="AcsOtp"/>.</param>
     public void Configure(EntityTypeBuilder<AcsOtp> builder)
     {
         builder.ToTable("AcsOtps");

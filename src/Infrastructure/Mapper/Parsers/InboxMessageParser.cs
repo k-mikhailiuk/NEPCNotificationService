@@ -5,8 +5,17 @@ using Aggregator.DTOs.Abstractions;
 
 namespace Mapper.Parsers;
 
+/// <summary>
+/// Класс для парсинга входящих сообщений (InboxMessage) из JSON-строк в соответствующие DTO-объекты.
+/// </summary>
 public static class InboxMessageParser
 {
+    /// <summary>
+    /// Разбирает JSON-представление входящего сообщения и преобразует его в соответствующий объект DTO.
+    /// Тип DTO определяется по корневому ключу JSON, который должен соответствовать значению <see cref="NotificationType"/>.
+    /// </summary>
+    /// <param name="payload">Строка JSON, содержащая одно уведомление в формате {"TypeName": {...}}.</param>
+    /// <returns>Объект, реализующий <see cref="INotificationAggregatorDto"/>, или <c>null</c> в случае ошибки.</returns>
     public static INotificationAggregatorDto? ParseInboxMessage(string payload)
     {
         try

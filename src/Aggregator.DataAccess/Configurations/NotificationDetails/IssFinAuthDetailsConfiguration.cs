@@ -4,12 +4,22 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aggregator.DataAccess.Configurations.NotificationDetails;
 
+/// <summary>
+/// Конфигурация сущности <see cref="IssFinAuthDetails"/> для Entity Framework.
+/// </summary>
+/// <remarks>
+/// Определяет настройки таблицы, первичный ключ, свойства и связи для сущности <see cref="IssFinAuthDetails"/>.
+/// </remarks>
 public class IssFinAuthDetailsConfiguration : IEntityTypeConfiguration<IssFinAuthDetails>
 {
+    /// <summary>
+    /// Настраивает конфигурацию для сущности <see cref="IssFinAuthDetails"/>.
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации для сущности <see cref="IssFinAuthDetails"/>.</param>
     public void Configure(EntityTypeBuilder<IssFinAuthDetails> builder)
     {
         builder.ToTable("IssFinAuthDetails");
-    
+
         builder.HasKey(x => x.IssFinAuthDetailsId);
 
         builder.Property(x => x.Reversal).IsRequired();
@@ -23,9 +33,9 @@ public class IssFinAuthDetailsConfiguration : IEntityTypeConfiguration<IssFinAut
             parameters.Property(x => x.Amount).IsRequired();
             parameters.Property(x => x.Currency).IsRequired().HasMaxLength(3);
         });
-        
-        builder.Property(x=>x.AuthDirection).IsRequired();
-        
+
+        builder.Property(x => x.AuthDirection).IsRequired();
+
         builder.OwnsOne(x => x.ConvMoney, parameters =>
         {
             parameters.Property(x => x.Amount).IsRequired(false);
@@ -41,30 +51,30 @@ public class IssFinAuthDetailsConfiguration : IEntityTypeConfiguration<IssFinAut
             parameters.Property(x => x.Amount).IsRequired(false);
             parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
         });
-        
+
         builder.Property(x => x.LocalTime).IsRequired();
-        builder.Property(x=>x.TransType).IsRequired();
-        builder.Property(x=>x.ResponseCode).IsRequired(false).HasMaxLength(6);
-        builder.Property(x=>x.ApprovalCode).IsRequired(false).HasMaxLength(6);
-        builder.Property(x=>x.Rrn).IsRequired(false).HasMaxLength(12);
-        
+        builder.Property(x => x.TransType).IsRequired();
+        builder.Property(x => x.ResponseCode).IsRequired(false).HasMaxLength(6);
+        builder.Property(x => x.ApprovalCode).IsRequired(false).HasMaxLength(6);
+        builder.Property(x => x.Rrn).IsRequired(false).HasMaxLength(12);
+
         builder.OwnsOne(x => x.AcqFee, parameters =>
         {
             parameters.Property(x => x.Amount).IsRequired(false);
             parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
         });
-        
-        builder.Property(x=>x.AcqFeeDirection).IsRequired(false);
-        
+
+        builder.Property(x => x.AcqFeeDirection).IsRequired(false);
+
         builder.OwnsOne(x => x.IssFee, parameters =>
         {
             parameters.Property(x => x.Amount).IsRequired(false);
             parameters.Property(x => x.Currency).IsRequired(false).HasMaxLength(3);
         });
-        
-        builder.Property(x=>x.IssFeeDirection).IsRequired(false);
-        builder.Property(x=>x.SvTrace).IsRequired(false);
-        builder.Property(x=>x.AuthorizationCondition).IsRequired(false).HasMaxLength(12);
+
+        builder.Property(x => x.IssFeeDirection).IsRequired(false);
+        builder.Property(x => x.SvTrace).IsRequired(false);
+        builder.Property(x => x.AuthorizationCondition).IsRequired(false).HasMaxLength(12);
 
         builder.OwnsOne(x => x.WalletProvider, parameters =>
         {
@@ -80,10 +90,10 @@ public class IssFinAuthDetailsConfiguration : IEntityTypeConfiguration<IssFinAut
             details.OwnsOne(x => x.ExceedLimitMoney);
         });
         builder.OwnsOne(x => x.CardIdentifier);
-        
-        builder.HasMany(x=>x.CheckedLimits)
+
+        builder.HasMany(x => x.CheckedLimits)
             .WithOne()
-            .HasForeignKey(x=>x.IssFinAuthDetailsId)
+            .HasForeignKey(x => x.IssFinAuthDetailsId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

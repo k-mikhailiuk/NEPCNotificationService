@@ -5,9 +5,11 @@ using ControlPanel.DataAccess.Entities;
 
 namespace ControlPanel.Core.Services;
 
+/// <inheritdoc/>
 public class NotificationMessageTextDirectoriesService(IUnitOfWork unitOfWork)
     : INotificationMessageTextDirectoriesService
 {
+    /// <inheritdoc/>
     public async Task<List<NotificationMessageTextDirectory>> GetNotificationsTextAsync(CancellationToken cancellationToken)
     {
         var keywords = await unitOfWork.NotificationMessageTextDirectories.GetAllAsync(cancellationToken);
@@ -15,6 +17,7 @@ public class NotificationMessageTextDirectoriesService(IUnitOfWork unitOfWork)
         return keywords.ToList();
     }
 
+    /// <inheritdoc/>
     public async Task UpdateMessageTextsAsync(UpdateNotificationMessageDirectoriesTextDto dto, CancellationToken cancellationToken)
     {
         var entity = await unitOfWork.NotificationMessageTextDirectories.FindAsync(x=>x.Id == dto.Id, cancellationToken);

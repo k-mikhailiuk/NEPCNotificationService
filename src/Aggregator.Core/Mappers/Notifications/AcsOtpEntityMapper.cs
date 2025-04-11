@@ -7,9 +7,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
+/// <summary>
+/// Маппер, преобразующий DTO уведомления AcsOtp (<see cref="AggregatorAcsOtpDto"/>) в сущность <see cref="AcsOtp"/>.
+/// </summary>
 public class AcsOtpEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
     : INotificationMapper<AcsOtp, AggregatorAcsOtpDto>
 {
+    /// <summary>
+    /// Преобразует объект <see cref="AggregatorAcsOtpDto"/> в сущность <see cref="AcsOtp"/>.
+    /// </summary>
+    /// <param name="dto">DTO уведомления AcsOtp.</param>
+    /// <returns>Сущность <see cref="AcsOtp"/> с заполненными данными.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="dto"/> равен null.</exception>
     public AcsOtp Map(AggregatorAcsOtpDto dto)
     {
         if (dto == null)
@@ -33,6 +42,11 @@ public class AcsOtpEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
         return notification;
     }
 
+    /// <summary>
+    /// Преобразует DTO деталей AcsOtp (<see cref="AggregatorAcsOtpDetailsDto"/>) в сущность <see cref="AcsOtpDetails"/>.
+    /// </summary>
+    /// <param name="dto">DTO деталей уведомления AcsOtp.</param>
+    /// <returns>Сущность <see cref="AcsOtpDetails"/> с заполненными данными.</returns>
     private static AcsOtpDetails MapDetails(AggregatorAcsOtpDetailsDto dto)
     {
         var otpInfo = new OtpInfo
@@ -51,6 +65,11 @@ public class AcsOtpEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
         return details;
     }
 
+    /// <summary>
+    /// Преобразует DTO информации о мерчанте AcsOtp (<see cref="AggregatorAcsOtpMerchantInfoDto"/>) в сущность <see cref="AcsOtpMerchantInfo"/>.
+    /// </summary>
+    /// <param name="dto">DTO информации о мерчанте AcsOtp.</param>
+    /// <returns>Сущность <see cref="AcsOtpMerchantInfo"/> с заполненными данными.</returns>
     private static AcsOtpMerchantInfo MapMerchantInfo(AggregatorAcsOtpMerchantInfoDto dto)
     {
         return new AcsOtpMerchantInfo

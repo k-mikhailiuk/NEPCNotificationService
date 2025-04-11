@@ -5,8 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Extensions;
 
+/// <summary>
+/// Предоставляет методы для предварительной загрузки и унификации расширений уведомлений.
+/// </summary>
+/// <typeparam name="T">Тип уведомления, реализующий интерфейс <see cref="INotification"/>.</typeparam>
 public static class UnifyProcessorExtension<T> where T : INotification
 {
+    /// <summary>
+    /// Предварительно загружает и унифицирует расширения для заданного списка уведомлений.
+    /// </summary>
+    /// <param name="entities">Список уведомлений, для которых требуется выполнить загрузку и унификацию расширений.</param>
+    /// <param name="unitOfWork">Объект единицы работы для выполнения SQL-запроса.</param>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>Асинхронная задача, представляющая выполнение операции.</returns>
+    /// <remarks>
+    /// Метод проходит по каждому уведомлению, извлекает ключи расширений и подготавливает SQL-запрос для их предварительной загрузки из базы данных.
+    /// После загрузки существующих расширений, метод заменяет расширения в уведомлениях на загруженные данные, если они уже существуют,
+    /// или добавляет новые расширения в кэш.
+    /// </remarks>
     public static async Task PreloadAndUnifyExtensionsAsync(
         List<T> entities,
         IUnitOfWork unitOfWork,

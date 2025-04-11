@@ -4,8 +4,18 @@ using FluentValidation;
 
 namespace Aggregator.Core.Validators.Notifications;
 
+/// <summary>
+/// Валидатор для DTO объекта авторизации IssFinAuth.
+/// </summary>
+/// <remarks>
+/// Класс устанавливает правила валидации для свойств объекта <see cref="AggregatorIssFinAuthDto"/>,
+/// включая проверку вложенных объектов Details, CardInfo, AccountsInfo, MerchantInfo и коллекции Extensions.
+/// </remarks>
 public class AggregatorIssFinAuthDtoCommandValidator : AbstractValidator<AggregatorIssFinAuthDto>
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр <see cref="AggregatorIssFinAuthDtoCommandValidator"/> и задаёт правила валидации.
+    /// </summary>
     public AggregatorIssFinAuthDtoCommandValidator()
     {
         RuleFor(x => x.Id)
@@ -32,8 +42,8 @@ public class AggregatorIssFinAuthDtoCommandValidator : AbstractValidator<Aggrega
 
         RuleFor(x => x.MerchantInfo)
             .SetValidator(new AggregatorMerchantInfoDtoCommandValidator());
-        
-        RuleForEach(x=>x.Extensions)
+
+        RuleForEach(x => x.Extensions)
             .SetValidator(new AggregatorExtensionDtoCommandValidator())
             .When(x => x.Extensions != null);
     }

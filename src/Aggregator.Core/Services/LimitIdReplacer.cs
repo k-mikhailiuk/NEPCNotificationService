@@ -6,8 +6,23 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services;
 
+/// <summary>
+/// Реализация <see cref="ILimitIdReplacer"/> для замены идентификатора лимита на строковое описание.
+/// </summary>
 public class LimitIdReplacer(IServiceProvider serviceProvider) : ILimitIdReplacer
 {
+    /// <summary>
+    /// Асинхронно заменяет числовой идентификатор лимита на его строковое описание в зависимости от языка.
+    /// </summary>
+    /// <param name="limitId">Идентификатор лимита.</param>
+    /// <param name="language">Язык, для которого нужно получить описание лимита.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>
+    /// Строка, представляющая описание лимита, или пустая строка, если описание не найдено или limitId равен 0.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Выбрасывается, если язык не поддерживается.
+    /// </exception>
     public async Task<string?> ReplaceLimitIdAsync(long limitId, Language language,
         CancellationToken cancellationToken = default)
     {

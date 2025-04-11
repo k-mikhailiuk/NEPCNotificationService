@@ -3,8 +3,19 @@ using Aggregator.DTOs;
 
 namespace Aggregator.Core.Mappers;
 
+/// <summary>
+/// Класс для маппинга данных MerchantInfo из DTO в сущность.
+/// </summary>
 public static class MerchantInfoMapper
 {
+    /// <summary>
+    /// Преобразует объект <see cref="AggregatorMerchantInfoDto"/> в экземпляр <see cref="MerchantInfo"/>.
+    /// </summary>
+    /// <param name="dto">Объект DTO для MerchantInfo.</param>
+    /// <returns>
+    /// Экземпляр <see cref="MerchantInfo"/> с заполненными полями из <paramref name="dto"/>.
+    /// Если <paramref name="dto"/> равен null, возвращается null.
+    /// </returns>
     public static MerchantInfo MapMerchantInfo(AggregatorMerchantInfoDto dto)
     {
         if (dto == null)

@@ -4,12 +4,14 @@ namespace ControlPanel.DataAccess.Entities.Enum;
 
 public enum NotificationOperationType
 {
-    [Description("Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был уменьшен остаток на счете карты (лимит авторизации).")]
+    [Description(
+        "Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был уменьшен остаток на счете карты (лимит авторизации).")]
     DECREASE_AUTHORIZATION_AMOUNT = 432,
-    
-    [Description("Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был увеличен остаток на счете карты (лимит авторизации).")]
+
+    [Description(
+        "Техническая операция. Формируется, если после обработки транзакции в Бэк-офисе был увеличен остаток на счете карты (лимит авторизации).")]
     INCREASE_AUTHORIZATION_AMOUNT = 433,
-    
+
     [Description("Оплата Услуг")]
     UTIL_PAYMENT = 508,
 
@@ -37,8 +39,7 @@ public enum NotificationOperationType
     [Description("Предавторизация в е-POS")]
     PRE_EPURCHASE_AUTH = 677,
 
-    [Description("Оплата в интернете")]
-    EPOS_PURCHASE = 680,
+    [Description("Оплата в интернете")] EPOS_PURCHASE = 680,
 
     [Description("Возврат товара для MO/TO")]
     EPOS_REFUND = 681,
@@ -55,8 +56,7 @@ public enum NotificationOperationType
     [Description("Получение наличных в банкомате")]
     ATM_WDL = 700,
 
-    [Description("Запрос баланса")]
-    BALINQ = 702,
+    [Description("Запрос баланса")] BALINQ = 702,
 
     [Description("Пополнение по сохраненным реквизитам карты")]
     COF_CASH_DEPOSIT = 711,
@@ -64,12 +64,11 @@ public enum NotificationOperationType
     [Description("Пополнение карты МИР наличными без предъявления карты")]
     CNP_CASH_IN = 712,
 
-    [Description("Пре-авторизация в POS")]
-    PRE_PURCHASE_AUTHORIZATION = 736,
-    
+    [Description("Пре-авторизация в POS")] PRE_PURCHASE_AUTHORIZATION = 736,
+
     [Description("Завершение пре-авторизации POS")]
     POS_PRE_PURCH_CMPL = 737,
-    
+
     [Description("Увеличение пре-авторизации POS")]
     POS_INCR_PRE_PURCH = 739,
 
@@ -84,13 +83,13 @@ public enum NotificationOperationType
 
     [Description("Возврат покупки за счет собственных средств при оплате использованием ЭС")]
     RETURN_REFAUND_WITH_ELECTRONIC_CERTIFICATE = 747,
-    
+
     [Description("Credit Adjustment (ручной реверсал на операцию, совершенную в АТМ, по карте VISA)")]
     VSMS_CREDITADJ = 750,
 
     [Description("Онлайн пополнение банком")]
     EPOS_CREDIT_ONLINE = 760,
-    
+
     [Description("SMS-chargeback (Chargeback на операцию, совершенную в АТМ, по карте VISA)")]
     VSMS_CHARGEBACK = 767,
 
@@ -106,7 +105,7 @@ public enum NotificationOperationType
     [Description("Получение наличных в кассовом терминале")]
     POS_CASH_ADVANCE_PVN = 777,
 
-    [Description("P2P  (перевод карта-карта)")]
+    [Description("P2P (перевод карта-карта)")]
     P2P_DEBIT = 781,
 
     [Description("Запрос баланса (в POS)")]

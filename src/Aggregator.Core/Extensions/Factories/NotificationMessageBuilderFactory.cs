@@ -14,8 +14,27 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Extensions.Factories;
 
+/// <summary>
+/// Фабрика построителей сообщений уведомлений.
+/// </summary>
+/// <remarks>
+/// Данный класс реализует интерфейс <see cref="INotificationMessageBuilderFactory"/> и предоставляет
+/// возможность создания построителя сообщений уведомлений для заданного типа уведомления.
+/// </remarks>
 public class NotificationMessageBuilderFactory(IServiceProvider serviceProvider) : INotificationMessageBuilderFactory
 {
+    /// <summary>
+    /// Создаёт построитель сообщений уведомлений для указанного типа уведомления.
+    /// </summary>
+    /// <param name="notificationType">
+    /// Тип уведомления, для которого необходимо создать построитель сообщений.
+    /// </param>
+    /// <returns>
+    /// Построитель сообщений уведомлений, реализующий <see cref="INotificationMessageBuilder{INotification}"/>.
+    /// </returns>
+    /// <exception cref="NotSupportedException">
+    /// Выбрасывается, если тип уведомления не поддерживается.
+    /// </exception>
     public INotificationMessageBuilder<INotification> CreateNotificationMessageBuilder(Type notificationType)
     {
         return notificationType switch

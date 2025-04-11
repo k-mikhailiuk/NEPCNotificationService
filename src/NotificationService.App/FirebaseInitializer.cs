@@ -19,6 +19,7 @@ public static class FirebaseInitializer
     /// заданный в конфигурации приложения под ключом <c>FireBaseCredentialsFile</c>.
     /// Бросает исключение, если файл не найден.
     /// </summary>
+    /// // <param name="credentialsFilePath">Относительный путь к файлу JSON с ключом учётных данных Firebase.</param>
     /// <exception cref="System.IO.FileNotFoundException">
     /// Генерируется, если файл с указанным путём не существует.
     /// </exception>

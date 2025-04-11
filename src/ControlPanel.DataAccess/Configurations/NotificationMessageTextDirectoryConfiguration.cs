@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ControlPanel.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация сущности NotificationMessageTextDirectory.
+/// </summary>
 public class NotificationMessageTextDirectoryConfiguration : IEntityTypeConfiguration<NotificationMessageTextDirectory>
 {
+    /// <summary>
+    /// Настраивает таблицу и свойства для сущности NotificationMessageTextDirectory.
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации для сущности NotificationMessageTextDirectory.</param>
     public void Configure(EntityTypeBuilder<NotificationMessageTextDirectory> builder)
     {
         builder.ToTable("NotificationMessageTextDirectories");

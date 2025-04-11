@@ -9,10 +9,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
+/// <summary>
+/// Обработчик команды уведомления об изменении баланса счета.
+/// </summary>
 public class
     AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
     : IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, List<long>>
 {
+    /// <summary>
+    /// Обрабатывает команду уведомления, выполняет маппинг DTO в сущности, 
+    /// предварительную загрузку, унификацию и сохранение в БД.
+    /// </summary>
+    /// <param name="request">Команда с уведомлениями.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Список идентификаторов уведомлений.</returns>
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorAcctBalChangeDto> request,
         CancellationToken cancellationToken)
     {
@@ -24,14 +34,11 @@ public class
 
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        
+
         await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
-
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
-
         await PreloadAndUnifyAccountsInfoAsync(entities, unitOfWork, cancellationToken);
         await PreloadAndUnifyCardInfoAsync(entities, unitOfWork, cancellationToken);
-
         await PreloadAndUnifyLimitWrappersAsync(entities, unitOfWork, cancellationToken);
 
         await UnifyProcessorExtension<AcctBalChange>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
@@ -42,7 +49,14 @@ public class
         return entities.Select(x => x.NotificationId).ToList();
     }
 
-    private static async Task PreloadAndUnifyCardInfoAsync(List<AcctBalChange> entities, IUnitOfWork unitOfWork, CancellationToken cancellationToken)
+    /// <summary>
+    /// Загружает и унифицирует информацию о картах.
+    /// </summary>
+    /// <param name="entities">Список сущностей AcctBalChange.</param>
+    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    private static async Task PreloadAndUnifyCardInfoAsync(List<AcctBalChange> entities, IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
     {
         var allCardInfoIds = new List<long>();
         foreach (var entity in entities)
@@ -70,7 +84,14 @@ public class
         }
     }
 
-    private static async Task PreloadAndUnifyAccountsInfoAsync(List<AcctBalChange> entities, IUnitOfWork unitOfWork, CancellationToken cancellationToken)
+    /// <summary>
+    /// Загружает и унифицирует информацию о счетах.
+    /// </summary>
+    /// <param name="entities">Список сущностей AcctBalChange.</param>
+    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    private static async Task PreloadAndUnifyAccountsInfoAsync(List<AcctBalChange> entities, IUnitOfWork unitOfWork,
+        CancellationToken cancellationToken)
     {
         var allAccountsInfoIds = entities.SelectMany(e => e.AccountsInfo.Select(a => a.Id)).ToList();
 
@@ -90,6 +111,12 @@ public class
         }
     }
 
+    /// <summary>
+    /// Обрабатывает сущности изменения баланса счета, добавляя их в БД, если они отсутствуют.
+    /// </summary>
+    /// <param name="entities">Список сущностей AcctBalChange.</param>
+    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task ProcessEntitiesAsync(
         List<AcctBalChange> entities,
         IUnitOfWork unitOfWork,
@@ -111,6 +138,12 @@ public class
         }
     }
 
+    /// <summary>
+    /// Загружает и унифицирует детали транзакции.
+    /// </summary>
+    /// <param name="entities">Список сущностей AcctBalChange.</param>
+    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyDetailsAsync(
         List<AcctBalChange> entities,
         IUnitOfWork unitOfWork,
@@ -160,7 +193,12 @@ public class
         }
     }
 
-
+    /// <summary>
+    /// Загружает и унифицирует лимиты.
+    /// </summary>
+    /// <param name="entities">Список сущностей AcctBalChange.</param>
+    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyLimitsAsync(
         List<AcctBalChange> entities,
         IUnitOfWork unitOfWork,
@@ -189,6 +227,12 @@ public class
         }
     }
 
+    /// <summary>
+    /// Загружает и унифицирует обёртки лимитов.
+    /// </summary>
+    /// <param name="entities">Список сущностей AcctBalChange.</param>
+    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyLimitWrappersAsync(
         List<AcctBalChange> entities,
         IUnitOfWork unitOfWork,

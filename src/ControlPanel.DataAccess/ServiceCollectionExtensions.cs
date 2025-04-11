@@ -7,8 +7,17 @@ using Scrutor;
 
 namespace ControlPanel.DataAccess;
 
+/// <summary>
+/// Методы расширения для регистрации компонентов DataAccess в DI-контейнере.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Регистрирует контекст базы данных ControlPanel с использованием SQL Server.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов DI.</param>
+    /// <param name="configuration">Конфигурация приложения для получения строки подключения.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddControlPanelDbContext(this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -23,6 +32,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Регистрирует классы для начальной загрузки данных.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов DI.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddDataSeeders(this IServiceCollection services)
     {
         services.AddTransient<IdentityDataSeeder>();
@@ -32,6 +46,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
     
+    /// <summary>
+    /// Регистрирует репозитории и единицу работы с использованием сканирования сборки.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов DI.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();

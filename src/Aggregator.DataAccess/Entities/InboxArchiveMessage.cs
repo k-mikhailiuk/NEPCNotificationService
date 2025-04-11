@@ -1,11 +1,23 @@
 namespace Aggregator.DataAccess.Entities;
 
+/// <summary>
+/// Представляет архивированное сообщение входящих, сохранённое в базе данных.
+/// </summary>
 public class InboxArchiveMessage
 {
+    /// <summary>
+    /// Получает или задаёт уникальный идентификатор сообщения.
+    /// </summary>
     public long Id { get; set; }
     
+    /// <summary>
+    /// Получает или задаёт временную метку создания сообщения.
+    /// </summary>
     public DateTimeOffset Timestamp { get; set; }
     
+    /// <summary>
+    /// Получает или задаёт полезную нагрузку (содержимое) сообщения.
+    /// </summary>
     public string Payload { get; set; }
     
     /// <summary>

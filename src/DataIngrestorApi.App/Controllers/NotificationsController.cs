@@ -4,10 +4,28 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DataIngrestorApi.App.Controllers;
 
+/// <summary>
+/// Контроллер для обработки уведомлений.
+/// Содержит методы для получения уведомлений и эхо-ответа.
+/// </summary>
 [ApiController]
 public class NotificationsController(IMessageProcessor messageProcessor, ILogger<NotificationsController> logger)
     : ControllerBase
 {
+    /// <summary>
+    /// Принимает пакет уведомлений и обрабатывает его с помощью IMessageProcessor.
+    /// </summary>
+    /// <param name="request">DTO запроса уведомлений.</param>
+    /// <param name="instance">Заголовок X-CS-Instance, идентифицирующий экземпляр.</param>
+    /// <param name="requestId">Заголовок X-CS-RequestId, идентификатор запроса.</param>
+    /// <param name="requestTime">Заголовок X-CS-RequestTime, время запроса.</param>
+    /// <param name="userAgent">Заголовок User-Agent, информация об агенте пользователя.</param>
+    /// <param name="host">Заголовок Host, опциональное значение хоста.</param>
+    /// <returns>
+    /// <see cref="IActionResult"/> со статусом 200 (Ok) при успешной обработке,
+    /// 400 (Bad Request) при отсутствии необходимых заголовков или ошибках валидации,
+    /// или 500 (Internal Server Error) при возникновении исключительной ситуации.
+    /// </returns>
     [HttpPost("receive")]
     public async Task<IActionResult> Receive([FromBody] NotificationRequestDto request,
         [FromHeader(Name = "X-CS-Instance")] string instance,
@@ -40,6 +58,18 @@ public class NotificationsController(IMessageProcessor messageProcessor, ILogger
         }
     }
     
+    /// <summary>
+    /// Эхо-метод, возвращающий статус 200 (Ok) после получения строки запроса.
+    /// Используется для проверки доступности сервиса.
+    /// </summary>
+    /// <param name="request">Строка, передаваемая в теле запроса.</param>
+    /// <param name="contentType">Заголовок Content-Type, указывающий тип содержимого.</param>
+    /// <param name="userAgent">Заголовок User-Agent, информация об агенте пользователя.</param>
+    /// <returns>
+    /// <see cref="IActionResult"/> со статусом 200 (Ok) при успешном получении,
+    /// 400 (Bad Request) при отсутствии необходимых заголовков,
+    /// или 500 (Internal Server Error) при возникновении исключительной ситуации.
+    /// </returns>
     [HttpPost("echo")]
     public IActionResult Echo(
         [FromBody] string? request,

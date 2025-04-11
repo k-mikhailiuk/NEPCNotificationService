@@ -10,9 +10,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
+/// <summary>
+/// Маппер, преобразующий DTO уведомления IssFinAuth (<see cref="AggregatorIssFinAuthDto"/>) в сущность <see cref="IssFinAuth"/>.
+/// </summary>
 public class IssFinAuthEntityMapper(ILogger<IssFinAuthEntityMapper> logger)
     : INotificationMapper<IssFinAuth, AggregatorIssFinAuthDto>
 {
+    /// <summary>
+    /// Преобразует объект <see cref="AggregatorIssFinAuthDto"/> в сущность <see cref="IssFinAuth"/>.
+    /// </summary>
+    /// <param name="dto">DTO уведомления IssFinAuth.</param>
+    /// <returns>Сущность <see cref="IssFinAuth"/> с заполненными данными.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если dto равен null.</exception>
     public IssFinAuth Map(AggregatorIssFinAuthDto dto)
     {
         if (dto == null)
@@ -37,6 +46,11 @@ public class IssFinAuthEntityMapper(ILogger<IssFinAuthEntityMapper> logger)
         return notification;
     }
 
+    /// <summary>
+    /// Преобразует DTO деталей уведомления (<see cref="AggregatorIssFinAuthDetailsDto"/>) в сущность <see cref="IssFinAuthDetails"/>.
+    /// </summary>
+    /// <param name="dto">DTO деталей уведомления IssFinAuth.</param>
+    /// <returns>Сущность <see cref="IssFinAuthDetails"/> или null, если dto равен null.</returns>
     private IssFinAuthDetails MapDetails(AggregatorIssFinAuthDetailsDto dto)
     {
         if (dto == null)
@@ -121,6 +135,12 @@ public class IssFinAuthEntityMapper(ILogger<IssFinAuthEntityMapper> logger)
         }
     }
 
+    /// <summary>
+    /// Преобразует список DTO информации о счетах (<see cref="AggregatorAccountInfoDto"/>) в список сущностей <see cref="AccountsInfo"/>.
+    /// </summary>
+    /// <param name="dto">Список DTO информации о счетах.</param>
+    /// <param name="notificationId">Идентификатор уведомления, к которому привязана информация о счетах.</param>
+    /// <returns>Список сущностей <see cref="AccountsInfo"/> или null, если dto равен null или пуст.</returns>
     private List<AccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto, long notificationId)
     {
         if (dto == null || dto.Count == 0)

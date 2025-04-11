@@ -6,9 +6,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
+/// <summary>
+/// Маппер, преобразующий DTO уведомления CardStatusChange (<see cref="AggregatorCardStatusChangeDto"/>) в сущность <see cref="CardStatusChange"/>.
+/// </summary>
 public class CardStatusChangeEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
     : INotificationMapper<CardStatusChange, AggregatorCardStatusChangeDto>
 {
+    /// <summary>
+    /// Преобразует объект <see cref="AggregatorCardStatusChangeDto"/> в сущность <see cref="CardStatusChange"/>.
+    /// </summary>
+    /// <param name="dto">DTO уведомления CardStatusChange.</param>
+    /// <returns>Сущность <see cref="CardStatusChange"/> с заполненными данными.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="dto"/> равен null.</exception>
     public CardStatusChange Map(AggregatorCardStatusChangeDto dto)
     {
         if (dto == null)
@@ -31,6 +40,11 @@ public class CardStatusChangeEntityMapper(ILogger<CardStatusChangeEntityMapper> 
         return notification;
     }
 
+    /// <summary>
+    /// Преобразует DTO деталей уведомления в сущность <see cref="CardStatusChangeDetails"/>.
+    /// </summary>
+    /// <param name="dto">DTO деталей уведомления.</param>
+    /// <returns>Сущность <see cref="CardStatusChangeDetails"/> с заполненными данными или null, если dto равен null.</returns>
     private CardStatusChangeDetails MapDetails(AggregatorCardStatusChangeDetailsDto dto)
     {
         if (dto == null)

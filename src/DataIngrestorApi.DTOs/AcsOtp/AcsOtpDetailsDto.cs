@@ -1,5 +1,8 @@
 namespace DataIngrestorApi.DTOs.AcsOtp;
 
+/// <summary>
+/// Детали разовых паролей, отправляемых ACS банка-эмитента карты
+/// </summary>
 public class AcsOtpDetailsDto
 {
     /// <summary>

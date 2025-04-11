@@ -6,8 +6,26 @@ using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
+/// <summary>
+/// Построитель ключевых слов для уведомлений AcqFinAuth.
+/// </summary>
 public class AcqFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKeyWordBuilder<AcqFinAuth>
 {
+    /// <summary>
+    /// Асинхронно формирует строку ключевых слов для заданного уведомления AcqFinAuth.
+    /// </summary>
+    /// <param name="message">
+    /// Исходное сообщение, содержащее шаблоны для подстановки.
+    /// </param>
+    /// <param name="entity">
+    /// Объект уведомления типа <see cref="AcqFinAuth"/>, на основе которого генерируются ключевые слова.
+    /// </param>
+    /// <param name="language">
+    /// Язык, на котором должны быть сгенерированы ключевые слова.
+    /// </param>
+    /// <returns>
+    /// Асинхронная задача, возвращающая сформированную строку с подставленными значениями.
+    /// </returns>
     public async Task<string> BuildKeyWordsAsync(string? message, AcqFinAuth entity, Language language)
     {
         var reversalLanguageMap = new Dictionary<Language, string>

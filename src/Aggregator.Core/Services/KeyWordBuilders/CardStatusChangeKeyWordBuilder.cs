@@ -1,13 +1,18 @@
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Entities.CardStatusChange;
-using Aggregator.DataAccess.Entities.Enum;
 using Common;
 using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
+/// <summary>
+/// Построитель ключевых слов для уведомлений изменения статуса карты.
+/// </summary>
 public class CardStatusChangeKeyWordBuilder : IKeyWordBuilder<CardStatusChange>
 {
+    /// <summary>
+    /// Словарь соответствий статусов для разных языков.
+    /// </summary>
     private static readonly Dictionary<int, (string Ru, string En, string Kg)> StatusMap = new()
     {
         [0] = ("Активный", "Active", "Активдүү"),
@@ -30,8 +35,22 @@ public class CardStatusChangeKeyWordBuilder : IKeyWordBuilder<CardStatusChange>
         [24] = ("Заблокированный", "Locked", "Блоктолгон"),
         [25] = ("Заблокированный", "Locked", "Блоктолгон"),
     };
-
-
+    
+    /// <summary>
+    /// Асинхронно формирует строку ключевых слов для уведомления изменения статуса карты.
+    /// </summary>
+    /// <param name="message">
+    /// Исходное сообщение с шаблонами для подстановки.
+    /// </param>
+    /// <param name="entity">
+    /// Сущность <see cref="CardStatusChange"/>, на основе которой будут сгенерированы ключевые слова.
+    /// </param>
+    /// <param name="language">
+    /// Язык, на котором должны быть сформированы ключевые слова.
+    /// </param>
+    /// <returns>
+    /// Асинхронная задача, возвращающая строку с подставленными значениями.
+    /// </returns>
     public async Task<string> BuildKeyWordsAsync(string? message, CardStatusChange entity, Language language)
     {
         var replacements = new Dictionary<string, string>
@@ -46,6 +65,12 @@ public class CardStatusChangeKeyWordBuilder : IKeyWordBuilder<CardStatusChange>
         return KeyWordReplacer.ReplacePlaceholders(message, replacements);
     }
 
+    /// <summary>
+    /// Возвращает название статуса по коду и языку.
+    /// </summary>
+    /// <param name="code">Целочисленный код статуса.</param>
+    /// <param name="lang">Язык, на котором необходимо вернуть описание статуса.</param>
+    /// <returns>Локализованное название статуса, либо строка "неизвестный статус" на соответствующем языке.</returns>
     private static string GetStatusName(int code, Language lang)
     {
         if (StatusMap.TryGetValue(code, out var status))

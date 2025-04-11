@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ControlPanel.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация сущности LimitIdDescriptionDirectory.
+/// </summary>
 public class LimitIdDescriptionDirectoryConfiguration : IEntityTypeConfiguration<LimitIdDescriptionDirectory>
 {
+    /// <summary>
+    /// Настраивает таблицу и свойства для сущности LimitIdDescriptionDirectory.
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации для сущности LimitIdDescriptionDirectory.</param>
     public void Configure(EntityTypeBuilder<LimitIdDescriptionDirectory> builder)
     {
         builder.ToTable("LimitIdDescriptionDirectories");

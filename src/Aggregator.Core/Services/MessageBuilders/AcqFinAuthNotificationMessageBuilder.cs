@@ -14,6 +14,12 @@ using OptionsConfiguration;
 
 namespace Aggregator.Core.Services.MessageBuilders;
 
+/// <summary>
+/// Построитель уведомлений для операций AcqFinAuth.
+/// </summary>
+/// <remarks>
+/// Класс реализует интерфейс INotificationMessageBuilder для формирования уведомлений.
+/// </remarks>
 public class AcqFinAuthNotificationMessageBuilder(
     IOptions<NotificationMessageOptions> notificationMessageOptions,
     IServiceProvider serviceProvider,
@@ -22,6 +28,13 @@ public class AcqFinAuthNotificationMessageBuilder(
 {
     private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
 
+    /// <summary>
+    /// Асинхронно формирует список уведомлений по идентификаторам.
+    /// </summary>
+    /// <param name="notificationIds">Список идентификаторов уведомлений.</param>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>Список сформированных уведомлений.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если unitOfWork или context равны null.</exception>
     public async Task<List<NotificationMessage>> BuildNotificationAsync(List<long> notificationIds,
         CancellationToken cancellationToken)
     {
@@ -96,6 +109,13 @@ public class AcqFinAuthNotificationMessageBuilder(
         return list;
     }
 
+    /// <summary>
+    /// Получает идентификатор клиента по терминалу.
+    /// </summary>
+    /// <param name="terminalId">Идентификатор терминала.</param>
+    /// <param name="context">Контекст базы данных.</param>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>Идентификатор клиента или null, если не найден.</returns>
     private async Task<long?> GetCustomerIdAsync(string terminalId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {

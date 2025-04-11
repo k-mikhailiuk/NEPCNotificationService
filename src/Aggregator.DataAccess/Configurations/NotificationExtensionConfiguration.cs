@@ -4,8 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aggregator.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация сущности <see cref="NotificationExtension"/> для Entity Framework.
+/// </summary>
+/// <remarks>
+/// Определяет настройки таблицы, первичный ключ, свойства и связи для сущности <see cref="NotificationExtension"/>.
+/// </remarks>
 public class NotificationExtensionConfiguration : IEntityTypeConfiguration<NotificationExtension>
 {
+    /// <summary>
+    /// Настраивает конфигурацию для сущности <see cref="NotificationExtension"/>.
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации для сущности <see cref="NotificationExtension"/>.</param>
     public void Configure(EntityTypeBuilder<NotificationExtension> builder)
     {
         builder.ToTable("NotificationExtensions");

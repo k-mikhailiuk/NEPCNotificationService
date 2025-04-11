@@ -6,9 +6,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
+/// <summary>
+/// Маппер, преобразующий DTO уведомления TokenStatusChange (<see cref="AggregatorTokenStatusChangeDto"/>)
+/// в сущность <see cref="TokenStatusChange"/>.
+/// </summary>
 public class TokenStatusChangeEntityMapper(ILogger<TokenStatusChangeEntityMapper> logger)
     : INotificationMapper<TokenStatusChange, AggregatorTokenStatusChangeDto>
 {
+    
+    /// <summary>
+    /// Преобразует объект <see cref="AggregatorTokenStatusChangeDto"/> в сущность <see cref="TokenStatusChange"/>.
+    /// </summary>
+    /// <param name="dto">DTO уведомления TokenStatusChange.</param>
+    /// <returns>Сущность <see cref="TokenStatusChange"/> с заполненными данными.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="dto"/> равен null.</exception>
     public TokenStatusChange Map(AggregatorTokenStatusChangeDto dto)
     {
         if (dto == null)
@@ -31,6 +42,14 @@ public class TokenStatusChangeEntityMapper(ILogger<TokenStatusChangeEntityMapper
         return notification;
     }
 
+    /// <summary>
+    /// Преобразует DTO деталей уведомления TokenStatusChange (<see cref="AggregatorTokenStatusChangeDetailsDto"/>)
+    /// в сущность <see cref="TokenStatusChangeDetails"/>.
+    /// </summary>
+    /// <param name="dto">DTO деталей уведомления TokenStatusChange.</param>
+    /// <returns>
+    /// Сущность <see cref="TokenStatusChangeDetails"/> с заполненными данными или null, если dto равен null.
+    /// </returns>
     private TokenStatusChangeDetails MapDetails(AggregatorTokenStatusChangeDetailsDto dto)
     {
         if (dto == null)

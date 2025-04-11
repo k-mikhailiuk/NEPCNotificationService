@@ -5,10 +5,18 @@ using OptionsConfiguration;
 
 namespace ControlPanel.DataAccess.DataSeeders;
 
+/// <summary>
+/// Класс для сидирования данных Identity.
+/// </summary>
 public class IdentityDataSeeder(IOptions<AdminUserOptions> adminUserOptions)
 {
     private readonly AdminUserOptions _adminUserOptions = adminUserOptions.Value;
 
+    /// <summary>
+    /// Создает пользователя по умолчанию, если он не существует.
+    /// </summary>
+    /// <param name="serviceProvider">Провайдер сервисов для получения зависимостей.</param>
+    /// <returns>Задача асинхронного выполнения операции.</returns>
     public async Task SeedDefaultUserAsync(IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.CreateScope();

@@ -1,5 +1,8 @@
 namespace DataIngrestorApi.DTOs.AcsOtp;
 
+/// <summary>
+/// Информация о мерчанте
+/// </summary>
 public class AcsOtpMerchantInfoDto
 {
     /// <summary>

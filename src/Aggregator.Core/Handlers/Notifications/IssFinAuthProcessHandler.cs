@@ -9,11 +9,21 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
+/// <summary>
+/// Обработчик команды уведомления для IssFinAuth.
+/// </summary>
 public class IssFinAuthProcessHandler(
     NotificationEntityMapperFactory mapperFactory,
     IServiceProvider serviceProvider)
     : IRequestHandler<ProcessNotificationCommand<AggregatorIssFinAuthDto>, List<long>>
 {
+    /// <summary>
+    /// Обрабатывает команду уведомления, выполняет маппинг DTO в сущности, загружает и унифицирует лимиты, детали, мерчанта, информацию о счетах и картах,
+    /// объединяет обёртки лимитов и расширения, а затем сохраняет сущности в базу данных.
+    /// </summary>
+    /// <param name="request">Команда уведомления с коллекцией DTO.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Список идентификаторов уведомлений.</returns>
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorIssFinAuthDto> request,
         CancellationToken cancellationToken)
     {
@@ -36,7 +46,6 @@ public class IssFinAuthProcessHandler(
 
         await PreloadAndUnifyLimitWrappersAsync(entities, unitOfWork, cancellationToken);
 
-
         await UnifyProcessorExtension<IssFinAuth>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
 
@@ -45,6 +54,12 @@ public class IssFinAuthProcessHandler(
         return entities.Select(x => x.NotificationId).ToList();
     }
 
+    /// <summary>
+    /// Загружает и унифицирует информацию о картах для сущностей IssFinAuth.
+    /// </summary>
+    /// <param name="entities">Список сущностей IssFinAuth.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyCardInfoAsync(List<IssFinAuth> entities, IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
@@ -74,6 +89,12 @@ public class IssFinAuthProcessHandler(
         }
     }
 
+    /// <summary>
+    /// Загружает и унифицирует информацию о счетах для сущностей IssFinAuth.
+    /// </summary>
+    /// <param name="entities">Список сущностей IssFinAuth.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyAccountsInfoAsync(List<IssFinAuth> entities, IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
@@ -95,6 +116,12 @@ public class IssFinAuthProcessHandler(
         }
     }
 
+    /// <summary>
+    /// Загружает и унифицирует обёртки лимитов для сущностей IssFinAuth.
+    /// </summary>
+    /// <param name="entities">Список сущностей IssFinAuth.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyLimitWrappersAsync(List<IssFinAuth> entities, IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
     {
@@ -111,6 +138,12 @@ public class IssFinAuthProcessHandler(
         }
     }
 
+    /// <summary>
+    /// Обрабатывает сущности IssFinAuth, включая обновление лимитов деталей, и сохраняет их в базе данных.
+    /// </summary>
+    /// <param name="entities">Список сущностей IssFinAuth.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task ProcessEntitiesAsync(
         List<IssFinAuth> entities,
         IUnitOfWork unitOfWork,
@@ -134,6 +167,12 @@ public class IssFinAuthProcessHandler(
         }
     }
 
+    /// <summary>
+    /// Загружает и унифицирует детали для сущностей IssFinAuth.
+    /// </summary>
+    /// <param name="entities">Список сущностей IssFinAuth.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyDetailsAsync(
         List<IssFinAuth> entities,
         IUnitOfWork unitOfWork,
@@ -163,6 +202,12 @@ public class IssFinAuthProcessHandler(
         }
     }
 
+    /// <summary>
+    /// Загружает и унифицирует информацию о мерчанте для сущностей IssFinAuth.
+    /// </summary>
+    /// <param name="entities">Список сущностей IssFinAuth.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyMerchantAsync(
         List<IssFinAuth> entities,
         IUnitOfWork unitOfWork,
@@ -192,6 +237,12 @@ public class IssFinAuthProcessHandler(
         }
     }
 
+    /// <summary>
+    /// Обрабатывает лимиты деталей IssFinAuth.
+    /// </summary>
+    /// <param name="issFinAuthDetails">Детали IssFinAuth.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task ProcessDetailsLimitsAsync(
         IssFinAuthDetails issFinAuthDetails,
         IUnitOfWork unitOfWork,
@@ -224,6 +275,12 @@ public class IssFinAuthProcessHandler(
         }
     }
 
+    /// <summary>
+    /// Загружает и унифицирует лимиты для сущностей IssFinAuth.
+    /// </summary>
+    /// <param name="entities">Список сущностей IssFinAuth.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyLimitsAsync(
         List<IssFinAuth> entities,
         IUnitOfWork unitOfWork,

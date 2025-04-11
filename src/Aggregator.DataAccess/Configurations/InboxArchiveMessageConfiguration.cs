@@ -4,12 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aggregator.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация сущности <see cref="InboxArchiveMessage"/> для Entity Framework.
+/// </summary>
+/// <remarks>
+/// Определяет настройки таблицы, первичный ключ, свойства и связи для сущности <see cref="InboxArchiveMessage"/>.
+/// </remarks>
 public class InboxArchiveMessageConfiguration : IEntityTypeConfiguration<InboxArchiveMessage>
 {
     /// <summary>
-    /// Конфигурация InboxMessage
+    /// Настраивает конфигурацию для сущности <see cref="InboxArchiveMessage"/>.
     /// </summary>
-    /// <param name="builder"></param>
+    /// <param name="builder">Построитель конфигурации для сущности <see cref="InboxArchiveMessage"/>.</param>
     public void Configure(EntityTypeBuilder<InboxArchiveMessage> builder)
     {
         builder.ToTable("InboxArchiveMessages");

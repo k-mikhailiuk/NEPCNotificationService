@@ -1,5 +1,8 @@
 namespace Aggregator.DTOs.AcsOtp;
 
+/// <summary>
+/// Детали разовых паролей, отправляемых ACS банка-эмитента карты
+/// </summary>
 public class AggregatorAcsOtpDetailsDto
 {
     /// <summary>

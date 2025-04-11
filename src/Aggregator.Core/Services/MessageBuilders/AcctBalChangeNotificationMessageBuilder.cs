@@ -14,6 +14,10 @@ using OptionsConfiguration;
 
 namespace Aggregator.Core.Services.MessageBuilders;
 
+/// <summary>
+/// Построитель сообщений уведомлений для AcctBalChange.
+/// Формирует объект <see cref="NotificationMessage"/> на основе уведомления AcctBalChange, используя локализованный шаблон сообщения.
+/// </summary>
 public class AcctBalChangeNotificationMessageBuilder(
     IOptions<NotificationMessageOptions> notificationMessageOptions,
     IServiceProvider serviceProvider,
@@ -22,6 +26,12 @@ public class AcctBalChangeNotificationMessageBuilder(
 {
     private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
 
+    /// <summary>
+    /// Асинхронно строит список сообщений уведомлений для заданных идентификаторов уведомлений AcctBalChange.
+    /// </summary>
+    /// <param name="notificationIds">Список идентификаторов уведомлений AcctBalChange.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Список объектов <see cref="NotificationMessage"/>.</returns>
     public async Task<List<NotificationMessage>> BuildNotificationAsync(List<long> notificationIds,
         CancellationToken cancellationToken)
     {
@@ -98,6 +108,13 @@ public class AcctBalChangeNotificationMessageBuilder(
         return list;
     }
     
+    /// <summary>
+    /// Асинхронно получает идентификатор клиента по номеру счета.
+    /// </summary>
+    /// <param name="accountId">Номер счета.</param>
+    /// <param name="context">Контекст базы данных <see cref="AggregatorDbContext"/>.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Идентификатор клиента или null, если не найден.</returns>
     private static async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();

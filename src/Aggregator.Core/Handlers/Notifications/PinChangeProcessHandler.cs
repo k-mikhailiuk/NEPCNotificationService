@@ -9,9 +9,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
 
+/// <summary>
+/// Обработчик команды уведомления для изменения PIN-кода.
+/// </summary>
 public class PinChangeProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
     : IRequestHandler<ProcessNotificationCommand<AggregatorPinChangeDto>, List<long>>
 {
+    /// <summary>
+    /// Обрабатывает команду уведомления, выполняет маппинг DTO в сущности, загружает и унифицирует детали,
+    /// объединяет расширения и сохраняет сущности в базу данных.
+    /// </summary>
+    /// <param name="request">Команда уведомления с коллекцией DTO для изменения PIN-кода.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Список идентификаторов уведомлений.</returns>
     public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorPinChangeDto> request,
         CancellationToken cancellationToken)
     {
@@ -34,6 +44,12 @@ public class PinChangeProcessHandler(NotificationEntityMapperFactory mapperFacto
         return entities.Select(x=>x.NotificationId).ToList();
     }
 
+    /// <summary>
+    /// Обрабатывает сущности PinChange, добавляя их в базу данных, если они отсутствуют.
+    /// </summary>
+    /// <param name="entities">Список сущностей изменения PIN-кода.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task ProcessEntitiesAsync(
         List<PinChange> entities,
         IUnitOfWork unitOfWork,
@@ -54,6 +70,12 @@ public class PinChangeProcessHandler(NotificationEntityMapperFactory mapperFacto
         }
     }
 
+    /// <summary>
+    /// Загружает и унифицирует детали для сущностей PinChange.
+    /// </summary>
+    /// <param name="entities">Список сущностей изменения PIN-кода.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static async Task PreloadAndUnifyDetailsAsync(
         List<PinChange> entities,
         IUnitOfWork unitOfWork,

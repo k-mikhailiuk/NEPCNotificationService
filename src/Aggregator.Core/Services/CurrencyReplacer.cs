@@ -5,8 +5,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services;
 
+/// <summary>
+/// Реализация интерфейса <see cref="ICurrencyReplacer"/> для замены идентификатора валюты на соответствующий символ.
+/// </summary>
 public class CurrencyReplacer(IServiceProvider serviceProvider) : ICurrencyReplacer
 {
+    /// <summary>
+    /// Асинхронно заменяет валютный код на строковое представление валютного символа.
+    /// </summary>
+    /// <param name="currency">Строка с валютным кодом.</param>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>Строку, представляющую валютный символ, или пустую строку, если замена не выполнена.</returns>
     public async Task<string?> ReplaceCurrencyAsync(string currency, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(currency))

@@ -8,8 +8,12 @@ using NotificationService.DataAccess;
 
 namespace NotificationService.Core.Services;
 
+/// <summary>
+/// Сервис для сохранения истории отправленных push-уведомлений в базу данных.
+/// </summary>
 public class NotificationHistorySaver(IServiceProvider serviceProvider) : INotificationHistorySaver
 {
+    /// <inheritdoc/>
     public async Task SaveAsync(NotificationMessage message, CancellationToken cancellationToken = default)
     {
         using var scope = serviceProvider.CreateScope();
@@ -102,6 +106,13 @@ public class NotificationHistorySaver(IServiceProvider serviceProvider) : INotif
         await command.ExecuteNonQueryAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Выполняет асинхронный запрос к базе данных для получения LoginID по CustomerID.
+    /// </summary>
+    /// <param name="customerId">Идентификатор клиента (CustomerID).</param>
+    /// <param name="connection">Открытое подключение к базе данных.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>LoginID клиента, если найден; иначе <c>null</c>.</returns>
     private static async Task<int?> GetLoginIdAsync(long customerId, DbConnection connection,
         CancellationToken cancellationToken)
     {

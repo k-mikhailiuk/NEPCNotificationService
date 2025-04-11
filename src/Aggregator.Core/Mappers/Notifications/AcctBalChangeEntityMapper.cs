@@ -10,9 +10,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
+/// <summary>
+/// Маппер для преобразования DTO уведомления об изменении баланса счета (<see cref="AggregatorAcctBalChangeDto"/>) в сущность <see cref="AcctBalChange"/>.
+/// </summary>
 public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger)
     : INotificationMapper<AcctBalChange, AggregatorAcctBalChangeDto>
 {
+    /// <summary>
+    /// Преобразует DTO уведомления <see cref="AggregatorAcctBalChangeDto"/> в сущность <see cref="AcctBalChange"/>.
+    /// </summary>
+    /// <param name="dto">Объект DTO уведомления об изменении баланса счета.</param>
+    /// <returns>Сущность <see cref="AcctBalChange"/> с заполненными данными.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если входной параметр <paramref name="dto"/> равен null.</exception>
     public AcctBalChange Map(AggregatorAcctBalChangeDto dto)
     {
         if (dto == null)
@@ -36,6 +45,11 @@ public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger
         return notification;
     }
 
+    /// <summary>
+    /// Преобразует DTO деталей уведомления в сущность <see cref="AcctBalChangeDetails"/>.
+    /// </summary>
+    /// <param name="dto">Объект DTO деталей уведомления.</param>
+    /// <returns>Сущность <see cref="AcctBalChangeDetails"/> с заполненными данными или null, если dto равен null.</returns>
     private AcctBalChangeDetails MapDetails(AggregatorAcctBalChangeDetailsDto dto)
     {
         if (dto == null)
@@ -74,6 +88,12 @@ public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger
         };
     }
     
+    /// <summary>
+    /// Преобразует список DTO информации о счетах в список сущностей <see cref="AccountsInfo"/>.
+    /// </summary>
+    /// <param name="dto">Список DTO объектов информации о счетах.</param>
+    /// <param name="notificationId">Идентификатор уведомления.</param>
+    /// <returns>Список сущностей <see cref="AccountsInfo"/> или null, если список dto пуст или равен null.</returns>
      private List<AccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto, long notificationId)
     {
         if (dto == null || dto.Count == 0)

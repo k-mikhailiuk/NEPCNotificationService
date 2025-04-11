@@ -3,8 +3,17 @@ using FluentValidation;
 
 namespace Aggregator.Core.Validators;
 
+/// <summary>
+/// Валидатор для команды DTO объекта AggregatorTransaction.
+/// </summary>
+/// <remarks>
+/// Устанавливает правила валидации для свойств объекта AggregatorTransactionDto.
+/// </remarks>
 public class AggregatorTransactionDtoCommandValidator : AbstractValidator<AggregatorTransactionDto>
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр <see cref="AggregatorTransactionDtoCommandValidator"/> и задаёт правила валидации.
+    /// </summary>
     public AggregatorTransactionDtoCommandValidator()
     {
         RuleFor(x => x.Id)
@@ -27,10 +36,10 @@ public class AggregatorTransactionDtoCommandValidator : AbstractValidator<Aggreg
         RuleFor(x => x.MerchantInfo)
             .SetValidator(new AggregatorMerchantInfoDtoCommandValidator())
             .When(x => x.MerchantInfo != null);
-        
-        RuleFor(x=>x.CorrespondingAccount)
+
+        RuleFor(x => x.CorrespondingAccount)
             .Length(4)
-            .When(x=> !string.IsNullOrEmpty(x.CorrespondingAccount))
+            .When(x => !string.IsNullOrEmpty(x.CorrespondingAccount))
             .WithMessage("Corresponding account is not valid");
     }
 }

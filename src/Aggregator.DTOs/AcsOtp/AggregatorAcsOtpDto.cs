@@ -2,6 +2,9 @@ using Aggregator.DTOs.Abstractions;
 
 namespace Aggregator.DTOs.AcsOtp;
 
+/// <summary>
+/// Уведомление о разовых паролях, отправляемых ACS банка-эмитента карты
+/// </summary>
 public class AggregatorAcsOtpDto : INotificationAggregatorDto
 {
     /// <summary>

@@ -4,8 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ControlPanel.DataAccess.DataSeeders;
 
+/// <summary>
+/// Класс для посева данных директорий текстов уведомлений.
+/// Содержит методы для заполнения базы данных значениями текстовых директорий уведомлений,
+/// как с параметризованными, так и без параметров, для различных типов уведомлений.
+/// </summary>
 public class NotificationMessageTextDirectoriesDataSeeder(ControlPanelDbContext context)
 {
+    /// <summary>
+    /// Массив типов операций для уведомлений с параметрами для IssFinAuth и Unhold.
+    /// </summary>
     private static readonly NotificationOperationType[] UnholdIssFinAuthOperationTypes =
     [
         NotificationOperationType.UTIL_PAYMENT,
@@ -44,6 +52,9 @@ public class NotificationMessageTextDirectoriesDataSeeder(ControlPanelDbContext 
         NotificationOperationType.D2C_PAYMENT
     ];
     
+    /// <summary>
+    /// Массив типов операций для уведомлений типа AcqFinAuth.
+    /// </summary>
     private static readonly NotificationOperationType[] AcqFinAuthOperationTypes =
     [
         NotificationOperationType.UTIL_PAYMENT,
@@ -64,12 +75,20 @@ public class NotificationMessageTextDirectoriesDataSeeder(ControlPanelDbContext 
         NotificationOperationType.P2P_CREDIT,
     ];
     
+    /// <summary>
+    /// Массив типов операций для уведомлений типа AcctBalChange.
+    /// </summary>
     private static readonly NotificationOperationType[] AcctBalChangeOperationTypes =
     [
         NotificationOperationType.DECREASE_AUTHORIZATION_AMOUNT,
         NotificationOperationType.INCREASE_AUTHORIZATION_AMOUNT
     ];
 
+    /// <summary>
+    /// Метод для посева текстов уведомлений в базу данных.
+    /// Вызывает методы для заполнения директорий текстов уведомлений с параметрами и без.
+    /// </summary>
+    /// <returns>Задача, представляющая асинхронную операцию посева данных.</returns>
     public async Task SeedNotificationTextAsync()
     {
         await SeedParameterizedNotificationTextsAsync(
@@ -100,6 +119,14 @@ public class NotificationMessageTextDirectoriesDataSeeder(ControlPanelDbContext 
             NotificationMessageType.AcsOtp);
     }
 
+    /// <summary>
+    /// Посев параметризованных текстов уведомлений для заданного типа уведомления и набора типов операций.
+    /// Проверяет существование записей с заданным типом операции и добавляет недостающие.
+    /// </summary>
+    /// <param name="type">Тип уведомления.</param>
+    /// <param name="operationTypes">Массив типов операций, для которых необходимо создать записи.</param>
+    /// <param name="cancellationToken">Токен для отмены асинхронной операции.</param>
+    /// <returns>Задача, представляющая асинхронную операцию посева данных.</returns>
     private async Task SeedParameterizedNotificationTextsAsync(
         NotificationMessageType type,
         NotificationOperationType[] operationTypes,
@@ -126,6 +153,13 @@ public class NotificationMessageTextDirectoriesDataSeeder(ControlPanelDbContext 
         }
     }
 
+    /// <summary>
+    /// Посев непараметризованного текста уведомления для заданного типа уведомления.
+    /// Проверяет, существует ли запись без типа операции, и если нет, создает новую.
+    /// </summary>
+    /// <param name="type">Тип уведомления.</param>
+    /// <param name="cancellationToken">Токен для отмены асинхронной операции.</param>
+    /// <returns>Задача, представляющая асинхронную операцию посева данных.</returns>
     private async Task SeedNonParameterizedNotificationTextAsync(
         NotificationMessageType type,
         CancellationToken cancellationToken = default)

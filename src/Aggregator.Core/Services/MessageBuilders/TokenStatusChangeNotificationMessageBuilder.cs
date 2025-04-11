@@ -14,6 +14,12 @@ using OptionsConfiguration;
 
 namespace Aggregator.Core.Services.MessageBuilders;
 
+/// <summary>
+/// Построитель уведомлений для операций изменения статуса токена.
+/// </summary>
+/// <remarks>
+/// Реализует интерфейс INotificationMessageBuilder для формирования уведомлений по операциям TokenStatusChange.
+/// </remarks>
 public class TokenStatusChangeNotificationMessageBuilder(
     IOptions<NotificationMessageOptions> notificationMessageOptions,
     IServiceProvider serviceProvider,
@@ -22,6 +28,14 @@ public class TokenStatusChangeNotificationMessageBuilder(
 {
     private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
 
+    /// <summary>
+    /// Асинхронно формирует список уведомлений по заданным идентификаторам.
+    /// </summary>
+    /// <param name="notificationIds">Список идентификаторов уведомлений.</param>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>Список сформированных уведомлений.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если unitOfWork или context равны null.</exception>
+    /// <exception cref="NullReferenceException">Выбрасывается, если текст уведомления не найден.</exception>
     public async Task<List<NotificationMessage>> BuildNotificationAsync(List<long> notificationIds,
         CancellationToken cancellationToken)
     {
@@ -96,7 +110,14 @@ public class TokenStatusChangeNotificationMessageBuilder(
         return list;
     }
 
-    private async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context,
+    /// <summary>
+    /// Асинхронно получает идентификатор клиента по идентификатору аккаунта.
+    /// </summary>
+    /// <param name="accountId">Идентификатор аккаунта (номер карты).</param>
+    /// <param name="context">Контекст базы данных.</param>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>Идентификатор клиента или null, если не найден.</returns>
+    private static async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {
         var connection = context.Database.GetDbConnection();

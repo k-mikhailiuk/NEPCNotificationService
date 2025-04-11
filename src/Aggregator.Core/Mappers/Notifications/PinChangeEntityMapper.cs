@@ -6,9 +6,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
+/// <summary>
+/// Маппер, преобразующий DTO уведомления PinChange (<see cref="AggregatorPinChangeDto"/>) в сущность <see cref="PinChange"/>.
+/// </summary>
 public class PinChangeEntityMapper(ILogger<PinChangeEntityMapper> logger)
     : INotificationMapper<PinChange, AggregatorPinChangeDto>
 {
+    /// <summary>
+    /// Преобразует объект <see cref="AggregatorPinChangeDto"/> в сущность <see cref="PinChange"/>.
+    /// </summary>
+    /// <param name="dto">DTO уведомления изменения PIN-кода.</param>
+    /// <returns>Сущность <see cref="PinChange"/> с заполненными данными.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="dto"/> равен null.</exception>
     public PinChange Map(AggregatorPinChangeDto dto)
     {
         if (dto == null)
@@ -32,6 +41,11 @@ public class PinChangeEntityMapper(ILogger<PinChangeEntityMapper> logger)
         return notification;
     }
 
+    /// <summary>
+    /// Преобразует DTO деталей уведомления (<see cref="AggregatorPinChangeDetailsDto"/>) в сущность <see cref="PinChangeDetails"/>.
+    /// </summary>
+    /// <param name="dto">DTO деталей изменения PIN-кода.</param>
+    /// <returns>Сущность <see cref="PinChangeDetails"/> или null, если dto равен null.</returns>
     private PinChangeDetails MapDetails(AggregatorPinChangeDetailsDto dto)
     {
         if (dto == null)

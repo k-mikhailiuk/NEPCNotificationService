@@ -1,5 +1,8 @@
 namespace DataIngrestorApi.DTOs;
 
+/// <summary>
+/// Параметр расширения
+/// </summary>
 public class ExtensionParametersDto
 {
     /// <summary>

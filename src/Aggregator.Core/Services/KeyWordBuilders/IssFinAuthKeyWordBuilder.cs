@@ -7,9 +7,28 @@ using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
+/// <summary>
+/// Построитель ключевых слов для уведомлений AcqFinAuth.
+/// Генерирует строку с подстановкой значений на основе уведомления и выбранного языка.
+/// </summary>
 public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimitIdReplacer limitIdReplacer)
     : IKeyWordBuilder<IssFinAuth>
 {
+    /// <summary>
+    /// Асинхронно формирует строку ключевых слов для уведомления AcqFinAuth.
+    /// </summary>
+    /// <param name="message">
+    /// Исходное сообщение с шаблонами для подстановки, например, содержащими маркеры вида {PLACEHOLDER}.
+    /// </param>
+    /// <param name="entity">
+    /// Объект уведомления типа <see cref="IssFinAuth"/> для которого необходимо сгенерировать ключевые слова.
+    /// </param>
+    /// <param name="language">
+    /// Язык, на котором должно быть сгенерировано сообщение.
+    /// </param>
+    /// <returns>
+    /// Асинхронная задача, возвращающая строку с подставленными значениями.
+    /// </returns>
     public async Task<string> BuildKeyWordsAsync(string? message, IssFinAuth entity, Language language)
     {
         var reversalLanguageMap = new Dictionary<Language, string>
@@ -72,6 +91,15 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
         return KeyWordReplacer.ReplacePlaceholders(message, replacements);
     }
 
+    /// <summary>
+    /// Асинхронно формирует строку описания лимита на основе его данных и выбранного языка.
+    /// </summary>
+    /// <param name="limit">Объект лимита.</param>
+    /// <param name="language">Язык для генерации описания.</param>
+    /// <returns>
+    /// Асинхронная задача, возвращающая строку с описанием лимита.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Выбрасывается, если язык не поддерживается.</exception>
     private async Task<string> GetLimitMessageAsync(Limit limit, Language language)
     {
         var limitId = await limitIdReplacer.ReplaceLimitIdAsync(limit.LimitId, language);

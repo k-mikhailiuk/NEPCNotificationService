@@ -15,6 +15,12 @@ using OptionsConfiguration;
 
 namespace Aggregator.Core.Services.MessageBuilders;
 
+/// <summary>
+/// Построитель уведомлений для операций IssFinAuth.
+/// </summary>
+/// <remarks>
+/// Класс реализует интерфейс INotificationMessageBuilder для формирования уведомлений по операциям IssFinAuth.
+/// </remarks>
 public class IssFinAuthNotificationMessageBuilder(
     IOptions<NotificationMessageOptions> notificationMessageOptions,
     IServiceProvider serviceProvider,
@@ -23,6 +29,13 @@ public class IssFinAuthNotificationMessageBuilder(
 {
     private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
 
+    /// <summary>
+    /// Асинхронно формирует список уведомлений по заданным идентификаторам.
+    /// </summary>
+    /// <param name="notificationIds">Список идентификаторов уведомлений.</param>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>Список сформированных уведомлений.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если unitOfWork или context равны null.</exception>
     public async Task<List<NotificationMessage>> BuildNotificationAsync(List<long> notificationIds,
         CancellationToken cancellationToken)
     {
@@ -49,7 +62,6 @@ public class IssFinAuthNotificationMessageBuilder(
                 x => x.Details,
                 x => x.CardInfo,
                 x => x.MerchantInfo);
-
 
         foreach (var message in messages)
         {
@@ -113,6 +125,17 @@ public class IssFinAuthNotificationMessageBuilder(
         return list;
     }
 
+    /// <summary>
+    /// Присоединяет лимиты для информации по карте и аккаунтам.
+    /// </summary>
+    /// <param name="message">Сообщение IssFinAuth, содержащее информацию по карте и аккаунтам.</param>
+    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к репозиториям.</param>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>
+    /// Кортеж, содержащий список обёрток лимитов для информации по карте (ciWrapper)
+    /// и обновлённый список информации по аккаунтам (accountsInfo).
+    /// </returns>
+    /// <exception cref="InvalidOperationException">Выбрасывается, если лимит не найден.</exception>
     private static async Task<(List<CardInfoLimitWrapper> ciWrapper, List<AccountsInfo> accountsInfo)>
         AttachLimitsAsync(IssFinAuth message, IUnitOfWork unitOfWork, CancellationToken cancellationToken)
     {
@@ -150,6 +173,13 @@ public class IssFinAuthNotificationMessageBuilder(
         return (cardInfoLimitWrappers, message.AccountsInfo);
     }
 
+    /// <summary>
+    /// Асинхронно получает идентификатор клиента по идентификатору аккаунта.
+    /// </summary>
+    /// <param name="accountId">Идентификатор аккаунта.</param>
+    /// <param name="context">Контекст базы данных.</param>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>Идентификатор клиента или null, если не найден.</returns>
     private static async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context,
         CancellationToken cancellationToken)
     {

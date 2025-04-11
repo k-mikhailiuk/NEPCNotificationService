@@ -4,8 +4,18 @@ using FluentValidation;
 
 namespace Aggregator.Core.Validators.Notifications;
 
+/// <summary>
+/// Валидатор для DTO объекта действий пользователя (OwiUserAction).
+/// </summary>
+/// <remarks>
+/// Класс устанавливает правила валидации для свойств объекта <see cref="AggregatorOwiUserActionDto"/>,
+/// включая проверку вложенных объектов Details, CardInfo и коллекции Extensions.
+/// </remarks>
 public class AggregatorOwiUserActionDtoCommandValidator : AbstractValidator<AggregatorOwiUserActionDto>
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр <see cref="AggregatorOwiUserActionDtoCommandValidator"/> и задаёт правила валидации.
+    /// </summary>
     public AggregatorOwiUserActionDtoCommandValidator()
     {
         RuleFor(x => x.Id)

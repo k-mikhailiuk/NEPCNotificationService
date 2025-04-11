@@ -7,9 +7,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
+/// <summary>
+/// Маппер, преобразующий DTO уведомления AcqFinAuth (<see cref="AggregatorAcqFinAuthDto"/>) в сущность <see cref="AcqFinAuth"/>.
+/// </summary>
 public class AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
     : INotificationMapper<AcqFinAuth, AggregatorAcqFinAuthDto>
 {
+    /// <summary>
+    /// Преобразует объект <see cref="AggregatorAcqFinAuthDto"/> в сущность <see cref="AcqFinAuth"/>.
+    /// </summary>
+    /// <param name="dto">DTO уведомления AcqFinAuth.</param>
+    /// <returns>Сущность <see cref="AcqFinAuth"/> с заполненными данными.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="dto"/> равен null.</exception>
     public AcqFinAuth Map(AggregatorAcqFinAuthDto dto)
     {
         if (dto == null)
@@ -32,6 +41,11 @@ public class AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
         return notification;
     }
 
+    /// <summary>
+    /// Преобразует DTO деталей AcqFinAuth (<see cref="AggregatorAcqFinAuthDetailsDto"/>) в сущность <see cref="AcqFinAuthDetails"/>.
+    /// </summary>
+    /// <param name="dto">DTO деталей уведомления.</param>
+    /// <returns>Сущность <see cref="AcqFinAuthDetails"/> или null, если dto равен null.</returns>
     private AcqFinAuthDetails MapDetails(AggregatorAcqFinAuthDetailsDto dto)
     {
         if (dto == null)
@@ -40,7 +54,8 @@ public class AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
             return null;
         }
 
-        logger.LogInformation("Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}", dto.Id, dto.TransactionTime);
+        logger.LogInformation("Mapping Details: Id={dto.Id}, TransactionTime={dto.TransactionTime}", dto.Id,
+            dto.TransactionTime);
 
         return new AcqFinAuthDetails
         {
@@ -57,7 +72,7 @@ public class AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
             ResponseCode = dto.ResponseCode,
             ApprovalCode = dto.ApprovalCode,
             Rrn = dto.RRN,
-            AcqFee =  ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AcqFee>(dto.AcqFee),
+            AcqFee = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AcqFee>(dto.AcqFee),
             AcqFeeDirection = dto.AcqFeeDirection,
             ConvMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<ConvMoney>(dto.ConvMoney),
             PhysTerm = Convert.ToBoolean(dto.PhysTerm),

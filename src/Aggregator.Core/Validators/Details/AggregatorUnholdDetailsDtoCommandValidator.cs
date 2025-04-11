@@ -3,8 +3,17 @@ using FluentValidation;
 
 namespace Aggregator.Core.Validators.Details;
 
+/// <summary>
+/// Валидатор для команды DTO объекта деталей разблокировки (Unhold).
+/// </summary>
+/// <remarks>
+/// Класс устанавливает правила валидации для свойств объекта <see cref="AggregatorUnholdDetailsDto"/>.
+/// </remarks>
 public class AggregatorUnholdDetailsDtoCommandValidator : AbstractValidator<AggregatorUnholdDetailsDto>
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр <see cref="AggregatorUnholdDetailsDtoCommandValidator"/> и задаёт правила валидации.
+    /// </summary>
     public AggregatorUnholdDetailsDtoCommandValidator()
     {
         RuleFor(x => x.Id)
@@ -34,8 +43,8 @@ public class AggregatorUnholdDetailsDtoCommandValidator : AbstractValidator<Aggr
         RuleFor(x => x.UnholdDirection)
             .Must(dir => dir is 'C' or 'D')
             .WithMessage("UnholdDirection is not valid");
-        
-        RuleFor(x=>x.UnholdMoney)
+
+        RuleFor(x => x.UnholdMoney)
             .SetValidator(new AggregatorMoneyDtoCommandValidator());
 
         RuleFor(x => x.LocalTime)
@@ -69,8 +78,8 @@ public class AggregatorUnholdDetailsDtoCommandValidator : AbstractValidator<Aggr
             .GreaterThan(0)
             .When(x => x.SvTrace != null)
             .WithMessage("SvTrace must be greater than 0");
-        
-        RuleFor(x=>x.WalletProvider)
+
+        RuleFor(x => x.WalletProvider)
             .SetValidator(new AggregatorWalletProviderDtoCommandValidator())
             .When(x => x.WalletProvider is not null);
 
@@ -78,7 +87,7 @@ public class AggregatorUnholdDetailsDtoCommandValidator : AbstractValidator<Aggr
             .Matches("^[0-9]{13,19}$")
             .When(x => !string.IsNullOrEmpty(x.Dpan))
             .WithMessage("Dpan is not valid");
-        
+
         RuleFor(x => x.CardIdentifier)
             .NotEmpty()
             .WithMessage("CardIdentifier must be not empty");

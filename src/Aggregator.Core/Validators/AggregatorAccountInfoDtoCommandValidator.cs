@@ -3,8 +3,17 @@ using FluentValidation;
 
 namespace Aggregator.Core.Validators;
 
+/// <summary>
+/// Валидатор для команды DTO объекта AggregatorAccountInfo.
+/// </summary>
+/// <remarks>
+/// Класс устанавливает правила валидации для свойств объекта AggregatorAccountInfoDto.
+/// </remarks>
 public class AggregatorAccountInfoDtoCommandValidator : AbstractValidator<AggregatorAccountInfoDto>
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр <see cref="AggregatorAccountInfoDtoCommandValidator"/> и задаёт правила валидации.
+    /// </summary>
     public AggregatorAccountInfoDtoCommandValidator()
     {
         RuleFor(x => x.Id)

@@ -3,8 +3,17 @@ using FluentValidation;
 
 namespace Aggregator.Core.Validators.Details;
 
+/// <summary>
+/// Валидатор для команды DTO объекта деталей авторизации IssFinAuth.
+/// </summary>
+/// <remarks>
+/// Устанавливает правила валидации для свойств объекта AggregatorIssFinAuthDetailsDto.
+/// </remarks>
 public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<AggregatorIssFinAuthDetailsDto>
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр <see cref="AggregatorIssFinAuthDetailsDtoCommandValidator"/> и задаёт правила валидации.
+    /// </summary>
     public AggregatorIssFinAuthDetailsDtoCommandValidator()
     {
         RuleFor(x => x.Id)
@@ -28,7 +37,7 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .MaximumLength(32)
             .When(x => !string.IsNullOrEmpty(x.AccountId))
             .WithMessage("accountId length must be between 1 and 32");
-        
+
         RuleFor(x => x.AuthMoney)
             .SetValidator(new AggregatorMoneyDtoCommandValidator());
 
@@ -36,18 +45,18 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .Must(dir => dir is 'C' or 'D')
             .When(x => x.AuthDirection != null)
             .WithMessage("authDirection is invalid");
-        
+
         RuleFor(x => x.ConvMoney)
             .SetValidator(new AggregatorMoneyDtoCommandValidator())
-            .When(x=>x.ConvMoney is not null);
-        
+            .When(x => x.ConvMoney is not null);
+
         RuleFor(x => x.AccountBalance)
             .SetValidator(new AggregatorMoneyDtoCommandValidator())
-            .When(x=>x.AccountBalance is not null);
-        
+            .When(x => x.AccountBalance is not null);
+
         RuleFor(x => x.BillingMoney)
             .SetValidator(new AggregatorMoneyDtoCommandValidator())
-            .When(x=>x.BillingMoney is not null);
+            .When(x => x.BillingMoney is not null);
 
         RuleFor(x => x.LocalTime)
             .Matches("^[0-9]{14}$")
@@ -71,10 +80,10 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .Length(12)
             .When(x => !string.IsNullOrEmpty(x.RRN))
             .WithMessage("rrn must be exactly 12 characters");
-        
+
         RuleFor(x => x.AcqFee)
             .SetValidator(new AggregatorMoneyDtoCommandValidator())
-            .When(x=>x.AcqFee is not null);
+            .When(x => x.AcqFee is not null);
 
         RuleFor(x => x.AcqFeeDirection)
             .Must(dir => dir is 'C' or 'D')
@@ -102,7 +111,7 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
 
         RuleFor(x => x.WalletProvider)
             .SetValidator(new AggregatorWalletProviderDtoCommandValidator())
-            .When(x=> x.WalletProvider is not null);
+            .When(x => x.WalletProvider is not null);
 
         RuleForEach(x => x.CheckedLimits)
             .SetValidator(new AggregatorCheckedLimitDtoCommandValidator())
@@ -111,7 +120,7 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
         RuleFor(x => x.AuthMoneyDetails)
             .SetValidator(new AggregatorAuthMoneyDetailsDtoCommandValidator())
             .When(x => x.AuthMoneyDetails is not null);
-        
+
         RuleFor(x => x.CardIdentifier)
             .NotEmpty()
             .WithMessage("CardIdentifier must be not empty");

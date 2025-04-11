@@ -1,25 +1,35 @@
 using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Abstractions.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ControlPanel.DataAccess;
 
+/// <inheritdoc/>
 public class UnitOfWork : IUnitOfWork
 {
     private readonly ControlPanelDbContext _context;
 
+    /// <inheritdoc/>
     public INotificationMessageKeyWordsRepository NotificationMessageKeyWords => _notificationMessageKeyWords.Value;
     private readonly Lazy<INotificationMessageKeyWordsRepository> _notificationMessageKeyWords;
 
+    /// <inheritdoc/>
     public INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories => _notificationMessageTextDirectories.Value;
     private readonly Lazy<INotificationMessageTextDirectoriesRepository> _notificationMessageTextDirectories;
     
+    /// <inheritdoc/>
     public ICurrenciesRepository Currencies => _currencies.Value;
     private readonly Lazy<ICurrenciesRepository> _currencies;
+    
+    /// <inheritdoc/>
     public ILimitIdDescriptionDirectoriesRepository LimitIdDescriptionDirectories => _limitIdDescriptionDirectories.Value;
     private readonly Lazy<ILimitIdDescriptionDirectoriesRepository> _limitIdDescriptionDirectories;
 
+    /// <summary>
+    /// Конструктор, инициализирующий единицу работы.
+    /// </summary>
+    /// <param name="context">Контекст базы данных ControlPanel.</param>
+    /// <param name="serviceProvider">Провайдер сервисов для разрешения зависимостей репозиториев.</param>
     public UnitOfWork(ControlPanelDbContext context, IServiceProvider serviceProvider)
     {
         _context = context;
@@ -37,29 +47,13 @@ public class UnitOfWork : IUnitOfWork
             serviceProvider.GetService<ILimitIdDescriptionDirectoriesRepository>() ?? throw new InvalidOperationException());
     }
 
+    /// <inheritdoc/>
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) =>
         await _context.SaveChangesAsync(cancellationToken);
 
-    public IQueryable<T> FromSql<T>(string sql, params object[] parameters) where T : class
-    {
-        return _context.Set<T>().FromSqlRaw(sql, parameters);
-    }
-
-    public void BeginTransactionAsync()
-    {
-        _context.Database.BeginTransactionAsync();
-    }
-
-    public void CommitTransactionAsync()
-    {
-        _context.Database.CommitTransactionAsync();
-    }
-
-    public void RollbackTransactionAsync()
-    {
-        _context.Database.RollbackTransactionAsync();
-    }
-
+    /// <summary>
+    /// Освобождает ресурсы, используемые контекстом базы данных.
+    /// </summary>
     public void Dispose()
     {
         _context.Dispose();

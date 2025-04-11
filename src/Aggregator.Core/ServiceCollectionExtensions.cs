@@ -27,8 +27,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core;
 
+/// <summary>
+/// Методы расширения для регистрации зависимостей в DI-контейнере.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Регистрирует командные обработчики и связанные сервисы.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddCommands(this IServiceCollection services)
     {
         services.AddSingleton<IMediator, Mediator>();
@@ -65,6 +73,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Регистрирует фабрики для создания команд и построителей сообщений уведомлений.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddFactories(this IServiceCollection services)
     {
         services.AddSingleton<INotificationCommandFactory, NotificationCommandFactory>();
@@ -74,6 +87,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Регистрирует поведения конвейера обработки (pipeline behaviors).
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddBehaviors(this IServiceCollection services)
     {
         services.AddTransient<
@@ -86,6 +104,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Регистрирует валидаторы DTO уведомлений.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddValidators(this IServiceCollection services)
     {
         services.AddTransient<IValidator<AggregatorCardStatusChangeDto>, CardStatusChangeDtoValidator>();
@@ -93,17 +116,27 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    /// <summary>
+    /// Регистрирует мапперы уведомлений.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddMappers(this IServiceCollection services)
     {
         services.Scan(scan => scan
             .FromAssemblyOf<AcqFinAuthEntityMapper>()
-            .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<,>)))
+            .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<, >)))
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
 
         return services;
     }
 
+    /// <summary>
+    /// Регистрирует построители уведомлений, ключевых слов, и связанные сервисы.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddBuilders(this IServiceCollection services)
     {
         services.Scan(scan => scan
@@ -112,7 +145,7 @@ public static class ServiceCollectionExtensions
             .AsImplementedInterfaces()
             .WithTransientLifetime()
         );
-        
+
         services.Scan(scan => scan
             .FromAssemblyOf<IssFinAuthKeyWordBuilder>()
             .AddClasses(classes => classes.AssignableTo(typeof(IKeyWordBuilder<>)))

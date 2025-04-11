@@ -7,8 +7,18 @@ using Common;
 
 namespace Aggregator.Core.Mappers;
 
+/// <summary>
+/// Класс-расширение для безопасного преобразования времени, конвертации денежных значений и маппинга идентификаторов карт и расширений.
+/// </summary>
 public static class ConversionExtensionsHelper
 {
+    /// <summary>
+    /// Безопасно преобразует строку времени в значение <see cref="DateTimeOffset"/> в UTC.
+    /// </summary>
+    /// <param name="time">Строковое представление времени.</param>
+    /// <returns>
+    /// Преобразованное время в UTC; в случае неудачи возвращает <see cref="DateTimeOffset.MinValue"/>.
+    /// </returns>
     public static DateTimeOffset SafeConvertTime(string time)
     {
         try
@@ -22,6 +32,13 @@ public static class ConversionExtensionsHelper
         }
     }
 
+    /// <summary>
+    /// Безопасно преобразует локальное строковое время в значение <see cref="DateTimeOffset"/> в UTC.
+    /// </summary>
+    /// <param name="time">Строковое представление локального времени.</param>
+    /// <returns>
+    /// Преобразованное время в UTC; в случае неудачи возвращает <see cref="DateTimeOffset.MinValue"/>.
+    /// </returns>
     public static DateTimeOffset SafeConvertFromLocalToUtc(string time)
     {
         try
@@ -35,6 +52,16 @@ public static class ConversionExtensionsHelper
         }
     }
     
+    /// <summary>
+    /// Конвертирует DTO-объект денежных средств в сущность, реализующую интерфейс <see cref="ICurrencyAmount"/>.
+    /// </summary>
+    /// <typeparam name="T">
+    /// Тип сущности, реализующей <see cref="ICurrencyAmount"/> и имеющей публичный конструктор.
+    /// </typeparam>
+    /// <param name="moneyDto">DTO-объект, содержащий данные о денежных средствах.</param>
+    /// <returns>
+    /// Сущность типа <typeparamref name="T"/> с заполненными полями <c>Amount</c> и <c>Currency</c>.
+    /// </returns>
     public static T ConvertMoneyDtoToEntity<T>(AggregatorMoneyDto moneyDto) where T : ICurrencyAmount, new()
     {
         var moneyEntity = new T();
@@ -54,6 +81,16 @@ public static class ConversionExtensionsHelper
         return moneyEntity;
     }
 
+    /// <summary>
+    /// Маппит список DTO идентификаторов карт в объект <see cref="CardIdentifier"/>.
+    /// </summary>
+    /// <param name="dto">
+    /// Список DTO-объектов для идентификаторов карт. Может быть null.
+    /// </param>
+    /// <returns>
+    /// Объект <see cref="CardIdentifier"/> с заполненными полями <c>CardIdentifierType</c> и <c>CardIdentifierValue</c>;
+    /// если входной параметр равен null, возвращает объект с обоими значениями равными null.
+    /// </returns>
     public static CardIdentifier MapCardIdentifier(List<AggregatorCardIdentifierDto>? dto)
     {
         if(dto == null)
@@ -74,6 +111,16 @@ public static class ConversionExtensionsHelper
             .FirstOrDefault()!;
     }
     
+    /// <summary>
+    /// Маппит список DTO расширений в список сущностей <see cref="NotificationExtension"/>.
+    /// </summary>
+    /// <param name="dto">Список DTO-объектов для расширений уведомлений.</param>
+    /// <param name="notificationId">Идентификатор уведомления.</param>
+    /// <param name="notificationType">Тип уведомления.</param>
+    /// <returns>
+    /// Список сущностей <see cref="NotificationExtension"/> с заполненными полями.
+    /// Если входной список dto равен null или пуст, выводится сообщение и возвращается null.
+    /// </returns>
     public static List<NotificationExtension> MapExtensions(List<AggregatorExtensionDto> dto, long notificationId, NotificationType notificationType)
     {
         if (dto == null || dto.Count == 0)

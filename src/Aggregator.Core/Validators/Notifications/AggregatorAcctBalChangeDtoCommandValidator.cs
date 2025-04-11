@@ -4,8 +4,18 @@ using FluentValidation;
 
 namespace Aggregator.Core.Validators.Notifications;
 
+/// <summary>
+/// Валидатор для команды DTO объекта изменения баланса счета (AcctBalChange).
+/// </summary>
+/// <remarks>
+/// Устанавливает правила валидации для свойств объекта <see cref="AggregatorAcctBalChangeDto"/>,
+/// включая валидацию вложенных объектов Details, CardInfo, AccountsInfo и Extensions.
+/// </remarks>
 public class AggregatorAcctBalChangeDtoCommandValidator : AbstractValidator<AggregatorAcctBalChangeDto>
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр <see cref="AggregatorAcctBalChangeDtoCommandValidator"/> и задаёт правила валидации.
+    /// </summary>
     public AggregatorAcctBalChangeDtoCommandValidator()
     {
         RuleFor(x => x.Id)
@@ -22,15 +32,15 @@ public class AggregatorAcctBalChangeDtoCommandValidator : AbstractValidator<Aggr
 
         RuleFor(x => x.Details)
             .SetValidator(new AggregatorAcctBalChangeDetailsDtoCommandValidator());
-        
+
         RuleFor(x => x.CardInfo)
             .SetValidator(new AggregatorCardInfoDtoCommandValidator())
             .When(x => x.CardInfo != null);
-        
+
         RuleForEach(x => x.AccountsInfo)
             .SetValidator(new AggregatorAccountInfoDtoCommandValidator());
-        
-        RuleForEach(x=>x.Extensions)
+
+        RuleForEach(x => x.Extensions)
             .SetValidator(new AggregatorExtensionDtoCommandValidator())
             .When(x => x.Extensions != null);
     }

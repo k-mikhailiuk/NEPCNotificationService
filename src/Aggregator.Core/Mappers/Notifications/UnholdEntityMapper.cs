@@ -7,8 +7,17 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers.Notifications;
 
+/// <summary>
+/// Маппер, преобразующий DTO уведомления Unhold (<see cref="AggregatorUnholdDto"/>) в сущность <see cref="Unhold"/>.
+/// </summary>
 public class UnholdEntityMapper(ILogger<UnholdEntityMapper> logger) : INotificationMapper<Unhold, AggregatorUnholdDto>
 {
+    /// <summary>
+    /// Преобразует объект <see cref="AggregatorUnholdDto"/> в сущность <see cref="Unhold"/>.
+    /// </summary>
+    /// <param name="dto">DTO уведомления Unhold.</param>
+    /// <returns>Сущность <see cref="Unhold"/> с заполненными данными.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="dto"/> равен null.</exception>
     public Unhold Map(AggregatorUnholdDto dto)
     {
         if (dto == null)
@@ -32,6 +41,13 @@ public class UnholdEntityMapper(ILogger<UnholdEntityMapper> logger) : INotificat
         return notification;
     }
 
+    /// <summary>
+    /// Преобразует DTO деталей уведомления Unhold (<see cref="AggregatorUnholdDetailsDto"/>) в сущность <see cref="UnholdDetails"/>.
+    /// </summary>
+    /// <param name="dto">DTO деталей уведомления Unhold.</param>
+    /// <returns>
+    /// Сущность <see cref="UnholdDetails"/> с заполненными данными или null, если <paramref name="dto"/> равен null.
+    /// </returns>
     private UnholdDetails MapDetails(AggregatorUnholdDetailsDto dto)
     {
         if (dto == null)

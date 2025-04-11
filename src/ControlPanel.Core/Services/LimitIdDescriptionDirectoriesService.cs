@@ -5,8 +5,10 @@ using ControlPanel.DataAccess.Entities;
 
 namespace ControlPanel.Core.Services;
 
+/// <inheritdoc/>
 public class LimitIdDescriptionDirectoriesService(IUnitOfWork unitOfWork) : ILimitIdDescriptionDirectoriesService
 {
+    /// <inheritdoc/>
     public async Task<List<LimitIdDescriptionDirectory>> GetLimitIdDescriptionDirectoriesAsync(
         CancellationToken cancellationToken)
     {
@@ -15,6 +17,7 @@ public class LimitIdDescriptionDirectoriesService(IUnitOfWork unitOfWork) : ILim
         return limitIdDirectories.ToList();
     }
 
+    /// <inheritdoc/>
     public async Task CreateLimitIdDescription(AddLimitIdDescriptionDto dto, CancellationToken cancellationToken)
     {
         var limitIdDescription = LimitIdDescriptionDirectory.Create(dto.LimitCode, dto.Name, dto.DescriptionRu, dto.DescriptionKg, dto.DescriptionEn);
@@ -23,6 +26,7 @@ public class LimitIdDescriptionDirectoriesService(IUnitOfWork unitOfWork) : ILim
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
     public async Task EditLimitIdDescription(EditLimitIdDescriptionDto dto, CancellationToken cancellationToken)
     {
         var limitIdDescription = await unitOfWork.LimitIdDescriptionDirectories.GetByIdAsync(dto.Id, cancellationToken);
@@ -39,6 +43,7 @@ public class LimitIdDescriptionDirectoriesService(IUnitOfWork unitOfWork) : ILim
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
+    /// <inheritdoc/>
     public async Task DeleteLimitIdDescription(int id, CancellationToken cancellationToken)
     {
         var limitIdDescription = await unitOfWork.LimitIdDescriptionDirectories.GetByIdAsync(id, cancellationToken);

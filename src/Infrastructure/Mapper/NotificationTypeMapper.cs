@@ -20,8 +20,15 @@ using Aggregator.DTOs.Unhold;
 
 namespace Mapper;
 
+/// <summary>
+/// Содержит отображения типов уведомлений на соответствующие DTO и Entity типы.
+/// Используется для сопоставления типов уведомлений с их моделями в системе агрегатора.
+/// </summary>
 public static class NotificationTypeMapper
 {
+    /// <summary>
+    /// Словарь для отображения значения перечисления <see cref="NotificationType"/> на соответствующий тип DTO.
+    /// </summary>
     public static readonly Dictionary<NotificationType, Type> EnumAggregatorTypeMapping = new()
     {
         { NotificationType.IssFinAuth, typeof(AggregatorIssFinAuthDto) },
@@ -35,6 +42,9 @@ public static class NotificationTypeMapper
         { NotificationType.AcsOtp, typeof(AggregatorAcsOtpDto) }
     };
     
+    /// <summary>
+    /// Словарь для отображения типа DTO на соответствующий тип Entity (модель базы данных).
+    /// </summary>
     public static readonly Dictionary<Type, Type> AggregatorTypeEntityTypeMapping = new()
     {
         { typeof(AggregatorIssFinAuthDto), typeof(IssFinAuth) },

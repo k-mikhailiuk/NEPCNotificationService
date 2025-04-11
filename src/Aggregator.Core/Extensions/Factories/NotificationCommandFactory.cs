@@ -13,8 +13,27 @@ using MediatR;
 
 namespace Aggregator.Core.Extensions.Factories;
 
+/// <summary>
+/// Фабрика команд уведомлений.
+/// </summary>
+/// <remarks>
+/// Данный класс реализует интерфейс <see cref="INotificationCommandFactory"/> и предоставляет
+/// возможность создания команды уведомлений на основе типа переданного списка уведомлений.
+/// </remarks>
 public class NotificationCommandFactory : INotificationCommandFactory
 {
+    /// <summary>
+    /// Создаёт команду уведомлений на основе переданного списка уведомлений.
+    /// </summary>
+    /// <param name="notifications">
+    /// Список уведомлений, для которых необходимо создать команду. Все уведомления должны быть одного типа.
+    /// </param>
+    /// <returns>
+    /// Команда, реализующая <see cref="IRequest{TResponse}"/>, которая при выполнении возвращает список идентификаторов.
+    /// </returns>
+    /// <exception cref="NotSupportedException">
+    /// Выбрасывается, если тип уведомления не поддерживается.
+    /// </exception>
     public IRequest<List<long>> CreateCommand(List<object> notifications)
     {
         var notificationType = notifications.First().GetType();

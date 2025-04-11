@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.DataAccess.Entities.OwnedEntities;
 
+/// <summary>
+/// Информация о мерчанте
+/// </summary>
 [Owned]
 public class AcsOtpMerchantInfo
 {

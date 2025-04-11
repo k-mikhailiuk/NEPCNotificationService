@@ -1,5 +1,8 @@
 namespace Aggregator.DTOs.AcsOtp;
 
+/// <summary>
+/// Информация о разовом пароле
+/// </summary>
 public class AggregatorOtpInfo
 {
     /// <summary>

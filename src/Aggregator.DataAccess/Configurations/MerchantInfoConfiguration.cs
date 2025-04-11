@@ -4,14 +4,24 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aggregator.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация сущности <see cref="MerchantInfo"/> для Entity Framework.
+/// </summary>
+/// <remarks>
+/// Определяет настройки таблицы, первичный ключ, свойства и связи для сущности <see cref="MerchantInfo"/>.
+/// </remarks>
 public class MerchantInfoConfiguration : IEntityTypeConfiguration<MerchantInfo>
 {
+    /// <summary>
+    /// Настраивает конфигурацию для сущности <see cref="MerchantInfo"/>.
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации для сущности <see cref="MerchantInfo"/>.</param>
     public void Configure(EntityTypeBuilder<MerchantInfo> builder)
     {
         builder.ToTable("MerchantInfos");
-        
+
         builder.HasKey(x => x.Id);
-        
+
         builder.Property(x => x.MerchantId).IsRequired(false);
         builder.Property(x => x.Mcc).IsRequired().HasMaxLength(4);
         builder.Property(x => x.TerminalId).IsRequired(false).HasMaxLength(8);

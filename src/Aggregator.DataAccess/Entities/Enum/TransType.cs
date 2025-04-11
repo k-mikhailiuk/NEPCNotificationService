@@ -144,7 +144,7 @@ public enum TransType
         "Cash withdrawal from a cashier terminal")]
     POS_CASH_ADVANCE_PVN = 777,
 
-    [MultiLanguageDescription("P2P  (перевод карта-карта)", "P2P (картадан картага трансфер)",
+    [MultiLanguageDescription("P2P (перевод карта-карта)", "P2P (картадан картага трансфер)",
         "P2P (card-to-card transfer)")]
     P2P_DEBIT = 781,
 

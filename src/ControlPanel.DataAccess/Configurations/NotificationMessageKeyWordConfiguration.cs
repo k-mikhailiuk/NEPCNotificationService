@@ -4,8 +4,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ControlPanel.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация сущности NotificationMessageKeyWord.
+/// </summary>
 public class NotificationMessageKeyWordConfiguration : IEntityTypeConfiguration<NotificationMessageKeyWord>
 {
+    /// <summary>
+    /// Настраивает таблицу и свойства для сущности NotificationMessageKeyWord.
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации для сущности NotificationMessageKeyWord.</param>
     public void Configure(EntityTypeBuilder<NotificationMessageKeyWord> builder)
     {
         builder.ToTable("NotificationMessageKeyWords");

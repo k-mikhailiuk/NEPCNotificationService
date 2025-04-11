@@ -6,8 +6,17 @@ using Scrutor;
 
 namespace NotificationService.DataAccess;
 
+/// <summary>
+/// Методы-расширения для регистрации DbContext и репозиториев в контейнере зависимостей.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Регистрирует <see cref="NotificationServiceDbContext"/> с использованием строки подключения из конфигурации.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <param name="configuration">Конфигурация приложения, содержащая строку подключения.</param>
+    /// <returns>Обновлённая коллекция сервисов.</returns>
     public static IServiceCollection AddNotificationServiceDbContext(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<NotificationServiceDbContext>(options =>
@@ -21,6 +30,11 @@ public static class ServiceCollectionExtensions
         return services;
     }
     
+    /// <summary>
+    /// Регистрирует <see cref="IUnitOfWork"/> и все репозитории, реализованные в сборке <see cref="IUnitOfWork"/>.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновлённая коллекция сервисов.</returns>
     public static IServiceCollection AddNotificationServiceRepositories(this IServiceCollection services)
     {
         services.AddScoped<IUnitOfWork, UnitOfWork>();

@@ -6,6 +6,10 @@ using OptionsConfiguration;
 
 namespace NotificationService.App;
 
+/// <summary>
+/// Фоновый сервис для периодической обработки и отправки уведомлений.
+/// Инициализирует Firebase и обрабатывает новые уведомления с заданным интервалом.
+/// </summary>
 public class NotificationProcessor(
     ILogger<NotificationProcessor> logger,
     IServiceProvider serviceProvider,
@@ -14,6 +18,11 @@ public class NotificationProcessor(
 {
     private readonly NotificationProcessorOptions _notificationProcessorOptions = notificationProcessorOptions.Value;
 
+    /// <summary>
+    /// Основной цикл фонового процесса.
+    /// Инициализирует Firebase и запускает обработку уведомлений с задержкой между итерациями.
+    /// </summary>
+    /// <param name="cancelationToken">Токен отмены задачи.</param>
     protected override async Task ExecuteAsync(CancellationToken cancelationToken)
     {
         logger.LogInformation("Notification processor started");
@@ -35,6 +44,10 @@ public class NotificationProcessor(
         }
     }
 
+    /// <summary>
+    /// Выполняет извлечение новых уведомлений, их отправку и сохранение истории.
+    /// </summary>
+    /// <param name="cancelationToken">Токен отмены задачи.</param>
     private async Task ProcessNotificationAsync(CancellationToken cancelationToken)
     {
         using var scope = serviceProvider.CreateScope();

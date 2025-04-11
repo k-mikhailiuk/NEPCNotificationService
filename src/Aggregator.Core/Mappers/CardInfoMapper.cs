@@ -4,8 +4,19 @@ using Aggregator.DTOs;
 
 namespace Aggregator.Core.Mappers;
 
+/// <summary>
+/// Класс для маппинга данных CardInfo из DTO в сущность.
+/// </summary>
 public static class CardInfoMapper
 {
+    /// <summary>
+    /// Преобразует объект <see cref="AggregatorCardInfoDto"/> в экземпляр <see cref="CardInfo"/>.
+    /// </summary>
+    /// <param name="dto">Объект DTO для маппинга данных CardInfo.</param>
+    /// <returns>
+    /// Возвращает экземпляр <see cref="CardInfo"/>, заполненный данными из <paramref name="dto"/>.
+    /// Если <paramref name="dto"/> равен null, возвращается null.
+    /// </returns>
     public static CardInfo MapCardInfo(AggregatorCardInfoDto dto)
     {
         if (dto == null)
