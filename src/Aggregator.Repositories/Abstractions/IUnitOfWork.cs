@@ -182,7 +182,7 @@ public interface IUnitOfWork : IDisposable
     /// <summary>
     /// Получает репозиторий для работы с валютами.
     /// </summary>
-    ICurrenciesRepository Currencies { get; }
+    Repositories.ICurrenciesRepository Currencies { get; }
     
     /// <summary>
     /// Получает репозиторий для работы с операциями AcsOtp.
