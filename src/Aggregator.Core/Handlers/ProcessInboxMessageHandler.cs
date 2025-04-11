@@ -79,11 +79,12 @@ public class ProcessInboxMessageHandler(
                 var command = commandFactory.CreateCommand(notifications);
                 var processedNotificationsIds = await mediator.Send(command, cancellationToken);
 
-                var inboxMessageIds = processedNotificationsIds.Select(processedNotificationId =>
-                    processedMessages.FirstOrDefault(x => x.Value == processedNotificationId).Key).ToList();
+                var reverseMap = processedMessages.ToDictionary(x => x.Value, x => x.Key);
 
-                if(inboxMessageIds.Count == 0)
-                    return;
+                var inboxMessageIds = processedNotificationsIds
+                    .Where(id => reverseMap.TryGetValue(id, out _))
+                    .Select(id => reverseMap[id])
+                    .ToList();
                 
                 await CompleteMessageProcessingAsync(inboxMessageIds, unitOfWork, cancellationToken);
 
