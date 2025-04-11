@@ -127,8 +127,8 @@ public class AcctBalChangeEntityMapper(ILogger<AcctBalChangeEntityMapper> logger
                     EndTime = l.AmtLimit != null
                         ? ConversionExtensionsHelper.SafeConvertTime(l.AmtLimit.EndTime)
                         : ConversionExtensionsHelper.SafeConvertTime(l.CntLimit.EndTime),
-                    TrsValue = l.AmtLimit?.TrsAmount ?? l.CntLimit.TrsValue,
-                    UsedValue = l.AmtLimit?.UsedAmount ?? l.CntLimit.UsedValue
+                    TrsValue = l.AmtLimit != null ? decimal.Round(l.AmtLimit.TrsAmount, 2) / 100 : l.CntLimit.TrsValue,
+                    UsedValue = l.AmtLimit != null ? decimal.Round(l.AmtLimit.UsedAmount, 2) / 100 : l.CntLimit.UsedValue
                 }
             }).ToList(),
         }).ToList();
