@@ -45,9 +45,15 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             [Language.Kyrgyz] = "Операция четке кагылды. Банкка кайрылыңыз.",
         };
 
-        var limits = entity.CardInfo.Limits.Select(lw => lw.Limit).ToList();
+        var limits = new List<Limit>();
+        if (entity.CardInfo?.Limits != null)
+            limits.AddRange(entity.CardInfo.Limits.Select(x => x.Limit));
 
-        limits.AddRange(entity.AccountsInfo.SelectMany(x => x.Limits).Select(lw => lw.Limit));
+        limits.AddRange(entity.AccountsInfo.SelectMany(x => x.Limits.Select(l => l.Limit)));
+
+        var limitMessages = limits.Count > 0
+            ? await Task.WhenAll(limits.Select(l => GetLimitMessageAsync(l, language)))
+            : [];
 
         var replacements = new Dictionary<string, string>
         {
@@ -79,12 +85,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             { "{COUNTRY}", entity.MerchantInfo.Country ?? string.Empty },
             { "{RESPONSECODE}", entity.Details.ResponseCode == -1 ? string.Empty : responseCodeMap[language] },
             {
-                "{LIMIT}",
-                entity.CardInfo?.Limits != null && entity.CardInfo.Limits.Count != 0
-                    ? string.Join(Environment.NewLine, await Task.WhenAll(limits.Select(async limit =>
-                        await GetLimitMessageAsync(limit, language)
-                    )))
-                    : string.Empty
+                "{LIMIT}", limitMessages.Length > 0 ? string.Join(Environment.NewLine, limitMessages) : string.Empty
             }
         };
 
@@ -123,15 +124,15 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
                         return string.Empty;
                     case Language.Russian:
                         details =
-                            $"Лимит: {limitId}\nСумма лимита: {trsAmount} {currency}\nИспользовано: {usedAmount} {currency}";
+                            $"Сумма лимита: {trsAmount} {currency}\nИспользовано: {usedAmount} {currency}";
                         break;
                     case Language.Kyrgyz:
                         details =
-                            $"Лимит: {limitId}\nЛимит суммасы: {trsAmount} {currency}\nКолдонулду: {usedAmount} {currency}";
+                            $"Лимит суммасы: {trsAmount} {currency}\nКолдонулду: {usedAmount} {currency}";
                         break;
                     case Language.English:
                         details =
-                            $"Limit: {limitId}\nLimit amount: {trsAmount} {currency}\nUsed: {usedAmount} {currency}";
+                            $"Limit amount: {trsAmount} {currency}\nUsed: {usedAmount} {currency}";
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(language), language, null);
@@ -166,16 +167,26 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             default:
                 return string.Empty;
         }
-
+        
+        var cycleInfoRu = string.IsNullOrEmpty(cycleLength)
+            ? string.Empty
+            : $"Длина цикла: {cycleLength} {cycleType}";
+        var cycleInfoKg = string.IsNullOrEmpty(cycleLength)
+            ? string.Empty
+            : $"nЦикл узундугу: {cycleLength} {cycleType}";
+        var cycleInfoEn = string.IsNullOrEmpty(cycleLength)
+            ? string.Empty
+            : $"nCycle length: {cycleLength} {cycleType}";
+        
         return language switch
         {
             Language.Undefined => string.Empty,
             Language.Russian =>
-                $"Лимит: {limitId}\nДлина цикла: {cycleLength} {cycleType}\n{details}\nДата окончания лимита: {endTime}",
+                $"Лимит: {limitId}\n{cycleInfoRu}\n{details}\nДата окончания лимита: {endTime}",
             Language.Kyrgyz =>
-                $"Лимит: {limitId}\nЦикл узундугу: {cycleLength} {cycleType}\n{details}\nЛимиттин аяктаган күнү: {endTime}",
+                $"Лимит: {limitId}\n{cycleInfoKg}\n{details}\nЛимиттин аяктаган күнү: {endTime}",
             Language.English =>
-                $"Limit: {limitId}\nCycle length: {cycleLength} {cycleType}\n{details}\nLimit expiration date: {endTime}",
+                $"Limit: {limitId}\n{cycleInfoEn}\n{details}\nLimit expiration date: {endTime}",
             _ => throw new ArgumentOutOfRangeException(nameof(language), language, null)
         };
     }
