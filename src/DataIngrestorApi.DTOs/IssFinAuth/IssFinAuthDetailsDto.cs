@@ -1,9 +1,14 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using DataIngrestorApi.DTOs.Abstractions;
+using DataIngrestorApi.DTOs.Extensions;
+
 namespace DataIngrestorApi.DTOs.IssFinAuth;
 
 /// <summary>
 /// Детали финансовой авторизации по карте банка-эмитента
 /// </summary>
-public class IssFinAuthDetailsDto
+public class IssFinAuthDetailsDto : IHasCardIdentifier
 {
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
@@ -43,7 +48,7 @@ public class IssFinAuthDetailsDto
     /// <summary>
     /// Направление движения суммы авторизации относительно счета. C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string AuthDirection { get; set; }
+    public char AuthDirection { get; set; }
     
     /// <summary>
     /// Сумма авторизации в валюте счета. Включает эквайринговую комиссию. Включает эмитентскую комиссию
@@ -94,7 +99,7 @@ public class IssFinAuthDetailsDto
     /// Направление движения эквайринговой комиссии относительно счета.
     /// Заполняется, если присутствует эквайринговая комиссия. C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string? AcqFeeDirection { get; set; }
+    public char? AcqFeeDirection { get; set; }
     
     /// <summary>
     /// Комиссия банка-эмитента в валюте счета
@@ -105,7 +110,7 @@ public class IssFinAuthDetailsDto
     /// Направление движения эмитентской комиссии относительно счета.
     /// Заполняется, если присутствует эмитентская комиссия. C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string? IssFeeDirection { get; set; }
+    public char? IssFeeDirection { get; set; }
     
     /// <summary>
     /// Идентификатор группы операций
@@ -138,7 +143,27 @@ public class IssFinAuthDetailsDto
     public AuthMoneyDetailsDto? AuthMoneyDetails { get; set; }
     
     /// <summary>
-    /// Один из идентификаторов карты
+    /// Для хранения неидентифицированных полей/заполнение CardIdentifier
     /// </summary>
-    public CardIdentifierDto? CardIdentifier { get; set; }
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
+
+    private List<CardIdentifierDto>? _cardIdentifier;
+    
+    /// <summary>
+    /// Список идентификаторов карты
+    /// </summary>
+    public List<CardIdentifierDto>? CardIdentifier
+    {
+        get
+        {
+            if (_cardIdentifier is not null) return _cardIdentifier;
+            
+            _cardIdentifier = CardIdentifierJsonParser.Transform(ExtensionData);
+
+            ExtensionData.Clear();
+
+            return _cardIdentifier;
+        }
+    }
 }

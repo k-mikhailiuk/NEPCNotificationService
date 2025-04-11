@@ -1,9 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using DataIngrestorApi.DTOs.Abstractions;
+using DataIngrestorApi.DTOs.Extensions;
+
 namespace DataIngrestorApi.DTOs;
 
 /// <summary>
 /// Информация о карте
 /// </summary>
-public class CardInfoDto
+public class CardInfoDto : IHasCardIdentifier
 {
     /// <summary>
     /// Срок действия карты (YYMM)
@@ -31,7 +37,27 @@ public class CardInfoDto
     public LimitWrapperDto[]? Limits { get; set; }
     
     /// <summary>
-    /// Один из идентификаторов карты
+    /// Для хранения неидентифицированных полей/заполнение CardIdentifier
     /// </summary>
-    public CardIdentifierDto? CardIdentifier { get; set; }
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
+
+    private List<CardIdentifierDto>? _cardIdentifier;
+    
+    /// <summary>
+    /// Список идентификаторов карты
+    /// </summary>
+    public List<CardIdentifierDto>? CardIdentifier
+    {
+        get
+        {
+            if (_cardIdentifier is not null) return _cardIdentifier;
+            
+            _cardIdentifier = CardIdentifierJsonParser.Transform(ExtensionData);
+
+            ExtensionData.Clear();
+
+            return _cardIdentifier;
+        }
+    }
 }

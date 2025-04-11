@@ -8,7 +8,7 @@ public class ExtensionDto
     /// <summary>
     /// Идентификатор расширения
     /// </summary>
-    public string Id { get; set; }
+    public string? Id { get; set; }
     
     /// <summary>
     /// Признак критичности расширения (0 - false, 1 - true)

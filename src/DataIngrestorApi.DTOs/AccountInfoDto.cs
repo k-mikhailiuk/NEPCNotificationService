@@ -18,7 +18,7 @@ public class AccountInfoDto
     /// <summary>
     /// Доступный баланс
     /// </summary>
-    public MoneyDto? AviableBalance { get; set; }
+    public MoneyDto? AvailableBalance { get; set; }
     
     /// <summary>
     /// Лимит кредита
@@ -28,5 +28,5 @@ public class AccountInfoDto
     /// <summary>
     /// Тип - контейнер лимитов
     /// </summary>
-    public LimitWrapperDto[]? limits { get; set; }
+    public LimitWrapperDto[]? Limits { get; set; }
 }

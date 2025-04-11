@@ -1,9 +1,14 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using DataIngrestorApi.DTOs.Abstractions;
+using DataIngrestorApi.DTOs.Extensions;
+
 namespace DataIngrestorApi.DTOs.CardStatusChange;
 
 /// <summary>
 /// Подробная информация об изменении статуса карты
 /// </summary>
-public class CardStatusChangeDetailsDto
+public class CardStatusChangeDetailsDto : IHasCardIdentifier
 {
     /// <summary>
     /// Срок действия карты (YYMM)
@@ -41,7 +46,27 @@ public class CardStatusChangeDetailsDto
     public string? Note { get; set; }
     
     /// <summary>
-    /// Один из идентификаторов карты
+    /// Для хранения неидентифицированных полей/заполнение CardIdentifier
     /// </summary>
-    public CardIdentifierDto? CardIdentifier { get; set; }
+    [JsonExtensionData]
+    public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
+
+    private List<CardIdentifierDto>? _cardIdentifier;
+    
+    /// <summary>
+    /// Список идентификаторов карты
+    /// </summary>
+    public List<CardIdentifierDto>? CardIdentifier
+    {
+        get
+        {
+            if (_cardIdentifier is not null) return _cardIdentifier;
+            
+            _cardIdentifier = CardIdentifierJsonParser.Transform(ExtensionData);
+
+            ExtensionData.Clear();
+
+            return _cardIdentifier;
+        }
+    }
 }

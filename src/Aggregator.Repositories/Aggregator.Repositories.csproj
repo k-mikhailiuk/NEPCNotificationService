@@ -6,4 +6,14 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
+      <ProjectReference Include="..\ControlPanel.DataAccess\ControlPanel.DataAccess.csproj" />
+      <ProjectReference Include="..\Infrastructure\Common\Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Scrutor" Version="6.0.1" />
+    </ItemGroup>
+
 </Project>

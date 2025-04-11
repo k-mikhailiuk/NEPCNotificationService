@@ -8,6 +8,10 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.12"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.2">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2"/>
     </ItemGroup>
     <ItemGroup>
@@ -15,13 +19,14 @@
         <None Include="..\..\shared\appsettings.Development.json" Link="appsettings.Development.json" CopyToOutputDirectory="Always" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\DataIngrestorApi.DTOs\DataIngrestorApi.DTOs.csproj" />
-      <ProjectReference Include="..\DataIngrestorApi.Services\DataIngrestorApi.Services.csproj" />
-      <ProjectReference Include="..\Infrastructure\Common\Common.csproj" />
-      <ProjectReference Include="..\Infrastructure\MessagingBroker\MessagingBroker.csproj" />
+        <None Include="wwwroot\swagger\*" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Infrastructure\MessagingBroker\MessagingBroker.csproj" />
+      <ProjectReference Include="..\DataIngrestorApi.DataAccess\DataIngrestorApi.DataAccess.csproj" />
+      <ProjectReference Include="..\DataIngrestorApi.DTOs\DataIngrestorApi.DTOs.csproj" />
+      <ProjectReference Include="..\DataIngrestorApi.Core\DataIngrestorApi.Core.csproj" />
+      <ProjectReference Include="..\Infrastructure\Common\Common.csproj" />
+      <ProjectReference Include="..\Infrastructure\OptionsConfiguration\OptionsConfiguration.csproj" />
     </ItemGroup>
 
 </Project>
