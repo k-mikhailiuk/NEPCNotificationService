@@ -74,7 +74,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
 
     private async Task<string> GetLimitMessageAsync(Limit limit, Language language)
     {
-        var limitId = await limitIdReplacer.ReplaceLimitIdAsync(limit.Id, language);
+        var limitId = await limitIdReplacer.ReplaceLimitIdAsync(limit.LimitId, language);
         var cycleType = limit.CycleType;
         var cycleLength = limit.CycleLength is not (null or 0)
             ? limit.CycleLength.ToString()
