@@ -66,7 +66,7 @@ public class IssFinAuthNotificationMessageBuilder(
         foreach (var message in messages)
         {
             var accountsInfo = await unitOfWork.AccountsInfos.GetAllAsync(x =>
-                x.NotificationId == message.NotificationId && x.NotificationType == NotificationType.IssFinAuth);
+                x.NotificationId == message.NotificationId && x.NotificationType == NotificationType.IssFinAuth, cancellationToken);
 
             message.AccountsInfo = accountsInfo;
             

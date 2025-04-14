@@ -41,8 +41,8 @@ public static class CardInfoMapper
                     LimitId = x.AmtLimit?.Id ?? x.CntLimit.Id,
                     LimitType = x.AmtLimit != null ? LimitType.AmtLimit : LimitType.CntLimit,
                     Currency = x.AmtLimit?.Currency ?? null,
-                    CycleLength = x.AmtLimit != null ? x.AmtLimit.CycleLength : 0,
-                    CycleType = x.AmtLimit?.CycleType,
+                    CycleLength = x.AmtLimit?.CycleLength ?? x.CntLimit?.CycleLength ?? 0,
+                    CycleType = x.AmtLimit?.CycleType ?? x.CntLimit?.CycleType ?? null,
                     EndTime = x.AmtLimit != null
                         ? ConversionExtensionsHelper.SafeConvertTime(x.AmtLimit.EndTime)
                         : ConversionExtensionsHelper.SafeConvertTime(x.CntLimit.EndTime),
