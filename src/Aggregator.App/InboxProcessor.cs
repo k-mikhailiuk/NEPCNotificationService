@@ -1,5 +1,5 @@
 using Aggregator.Core.Commands;
-using Aggregator.Repositories.Abstractions;
+using Aggregator.DataAccess.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Options;
 using OptionsConfiguration;

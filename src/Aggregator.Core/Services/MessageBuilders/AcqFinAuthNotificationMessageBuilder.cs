@@ -1,10 +1,10 @@
 using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
+using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DataAccess.Entities.Enum;
-using Aggregator.Repositories.Abstractions;
 using Common.Enums;
 using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;

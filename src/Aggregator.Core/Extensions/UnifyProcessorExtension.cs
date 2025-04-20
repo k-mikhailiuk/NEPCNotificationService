@@ -1,6 +1,6 @@
+using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.Abstract;
-using Aggregator.Repositories.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Extensions;

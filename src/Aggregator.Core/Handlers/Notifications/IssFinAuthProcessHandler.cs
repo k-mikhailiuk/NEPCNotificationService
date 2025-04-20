@@ -1,9 +1,9 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
+using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DTOs.IssFinAuth;
-using Aggregator.Repositories.Abstractions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

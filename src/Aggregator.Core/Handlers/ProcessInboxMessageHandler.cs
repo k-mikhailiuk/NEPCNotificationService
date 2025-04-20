@@ -1,7 +1,7 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions.Factories.Abstractions;
+using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities;
-using Aggregator.Repositories.Abstractions;
 using DataIngrestorApi.DataAccess.Entities;
 using DataIngrestorApi.DataAccess.Entities.Enums;
 using Mapper;

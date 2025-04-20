@@ -1,6 +1,5 @@
 using Aggregator.Core;
 using Aggregator.DataAccess;
-using Aggregator.Repositories;
 using OptionsConfiguration;
 
 namespace Aggregator.App;

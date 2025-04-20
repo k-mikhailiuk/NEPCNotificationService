@@ -1,11 +1,11 @@
 using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
+using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.IssFinAuth;
-using Aggregator.Repositories.Abstractions;
 using Common.Enums;
 using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;

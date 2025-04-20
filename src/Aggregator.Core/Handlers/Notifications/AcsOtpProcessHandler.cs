@@ -1,8 +1,8 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Mappers;
+using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.AcsOtp;
 using Aggregator.DTOs.AcsOtp;
-using Aggregator.Repositories.Abstractions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

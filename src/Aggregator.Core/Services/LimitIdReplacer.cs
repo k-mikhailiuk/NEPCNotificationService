@@ -1,6 +1,6 @@
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
-using Aggregator.Repositories.Abstractions;
+using Aggregator.DataAccess.Abstractions;
 using Common.Enums;
 using Microsoft.Extensions.DependencyInjection;
 

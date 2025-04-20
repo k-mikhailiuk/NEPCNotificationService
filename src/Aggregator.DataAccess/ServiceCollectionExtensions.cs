@@ -1,6 +1,8 @@
+using Aggregator.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Scrutor;
 
 namespace Aggregator.DataAccess;
 
@@ -27,6 +29,25 @@ public static class ServiceCollectionExtensions
             options.UseSqlServer(connectionString);
         });
 
+        return services;
+    }
+    
+    /// <summary>
+    /// Регистрирует репозитории и единицу работы в DI-контейнере.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов для регистрации зависимостей.</param>
+    /// <returns>Обновлённая коллекция сервисов с зарегистрированными репозиториями.</returns>
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        services.Scan(scan => scan
+            .FromAssemblyOf<IUnitOfWork>()
+            .AddClasses(classes => classes.InNamespaces("Aggregator.Repositories.Repositories"))
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
+        
         return services;
     }
 }
