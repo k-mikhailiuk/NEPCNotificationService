@@ -20,10 +20,6 @@ public class AcctBalChangeConfiguration : IEntityTypeConfiguration<AcctBalChange
     {
         builder.ToTable("AcctBalChanges");
 
-        builder.HasKey(x => x.NotificationId);
-
-        builder.Property(x => x.EventId).IsRequired();
-        builder.Property(x => x.Time).IsRequired();
         builder.Property(x => x.DetailsId).IsRequired();
         builder.Property(x => x.CardInfoId).IsRequired();
 

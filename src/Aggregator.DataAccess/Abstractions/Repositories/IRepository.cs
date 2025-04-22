@@ -89,4 +89,12 @@ public interface IRepository<T> where T : class
     /// </summary>
     /// <param name="entities">Коллекция сущностей для удаления.</param>
     void RemoveRange(IEnumerable<T> entities);
+    
+    /// <summary>
+    /// Асинхронно возвращает список сущностей, удовлетворяющих заданному условию.
+    /// </summary>
+    /// <param name="expression">Условие фильтрации.</param>
+    /// <param name="cancellationToken">Токен отмены операции.</param>
+    /// <returns>Список сущностей, удовлетворяющих условию.</returns>
+    Task<List<T>> GetAllWithConditionAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default);
 }

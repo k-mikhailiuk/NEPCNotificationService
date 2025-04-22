@@ -8,8 +8,8 @@ namespace Aggregator.Core.Extensions;
 /// <summary>
 /// Предоставляет методы для предварительной загрузки и унификации расширений уведомлений.
 /// </summary>
-/// <typeparam name="T">Тип уведомления, реализующий интерфейс <see cref="INotification"/>.</typeparam>
-public static class UnifyProcessorExtension<T> where T : INotification
+/// <typeparam name="T">Тип уведомления, реализующий интерфейс <see cref="Notification"/>.</typeparam>
+public static class UnifyProcessorExtension<T> where T : Notification
 {
     /// <summary>
     /// Предварительно загружает и унифицирует расширения для заданного списка уведомлений.

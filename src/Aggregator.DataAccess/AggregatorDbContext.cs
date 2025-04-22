@@ -77,6 +77,22 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("nepc");
+        
+        modelBuilder.Entity<Notification>()
+            .ToTable("Notifications")
+            .HasKey(n => n.NotificationId);
+        
+        modelBuilder.Entity<Notification>()
+            .Property(n => n.NotificationType).IsRequired();
+        modelBuilder.Entity<Notification>()
+            .Property(n => n.EventId).IsRequired();
+        modelBuilder.Entity<Notification>()
+            .Property(n => n.Time).IsRequired();
+        
+        modelBuilder.Entity<Notification>()
+            .HasMany(n => n.Extensions)
+            .WithOne(e => e.Notification)
+            .HasForeignKey(e => e.NotificationId);
 
         modelBuilder.Entity<InboxMessage>()
             .ToTable("InboxMessages", "nepc", t => t.ExcludeFromMigrations());

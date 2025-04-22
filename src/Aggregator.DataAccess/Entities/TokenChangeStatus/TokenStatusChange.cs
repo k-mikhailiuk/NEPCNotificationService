@@ -1,27 +1,12 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.Abstract;
-using Aggregator.DataAccess.Entities.Enum;
 
 namespace Aggregator.DataAccess.Entities.TokenChangeStatus;
 
 /// <summary>
 /// Уведомление об изменении статуса токена
 /// </summary>
-public class TokenStatusChange : INotification
+public class TokenStatusChange : Notification
 {
-    /// <inheritdoc />
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public long NotificationId { get; set; }
-    
-    /// <inheritdoc />
-    public NotificationType NotificationType { get; set; }
-    
-    /// <inheritdoc />
-    public long EventId { get; set; }
-    
-    /// <inheritdoc />
-    public DateTimeOffset Time { get; set; }
-
     /// <summary>
     /// Уникальный идентификатор TokenStatusChangeDetails
     /// </summary>

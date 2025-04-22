@@ -1,12 +1,15 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.Enum;
 
 namespace Aggregator.DataAccess.Entities.Abstract;
 
-public interface INotification
+public abstract class Notification
 {
     /// <summary>
     /// Уникальный идентификатор уведомления
     /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+
     public long NotificationId { get; set; }
 
     /// <summary>

@@ -20,10 +20,6 @@ public class OwiUserActionConfiguration : IEntityTypeConfiguration<OwiUserAction
     {
         builder.ToTable("OwiUserActions");
 
-        builder.HasKey(x => x.NotificationId);
-
-        builder.Property(x => x.EventId).IsRequired();
-        builder.Property(x => x.Time).IsRequired();
         builder.Property(x => x.CardInfoId).IsRequired(false);
         builder.Property(x => x.DetailsId).IsRequired();
 

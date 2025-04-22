@@ -154,4 +154,10 @@ public class Repository<T> : IRepository<T> where T : class
             Remove(entity);
         }
     }
+    
+    /// <inheritdoc/>
+    public Task<List<T>> GetAllWithConditionAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
+    {
+        return _dbSet.Where(expression).ToListAsync(cancellationToken);
+    }
 }

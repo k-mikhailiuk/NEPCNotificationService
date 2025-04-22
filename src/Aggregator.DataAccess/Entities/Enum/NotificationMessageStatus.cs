@@ -6,4 +6,5 @@ public enum NotificationMessageStatus : byte
     New = 1,
     Success = 2,
     Failure = 3,
+    Declined = 4,
 }

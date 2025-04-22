@@ -12,6 +12,7 @@ var builder = Host.CreateDefaultBuilder(args)
     {
         services.RegisterServices(ctx.Configuration);
         services.AddHostedService<InboxProcessor>();
+        services.AddHostedService<NotificationProcessor>();
     });
 
 var host = builder.Build();

@@ -1,4 +1,4 @@
-namespace NotificationService.Core.Models;
+namespace Aggregator.Core.Models;
 
 /// <summary>
 /// Базовая модель push-уведомления, содержащая основные поля для отправки сообщения.

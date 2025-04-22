@@ -21,5 +21,5 @@ public interface INotificationMessageBuilderFactory
     /// <returns>
     /// Построитель сообщений уведомлений, реализующий <see cref="INotificationMessageBuilder{INotification}"/>.
     /// </returns>
-    INotificationMessageBuilder<INotification> CreateNotificationMessageBuilder(Type notificationType);
+    INotificationMessageBuilder<Notification> CreateNotificationMessageBuilder(Type notificationType);
 }

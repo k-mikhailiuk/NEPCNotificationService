@@ -35,7 +35,7 @@ public class NotificationMessageBuilderFactory(IServiceProvider serviceProvider)
     /// <exception cref="NotSupportedException">
     /// Выбрасывается, если тип уведомления не поддерживается.
     /// </exception>
-    public INotificationMessageBuilder<INotification> CreateNotificationMessageBuilder(Type notificationType)
+    public INotificationMessageBuilder<Notification> CreateNotificationMessageBuilder(Type notificationType)
     {
         return notificationType switch
         {

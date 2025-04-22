@@ -1,12 +1,12 @@
 using System.Data;
+using Aggregator.Core.Services.Abstractions;
+using Aggregator.DataAccess;
 using Aggregator.DataAccess.Entities;
 using FirebaseAdmin.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using NotificationService.Core.Services.Abstractions;
-using NotificationService.DataAccess;
 
-namespace NotificationService.Core.Services;
+namespace Aggregator.Core.Services;
 
 /// <summary>
 /// Сервис для отправки push-уведомлений через Firebase Cloud Messaging (FCM).
@@ -20,7 +20,7 @@ public class NotificationMessageSender(IServiceProvider serviceProvider) : INoti
         {
             using var scope = serviceProvider.CreateScope();
 
-            await using var context = scope.ServiceProvider.GetRequiredService<NotificationServiceDbContext>();
+            await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
 
             await using var connection = context.Database.GetDbConnection();
 

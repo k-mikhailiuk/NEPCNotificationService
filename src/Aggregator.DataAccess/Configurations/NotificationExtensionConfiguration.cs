@@ -30,5 +30,10 @@ public class NotificationExtensionConfiguration : IEntityTypeConfiguration<Notif
         builder.Property(x => x.NotificationId).IsRequired();
         builder.Property(x => x.NotificationType).IsRequired();
         builder.Property(x => x.Critical).IsRequired();
+        
+        builder.HasOne(e => e.Notification)
+            .WithMany(n => n.Extensions)
+            .HasForeignKey(e => e.NotificationId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

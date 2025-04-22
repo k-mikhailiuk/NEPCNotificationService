@@ -1,10 +1,10 @@
+using Aggregator.Core.Services.Abstractions;
+using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.Enum;
 using Microsoft.Extensions.Options;
-using NotificationService.Core.Services.Abstractions;
-using NotificationService.DataAccess.Abstractions;
 using OptionsConfiguration;
 
-namespace NotificationService.App;
+namespace Aggregator.App;
 
 /// <summary>
 /// Фоновый сервис для периодической обработки и отправки уведомлений.
@@ -47,29 +47,39 @@ public class NotificationProcessor(
     /// <summary>
     /// Выполняет извлечение новых уведомлений, их отправку и сохранение истории.
     /// </summary>
-    /// <param name="cancelationToken">Токен отмены задачи.</param>
-    private async Task ProcessNotificationAsync(CancellationToken cancelationToken)
+    /// <param name="cancellationToken">Токен отмены задачи.</param>
+    private async Task ProcessNotificationAsync(CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
 
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         var messages =
-            await unitOfWork.NotificationMessages.GetAllWithConditionAsync(x =>
-                x.Status == NotificationMessageStatus.New, cancelationToken);
+            await unitOfWork.NotificationMessage.GetAllWithConditionAsync(x =>
+                x.Status == NotificationMessageStatus.New, cancellationToken);
+
+        if (!_notificationProcessorOptions.IsNeedSendPush)
+        {
+            foreach (var message in messages)
+                message.Status = NotificationMessageStatus.Declined;
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return;
+        }
 
         var sender = scope.ServiceProvider.GetRequiredService<INotificationMessageSender>();
         var saver = scope.ServiceProvider.GetRequiredService<INotificationHistorySaver>();
         foreach (var message in messages)
         {
-            var sendResult = await sender.SendAsync(message, cancelationToken);
+            var sendResult = await sender.SendAsync(message, cancellationToken);
 
             message.Status = sendResult ? NotificationMessageStatus.Success : NotificationMessageStatus.Failure;
 
             if (message.Status == NotificationMessageStatus.Success)
-                await saver.SaveAsync(message, cancelationToken);
+                await saver.SaveAsync(message, cancellationToken);
         }
 
-        await unitOfWork.SaveChangesAsync(cancelationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
       <PackageReference Include="FluentValidation" Version="12.0.0-preview1" />
       <PackageReference Include="MediatR" Version="12.4.1" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
@@ -16,7 +17,6 @@
     <ItemGroup>
       <ProjectReference Include="..\Aggregator.DataAccess\Aggregator.DataAccess.csproj" />
       <ProjectReference Include="..\Aggregator.DTOs\Aggregator.DTOs.csproj" />
-      <ProjectReference Include="..\Aggregator.Repositories\Aggregator.Repositories.csproj" />
       <ProjectReference Include="..\DataIngrestorApi.DataAccess\DataIngrestorApi.DataAccess.csproj" />
       <ProjectReference Include="..\DataIngrestorApi.DTOs\DataIngrestorApi.DTOs.csproj" />
       <ProjectReference Include="..\Infrastructure\Common\Common.csproj" />

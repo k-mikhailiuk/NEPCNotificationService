@@ -8,9 +8,9 @@ namespace Aggregator.Core.Services.Abstractions;
 /// Интерфейс для построения ключевых слов для уведомлений.
 /// </summary>
 /// <typeparam name="T">
-/// Тип уведомления, для которого будет сгенерирована строка ключевых слов. Должен реализовывать интерфейс <see cref="INotification"/>.
+/// Тип уведомления, для которого будет сгенерирована строка ключевых слов. Должен реализовывать интерфейс <see cref="Notification"/>.
 /// </typeparam>
-public interface IKeyWordBuilder<in T> where T : class, INotification
+public interface IKeyWordBuilder<in T> where T : Notification
 {
     /// <summary>
     /// Асинхронно формирует строку ключевых слов для указанного уведомления.

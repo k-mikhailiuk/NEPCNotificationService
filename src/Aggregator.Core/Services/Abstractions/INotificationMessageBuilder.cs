@@ -7,9 +7,9 @@ namespace Aggregator.Core.Services.Abstractions;
 /// Интерфейс для построения сообщений уведомлений.
 /// </summary>
 /// <typeparam name="T">
-/// Тип уведомления, для которого создаются сообщения. Должен реализовывать интерфейс <see cref="INotification"/>.
+/// Тип уведомления, для которого создаются сообщения. Должен реализовывать интерфейс <see cref="Notification"/>.
 /// </typeparam>
-public interface INotificationMessageBuilder<out T> where T : class, INotification
+public interface INotificationMessageBuilder<out T> where T : Notification
 {
     /// <summary>
     /// Асинхронно формирует список сообщений уведомлений для заданных идентификаторов уведомлений.

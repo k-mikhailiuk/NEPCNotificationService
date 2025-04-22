@@ -1,27 +1,12 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.Abstract;
-using Aggregator.DataAccess.Entities.Enum;
 
 namespace Aggregator.DataAccess.Entities.IssFinAuth;
 
 /// <summary>
 /// Уведомление о финансовой авторизации по номеру счета банка-эмитента
 /// </summary>
-public class IssFinAuth : INotification
+public class IssFinAuth : Notification
 {
-    /// <inheritdoc />
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public long NotificationId { get; set; }
-    
-    /// <inheritdoc />
-    public NotificationType NotificationType { get; set; }
-    
-    /// <inheritdoc />
-    public long EventId { get; set; }
-    
-    /// <inheritdoc />
-    public DateTimeOffset Time { get; set; }
-
     /// <summary>
     /// Идентификатор деталей финансовой авторизации по карте банка-эмитента
     /// </summary>
@@ -50,7 +35,4 @@ public class IssFinAuth : INotification
     
     /// <inheritdoc cref="MerchantInfo" />
     public MerchantInfo MerchantInfo { get; set; }
-    
-    /// <inheritdoc cref="NotificationExtension" />
-    public List<NotificationExtension>? Extensions { get; set; }
 }

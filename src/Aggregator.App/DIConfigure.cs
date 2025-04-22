@@ -27,5 +27,7 @@ public static class DIConfigure
         services.AddMappers();
         services.AddBuilders();
         services.AddNotificationMessageOptions(configuration);
+        services.AddNotificationMessageServices();
+        services.AddNotificationProcessorOptions(configuration);
     }
 }

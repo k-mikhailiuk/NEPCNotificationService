@@ -20,4 +20,9 @@ public class NotificationProcessorOptions
     /// Путь к файлу с учётными данными Firebase (обычно .json).
     /// </summary>
     public string FirebaseCredentialsFilePath { get; set; }
+    
+    /// <summary>
+    /// Отправлять ли пуш-уведомление клиенту
+    /// </summary>
+    public bool IsNeedSendPush { get; set; }
 }

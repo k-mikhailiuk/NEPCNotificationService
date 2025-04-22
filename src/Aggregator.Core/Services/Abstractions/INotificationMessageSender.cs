@@ -1,6 +1,6 @@
 using Aggregator.DataAccess.Entities;
 
-namespace NotificationService.Core.Services.Abstractions;
+namespace Aggregator.Core.Services.Abstractions;
 
 /// <summary>
 /// Интерфейс для сервиса отправки push-уведомлений.

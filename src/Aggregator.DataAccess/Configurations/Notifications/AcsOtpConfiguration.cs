@@ -20,10 +20,6 @@ public class AcsOtpConfiguration : IEntityTypeConfiguration<AcsOtp>
     {
         builder.ToTable("AcsOtps");
 
-        builder.HasKey(x => x.NotificationId);
-
-        builder.Property(x => x.EventId).IsRequired();
-        builder.Property(x => x.Time).IsRequired();
         builder.Property(x => x.CardInfoId).IsRequired();
 
         builder.OwnsOne(x => x.Details, details =>

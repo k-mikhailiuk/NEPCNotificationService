@@ -1,12 +1,12 @@
 using System.Data;
 using System.Data.Common;
+using Aggregator.Core.Services.Abstractions;
+using Aggregator.DataAccess;
 using Aggregator.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using NotificationService.Core.Services.Abstractions;
-using NotificationService.DataAccess;
 
-namespace NotificationService.Core.Services;
+namespace Aggregator.Core.Services;
 
 /// <summary>
 /// Сервис для сохранения истории отправленных push-уведомлений в базу данных.
@@ -18,7 +18,7 @@ public class NotificationHistorySaver(IServiceProvider serviceProvider) : INotif
     {
         using var scope = serviceProvider.CreateScope();
 
-        await using var context = scope.ServiceProvider.GetRequiredService<NotificationServiceDbContext>();
+        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
 
         await using var connection = context.Database.GetDbConnection();
         await connection.OpenAsync(cancellationToken);

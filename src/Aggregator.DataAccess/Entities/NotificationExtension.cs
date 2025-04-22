@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.Enum;
 
 namespace Aggregator.DataAccess.Entities;
@@ -23,6 +24,11 @@ public class NotificationExtension
     /// Уникальный идентификатор уведомления
     /// </summary>
     public long NotificationId { get; set; }
+    
+    /// <summary>
+    /// Навигационное свойство для расширения
+    /// </summary>
+    public Notification Notification { get; set; }
     
     /// <inheritdoc cref="NotificationType" />
     public NotificationType NotificationType { get; set; }

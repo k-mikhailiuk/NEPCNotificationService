@@ -1,7 +1,7 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 
-namespace NotificationService.App;
+namespace Aggregator.App;
 
 /// <summary>
 /// Предоставляет статический метод для инициализации Firebase на основе заданного JSON.
