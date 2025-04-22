@@ -3,40 +3,40 @@ namespace DataIngrestorApi.DTOs.AcsOtp;
 /// <summary>
 /// Уведомление о разовых паролях, отправляемых ACS банка-эмитента карты
 /// </summary>
-public class AcsOtpDto
+public record AcsOtpDto
 {
     /// <summary>
     /// Уникальный идентификатор уведомления
     /// </summary>
-    public long Id { get; set; }
+    public long Id { get; init; }
     
     /// <summary>
     /// Уникальный идентификатор события
     /// </summary>
-    public long EventId { get; set; }
+    public long EventId { get; init; }
     
     /// <summary>
     /// Время создания уведомления (YYYYMMDDHH24MISS) во временной зоне ПЦ
     /// </summary>
-    public string Time { get; set; }
+    public string Time { get; init; }
     
     /// <summary>
     /// Детали разовых паролей, отправляемых ACS банка-эмитента карты
     /// </summary>
-    public AcsOtpDetailsDto Details { get; set; }
+    public AcsOtpDetailsDto Details { get; init; }
     
     /// <summary>
     /// Информация о карте
     /// </summary>
-    public CardInfoDto CardInfo { get; set; }
+    public CardInfoDto CardInfo { get; init; }
     
     /// <summary>
     /// Информация о мерчанте
     /// </summary>
-    public AcsOtpMerchantInfoDto MerchantInfo { get; set; }
+    public AcsOtpMerchantInfoDto MerchantInfo { get; init; }
     
     /// <summary>
     /// Список расширений
     /// </summary>
-    public List<ExtensionDto>? Extensions { get; set; }
+    public List<ExtensionDto>? Extensions { get; init; }
 }

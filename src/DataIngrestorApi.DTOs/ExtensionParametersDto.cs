@@ -3,15 +3,15 @@ namespace DataIngrestorApi.DTOs;
 /// <summary>
 /// Параметр расширения
 /// </summary>
-public class ExtensionParametersDto
+public record ExtensionParametersDto
 {
     /// <summary>
     /// Имя параметра
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; init; }
     
     /// <summary>
     /// Значение параметра
     /// </summary>
-    public string Value { get; set; }
+    public string Value { get; init; }
 }

@@ -3,25 +3,25 @@ namespace Aggregator.DTOs.AcsOtp;
 /// <summary>
 /// Информация о мерчанте
 /// </summary>
-public class AggregatorAcsOtpMerchantInfoDto
+public record AggregatorAcsOtpMerchantInfoDto
 {
     /// <summary>
     /// Идентификатор мерчанта
     /// </summary>
-    public string Id { get; set; }
+    public string Id { get; init; }
     
     /// <summary>
     /// Имя мерчанта
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; init; }
     
     /// <summary>
     /// Страна мерчанта. ISO-3166 (3 цифры)
     /// </summary>
-    public string Country { get; set; }
+    public string Country { get; init; }
     
     /// <summary>
     /// URL мерчанта
     /// </summary>
-    public string Url { get; set; }
+    public string Url { get; init; }
 }

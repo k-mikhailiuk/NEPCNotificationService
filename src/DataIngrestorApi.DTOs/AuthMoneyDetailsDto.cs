@@ -3,15 +3,15 @@ namespace DataIngrestorApi.DTOs;
 /// <summary>
 /// Изменение собственных средств и Exceed Limit
 /// </summary>
-public class AuthMoneyDetailsDto
+public record AuthMoneyDetailsDto
 {
     /// <summary>
     /// Сумма(со знаком) изменения собственных средств
     /// </summary>
-    public MoneyDto? OwnFundsMoney { get; set; }
+    public MoneyDto? OwnFundsMoney { get; init; }
     
     /// <summary>
     /// Сумма(со знаком) изменения лимита кредита
     /// </summary>
-    public MoneyDto? ExceedLimitMoney { get; set; }
+    public MoneyDto? ExceedLimitMoney { get; init; }
 }

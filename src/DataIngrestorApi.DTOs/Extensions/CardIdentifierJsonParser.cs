@@ -17,17 +17,16 @@ public static class CardIdentifierJsonParser
     /// Словарь дополнительных полей (ключ – название поля, значение – соответствующий <see cref="JsonElement"/>).
     /// Обычно заполняется <see cref="JsonExtensionDataAttribute"/> при десериализации.
     /// </param>
-    public static List<CardIdentifierDto>? Transform(Dictionary<string, JsonElement> dict)
+    public static List<CardIdentifierDto>? Transform(Dictionary<string, JsonElement>? dict)
     {
         var list = new List<CardIdentifierDto>();
         foreach (var kvp in dict)
         {
-            if (Enum.TryParse<CardIdentifierType>(kvp.Key, ignoreCase: true, out var cardType))
-            {
-                var val = kvp.Value.GetString();
-                if (!string.IsNullOrEmpty(val))
-                    list.Add(new CardIdentifierDto { Type = cardType, Value = val });
-            }
+            if (!Enum.TryParse<CardIdentifierType>(kvp.Key, ignoreCase: true, out var cardType)) continue;
+            
+            var val = kvp.Value.GetString();
+            if (!string.IsNullOrEmpty(val))
+                list.Add(new CardIdentifierDto { Type = cardType, Value = val });
         }
         
         dict.Clear();

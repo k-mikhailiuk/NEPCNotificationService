@@ -3,15 +3,15 @@ namespace Aggregator.DTOs;
 /// <summary>
 /// Тип - контейнер лимитов
 /// </summary>
-public class AggregatorLimitWrapperDto
+public record AggregatorLimitWrapperDto
 {
     /// <summary>
     /// Суммовой лимит
     /// </summary>
-    public AggregatorAmtLimitDto? AmtLimit { get; set; }
+    public AggregatorAmtLimitDto? AmtLimit { get; init; }
     
     /// <summary>
     /// Количественный лимит
     /// </summary>
-    public AggregatorCntLimitDto? CntLimit { get; set; }
+    public AggregatorCntLimitDto? CntLimit { get; init; }
 }

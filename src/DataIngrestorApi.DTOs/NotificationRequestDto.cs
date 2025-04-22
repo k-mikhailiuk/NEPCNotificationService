@@ -3,15 +3,15 @@
 /// <summary>
 /// Модель для получения уведомлений
 /// </summary>
-public class NotificationRequestDto
+public record NotificationRequestDto
 {
     /// <summary>
     /// Количество уведомлений в списке
     /// </summary>
-    public int BatchSize { get; set; }
+    public int BatchSize { get; init; }
 
     /// <summary>
     /// Список уведомлений
     /// </summary>
-    public NotificationWrapperDto[] Batch { get; set; }
+    public NotificationWrapperDto[] Batch { get; init; }
 }

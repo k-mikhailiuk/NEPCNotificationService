@@ -14,50 +14,50 @@ namespace DataIngrestorApi.DTOs;
 /// <summary>
 /// Тип - контейнер уведомлений
 /// </summary>
-public class NotificationWrapperDto
+public record NotificationWrapperDto
 {
     /// <summary>
     /// Уведомление о финансовой авторизации по номеру счета банка-эмитента
     /// </summary>
-    public IssFinAuthDto? IssFinAuth { get; set; }
+    public IssFinAuthDto? IssFinAuth { get; init; }
 
     /// <summary>
     /// Уведомление об эквайринговой финансовой авторизации по карте
     /// </summary>
-    public AcqFinAuthDto? AcqFinAuth { get; set; }
+    public AcqFinAuthDto? AcqFinAuth { get; init; }
     
     /// <summary>
     /// Уведомление об изменении статуса карты
     /// </summary>
-    public CardStatusChangeDto? CardStatusChange { get; set; }
+    public CardStatusChangeDto? CardStatusChange { get; init; }
 
     /// <summary>
     /// Уведомление об изменении PIN-кода
     /// </summary>
-    public PinChangeDto? PinChange { get; set; }
+    public PinChangeDto? PinChange { get; init; }
     
     /// <summary>
     /// Уведомление об изменении статуса токена
     /// </summary>
-    public TokenStatusChangeDto? TokenStatusChange { get; set; }
+    public TokenStatusChangeDto? TokenStatusChange { get; init; }
     
     /// <summary>
     /// Уведомление о снятии холда
     /// </summary>
-    public UnholdDto? Unhold { get; set; }
+    public UnholdDto? Unhold { get; init; }
     
     /// <summary>
     /// Уведомление о действии пользователя в OWI
     /// </summary>
-    public OwiUserActionDto? OwiUserAction { get; set; }
+    public OwiUserActionDto? OwiUserAction { get; init; }
     
     /// <summary>
     /// Уведомление об изменении лимита авторизации по факту финансовой обработки
     /// </summary>
-    public AcctBalChangeDto? AcctBalChange { get; set; }
+    public AcctBalChangeDto? AcctBalChange { get; init; }
     
     /// <summary>
     /// Уведомление об изменении лимита авторизации по факту финансовой обработки
     /// </summary>
-    public AcsOtpDto? AcsOtp { get; set; }
+    public AcsOtpDto? AcsOtp { get; init; }
 }

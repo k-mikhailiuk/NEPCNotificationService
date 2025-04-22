@@ -3,20 +3,20 @@ namespace DataIngrestorApi.DTOs.OwiUserAction;
 /// <summary>
 /// Подробная информация о действии пользователя в OWI
 /// </summary>
-public class OwiUserActionDetailsDto
+public record OwiUserActionDetailsDto
 {
     /// <summary>
     /// Время совершения операции в ПЦ (YYYYMMDDHH24MISS)
     /// </summary>
-    public string TransactionTime { get; set; }
+    public string TransactionTime { get; init; }
 
     /// <summary>
     /// Login в owi (имя пользователя)
     /// </summary>
-    public string Login { get; set; }
+    public string Login { get; init; }
 
     /// <summary>
     /// Действие пользователя
     /// </summary>
-    public string Action { get; set; }
+    public string Action { get; init; }
 }

@@ -5,29 +5,29 @@ namespace Aggregator.DTOs.OwiUserAction;
 /// <summary>
 /// Уведомление о действии пользователя в OWI
 /// </summary>
-public class AggregatorOwiUserActionDto : INotificationAggregatorDto
+public record AggregatorOwiUserActionDto : INotificationAggregatorDto
 {
     /// <inheritdoc />
-    public long Id { get; set; }
+    public long Id { get; init; }
     
     /// <inheritdoc />
-    public long EventId { get; set; }
+    public long EventId { get; init; }
     
     /// <inheritdoc />
-    public string Time { get; set; }
+    public string Time { get; init; }
     
     /// <summary>
     /// Подробная информация о действии пользователя в OWI
     /// </summary>
-    public AggregatorOwiUserActionDetailsDto Details { get; set; }
+    public AggregatorOwiUserActionDetailsDto Details { get; init; }
     
     /// <summary>
     /// Информация о карте на момент формирования уведомления
     /// </summary>
-    public AggregatorCardInfoDto? CardInfo { get; set; }
+    public AggregatorCardInfoDto? CardInfo { get; init; }
     
     /// <summary>
     /// Список расширений
     /// </summary>
-    public List<AggregatorExtensionDto>? Extensions { get; set; }
+    public List<AggregatorExtensionDto>? Extensions { get; init; }
 }

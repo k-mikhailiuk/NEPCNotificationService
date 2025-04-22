@@ -3,60 +3,60 @@ namespace Aggregator.DTOs.TokenStausChange;
 /// <summary>
 /// Подробная информация об изменении статуса токена
 /// </summary>
-public class AggregatorTokenStatusChangeDetailsDto
+public record AggregatorTokenStatusChangeDetailsDto
 {
     /// <summary>
     /// Идентификатор токена, связанного с PAN
     /// </summary>
-    public string DpanRef {get; set;}
+    public string DpanRef {get; init;}
     
     /// <summary>
     /// Платежная система карты
     /// </summary>
-    public string PaymentSystem {get; set;}
+    public string PaymentSystem {get; init;}
     
     /// <summary>
     /// Новый статус токена
     /// </summary>
-    public char Status {get; set;}
+    public char Status {get; init;}
     
     /// <summary>
     /// Дата создания/изменения токена в ПЦ (YYYYMMDDHH24MISS)
     /// </summary>
-    public string ChangeDate {get; set;}
+    public string ChangeDate {get; init;}
     
     /// <summary>
     /// Срок действия токена (YYMM)
     /// </summary>
-    public string DpanExpDate {get; set;}
+    public string DpanExpDate {get; init;}
     
     /// <summary>
     /// Идентификатор кошелька в разрезе платежной системы
     /// </summary>
-    public string WalletProvider { get; set; }
+    public string WalletProvider { get; init; }
     
     /// <summary>
     /// Имя устройства
     /// </summary>
-    public string? DeviceName { get; set; }
+    public string? DeviceName { get; init; }
     
     /// <summary>
     /// Тип устройства
     /// </summary>
-    public string? DeviceType { get; set; }
+    public string? DeviceType { get; init; }
     
     /// <summary>
     /// Идентификатор устройства
     /// </summary>
-    public string? DeviceId { get; set; }
+    public string? DeviceId { get; init; }
     
     /// <summary>
     /// Идентификатор номера карты, связанного с токеном
     /// </summary>
-    public string? FpanRef { get; set; }
+    public string? FpanRef { get; init; }
     
     /// <summary>
     /// Список идентификаторов карты
     /// </summary>
-    public List<AggregatorCardIdentifierDto>? CardIdentifier { get; set; }
+    public List<AggregatorCardIdentifierDto>? CardIdentifier { get; init; }
 }

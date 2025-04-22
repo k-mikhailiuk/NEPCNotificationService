@@ -3,15 +3,15 @@ namespace Aggregator.DTOs;
 /// <summary>
 /// Мобильный кошелек
 /// </summary>
-public class AggregatorWalletProviderDto
+public record AggregatorWalletProviderDto
 {
     /// <summary>
     /// Платежная система карты
     /// </summary>
-    public string PaymentSystem { get; set; }
+    public string PaymentSystem { get; init; }
     
     /// <summary>
     /// Идентификатор кошелька в разрезе платежной системы
     /// </summary>
-    public string? PaymentSystemId { get; set; }
+    public string? PaymentSystemId { get; init; }
 }

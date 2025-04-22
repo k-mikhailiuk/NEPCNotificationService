@@ -8,119 +8,119 @@ namespace DataIngrestorApi.DTOs.AcqFinAuth;
 /// <summary>
 /// Детали онлайн эквайринговой финансовой авторизации по карте
 /// </summary>
-public class AcqFinAuthDetailsDto : IHasCardIdentifier
+public record AcqFinAuthDetailsDto : IHasCardIdentifier
 {
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
-    public long Id { get; set; }
+    public long Id { get; init; }
 
     /// <summary>
     /// Признак отмены (0 - false, 1 - true)
     /// </summary>
-    public int Reversal { get; set; }
+    public int Reversal { get; init; }
 
     /// <summary>
     /// Тип транзакции
     /// </summary>
-    public int TransType { get; set; }
+    public int TransType { get; init; }
 
     /// <summary>
     /// Срок действия карты (YYMM)
     /// </summary>
-    public string? ExpDate { get; set; }
+    public string? ExpDate { get; init; }
 
     /// <summary>
     /// Номер счета
     /// </summary>
-    public string? AccountId { get; set; }
+    public string? AccountId { get; init; }
 
     /// <summary>
     /// Идентификатор института-корреспондента
     /// </summary>
-    public string CorrespondingAccount { get; set; }
+    public string CorrespondingAccount { get; init; }
 
     /// <summary>
     /// Сумма авторизации в валюте операции. Включает эквайринговую комиссию
     /// </summary>
-    public MoneyDto AuthMoney { get; set; }
+    public MoneyDto AuthMoney { get; init; }
 
     /// <summary>
     /// Направление движения суммы авторизации относительно карты. C - карта кредитуется, D - карта дебетуется
     /// </summary>
-    public char AuthDirection { get; set; }
+    public char AuthDirection { get; init; }
 
     /// <summary>
     /// Локальное время совершения авторизации на устройстве (YYYYMMDDHH24MISS)
     /// </summary>
-    public string? LocalTime { get; set; }
+    public string? LocalTime { get; init; }
 
     /// <summary>
     /// Время регистрации авторизации в ПЦ (YYYYMMDDHH24MISS)
     /// </summary>
-    public string TransactionTime { get; set; }
+    public string TransactionTime { get; init; }
 
     /// <summary>
     /// Внутренний код ответа ПЦ
     /// </summary>
-    public int ResponseCode { get; set; }
+    public int ResponseCode { get; init; }
 
     /// <summary>
     /// Код авторизации эмитента
     /// </summary>
-    public string? ApprovalCode { get; set; }
+    public string? ApprovalCode { get; init; }
 
     /// <summary>
     /// Retrieval Reference Number
     /// </summary>
-    public string? RRN { get; set; }
+    public string? RRN { get; init; }
 
     /// <summary>
     /// Комиссия банка-эквайера в валюте операции
     /// </summary>
-    public MoneyDto? AcqFee { get; set; }
+    public MoneyDto? AcqFee { get; init; }
 
     /// <summary>
     /// Направление движения эквайринговой комиссии относительно карты.
     /// Заполняется, если присутствует эквайринговая комиссия. C - карта кредитуется, D - карта дебетуется
     /// </summary>
-    public char? AcqFeeDirection { get; set; }
+    public char? AcqFeeDirection { get; init; }
 
     /// <summary>
     /// Сумма авторизации в валюте счета. Включает эмитентскую комиссию
     /// </summary>
-    public MoneyDto? ConvMoney { get; set; }
+    public MoneyDto? ConvMoney { get; init; }
 
     /// <summary>
     /// Признак операции, проведенной в физическом устройстве (0 - false, 1 - true)
     /// </summary>
-    public int PhysTerm { get; set; }
+    public int PhysTerm { get; init; }
 
     /// <summary>
     /// Условия выполнения авторизации
     /// </summary>
-    public string? AuthorizationCondition { get; set; }
+    public string? AuthorizationCondition { get; init; }
 
     /// <summary>
     /// Способ ввода данных карты
     /// </summary>
-    public string? PosEntryMode { get; set; }
+    public string? PosEntryMode { get; init; }
 
     /// <summary>
     /// Направление платежа, полученное от устройства
     /// </summary>
-    public string? ServiceId { get; set; }
+    public string? ServiceId { get; init; }
 
     /// <summary>
     /// Сервисный код
     /// </summary>
-    public string? ServiceCode { get; set; }
+    public string? ServiceCode { get; init; }
 
     /// <summary>
     /// Для хранения неидентифицированных полей/заполнение CardIdentifier
     /// </summary>
     [JsonExtensionData]
-    public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
+    public Dictionary<string, JsonElement>? ExtensionData { get; set; } = new();
 
     private List<CardIdentifierDto>? _cardIdentifier;
 
@@ -135,7 +135,7 @@ public class AcqFinAuthDetailsDto : IHasCardIdentifier
 
             _cardIdentifier = CardIdentifierJsonParser.Transform(ExtensionData);
 
-            ExtensionData.Clear();
+            ExtensionData?.Clear();
 
             return _cardIdentifier;
         }

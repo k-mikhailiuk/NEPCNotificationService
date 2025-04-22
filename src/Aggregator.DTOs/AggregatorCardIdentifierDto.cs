@@ -5,15 +5,15 @@ namespace Aggregator.DTOs;
 /// <summary>
 /// Модель для хранения идентификатора карты
 /// </summary>
-public class AggregatorCardIdentifierDto
+public record AggregatorCardIdentifierDto
 {
     /// <summary>
     /// Тип идентификатора карты
     /// </summary>
-    public AggregatorCardIdentifierType Type { get; set; }
+    public AggregatorCardIdentifierType Type { get; init; }
     
     /// <summary>
     /// Значение идентификатора карты
     /// </summary>
-    public string? Value { get; set; }
+    public string? Value { get; init; }
 }

@@ -5,15 +5,15 @@ namespace DataIngrestorApi.DTOs;
 /// <summary>
 /// Модель для хранения идентификатора карты
 /// </summary>
-public class CardIdentifierDto
+public record CardIdentifierDto
 {
     /// <summary>
     /// Тип идентификатора карты
     /// </summary>
-    public CardIdentifierType Type { get; set; }
+    public CardIdentifierType Type { get; init; }
     
     /// <summary>
     /// Значение идентификатора карты
     /// </summary>
-    public string? Value { get; set; }
+    public string? Value { get; init; }
 }

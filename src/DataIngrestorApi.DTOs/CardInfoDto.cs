@@ -9,38 +9,38 @@ namespace DataIngrestorApi.DTOs;
 /// <summary>
 /// Информация о карте
 /// </summary>
-public class CardInfoDto : IHasCardIdentifier
+public record CardInfoDto : IHasCardIdentifier
 {
     /// <summary>
     /// Срок действия карты (YYMM)
     /// </summary>
-    public string ExpDate { get; set; }
+    public string ExpDate { get; init; }
     
     /// <summary>
     /// Ссылка на номер карты
     /// </summary>
-    public string RefPan { get; set; }
+    public string RefPan { get; init; }
     
     /// <summary>
     /// Идентификатор контракта
     /// </summary>
-    public string ContractId { get; set; }
+    public string ContractId { get; init; }
     
     /// <summary>
     /// Номер телефона владельца карты
     /// </summary>
-    public string? MobilePhone { get; set; }
+    public string? MobilePhone { get; init; }
     
     /// <summary>
     /// Тип - контейнер лимитов
     /// </summary>
-    public LimitWrapperDto[]? Limits { get; set; }
+    public LimitWrapperDto[]? Limits { get; init; }
     
     /// <summary>
     /// Для хранения неидентифицированных полей/заполнение CardIdentifier
     /// </summary>
     [JsonExtensionData]
-    public Dictionary<string, JsonElement> ExtensionData { get; set; } = new();
+    public Dictionary<string, JsonElement>? ExtensionData { get; set; } = new();
 
     private List<CardIdentifierDto>? _cardIdentifier;
     
@@ -55,7 +55,7 @@ public class CardInfoDto : IHasCardIdentifier
             
             _cardIdentifier = CardIdentifierJsonParser.Transform(ExtensionData);
 
-            ExtensionData.Clear();
+            ExtensionData?.Clear();
 
             return _cardIdentifier;
         }

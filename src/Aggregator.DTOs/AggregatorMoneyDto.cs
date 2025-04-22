@@ -3,15 +3,15 @@ namespace Aggregator.DTOs;
 /// <summary>
 /// DTO для хранения суммы и кода валюты
 /// </summary>
-public class AggregatorMoneyDto
+public record AggregatorMoneyDto
 {
     /// <summary>
     /// Сумма в минимальных единицах валюты
     /// </summary>
-    public decimal Amount { get; set; }
+    public decimal Amount { get; init; }
     
     /// <summary>
     /// Трехзначный числовой код валюты (ISO-4217)
     /// </summary>
-    public string Currency { get; set; }
+    public string Currency { get; init; }
 }

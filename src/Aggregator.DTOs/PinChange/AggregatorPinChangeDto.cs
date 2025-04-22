@@ -5,29 +5,29 @@ namespace Aggregator.DTOs.PinChange;
 /// <summary>
 /// Уведомление об изменении PIN-кода
 /// </summary>
-public class AggregatorPinChangeDto : INotificationAggregatorDto
+public record AggregatorPinChangeDto : INotificationAggregatorDto
 {
     /// <inheritdoc />
-    public long Id { get; set; }
+    public long Id { get; init; }
     
     /// <inheritdoc />
-    public long EventId { get; set; }
+    public long EventId { get; init; }
     
     /// <inheritdoc />
-    public string Time { get; set; }
+    public string Time { get; init; }
     
     /// <summary>
     /// Подробная информация об изменении PIN-кода
     /// </summary>
-    public AggregatorPinChangeDetailsDto Details { get; set; }
+    public AggregatorPinChangeDetailsDto Details { get; init; }
     
     /// <summary>
     /// Информация о карте
     /// </summary>
-    public AggregatorCardInfoDto CardInfo { get; set; }
+    public AggregatorCardInfoDto CardInfo { get; init; }
     
     /// <summary>
     /// Список расширений
     /// </summary>
-    public List<AggregatorExtensionDto>? Extensions { get; set; }
+    public List<AggregatorExtensionDto>? Extensions { get; init; }
 }
