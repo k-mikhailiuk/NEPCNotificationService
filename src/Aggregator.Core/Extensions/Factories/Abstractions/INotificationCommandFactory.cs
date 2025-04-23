@@ -1,3 +1,4 @@
+using Aggregator.DTOs.Abstractions;
 using MediatR;
 
 namespace Aggregator.Core.Extensions.Factories.Abstractions;
@@ -18,5 +19,5 @@ public interface INotificationCommandFactory
     /// <returns>
     /// Команда, реализующая <see cref="IRequest{TResponse}"/>, которая при выполнении возвращает список идентификаторов уведомлений.
     /// </returns>
-    IRequest<List<long>> CreateCommand(List<object> notification);
+    IRequest<List<long>> CreateCommand(List<INotificationAggregatorDto> notification);
 }

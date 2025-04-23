@@ -61,7 +61,7 @@ public class AcqFinAuthProcessHandler(NotificationEntityMapperFactory mapperFact
 
             if (existingList.Count == 0)
             {
-                await unitOfWork.AcqFinAuth.AddAsync(entity, cancellationToken);
+                unitOfWork.AcqFinAuth.Add(entity);
             }
             
             await unitOfWork.SaveChangesAsync(cancellationToken);

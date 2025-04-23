@@ -63,7 +63,7 @@ public class UnholdProcessHandler(NotificationEntityMapperFactory mapperFactory,
 
             if (existingList.Count == 0)
             {
-                await unitOfWork.Unhold.AddAsync(entity, cancellationToken);
+                unitOfWork.Unhold.Add(entity);
             }
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }

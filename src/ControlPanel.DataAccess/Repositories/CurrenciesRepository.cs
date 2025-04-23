@@ -14,5 +14,5 @@ public class CurrenciesRepository(ControlPanelDbContext context) : Repository<Cu
 {
     /// <inheritdoc/>
     public async Task<Currency?> GetByCodeAsync(int code, CancellationToken cancellationToken)
-        => await _dbSet.FirstOrDefaultAsync(x => x.CurrencyCode == code, cancellationToken: cancellationToken);
+        => await DbSet.FirstOrDefaultAsync(x => x.CurrencyCode == code, cancellationToken: cancellationToken);
 }

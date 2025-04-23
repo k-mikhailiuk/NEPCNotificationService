@@ -56,7 +56,7 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
 
             if (existingList.Count == 0)
             {
-                await unitOfWork.AcsOtps.AddWithEncriptionAsync(entity, cancellationToken);
+                unitOfWork.AcsOtps.AddWithEncription(entity);
             }
             
             await unitOfWork.SaveChangesAsync(cancellationToken);

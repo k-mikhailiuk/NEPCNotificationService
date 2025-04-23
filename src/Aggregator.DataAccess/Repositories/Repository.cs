@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using Aggregator.DataAccess.Abstractions.Repositories;
-using Aggregator.DataAccess.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.DataAccess.Repositories;
@@ -14,12 +13,12 @@ public class Repository<T> : IRepository<T> where T : class
     /// <summary>
     /// Контекст базы данных Aggregator.
     /// </summary>
-    protected readonly AggregatorDbContext _context;
+    protected readonly AggregatorDbContext Context;
 
     /// <summary>
     /// Набор данных (DbSet) для сущности.
     /// </summary>
-    protected readonly DbSet<T> _dbSet;
+    protected readonly DbSet<T> DbSet;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="Repository{T}"/>.
@@ -27,50 +26,50 @@ public class Repository<T> : IRepository<T> where T : class
     /// <param name="context">Контекст базы данных, используемый для доступа к данным.</param>
     protected Repository(AggregatorDbContext context)
     {
-        _context = context;
-        _dbSet = _context.Set<T>();
+        Context = context;
+        DbSet = Context.Set<T>();
     }
 
     /// <inheritdoc/>
     public async Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken)
     {
-        return await _dbSet.FindAsync([id], cancellationToken: cancellationToken);
+        return await DbSet.FindAsync([id], cancellationToken: cancellationToken);
     }
 
     /// <inheritdoc/>
     public async Task<List<T>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await _dbSet.ToListAsync(cancellationToken);
+        return await DbSet.ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
     public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
     {
-        return await _dbSet.Where(predicate).ToListAsync(cancellationToken);
+        return await DbSet.Where(predicate).ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
     public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
     {
-        return await _dbSet.AnyAsync(predicate, cancellationToken);
+        return await DbSet.AnyAsync(predicate, cancellationToken);
     }
 
     /// <inheritdoc/>
-    public async Task AddAsync(T entity, CancellationToken cancellationToken)
+    public void Add(T entity)
     {
-        await _dbSet.AddAsync(entity, cancellationToken);
+         DbSet.Add(entity);
     }
 
     /// <inheritdoc/>
     public void Remove(T entity)
     {
-        _dbSet.Remove(entity);
+        DbSet.Remove(entity);
     }
 
     /// <inheritdoc/>
     public async Task<T?> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
     {
-        return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
+        return await DbSet.FirstOrDefaultAsync(predicate, cancellationToken);
     }
     
     /// <inheritdoc/>
@@ -81,7 +80,7 @@ public class Repository<T> : IRepository<T> where T : class
 
         var inClause = string.Join(",", ids);
 
-        var entityType = _context.Model.FindEntityType(typeof(T));
+        var entityType = Context.Model.FindEntityType(typeof(T));
         if (entityType == null)
             throw new InvalidOperationException($"Не удалось найти метаданные для типа {typeof(T).Name}.");
 
@@ -99,7 +98,7 @@ public class Repository<T> : IRepository<T> where T : class
 
         var sql = $"SELECT * FROM {fullTableName} WHERE [{keyColumnName}] IN ({inClause})";
 
-        return await _context.Set<T>().FromSqlRaw(sql).ToListAsync(cancellationToken);
+        return await Context.Set<T>().FromSqlRaw(sql).ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
@@ -113,7 +112,7 @@ public class Repository<T> : IRepository<T> where T : class
 
         var inClause = string.Join(",", ids);
 
-        var entityType = _context.Model.FindEntityType(typeof(T));
+        var entityType = Context.Model.FindEntityType(typeof(T));
         if (entityType == null)
             throw new InvalidOperationException($"Не удалось найти метаданные для типа {typeof(T).Name}.");
 
@@ -131,7 +130,7 @@ public class Repository<T> : IRepository<T> where T : class
 
         var sql = $"SELECT * FROM {fullTableName} WHERE [{keyColumnName}] IN ({inClause})";
 
-        var query = _context.Set<T>().FromSqlRaw(sql);
+        var query = Context.Set<T>().FromSqlRaw(sql);
 
         query = includes.Aggregate(query, (current, include) => current.Include(include));
 
@@ -139,26 +138,20 @@ public class Repository<T> : IRepository<T> where T : class
     }
 
     /// <inheritdoc/>
-    public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
+    public void AddRange(IEnumerable<T> entities)
     {
-        foreach (var entity in entities)
-        {
-            await AddAsync(entity, cancellationToken);
-        }
+        DbSet.AddRange(entities);
     }
 
     /// <inheritdoc/>
     public void RemoveRange(IEnumerable<T> entities)
     {
-        foreach (var entity in entities)
-        {
-            Remove(entity);
-        }
+       DbSet.RemoveRange(entities);
     }
     
     /// <inheritdoc/>
     public Task<List<T>> GetAllWithConditionAsync(Expression<Func<T, bool>> expression, CancellationToken cancellationToken = default)
     {
-        return _dbSet.Where(expression).ToListAsync(cancellationToken);
+        return DbSet.Where(expression).ToListAsync(cancellationToken);
     }
 }

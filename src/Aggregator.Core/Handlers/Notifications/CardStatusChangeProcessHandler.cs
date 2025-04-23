@@ -64,7 +64,7 @@ public class CardStatusChangeProcessHandler(
 
             if (existingList.Count == 0)
             {
-                await unitOfWork.CardStatusChange.AddAsync(entity, cancellationToken);
+                unitOfWork.CardStatusChange.Add(entity);
             }
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }

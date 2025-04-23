@@ -2,6 +2,7 @@ using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions.Factories.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities;
+using Aggregator.DTOs.Abstractions;
 using DataIngrestorApi.DataAccess.Entities;
 using DataIngrestorApi.DataAccess.Entities.Enums;
 using Mapper;
@@ -37,7 +38,7 @@ public class ProcessInboxMessageHandler(
         
         logger.LogInformation("Processing inbox messages: {MessageCount}", request.Messages.Count());
 
-        var notificationsByType = new Dictionary<Type, List<object>>();
+        var notificationsByType = new Dictionary<Type, List<INotificationAggregatorDto>>();
 
         var processedMessages = new Dictionary<long, long>();
 
@@ -55,13 +56,12 @@ public class ProcessInboxMessageHandler(
 
             var notificationType = notification.GetType();
 
-            if (!notificationsByType.TryGetValue(notificationType, out var notificationList))
-            {
-                notificationList = [];
-                notificationsByType[notificationType] = notificationList;
-            }
+            if (notificationsByType.TryGetValue(notificationType, out var notificationList))
+                notificationList.Add(notification);
+            else
+                notificationsByType.Add(notificationType, [notification]);
 
-            notificationList.Add(notification);
+            notificationList?.Add(notification);
 
             logger.LogInformation("Parsed notification: Id={messageId}, Type={notificationType}", message.Id,
                 notificationType.Name);
@@ -81,10 +81,10 @@ public class ProcessInboxMessageHandler(
 
                 var reverseMap = processedMessages.ToDictionary(x => x.Value, x => x.Key);
 
-                var inboxMessageIds = processedNotificationsIds
-                    .Where(id => reverseMap.TryGetValue(id, out _))
-                    .Select(id => reverseMap[id])
-                    .ToList();
+                var inboxMessageIds = new List<long>();
+                foreach (var notificationsId in processedNotificationsIds)
+                    if (reverseMap.TryGetValue(notificationsId, out var messageId))
+                        inboxMessageIds.Add(messageId);
                 
                 await CompleteMessageProcessingAsync(inboxMessageIds, unitOfWork, cancellationToken);
 
@@ -155,7 +155,7 @@ public class ProcessInboxMessageHandler(
         var inboxArchive = inboxMessages.Select(inboxMessage => InboxArchiveMessage.Create(inboxMessage.Payload))
             .ToList();
 
-        await unitOfWork.InboxArchiveMessage.AddRangeAsync(inboxArchive, cancellationToken);
+        unitOfWork.InboxArchiveMessage.AddRange(inboxArchive);
 
         logger.LogInformation("{count} messages successfully added to archive", inboxArchive.Count);
 
@@ -182,7 +182,7 @@ public class ProcessInboxMessageHandler(
 
         var messages = await builder.BuildNotificationAsync(notificationIds, cancellationToken);
 
-        await unitOfWork.NotificationMessage.AddRangeAsync(messages, cancellationToken);
+        unitOfWork.NotificationMessage.AddRange(messages);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }

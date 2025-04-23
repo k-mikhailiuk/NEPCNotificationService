@@ -12,8 +12,7 @@ namespace Aggregator.Core.Handlers.Notifications;
 /// <summary>
 /// Обработчик команды уведомления об изменении баланса счета.
 /// </summary>
-public class
-    AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
+public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
     : IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, List<long>>
 {
     /// <summary>
@@ -35,11 +34,11 @@ public class
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-        await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyLimit(entities, unitOfWork, cancellationToken);
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
         await PreloadAndUnifyAccountsInfoAsync(entities, unitOfWork, cancellationToken);
         await PreloadAndUnifyCardInfoAsync(entities, unitOfWork, cancellationToken);
-        await PreloadAndUnifyLimitWrappersAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyLimitWrappers(entities, unitOfWork, cancellationToken);
 
         await UnifyProcessorExtension<AcctBalChange>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
@@ -75,12 +74,15 @@ public class
 
         foreach (var cardInfo in entities.Select(e => e.CardInfo))
         {
+            if (cardInfo == null) continue;
+            
             var mid = cardInfo.Id;
 
             if (cardInfoCache.TryGetValue(mid, out _)) continue;
 
             cardInfoCache[mid] = cardInfo;
-            await unitOfWork.CardInfo.AddAsync(cardInfo, cancellationToken);
+                
+            unitOfWork.CardInfo.Add(cardInfo);
         }
     }
 
@@ -107,7 +109,7 @@ public class
             if (accountInfoCache.TryGetValue(mid, out _)) continue;
 
             accountInfoCache[mid] = accountsInfo;
-            await unitOfWork.AccountsInfos.AddAsync(accountsInfo, cancellationToken);
+            unitOfWork.AccountsInfos.Add(accountsInfo);
         }
     }
 
@@ -131,7 +133,7 @@ public class
 
             if (existingList.Count == 0)
             {
-                await unitOfWork.AcctBalChange.AddAsync(entity, cancellationToken);
+                unitOfWork.AcctBalChange.Add(entity);
             }
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -199,7 +201,7 @@ public class
     /// <param name="entities">Список сущностей AcctBalChange.</param>
     /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyLimitsAsync(
+    private static void PreloadAndUnifyLimit(
         List<AcctBalChange> entities,
         IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
@@ -210,7 +212,7 @@ public class
             {
                 foreach (var lw in entity.CardInfo.Limits)
                 {
-                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
+                    unitOfWork.Limit.Add(lw.Limit);
                 }
             }
 
@@ -221,7 +223,7 @@ public class
 
                 foreach (var lw in accInfo.Limits)
                 {
-                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
+                    unitOfWork.Limit.Add(lw.Limit);
                 }
             }
         }
@@ -233,7 +235,7 @@ public class
     /// <param name="entities">Список сущностей AcctBalChange.</param>
     /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyLimitWrappersAsync(
+    private static void PreloadAndUnifyLimitWrappers(
         List<AcctBalChange> entities,
         IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
@@ -241,13 +243,13 @@ public class
         foreach (var accountsInfo in entities.SelectMany(entity => entity.AccountsInfo))
         {
             if (accountsInfo.Limits != null)
-                await unitOfWork.AccountsInfoLimitWrapper.AddRangeAsync(accountsInfo.Limits, cancellationToken);
+                unitOfWork.AccountsInfoLimitWrapper.AddRange(accountsInfo.Limits);
         }
 
         foreach (var cardInfos in entities.Select(entity => entity.CardInfo))
         {
             if (cardInfos.Limits != null)
-                await unitOfWork.CardInfoLimitWrapper.AddRangeAsync(cardInfos.Limits, cancellationToken);
+                unitOfWork.CardInfoLimitWrapper.AddRange(cardInfos.Limits);
         }
     }
 }

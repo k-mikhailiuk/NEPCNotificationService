@@ -1,5 +1,6 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions.Factories.Abstractions;
+using Aggregator.DTOs.Abstractions;
 using Aggregator.DTOs.AcctBalChange;
 using Aggregator.DTOs.AcqFinAuth;
 using Aggregator.DTOs.AcsOtp;
@@ -34,40 +35,26 @@ public class NotificationCommandFactory : INotificationCommandFactory
     /// <exception cref="NotSupportedException">
     /// Выбрасывается, если тип уведомления не поддерживается.
     /// </exception>
-    public IRequest<List<long>> CreateCommand(List<object> notifications)
+    public IRequest<List<long>> CreateCommand(List<INotificationAggregatorDto> notifications)
     {
-        var notificationType = notifications.First().GetType();
-        
-        return notificationType switch
+        if (notifications == null || notifications.Count == 0)
+            throw new ArgumentException("Notifications list must contain at least one element.", nameof(notifications));
+
+        var first = notifications.First();
+        return first switch
         {
-            _ when notificationType == typeof(AggregatorIssFinAuthDto) => 
-                new ProcessNotificationCommand<AggregatorIssFinAuthDto>(
-                    notifications.Cast<AggregatorIssFinAuthDto>().ToList()),
-            _ when notificationType == typeof(AggregatorAcqFinAuthDto) => 
-                new ProcessNotificationCommand<AggregatorAcqFinAuthDto>(
-                    notifications.Cast<AggregatorAcqFinAuthDto>().ToList()),
-            _ when notificationType == typeof(AggregatorCardStatusChangeDto) => 
-                new ProcessNotificationCommand<AggregatorCardStatusChangeDto>(
-                    notifications.Cast<AggregatorCardStatusChangeDto>().ToList()),
-            _ when notificationType == typeof(AggregatorPinChangeDto) => 
-                new ProcessNotificationCommand<AggregatorPinChangeDto>(
-                    notifications.Cast<AggregatorPinChangeDto>().ToList()),
-            _ when notificationType == typeof(AggregatorUnholdDto) => 
-                new ProcessNotificationCommand<AggregatorUnholdDto>(
-                    notifications.Cast<AggregatorUnholdDto>().ToList()),
-            _ when notificationType == typeof(AggregatorOwiUserActionDto) => 
-                new ProcessNotificationCommand<AggregatorOwiUserActionDto>(
-                    notifications.Cast<AggregatorOwiUserActionDto>().ToList()),
-            _ when notificationType == typeof(AggregatorAcctBalChangeDto) => 
-                new ProcessNotificationCommand<AggregatorAcctBalChangeDto>(
-                    notifications.Cast<AggregatorAcctBalChangeDto>().ToList()),
-            _ when notificationType == typeof(AggregatorTokenStatusChangeDto) => 
-                new ProcessNotificationCommand<AggregatorTokenStatusChangeDto>(
-                    notifications.Cast<AggregatorTokenStatusChangeDto>().ToList()),
-            _ when notificationType == typeof(AggregatorAcsOtpDto) => 
-                new ProcessNotificationCommand<AggregatorAcsOtpDto>(
-                    notifications.Cast<AggregatorAcsOtpDto>().ToList()),
-            _ => throw new NotSupportedException($"Тип уведомления {notificationType.Name} не поддерживается.")
+            AggregatorIssFinAuthDto _       => Cast<AggregatorIssFinAuthDto>(),
+            AggregatorAcqFinAuthDto _       => Cast<AggregatorAcqFinAuthDto>(),
+            AggregatorCardStatusChangeDto _ => Cast<AggregatorCardStatusChangeDto>(),
+            AggregatorPinChangeDto _        => Cast<AggregatorPinChangeDto>(),
+            AggregatorUnholdDto _           => Cast<AggregatorUnholdDto>(),
+            AggregatorOwiUserActionDto _    => Cast<AggregatorOwiUserActionDto>(),
+            AggregatorAcctBalChangeDto _    => Cast<AggregatorAcctBalChangeDto>(),
+            AggregatorTokenStatusChangeDto _=> Cast<AggregatorTokenStatusChangeDto>(),
+            AggregatorAcsOtpDto _           => Cast<AggregatorAcsOtpDto>(),
+            _ => throw new NotSupportedException($"Тип уведомления {first.GetType().Name} не поддерживается.")
         };
+
+        ProcessNotificationCommand<T> Cast<T>() where T : INotificationAggregatorDto => new(notifications.Cast<T>().ToList());
     }
 }

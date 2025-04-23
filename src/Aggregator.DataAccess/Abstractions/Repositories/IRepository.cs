@@ -43,8 +43,7 @@ public interface IRepository<T> where T : class
     /// Асинхронно добавляет новую сущность в репозиторий.
     /// </summary>
     /// <param name="entity">Сущность для добавления.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    Task AddAsync(T entity, CancellationToken cancellationToken = default);
+    void Add(T entity);
     
     /// <summary>
     /// Удаляет указанную сущность из репозитория.
@@ -76,13 +75,12 @@ public interface IRepository<T> where T : class
     /// <param name="includes">Выражения для включения связанных сущностей.</param>
     /// <returns>Список найденных сущностей.</returns>
     Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
-    
+
     /// <summary>
     /// Асинхронно добавляет коллекцию сущностей в репозиторий.
     /// </summary>
     /// <param name="entities">Коллекция сущностей для добавления.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default);
+    void AddRange(IEnumerable<T> entities);
     
     /// <summary>
     /// Удаляет коллекцию сущностей из репозитория.

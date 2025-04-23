@@ -19,7 +19,7 @@ public class NotificationsRepository(AggregatorDbContext context)
         if (ids == null || ids.Count == 0)
             return new List<T>();
 
-        var result = _context.Notifications
+        var result = Context.Notifications
             .Where(n => n.NotificationId == ids[0])
             .OfType<T>();
 
@@ -27,7 +27,7 @@ public class NotificationsRepository(AggregatorDbContext context)
         {
             var id = ids[i];
             result = result.Union(
-                _context.Notifications
+                Context.Notifications
                     .Where(n => n.NotificationId == id)
                     .OfType<T>()
             );
@@ -46,7 +46,7 @@ public class NotificationsRepository(AggregatorDbContext context)
         if (ids == null || ids.Count == 0)
             return new List<T>();
 
-        var result = _context.Notifications
+        var result = Context.Notifications
             .Where(n => n.NotificationId == ids[0])
             .OfType<T>();
 
@@ -55,7 +55,7 @@ public class NotificationsRepository(AggregatorDbContext context)
         for (var i = 1; i < ids.Count; i++)
         {
             var id = ids[i];
-            var next = _context.Notifications
+            var next = Context.Notifications
                 .Where(n => n.NotificationId == id)
                 .OfType<T>();
 

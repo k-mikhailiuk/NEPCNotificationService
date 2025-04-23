@@ -25,7 +25,7 @@ public class UnitOfWork : IUnitOfWork
     /// <summary>
     /// Контекст базы данных Aggregator.
     /// </summary>
-    protected AggregatorDbContext _context { get; }
+    protected AggregatorDbContext Context { get; }
 
     /// <inheritdoc/>
     public IInboxRepository Inbox => _inbox.Value;
@@ -211,7 +211,7 @@ public class UnitOfWork : IUnitOfWork
     /// <param name="serviceProvider">Провайдер сервисов для разрешения зависимостей репозиториев.</param>
     public UnitOfWork(AggregatorDbContext context, IServiceProvider serviceProvider)
     {
-        _context = context;
+        Context = context;
 
         _inbox = new Lazy<IInboxRepository>(() =>
             serviceProvider.GetService<IInboxRepository>() ?? throw new InvalidOperationException());
@@ -292,30 +292,30 @@ public class UnitOfWork : IUnitOfWork
 
     /// <inheritdoc/>
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken) =>
-        await _context.SaveChangesAsync(cancellationToken);
+        await Context.SaveChangesAsync(cancellationToken);
 
     /// <inheritdoc/>
     public IQueryable<T> FromSql<T>(string sql, params object[] parameters) where T : class
     {
-        return _context.Set<T>().FromSqlRaw(sql, parameters);
+        return Context.Set<T>().FromSqlRaw(sql, parameters);
     }
 
     /// <inheritdoc/>
     public void BeginTransactionAsync()
     {
-        _context.Database.BeginTransactionAsync();
+        Context.Database.BeginTransactionAsync();
     }
 
     /// <inheritdoc/>
     public void CommitTransactionAsync()
     {
-        _context.Database.CommitTransactionAsync();
+        Context.Database.CommitTransactionAsync();
     }
 
     /// <inheritdoc/>
     public void RollbackTransactionAsync()
     {
-        _context.Database.RollbackTransactionAsync();
+        Context.Database.RollbackTransactionAsync();
     }
 
     /// <inheritdoc/>
@@ -324,10 +324,10 @@ public class UnitOfWork : IUnitOfWork
         if (entity == null)
             throw new ArgumentNullException(nameof(entity));
 
-        var entry = _context.Entry(entity);
+        var entry = Context.Entry(entity);
         if (entry.State == EntityState.Detached)
         {
-            _context.Attach(entity);
+            Context.Attach(entity);
         }
     }
 
@@ -336,6 +336,6 @@ public class UnitOfWork : IUnitOfWork
     /// </summary>
     public void Dispose()
     {
-        _context.Dispose();
+        Context.Dispose();
     }
 }

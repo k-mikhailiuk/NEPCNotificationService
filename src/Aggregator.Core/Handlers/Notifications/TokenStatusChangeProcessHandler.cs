@@ -67,7 +67,7 @@ public class
 
             if (existingList.Count == 0)
             {
-                await unitOfWork.TokenStatusChange.AddAsync(entity, cancellationToken);
+                unitOfWork.TokenStatusChange.Add(entity);
             }
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }

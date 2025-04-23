@@ -27,8 +27,7 @@ public interface IAcsOtpRepository : IRepository<DataAccess.Entities.AcsOtp.AcsO
     /// <param name="entity">Объект <see cref="DataAccess.Entities.AcsOtp.AcsOtp"/> для добавления.</param>
     /// <param name="cancellationToken">Токен для отмены операции.</param>
     /// <returns>Задача, представляющая асинхронную операцию добавления объекта с шифрованием.</returns>
-    Task AddWithEncriptionAsync(DataAccess.Entities.AcsOtp.AcsOtp entity,
-        CancellationToken cancellationToken = default);
+    void AddWithEncription(DataAccess.Entities.AcsOtp.AcsOtp entity);
     
     Task<List<DataAccess.Entities.AcsOtp.AcsOtp>> GetByIdsAsync(
         List<long> ids,

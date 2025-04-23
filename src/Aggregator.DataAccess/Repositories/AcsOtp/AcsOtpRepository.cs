@@ -40,14 +40,12 @@ public class AcsOtpRepository(AggregatorDbContext context, INotificationsReposit
     /// Асинхронно добавляет объект <see cref="DataAccess.Entities.AcsOtp.AcsOtp"/> с применением шифрования.
     /// </summary>
     /// <param name="entity">Объект <see cref="DataAccess.Entities.AcsOtp.AcsOtp"/> для добавления.</param>
-    /// <param name="cancellationToken">Токен для отмены операции.</param>
     /// <returns>Задача, представляющая асинхронную операцию добавления объекта с шифрованием.</returns>
-    public async Task AddWithEncriptionAsync(DataAccess.Entities.AcsOtp.AcsOtp entity,
-        CancellationToken cancellationToken = default)
+    public void AddWithEncription(DataAccess.Entities.AcsOtp.AcsOtp entity)
     {
         entity.Details.OtpInfo.Otp = Encryptor.Encrypt(entity.Details.OtpInfo.Otp);
 
-        await AddAsync(entity, cancellationToken);
+        Add(entity);
     }
 
     /// <inheritdoc/>

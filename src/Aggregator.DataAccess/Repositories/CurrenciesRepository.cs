@@ -22,5 +22,5 @@ public class CurrenciesRepository(AggregatorDbContext context) : Repository<Curr
     /// Объект <see cref="Currency"/>, если найден, иначе <c>null</c>.
     /// </returns>
     public async Task<Currency?> GetByCodeAsync(int code, CancellationToken cancellationToken)
-        => await _dbSet.FirstOrDefaultAsync(x => x.CurrencyCode == code, cancellationToken: cancellationToken);
+        => await DbSet.FirstOrDefaultAsync(x => x.CurrencyCode == code, cancellationToken: cancellationToken);
 }

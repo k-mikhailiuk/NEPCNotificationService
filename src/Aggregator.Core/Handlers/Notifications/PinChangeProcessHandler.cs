@@ -64,7 +64,7 @@ public class PinChangeProcessHandler(NotificationEntityMapperFactory mapperFacto
 
             if (existingList.Count == 0)
             {
-                await unitOfWork.PinChange.AddAsync(entity, cancellationToken);
+                unitOfWork.PinChange.Add(entity);
             }
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }

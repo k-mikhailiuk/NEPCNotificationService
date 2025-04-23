@@ -24,6 +24,6 @@ public class LimitIdDescriptionDirectoriesRepository(AggregatorDbContext context
     /// </returns>
     public async Task<LimitIdDescriptionDirectory?> GetByLimitCodeAsync(long limitCode, CancellationToken cancellationToken)
     {
-        return await _dbSet.FirstOrDefaultAsync(x=>x.LimitCode == limitCode, cancellationToken: cancellationToken);
+        return await DbSet.FirstOrDefaultAsync(x=>x.LimitCode == limitCode, cancellationToken: cancellationToken);
     }
 }

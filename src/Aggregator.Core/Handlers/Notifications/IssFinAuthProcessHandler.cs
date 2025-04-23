@@ -35,7 +35,7 @@ public class IssFinAuthProcessHandler(
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-        await PreloadAndUnifyLimitsAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyLimits(entities, unitOfWork, cancellationToken);
 
         await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
 
@@ -85,7 +85,7 @@ public class IssFinAuthProcessHandler(
             if (cardInfoCache.TryGetValue(mid, out _)) continue;
 
             cardInfoCache[mid] = cardInfo;
-            await unitOfWork.CardInfo.AddAsync(cardInfo, cancellationToken);
+            unitOfWork.CardInfo.Add(cardInfo);
         }
     }
 
@@ -112,7 +112,7 @@ public class IssFinAuthProcessHandler(
             if (accountInfoCache.TryGetValue(mid, out _)) continue;
 
             accountInfoCache[mid] = accountsInfo;
-            await unitOfWork.AccountsInfos.AddAsync(accountsInfo, cancellationToken);
+            unitOfWork.AccountsInfos.Add(accountsInfo);
         }
     }
 
@@ -128,13 +128,13 @@ public class IssFinAuthProcessHandler(
         foreach (var accountsInfo in entities.SelectMany(entity => entity.AccountsInfo))
         {
             if (accountsInfo.Limits != null)
-                await unitOfWork.AccountsInfoLimitWrapper.AddRangeAsync(accountsInfo.Limits, cancellationToken);
+                unitOfWork.AccountsInfoLimitWrapper.AddRange(accountsInfo.Limits);
         }
 
         foreach (var cardInfos in entities.Select(entity => entity.CardInfo))
         {
             if (cardInfos.Limits != null)
-                await unitOfWork.CardInfoLimitWrapper.AddRangeAsync(cardInfos.Limits, cancellationToken);
+                unitOfWork.CardInfoLimitWrapper.AddRange(cardInfos.Limits);
         }
     }
 
@@ -160,7 +160,7 @@ public class IssFinAuthProcessHandler(
 
             if (existingList.Count == 0)
             {
-                await unitOfWork.IssFinAuth.AddAsync(entity, cancellationToken);
+                unitOfWork.IssFinAuth.Add(entity);
             }
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
@@ -269,7 +269,7 @@ public class IssFinAuthProcessHandler(
             }
             else
             {
-                await unitOfWork.CheckedLimit.AddAsync(limit, cancellationToken);
+                unitOfWork.CheckedLimit.Add(limit);
                 limitCache[limit.Id] = limit;
             }
         }
@@ -281,7 +281,7 @@ public class IssFinAuthProcessHandler(
     /// <param name="entities">Список сущностей IssFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyLimitsAsync(
+    private static void PreloadAndUnifyLimits(
         List<IssFinAuth> entities,
         IUnitOfWork unitOfWork,
         CancellationToken cancellationToken)
@@ -292,7 +292,7 @@ public class IssFinAuthProcessHandler(
             {
                 foreach (var lw in entity.CardInfo.Limits)
                 {
-                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
+                    unitOfWork.Limit.Add(lw.Limit);
                 }
             }
 
@@ -303,7 +303,7 @@ public class IssFinAuthProcessHandler(
 
                 foreach (var lw in accInfo.Limits)
                 {
-                    await unitOfWork.Limit.AddAsync(lw.Limit, cancellationToken);
+                    unitOfWork.Limit.Add(lw.Limit);
                 }
             }
         }

@@ -63,7 +63,7 @@ public class OwiUserActionProcessHandler(
 
             if (existingList.Count == 0)
             {
-                await unitOfWork.OwiUserAction.AddAsync(entity, cancellationToken);
+                unitOfWork.OwiUserAction.Add(entity);
             }
             await unitOfWork.SaveChangesAsync(cancellationToken);
         }

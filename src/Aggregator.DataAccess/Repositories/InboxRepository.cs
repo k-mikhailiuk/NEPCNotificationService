@@ -24,7 +24,7 @@ public class InboxRepository(AggregatorDbContext context) : Repository<InboxMess
     /// </returns>
     public async Task<List<InboxMessage>> GetUnprocessedMessagesAsync(int batchSize, CancellationToken cancellationToken)
     {
-        return await _dbSet.Where(x => x.Status == InboxMessageStatus.New).Take(batchSize).ToListAsync(cancellationToken);
+        return await DbSet.Where(x => x.Status == InboxMessageStatus.New).Take(batchSize).ToListAsync(cancellationToken);
     }
 
     /// <summary>
@@ -37,6 +37,6 @@ public class InboxRepository(AggregatorDbContext context) : Repository<InboxMess
     /// </returns>
     public async Task<List<InboxMessage>> GetByIdsAsync(List<long> ids, CancellationToken cancellationToken)
     {
-        return await _dbSet.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
+        return await DbSet.Where(x => ids.Contains(x.Id)).ToListAsync(cancellationToken);
     }
 }

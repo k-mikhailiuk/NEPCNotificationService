@@ -94,12 +94,17 @@ public static class ServiceCollectionExtensions
     /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddBehaviors(this IServiceCollection services)
     {
-        services.AddTransient<
-            IPipelineBehavior<ProcessNotificationCommand<AggregatorCardStatusChangeDto>, Unit>,
-            ValidationBehaviorForProcessNotification<AggregatorCardStatusChangeDto>>();
-        services.AddTransient<
-            IPipelineBehavior<ProcessNotificationCommand<AggregatorIssFinAuthDto>, Unit>,
-            ValidationBehaviorForProcessNotification<AggregatorIssFinAuthDto>>();
+        services.Scan(scan => scan
+            .FromAssemblies(typeof(ValidationBehaviorForProcessNotification<>).Assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime()
+        );
+        
+        services.AddTransient(
+            typeof(IPipelineBehavior<,>),
+            typeof(ValidationBehaviorForProcessNotification<>)
+        );
 
         return services;
     }
@@ -125,7 +130,7 @@ public static class ServiceCollectionExtensions
     {
         services.Scan(scan => scan
             .FromAssemblyOf<AcqFinAuthEntityMapper>()
-            .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<, >)))
+            .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<,>)))
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
 
@@ -159,7 +164,7 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-    
+
     /// <summary>
     /// Регистрирует сервисы отправки уведомлений и сохранения истории уведомлений в контейнере зависимостей.
     /// </summary>

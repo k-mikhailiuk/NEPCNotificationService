@@ -1,4 +1,5 @@
 using Aggregator.Core.Commands;
+using Aggregator.DTOs.Abstractions;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
@@ -18,7 +19,7 @@ namespace Aggregator.Core.Behaviors;
 public class ValidationBehaviorForProcessNotification<T>(
     IEnumerable<IValidator<T>> validators,
     ILogger<ValidationBehaviorForProcessNotification<T>> logger)
-    : IPipelineBehavior<ProcessNotificationCommand<T>, Unit>
+    : IPipelineBehavior<ProcessNotificationCommand<INotificationAggregatorDto>, Unit>
     where T : class
 {
     
@@ -29,12 +30,12 @@ public class ValidationBehaviorForProcessNotification<T>(
     /// <param name="next">Делегат для вызова следующего обработчика в конвейере.</param>
     /// <param name="cancellationToken">Токен для отмены выполнения операции.</param>
     /// <returns>Результат выполнения следующего обработчика в виде <see cref="Unit"/>.</returns>
-    public async Task<Unit> Handle(ProcessNotificationCommand<T> request, RequestHandlerDelegate<Unit> next, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(ProcessNotificationCommand<INotificationAggregatorDto> request, RequestHandlerDelegate<Unit> next, CancellationToken cancellationToken)
     {
         if (!validators.Any())
             return await next();
 
-        var invalidItems = new List<T>();
+        var invalidItems = new List<INotificationAggregatorDto>();
 
         foreach (var notification in request.Notifications)
         {
@@ -42,7 +43,7 @@ public class ValidationBehaviorForProcessNotification<T>(
         
             foreach (var validator in validators)
             {
-                var context = new ValidationContext<T>(notification);
+                var context = new ValidationContext<INotificationAggregatorDto>(notification);
                 var result = await validator.ValidateAsync(context, cancellationToken);
                 if (!result.IsValid)
                 {
