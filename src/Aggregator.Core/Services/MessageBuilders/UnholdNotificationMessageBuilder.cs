@@ -54,7 +54,7 @@ public class UnholdNotificationMessageBuilder(
             throw new ArgumentNullException(nameof(context));
 
         var messages =
-            await unitOfWork.Unhold.GetListByIdsRawSqlAsync(notificationIds,
+            await unitOfWork.Unhold.GetByIdsWithIncludesAsync(notificationIds,
                 cancellationToken,
                 x => x.Details,
                 x => x.MerchantInfo);

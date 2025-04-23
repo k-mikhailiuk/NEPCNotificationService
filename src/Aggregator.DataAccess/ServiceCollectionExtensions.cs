@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
         
         services.Scan(scan => scan
             .FromAssemblyOf<IUnitOfWork>()
-            .AddClasses(classes => classes.InNamespaces("Aggregator.Repositories.Repositories"))
+            .AddClasses(classes => classes.InNamespaces("Aggregator.DataAccess.Repositories"))
             .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsImplementedInterfaces()
             .WithScopedLifetime());

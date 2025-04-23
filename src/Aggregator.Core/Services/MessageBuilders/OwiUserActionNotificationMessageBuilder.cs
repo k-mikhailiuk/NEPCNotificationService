@@ -56,7 +56,7 @@ public class OwiUserActionNotificationMessageBuilder(
             throw new ArgumentNullException(nameof(context));
 
         var messages =
-            await unitOfWork.OwiUserAction.GetListByIdsRawSqlAsync(notificationIds,
+            await unitOfWork.OwiUserAction.GetByIdsWithIncludesAsync(notificationIds,
                 cancellationToken, 
                 x => x.Details,
                 x=>x.CardInfo);

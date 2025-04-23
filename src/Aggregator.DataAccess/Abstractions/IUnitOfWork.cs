@@ -25,6 +25,11 @@ public interface IUnitOfWork : IDisposable
     IInboxRepository Inbox { get; }
     
     /// <summary>
+    /// Получает репозиторий для работы с base уведомлениями.
+    /// </summary>
+    INotificationsRepository Notifications { get; }
+    
+    /// <summary>
     /// Получает репозиторий для работы с деталями изменения баланса счета.
     /// </summary>
     IAcctBalChangeDetailsRepository AcctBalChangeDetails { get; }

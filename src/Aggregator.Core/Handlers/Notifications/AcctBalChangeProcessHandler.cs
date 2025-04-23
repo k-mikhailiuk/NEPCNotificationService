@@ -127,7 +127,7 @@ public class
             var idsToCheck = new List<long> { entity.NotificationId };
 
             var existingList = await unitOfWork.AcctBalChange
-                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+                .GetByIdsAsync(idsToCheck, cancellationToken);
 
             if (existingList.Count == 0)
             {

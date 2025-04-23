@@ -30,6 +30,8 @@ namespace Aggregator.DataAccess;
 public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) : DbContext(options)
 {
     public DbSet<InboxMessage> InboxMessages { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    
     public DbSet<IssFinAuth> IssFinAuths { get; set; }
     public DbSet<AcqFinAuth> AcqFinAuths { get; set; }
     public DbSet<CardStatusChange> CardStatusChanges { get; set; }

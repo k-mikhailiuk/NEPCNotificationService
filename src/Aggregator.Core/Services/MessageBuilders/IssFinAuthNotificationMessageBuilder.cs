@@ -56,7 +56,7 @@ public class IssFinAuthNotificationMessageBuilder(
             throw new ArgumentNullException(nameof(context));
 
         var messages =
-            await unitOfWork.IssFinAuth.GetListByIdsRawSqlAsync(
+            await unitOfWork.IssFinAuth.GetByIdsWithIncludesAsync(
                 notificationIds,
                 cancellationToken,
                 x => x.Details,

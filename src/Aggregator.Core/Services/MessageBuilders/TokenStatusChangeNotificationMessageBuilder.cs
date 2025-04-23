@@ -56,7 +56,7 @@ public class TokenStatusChangeNotificationMessageBuilder(
             throw new ArgumentNullException(nameof(context));
 
         var messages =
-            await unitOfWork.TokenStatusChange.GetListByIdsRawSqlAsync(notificationIds, cancellationToken,
+            await unitOfWork.TokenStatusChange.GetByIdsWithIncludesAsync(notificationIds, cancellationToken,
                 x => x.Details);
 
         foreach (var message in messages)

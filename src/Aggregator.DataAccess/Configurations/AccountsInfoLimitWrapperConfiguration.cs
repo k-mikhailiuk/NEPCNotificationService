@@ -32,5 +32,10 @@ public class AccountsInfoLimitWrapperConfiguration : IEntityTypeConfiguration<Ac
             .WithMany(e => e.Limits)
             .HasForeignKey(p => p.AccountsInfoId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.Limit)
+            .WithMany()
+            .HasForeignKey(x => x.LimitId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

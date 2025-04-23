@@ -53,7 +53,7 @@ public class AcqFinAuthNotificationMessageBuilder(
             throw new ArgumentNullException(nameof(context));
 
         var messages =
-            await unitOfWork.AcqFinAuth.GetListByIdsRawSqlAsync(notificationIds,
+            await unitOfWork.AcqFinAuth.GetByIdsWithIncludesAsync(notificationIds,
                 cancellationToken,
                 x => x.Details,
                 x => x.MerchantInfo);

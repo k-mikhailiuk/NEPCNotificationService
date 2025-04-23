@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Aggregator.DataAccess.Abstractions.Repositories;
+using Aggregator.DataAccess.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.DataAccess.Repositories;
@@ -71,7 +72,7 @@ public class Repository<T> : IRepository<T> where T : class
     {
         return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
     }
-
+    
     /// <inheritdoc/>
     public async Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken)
     {

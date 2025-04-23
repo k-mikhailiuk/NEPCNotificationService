@@ -60,7 +60,7 @@ public class PinChangeProcessHandler(NotificationEntityMapperFactory mapperFacto
             var idsToCheck = new List<long> { entity.NotificationId };
 
             var existingList = await unitOfWork.PinChange
-                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+                .GetByIdsAsync(idsToCheck, cancellationToken);
 
             if (existingList.Count == 0)
             {

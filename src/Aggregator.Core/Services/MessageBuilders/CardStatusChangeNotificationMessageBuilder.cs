@@ -56,7 +56,7 @@ public class CardStatusChangeNotificationMessageBuilder(
             throw new ArgumentNullException(nameof(context));
 
         var messages =
-            await unitOfWork.CardStatusChange.GetListByIdsRawSqlAsync(notificationIds, cancellationToken,
+            await unitOfWork.CardStatusChange.GetByIdsWithIncludesAsync(notificationIds, cancellationToken,
                 x => x.Details);
 
         foreach (var message in messages)

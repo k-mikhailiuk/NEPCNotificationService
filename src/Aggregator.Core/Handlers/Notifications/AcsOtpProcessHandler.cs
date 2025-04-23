@@ -52,7 +52,7 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
             var idsToCheck = new List<long> { entity.NotificationId };
 
             var existingList = await unitOfWork.AcsOtps
-                .GetListByIdsRawSqlAsync(idsToCheck, cancellationToken);
+                .GetByIdsAsync(idsToCheck, cancellationToken);
 
             if (existingList.Count == 0)
             {

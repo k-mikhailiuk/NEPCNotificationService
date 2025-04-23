@@ -56,7 +56,7 @@ public class PinChangeNotificationMessageBuilder(
             throw new ArgumentNullException(nameof(context));
 
         var messages =
-            await unitOfWork.PinChange.GetListByIdsRawSqlAsync(
+            await unitOfWork.PinChange.GetByIdsWithIncludesAsync(
                 notificationIds,
                 cancellationToken,
                 x => x.Details,

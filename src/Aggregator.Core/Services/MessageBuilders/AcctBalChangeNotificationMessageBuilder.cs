@@ -52,7 +52,7 @@ public class AcctBalChangeNotificationMessageBuilder(
             throw new ArgumentNullException(nameof(context));
 
         var messages =
-            await unitOfWork.AcctBalChange.GetListByIdsRawSqlAsync(notificationIds,
+            await unitOfWork.AcctBalChange.GetByIdsWithIncludesAsync(notificationIds,
                 cancellationToken, 
                 x => x.Details,
                 x=>x.CardInfo);
