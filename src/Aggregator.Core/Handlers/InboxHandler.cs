@@ -1,5 +1,5 @@
-using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions.Factories.Abstractions;
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DTOs.Abstractions;
@@ -15,34 +15,35 @@ using Microsoft.Extensions.Logging;
 namespace Aggregator.Core.Handlers;
 
 /// <summary>
-/// Обработчик команды для обработки входящих сообщений.
+/// Обработчик входящих сообщений.
 /// </summary>
-public class ProcessInboxMessageHandler(
-    ILogger<ProcessInboxMessageHandler> logger,
+public class InboxHandler(
+    ILogger<InboxHandler> logger,
     IMediator mediator,
     INotificationCommandFactory commandFactory,
     IServiceProvider serviceProvider,
     INotificationMessageBuilderFactory notificationMessageBuilderFactory)
-    : IRequestHandler<ProcessInboxMessageCommand>
+    : IInboxHandler
 {
     /// <summary>
     /// Обрабатывает входящие сообщения, обновляет их статус, создаёт команды уведомлений и архивирует сообщения.
     /// </summary>
-    /// <param name="request">Команда с входящими сообщениями.</param>
+    /// <param name="request">Список входящих сообщений.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    public async Task Handle(ProcessInboxMessageCommand request, CancellationToken cancellationToken)
+    public async Task HandleAsync(IEnumerable<InboxMessage> request, CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         unitOfWork.BeginTransactionAsync();
-        
-        logger.LogInformation("Processing inbox messages: {MessageCount}", request.Messages.Count());
+
+        var inboxMessages = request.ToList();
+        logger.LogInformation("Processing inbox messages: {MessageCount}", inboxMessages.Count);
 
         var notificationsByType = new Dictionary<Type, List<INotificationAggregatorDto>>();
 
         var processedMessages = new Dictionary<long, long>();
 
-        foreach (var message in request.Messages)
+        foreach (var message in inboxMessages)
         {
             var notification = InboxMessageParser.ParseInboxMessage(message.Payload);
 

@@ -70,20 +70,11 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
         var existingCardInfos = await unitOfWork.CardInfo
             .GetListByIdsRawSqlAsync(allCardInfoIds, cancellationToken);
 
-        var cardInfoCache = existingCardInfos.ToDictionary(m => m.Id, m => m);
+        var cardInfoCache = existingCardInfos.Select(m => m.Id).ToHashSet();
 
         foreach (var cardInfo in entities.Select(e => e.CardInfo))
-        {
-            if (cardInfo == null) continue;
-            
-            var mid = cardInfo.Id;
-
-            if (cardInfoCache.TryGetValue(mid, out _)) continue;
-
-            cardInfoCache[mid] = cardInfo;
-                
-            unitOfWork.CardInfo.Add(cardInfo);
-        }
+            if (cardInfo != null && cardInfoCache.Add(cardInfo.Id)) 
+                unitOfWork.CardInfo.Add(cardInfo);
     }
 
     /// <summary>
@@ -100,17 +91,11 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
         var existingAccountInfos = await unitOfWork.AccountsInfos
             .GetListByIdsRawSqlAsync(allAccountsInfoIds, cancellationToken);
 
-        var accountInfoCache = existingAccountInfos.ToDictionary(m => m.Id, m => m);
+        var accountInfoCache = existingAccountInfos.Select(m => m.Id).ToHashSet();
 
         foreach (var accountsInfo in entities.SelectMany(e => e.AccountsInfo))
-        {
-            var mid = accountsInfo.Id;
-
-            if (accountInfoCache.TryGetValue(mid, out _)) continue;
-
-            accountInfoCache[mid] = accountsInfo;
-            unitOfWork.AccountsInfos.Add(accountsInfo);
-        }
+            if (accountInfoCache.Add(accountsInfo.Id)) 
+                unitOfWork.AccountsInfos.Add(accountsInfo);
     }
 
     /// <summary>

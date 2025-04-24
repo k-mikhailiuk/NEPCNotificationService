@@ -73,7 +73,7 @@ public class Repository<T> : IRepository<T> where T : class
     }
     
     /// <inheritdoc/>
-    public async Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken)
+    public async Task<List<T>> GetListByIdsRawSqlAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken)
     {
         if (ids.Count == 0)
             return [];
@@ -103,7 +103,7 @@ public class Repository<T> : IRepository<T> where T : class
 
     /// <inheritdoc/>
     public async Task<List<T>> GetListByIdsRawSqlAsync(
-        List<long> ids,
+        IReadOnlyCollection<long> ids,
         CancellationToken cancellationToken,
         params Expression<Func<T, object>>[] includes)
     {

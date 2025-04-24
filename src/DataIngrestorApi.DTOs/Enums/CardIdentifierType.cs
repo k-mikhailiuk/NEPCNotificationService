@@ -1,5 +1,8 @@
 namespace DataIngrestorApi.DTOs.Enums;
 
+/// <summary>
+/// Тип идентификатора карты
+/// </summary>
 public enum CardIdentifierType
 {
     /// <summary>

@@ -40,8 +40,6 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCommands(this IServiceCollection services)
     {
         services.AddSingleton<IMediator, Mediator>();
-
-        services.AddTransient<IRequestHandler<ProcessInboxMessageCommand>, ProcessInboxMessageHandler>();
         services
             .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, List<long>>,
                 AcctBalChangeProcessHandler>();
@@ -69,6 +67,18 @@ public static class ServiceCollectionExtensions
         services
             .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcsOtpDto>, List<long>>,
                 AcsOtpProcessHandler>();
+
+        return services;
+    }
+    
+    /// <summary>
+    /// Регистрирует сервисы.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновленная коллекция сервисов.</returns>
+    public static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddTransient<IInboxHandler, InboxHandler>();
 
         return services;
     }

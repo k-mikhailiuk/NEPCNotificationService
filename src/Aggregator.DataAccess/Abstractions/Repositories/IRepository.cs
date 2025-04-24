@@ -65,7 +65,7 @@ public interface IRepository<T> where T : class
     /// <param name="ids">Список идентификаторов сущностей.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>Список найденных сущностей.</returns>
-    Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken = default);
+    Task<List<T>> GetListByIdsRawSqlAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default);
     
     /// <summary>
     /// Асинхронно получает список сущностей по их идентификаторам с использованием сырого SQL-запроса с включением связанных сущностей.
@@ -74,7 +74,7 @@ public interface IRepository<T> where T : class
     /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <param name="includes">Выражения для включения связанных сущностей.</param>
     /// <returns>Список найденных сущностей.</returns>
-    Task<List<T>> GetListByIdsRawSqlAsync(List<long> ids, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
+    Task<List<T>> GetListByIdsRawSqlAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
 
     /// <summary>
     /// Асинхронно добавляет коллекцию сущностей в репозиторий.

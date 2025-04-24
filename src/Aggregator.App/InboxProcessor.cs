@@ -1,6 +1,5 @@
-using Aggregator.Core.Commands;
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Abstractions;
-using MediatR;
 using Microsoft.Extensions.Options;
 using OptionsConfiguration;
 
@@ -48,16 +47,15 @@ public class InboxProcessor(
     /// <summary>
     /// Processes a batch of unprocessed inbox messages.
     /// </summary>
-    /// <param name="cancelationToken">A token that can be used to signal cancellation.</param>
+    /// <param name="cancellationToken">A token that can be used to signal cancellation.</param>
     /// <returns>A task representing the asynchronous batch processing operation.</returns>
-    private async Task ProcessBatchAsync(CancellationToken cancelationToken)
+    private async Task ProcessBatchAsync(CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         var messages =
-            await unitOfWork.Inbox.GetUnprocessedMessagesAsync(_aggregatorOptions.BatchSize, cancelationToken);
+            await unitOfWork.Inbox.GetUnprocessedMessagesAsync(_aggregatorOptions.BatchSize, cancellationToken);
 
         if (messages.Count == 0)
         {
@@ -67,6 +65,7 @@ public class InboxProcessor(
 
         logger.LogInformation("Processing {Count} messages from Inbox.", messages.Count);
 
-        await mediator.Send(new ProcessInboxMessageCommand(messages), cancelationToken);
+        var inboxHandler = scope.ServiceProvider.GetRequiredService<IInboxHandler>();
+        await inboxHandler.HandleAsync(messages, cancellationToken);
     }
 }
