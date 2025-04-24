@@ -1,6 +1,7 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
+using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DTOs.AcctBalChange;
@@ -34,17 +35,21 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-        PreloadAndUnifyLimit(entities, unitOfWork, cancellationToken);
-        await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
-        await PreloadAndUnifyAccountsInfoAsync(entities, unitOfWork, cancellationToken);
-        await PreloadAndUnifyCardInfoAsync(entities, unitOfWork, cancellationToken);
-        PreloadAndUnifyLimitWrappers(entities, unitOfWork, cancellationToken);
+        var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
+        
+        PreloadAndUnifyLimit(entities, unitOfWork);
+        PreloadAndUnifyDetails(entities, unitOfWork);
+        PreloadAndUnifyAccountsInfo(entities, unitOfWork);
+        PreloadAndUnifyCardInfo(entities, unitOfWork);
+        PreloadAndUnifyLimitWrappers(entities, unitOfWork);
 
         await UnifyProcessorExtension<AcctBalChange>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
+        
+        entityPreloadService.ProcessEntities(entities);
 
-        await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
-
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        
         return entities.Select(x => x.NotificationId).ToList();
     }
 
@@ -53,9 +58,7 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
     /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyCardInfoAsync(List<AcctBalChange> entities, IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+    private static void PreloadAndUnifyCardInfo(List<AcctBalChange> entities, IUnitOfWork unitOfWork)
     {
         var allCardInfoIds = new List<long>();
         foreach (var entity in entities)
@@ -67,8 +70,8 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
         if (allCardInfoIds.Count == 0)
             return;
 
-        var existingCardInfos = await unitOfWork.CardInfo
-            .GetListByIdsRawSqlAsync(allCardInfoIds, cancellationToken);
+        var existingCardInfos = unitOfWork.CardInfo
+            .GetQueryByIds(allCardInfoIds);
 
         var cardInfoCache = existingCardInfos.Select(m => m.Id).ToHashSet();
 
@@ -82,14 +85,12 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
     /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyAccountsInfoAsync(List<AcctBalChange> entities, IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+    private static void PreloadAndUnifyAccountsInfo(List<AcctBalChange> entities, IUnitOfWork unitOfWork)
     {
         var allAccountsInfoIds = entities.SelectMany(e => e.AccountsInfo.Select(a => a.Id)).ToList();
 
-        var existingAccountInfos = await unitOfWork.AccountsInfos
-            .GetListByIdsRawSqlAsync(allAccountsInfoIds, cancellationToken);
+        var existingAccountInfos = unitOfWork.AccountsInfos
+            .GetQueryByIds(allAccountsInfoIds);
 
         var accountInfoCache = existingAccountInfos.Select(m => m.Id).ToHashSet();
 
@@ -97,60 +98,31 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
             if (accountInfoCache.Add(accountsInfo.Id)) 
                 unitOfWork.AccountsInfos.Add(accountsInfo);
     }
-
-    /// <summary>
-    /// Обрабатывает сущности изменения баланса счета, добавляя их в БД, если они отсутствуют.
-    /// </summary>
-    /// <param name="entities">Список сущностей AcctBalChange.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task ProcessEntitiesAsync(
-        List<AcctBalChange> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
-    {
-        foreach (var entity in entities)
-        {
-            var idsToCheck = new List<long> { entity.NotificationId };
-
-            var existingList = await unitOfWork.AcctBalChange
-                .GetByIdsAsync(idsToCheck, cancellationToken);
-
-            if (existingList.Count == 0)
-            {
-                unitOfWork.AcctBalChange.Add(entity);
-            }
-
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-    }
-
+   
     /// <summary>
     /// Загружает и унифицирует детали транзакции.
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
     /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyDetailsAsync(
+    private static void PreloadAndUnifyDetails(
         List<AcctBalChange> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.AcctBalChangeDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = await unitOfWork.AcctBalChangeDetails
-            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
+        var existingDetailsList = unitOfWork.AcctBalChangeDetails
+            .GetQueryByIds(allDetailsIds);
 
         var finTransIds = entities
             .Select(e => e.Details.FinTrans.FinTransactionId)
             .Distinct()
             .ToList();
 
-        var existingTrans = await unitOfWork.FinTransaction
-            .GetListByIdsRawSqlAsync(finTransIds, cancellationToken);
+        var existingTrans = unitOfWork.FinTransaction
+            .GetQueryByIds(finTransIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.AcctBalChangeDetailsId, d => d);
         var finTransCache = existingTrans.ToDictionary(ft => ft.FinTransactionId, ft => ft);
@@ -185,11 +157,9 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
     /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static void PreloadAndUnifyLimit(
         List<AcctBalChange> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         foreach (var entity in entities)
         {
@@ -219,11 +189,9 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
     /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static void PreloadAndUnifyLimitWrappers(
         List<AcctBalChange> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         foreach (var accountsInfo in entities.SelectMany(entity => entity.AccountsInfo))
         {

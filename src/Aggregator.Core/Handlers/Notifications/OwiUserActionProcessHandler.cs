@@ -1,6 +1,7 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
+using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.OwiUserAction;
 using Aggregator.DTOs.OwiUserAction;
@@ -34,39 +35,15 @@ public class OwiUserActionProcessHandler(
         
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
-        await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyDetails(entities, unitOfWork);
         await UnifyProcessorExtension<OwiUserAction>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
-        await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
+        
+        entityPreloadService.ProcessEntities(entities);
         
         return entities.Select(x=>x.NotificationId).ToList();
-    }
-    
-    /// <summary>
-    /// Обрабатывает сущности OwiUserAction, добавляя их в БД, если они отсутствуют.
-    /// </summary>
-    /// <param name="entities">Список сущностей OwiUserAction.</param>
-    /// <param name="unitOfWork">Интерфейс для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task ProcessEntitiesAsync(
-        List<OwiUserAction> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
-    {
-        foreach (var entity in entities)
-        {
-            var idsToCheck = new List<long> { entity.NotificationId };
-
-            var existingList = await unitOfWork.OwiUserAction
-                .GetByIdsAsync(idsToCheck, cancellationToken);
-
-            if (existingList.Count == 0)
-            {
-                unitOfWork.OwiUserAction.Add(entity);
-            }
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
     }
     
     /// <summary>
@@ -74,19 +51,17 @@ public class OwiUserActionProcessHandler(
     /// </summary>
     /// <param name="entities">Список сущностей OwiUserAction.</param>
     /// <param name="unitOfWork">Интерфейс для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyDetailsAsync(
+    private static void PreloadAndUnifyDetails(
         List<OwiUserAction> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.OwiUserActionDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = await unitOfWork.OwiUserActionDetails
-            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
+        var existingDetailsList = unitOfWork.OwiUserActionDetails
+            .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.OwiUserActionDetailsId, d => d);
 

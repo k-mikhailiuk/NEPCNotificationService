@@ -122,16 +122,10 @@ public class InboxHandler(
         if (messageIds.Count == 0)
             return;
 
-        var inClause = string.Join(",", messageIds);
-
-        var messages = await unitOfWork
-            .FromSql<InboxMessage>($"SELECT * FROM [nepc].[InboxMessages] WHERE Id IN ({inClause})")
-            .ToListAsync(cancellationToken);
+        var messages = await unitOfWork.Inbox.GetQueryByIds(messageIds).ToListAsync(cancellationToken);
 
         foreach (var msg in messages)
-        {
             msg.Status = newStatus;
-        }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -151,18 +145,17 @@ public class InboxHandler(
 
         await UpdateStatusAsync(messageIds, InboxMessageStatus.Completed, unitOfWork, cancellationToken);
 
-        var inboxMessages = await unitOfWork.Inbox.GetListByIdsRawSqlAsync(messageIds, cancellationToken);
+        var inboxMessages = unitOfWork.Inbox.GetQueryByIds(messageIds);
 
-        var inboxArchive = inboxMessages.Select(inboxMessage => InboxArchiveMessage.Create(inboxMessage.Payload))
-            .ToList();
+        var inboxArchive = inboxMessages.Select(inboxMessage => InboxArchiveMessage.Create(inboxMessage.Payload));
 
         unitOfWork.InboxArchiveMessage.AddRange(inboxArchive);
 
-        logger.LogInformation("{count} messages successfully added to archive", inboxArchive.Count);
+        logger.LogInformation("{count} messages successfully added to archive", messageIds.Count);
 
         unitOfWork.Inbox.RemoveRange(inboxMessages);
 
-        logger.LogInformation("{count} messages successfully removed from inbox", inboxMessages.Count);
+        logger.LogInformation("{count} messages successfully removed from inbox", messageIds.Count);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }

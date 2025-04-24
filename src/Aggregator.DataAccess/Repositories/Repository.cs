@@ -37,15 +37,15 @@ public class Repository<T> : IRepository<T> where T : class
     }
 
     /// <inheritdoc/>
-    public async Task<List<T>> GetAllAsync(CancellationToken cancellationToken)
+    public IQueryable<T> GetAll()
     {
-        return await DbSet.ToListAsync(cancellationToken);
+        return DbSet;
     }
 
     /// <inheritdoc/>
-    public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
+    public IQueryable<T> GetAll(Expression<Func<T, bool>> predicate)
     {
-        return await DbSet.Where(predicate).ToListAsync(cancellationToken);
+        return DbSet.Where(predicate);
     }
 
     /// <inheritdoc/>
@@ -73,68 +73,23 @@ public class Repository<T> : IRepository<T> where T : class
     }
     
     /// <inheritdoc/>
-    public async Task<List<T>> GetListByIdsRawSqlAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken)
+    public IQueryable<T> GetQueryByIds(IReadOnlyCollection<long> ids)
     {
         if (ids.Count == 0)
-            return [];
+            return Enumerable.Empty<T>().AsQueryable();
 
-        var inClause = string.Join(",", ids);
+        var entityType = Context.Model.FindEntityType(typeof(T))
+                         ?? throw new InvalidOperationException($"Не удалось найти метаданные для типа {typeof(T).Name}.");
 
-        var entityType = Context.Model.FindEntityType(typeof(T));
-        if (entityType == null)
-            throw new InvalidOperationException($"Не удалось найти метаданные для типа {typeof(T).Name}.");
+        var pkProperty = entityType.FindPrimaryKey()?.Properties.FirstOrDefault()
+                         ?? throw new InvalidOperationException($"Тип {typeof(T).Name} не имеет первичного ключа.");
 
-        var tableName = entityType.GetTableName();
-        var schema = entityType.GetSchema();
-        var fullTableName = string.IsNullOrEmpty(schema)
-            ? $"[{tableName}]"
-            : $"[{schema}].[{tableName}]";
+        var keyName = pkProperty.Name;
 
-        var keyProperty = entityType.FindPrimaryKey()?.Properties.FirstOrDefault();
-        if (keyProperty == null)
-            throw new InvalidOperationException($"Тип {typeof(T).Name} не имеет первичного ключа.");
+        var query = Context.Set<T>()
+            .Where(e => ids.Contains(EF.Property<long>(e, keyName)));
 
-        var keyColumnName = keyProperty.GetColumnName();
-
-        var sql = $"SELECT * FROM {fullTableName} WHERE [{keyColumnName}] IN ({inClause})";
-
-        return await Context.Set<T>().FromSqlRaw(sql).ToListAsync(cancellationToken);
-    }
-
-    /// <inheritdoc/>
-    public async Task<List<T>> GetListByIdsRawSqlAsync(
-        IReadOnlyCollection<long> ids,
-        CancellationToken cancellationToken,
-        params Expression<Func<T, object>>[] includes)
-    {
-        if (ids.Count == 0)
-            return [];
-
-        var inClause = string.Join(",", ids);
-
-        var entityType = Context.Model.FindEntityType(typeof(T));
-        if (entityType == null)
-            throw new InvalidOperationException($"Не удалось найти метаданные для типа {typeof(T).Name}.");
-
-        var tableName = entityType.GetTableName();
-        var schema = entityType.GetSchema();
-        var fullTableName = string.IsNullOrEmpty(schema)
-            ? $"[{tableName}]"
-            : $"[{schema}].[{tableName}]";
-
-        var keyProperty = entityType.FindPrimaryKey()?.Properties.FirstOrDefault();
-        if (keyProperty == null)
-            throw new InvalidOperationException($"Тип {typeof(T).Name} не имеет первичного ключа.");
-
-        var keyColumnName = keyProperty.GetColumnName();
-
-        var sql = $"SELECT * FROM {fullTableName} WHERE [{keyColumnName}] IN ({inClause})";
-
-        var query = Context.Set<T>().FromSqlRaw(sql);
-
-        query = includes.Aggregate(query, (current, include) => current.Include(include));
-
-        return await query.ToListAsync(cancellationToken);
+        return query;
     }
 
     /// <inheritdoc/>

@@ -1,10 +1,12 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
+using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DTOs.AcqFinAuth;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
@@ -32,40 +34,15 @@ public class AcqFinAuthProcessHandler(NotificationEntityMapperFactory mapperFact
         
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
-        await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
-        await PreloadAndUnifyMerchantAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyDetails(entities, unitOfWork);
+        PreloadAndUnifyMerchant(entities, unitOfWork);
         await UnifyProcessorExtension<AcqFinAuth>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork, cancellationToken);
-        await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
+        
+        entityPreloadService.ProcessEntities(entities);
         
         return entities.Select(x=>x.NotificationId).ToList();
-    }
-    
-    /// <summary>
-    /// Обрабатывает сущности AcqFinAuth, добавляя их в БД, если они отсутствуют.
-    /// </summary>
-    /// <param name="entities">Список сущностей AcqFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для БД.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task ProcessEntitiesAsync(
-        List<AcqFinAuth> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
-    {
-        foreach (var entity in entities)
-        {
-            var idsToCheck = new List<long> { entity.NotificationId };
-
-            var existingList = await unitOfWork.AcqFinAuth
-                .GetByIdsAsync(idsToCheck, cancellationToken);
-
-            if (existingList.Count == 0)
-            {
-                unitOfWork.AcqFinAuth.Add(entity);
-            }
-            
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
     }
     
     /// <summary>
@@ -73,19 +50,17 @@ public class AcqFinAuthProcessHandler(NotificationEntityMapperFactory mapperFact
     /// </summary>
     /// <param name="entities">Список сущностей AcqFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для БД.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyDetailsAsync(
+    private static void PreloadAndUnifyDetails(
         List<AcqFinAuth> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.AcqFinAuthDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = await unitOfWork.AcqFinAuthDetails
-            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
+        var existingDetailsList = unitOfWork.AcqFinAuthDetails
+            .GetQueryByIds(allDetailsIds);
         
         var detailsCache = existingDetailsList.ToDictionary(d => d.AcqFinAuthDetailsId, d => d);
 
@@ -108,19 +83,17 @@ public class AcqFinAuthProcessHandler(NotificationEntityMapperFactory mapperFact
     /// </summary>
     /// <param name="entities">Список сущностей AcqFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для БД.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyMerchantAsync(
+    private static void PreloadAndUnifyMerchant(
         List<AcqFinAuth> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         var allMerchantIds = entities
             .Select(e => e.MerchantInfo.Id)
             .Distinct()
             .ToList();
         
-        var existingMerchants = await unitOfWork.MerchantInfo
-            .GetListByIdsRawSqlAsync(allMerchantIds, cancellationToken);
+        var existingMerchants = unitOfWork.MerchantInfo
+            .GetQueryByIds(allMerchantIds);
 
         var merchantCache = existingMerchants.ToDictionary(m => m.Id, m => m);
 

@@ -321,8 +321,7 @@ public class UnitOfWork : IUnitOfWork
     /// <inheritdoc/>
     public void Attach<TEntity>(TEntity entity) where TEntity : class
     {
-        if (entity == null)
-            throw new ArgumentNullException(nameof(entity));
+        ArgumentNullException.ThrowIfNull(entity);
 
         var entry = Context.Entry(entity);
         if (entry.State == EntityState.Detached)
@@ -330,6 +329,12 @@ public class UnitOfWork : IUnitOfWork
             Context.Attach(entity);
         }
     }
+
+    public IQueryable<T> Query<T>() where T : class
+        => Context.Set<T>();
+
+    public void Add<T>(T entity) where T : class
+        => Context.Set<T>().Add(entity);
 
     /// <summary>
     /// Освобождает ресурсы, используемые контекстом базы данных.

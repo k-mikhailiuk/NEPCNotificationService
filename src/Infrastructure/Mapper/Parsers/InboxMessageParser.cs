@@ -44,8 +44,7 @@ public static class InboxMessageParser
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error parsing Inbox message: {ex.Message}");
-            return null;
+            throw new InvalidOperationException("Failed to deserialize inbox message.", ex);
         }
     }
 }

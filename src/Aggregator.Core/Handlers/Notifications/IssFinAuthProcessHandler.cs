@@ -1,10 +1,12 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
+using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.IssFinAuth;
 using Aggregator.DTOs.IssFinAuth;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
@@ -34,22 +36,26 @@ public class IssFinAuthProcessHandler(
 
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
-        PreloadAndUnifyLimits(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyLimits(entities, unitOfWork);
 
-        await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyDetails(entities, unitOfWork);
 
-        await PreloadAndUnifyMerchantAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyMerchant(entities, unitOfWork);
 
-        await PreloadAndUnifyAccountsInfoAsync(entities, unitOfWork, cancellationToken);
-        await PreloadAndUnifyCardInfoAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyAccountsInfo(entities, unitOfWork);
+        PreloadAndUnifyCardInfo(entities, unitOfWork);
 
-        await PreloadAndUnifyLimitWrappersAsync(entities, unitOfWork, cancellationToken);
-
+        PreloadAndUnifyLimitWrappers(entities, unitOfWork);
+        
         await UnifyProcessorExtension<IssFinAuth>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
+        
+        foreach (var entity in entities)
+            ProcessDetailsLimits(entity.Details, unitOfWork);
 
-        await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
+        entityPreloadService.ProcessEntities(entities);
 
         return entities.Select(x => x.NotificationId).ToList();
     }
@@ -59,9 +65,7 @@ public class IssFinAuthProcessHandler(
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyCardInfoAsync(List<IssFinAuth> entities, IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+    private static void PreloadAndUnifyCardInfo(List<IssFinAuth> entities, IUnitOfWork unitOfWork)
     {
         var allCardInfoIds = new List<long>();
         foreach (var entity in entities)
@@ -73,8 +77,8 @@ public class IssFinAuthProcessHandler(
         if (allCardInfoIds.Count == 0)
             return;
 
-        var existingCardInfos = await unitOfWork.CardInfo
-            .GetListByIdsRawSqlAsync(allCardInfoIds, cancellationToken);
+        var existingCardInfos = unitOfWork.CardInfo
+            .GetQueryByIds(allCardInfoIds);
 
         var cardInfoCache = existingCardInfos.ToDictionary(m => m.Id, m => m);
 
@@ -94,14 +98,12 @@ public class IssFinAuthProcessHandler(
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyAccountsInfoAsync(List<IssFinAuth> entities, IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+    private static void PreloadAndUnifyAccountsInfo(List<IssFinAuth> entities, IUnitOfWork unitOfWork)
     {
         var allAccountsInfoIds = entities.SelectMany(e => e.AccountsInfo.Select(a => a.Id)).ToList();
 
-        var existingAccountInfos = await unitOfWork.AccountsInfos
-            .GetListByIdsRawSqlAsync(allAccountsInfoIds, cancellationToken);
+        var existingAccountInfos = unitOfWork.AccountsInfos
+            .GetQueryByIds(allAccountsInfoIds);
 
         var accountInfoCache = existingAccountInfos.ToDictionary(m => m.Id, m => m);
 
@@ -121,9 +123,7 @@ public class IssFinAuthProcessHandler(
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyLimitWrappersAsync(List<IssFinAuth> entities, IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+    private static void PreloadAndUnifyLimitWrappers(List<IssFinAuth> entities, IUnitOfWork unitOfWork)
     {
         foreach (var accountsInfo in entities.SelectMany(entity => entity.AccountsInfo))
         {
@@ -139,52 +139,21 @@ public class IssFinAuthProcessHandler(
     }
 
     /// <summary>
-    /// Обрабатывает сущности IssFinAuth, включая обновление лимитов деталей, и сохраняет их в базе данных.
-    /// </summary>
-    /// <param name="entities">Список сущностей IssFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task ProcessEntitiesAsync(
-        List<IssFinAuth> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
-    {
-        foreach (var entity in entities)
-        {
-            await ProcessDetailsLimitsAsync(entity.Details, unitOfWork, cancellationToken);
-
-            var idsToCheck = new List<long> { entity.NotificationId };
-
-            var existingList = await unitOfWork.IssFinAuth
-                .GetByIdsAsync(idsToCheck, cancellationToken);
-
-            if (existingList.Count == 0)
-            {
-                unitOfWork.IssFinAuth.Add(entity);
-            }
-
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
-    }
-
-    /// <summary>
     /// Загружает и унифицирует детали для сущностей IssFinAuth.
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyDetailsAsync(
+    private static void PreloadAndUnifyDetails(
         List<IssFinAuth> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.IssFinAuthDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = await unitOfWork.IssFinAuthDetails
-            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
+        var existingDetailsList = unitOfWork.IssFinAuthDetails
+            .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.IssFinAuthDetailsId, d => d);
 
@@ -207,19 +176,17 @@ public class IssFinAuthProcessHandler(
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyMerchantAsync(
+    private static void PreloadAndUnifyMerchant(
         List<IssFinAuth> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         var allMerchantIds = entities
             .Select(e => e.MerchantInfo.Id)
             .Distinct()
             .ToList();
 
-        var existingMerchants = await unitOfWork.MerchantInfo
-            .GetListByIdsRawSqlAsync(allMerchantIds, cancellationToken);
+        var existingMerchants =  unitOfWork.MerchantInfo
+            .GetQueryByIds(allMerchantIds);
 
         var merchantCache = existingMerchants.ToDictionary(m => m.Id, m => m);
 
@@ -242,13 +209,11 @@ public class IssFinAuthProcessHandler(
     /// </summary>
     /// <param name="issFinAuthDetails">Детали IssFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task ProcessDetailsLimitsAsync(
+    private static void ProcessDetailsLimits(
         IssFinAuthDetails issFinAuthDetails,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
-        if (issFinAuthDetails.CheckedLimits == null || !issFinAuthDetails.CheckedLimits.Any())
+        if (issFinAuthDetails.CheckedLimits == null || issFinAuthDetails.CheckedLimits.Count == 0)
             return;
 
         var allLimitIds = issFinAuthDetails.CheckedLimits
@@ -256,8 +221,8 @@ public class IssFinAuthProcessHandler(
             .Distinct()
             .ToList();
 
-        var existingLimits = await unitOfWork.CheckedLimit
-            .GetListByIdsRawSqlAsync(allLimitIds, cancellationToken);
+        var existingLimits = unitOfWork.CheckedLimit
+            .GetQueryByIds(allLimitIds);
         var limitCache = existingLimits.ToDictionary(l => l.Id, l => l);
 
         for (var i = 0; i < issFinAuthDetails.CheckedLimits.Count; i++)
@@ -280,11 +245,9 @@ public class IssFinAuthProcessHandler(
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
     private static void PreloadAndUnifyLimits(
         List<IssFinAuth> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         foreach (var entity in entities)
         {

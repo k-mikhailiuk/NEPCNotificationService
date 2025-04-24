@@ -49,8 +49,8 @@ public static class UnifyProcessorExtension<T> where T : Notification
             return;
         
         var partialList = await unitOfWork.NotificationExtension
-            .GetAllAsync(e => allExtensionIds
-                .Contains(e.ExtensionId), cancellationToken);
+            .GetAll(e => allExtensionIds
+                .Contains(e.ExtensionId)).ToListAsync(cancellationToken);
         
         var existingExtensions = partialList
             .Where(x => extensionKeys.Contains((x.ExtensionId, x.NotificationId)))

@@ -29,5 +29,6 @@ public static class DIConfigure
         services.AddNotificationMessageOptions(configuration);
         services.AddNotificationMessageServices();
         services.AddNotificationProcessorOptions(configuration);
+        services.AddServices();
     }
 }

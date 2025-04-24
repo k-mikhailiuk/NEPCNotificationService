@@ -45,6 +45,5 @@ public static class FirebaseInitializer
                 });
             }
         }
-        Console.WriteLine($"Firebase инициализирован с конфигом: {fullPath}");
     }
 }

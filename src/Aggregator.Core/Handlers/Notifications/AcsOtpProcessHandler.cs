@@ -4,6 +4,7 @@ using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.AcsOtp;
 using Aggregator.DTOs.AcsOtp;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
@@ -31,7 +32,9 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-        await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
+        ProcessEntities(entities, unitOfWork);
+        
+        await unitOfWork.SaveChangesAsync(cancellationToken);
         
         return entities.Select(x=>x.NotificationId).ToList();
     }
@@ -41,25 +44,18 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
     /// </summary>
     /// <param name="entities">Список сущностей AcsOtp.</param>
     /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task ProcessEntitiesAsync(
+    private static void ProcessEntities(
         List<AcsOtp> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
-        foreach (var entity in entities)
+        var idsToCheck = (IReadOnlyCollection<long>)entities.Select(x=>x.NotificationId);
+
+        var existingList = unitOfWork.AcsOtps
+            .GetQueryByIds(idsToCheck).Select(x=>x.NotificationId);
+        
+        foreach (var entity in entities.Where(entity => !existingList.Contains(entity.NotificationId)))
         {
-            var idsToCheck = new List<long> { entity.NotificationId };
-
-            var existingList = await unitOfWork.AcsOtps
-                .GetByIdsAsync(idsToCheck, cancellationToken);
-
-            if (existingList.Count == 0)
-            {
-                unitOfWork.AcsOtps.AddWithEncription(entity);
-            }
-            
-            await unitOfWork.SaveChangesAsync(cancellationToken);
+            unitOfWork.AcsOtps.AddWithEncription(entity);
         }
     }
 }

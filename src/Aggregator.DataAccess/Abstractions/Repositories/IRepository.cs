@@ -17,19 +17,17 @@ public interface IRepository<T> where T : class
     Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// Асинхронно получает все сущности типа <typeparamref name="T"/>.
+    /// Получает все сущности типа <typeparamref name="T"/>.
     /// </summary>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>Список всех сущностей.</returns>
-    Task<List<T>> GetAllAsync(CancellationToken cancellationToken = default);
+    IQueryable<T> GetAll();
     
     /// <summary>
-    /// Асинхронно получает все сущности, удовлетворяющие заданному предикату.
+    /// Получает все сущности, удовлетворяющие заданному предикату.
     /// </summary>
     /// <param name="predicate">Условие для фильтрации сущностей.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>Список сущностей, удовлетворяющих условию.</returns>
-    Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
+    IQueryable<T> GetAll(Expression<Func<T, bool>> predicate);
     
     /// <summary>
     /// Асинхронно проверяет существование сущности, удовлетворяющей заданному предикату.
@@ -60,22 +58,12 @@ public interface IRepository<T> where T : class
     Task<T?> FindAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// Асинхронно получает список сущностей по их идентификаторам с использованием сырого SQL-запроса.
+    /// Получает список сущностей по их идентификаторам с использованием сырого SQL-запроса.
     /// </summary>
-    /// <param name="ids">Список идентификаторов сущностей.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    /// <returns>Список найденных сущностей.</returns>
-    Task<List<T>> GetListByIdsRawSqlAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default);
+    /// <param name="ids">Коллекция идентификаторов сущностей.</param>
+    /// <returns>Запрос найденных сущностей.</returns>
+    IQueryable<T>  GetQueryByIds(IReadOnlyCollection<long> ids);
     
-    /// <summary>
-    /// Асинхронно получает список сущностей по их идентификаторам с использованием сырого SQL-запроса с включением связанных сущностей.
-    /// </summary>
-    /// <param name="ids">Список идентификаторов сущностей.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    /// <param name="includes">Выражения для включения связанных сущностей.</param>
-    /// <returns>Список найденных сущностей.</returns>
-    Task<List<T>> GetListByIdsRawSqlAsync(IReadOnlyCollection<long> ids, CancellationToken cancellationToken = default, params Expression<Func<T, object>>[] includes);
-
     /// <summary>
     /// Асинхронно добавляет коллекцию сущностей в репозиторий.
     /// </summary>

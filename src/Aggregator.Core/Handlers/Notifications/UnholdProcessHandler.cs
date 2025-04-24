@@ -1,6 +1,7 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
+using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.Unhold;
 using Aggregator.DTOs.Unhold;
@@ -32,41 +33,16 @@ public class UnholdProcessHandler(NotificationEntityMapperFactory mapperFactory,
         
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
-        await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyDetails(entities, unitOfWork);
 
         await UnifyProcessorExtension<Unhold>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
 
-        await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
+        entityPreloadService.ProcessEntities(entities);
         
         return entities.Select(x=>x.NotificationId).ToList(); 
-    }
-    
-    /// <summary>
-    /// Обрабатывает сущности Unhold, добавляя их в базу данных, если они отсутствуют.
-    /// </summary>
-    /// <param name="entities">Список сущностей Unhold.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task ProcessEntitiesAsync(
-        List<Unhold> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
-    {
-        foreach (var entity in entities)
-        {
-            var idsToCheck = new List<long> { entity.NotificationId };
-
-            var existingList = await unitOfWork.Unhold
-                .GetByIdsAsync(idsToCheck, cancellationToken);
-
-            if (existingList.Count == 0)
-            {
-                unitOfWork.Unhold.Add(entity);
-            }
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
     }
 
     /// <summary>
@@ -74,19 +50,17 @@ public class UnholdProcessHandler(NotificationEntityMapperFactory mapperFactory,
     /// </summary>
     /// <param name="entities">Список сущностей Unhold.</param>
     /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyDetailsAsync(
+    private static void PreloadAndUnifyDetails(
         List<Unhold> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.UnholdDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = await unitOfWork.UnholdDetails
-            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
+        var existingDetailsList = unitOfWork.UnholdDetails
+            .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.UnholdDetailsId, d => d);
 

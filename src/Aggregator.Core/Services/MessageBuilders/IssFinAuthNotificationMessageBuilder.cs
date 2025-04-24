@@ -65,8 +65,9 @@ public class IssFinAuthNotificationMessageBuilder(
 
         foreach (var message in messages)
         {
-            var accountsInfo = await unitOfWork.AccountsInfos.GetAllAsync(x =>
-                x.NotificationId == message.NotificationId && x.NotificationType == NotificationType.IssFinAuth, cancellationToken);
+            var accountsInfo = await unitOfWork.AccountsInfos.GetAll(x =>
+                x.NotificationId == message.NotificationId && x.NotificationType == NotificationType.IssFinAuth)
+                .ToListAsync(cancellationToken);
 
             message.AccountsInfo = accountsInfo;
             
@@ -140,8 +141,8 @@ public class IssFinAuthNotificationMessageBuilder(
         AttachLimitsAsync(IssFinAuth message, IUnitOfWork unitOfWork, CancellationToken cancellationToken)
     {
         var cardInfoLimitWrappers =
-            await unitOfWork.CardInfoLimitWrapper.GetAllAsync(x => x.CardInfoId == message.CardInfoId,
-                cancellationToken);
+            await unitOfWork.CardInfoLimitWrapper.GetAll(x => x.CardInfoId == message.CardInfoId)
+                .ToListAsync(cancellationToken);
 
         foreach (var limitWrapper in cardInfoLimitWrappers)
         {
@@ -155,9 +156,8 @@ public class IssFinAuthNotificationMessageBuilder(
 
         foreach (var accountsInfo in message.AccountsInfo)
         {
-            accInfoLimitWrappers = await unitOfWork.AccountsInfoLimitWrapper.GetAllAsync(
-                x => x.AccountsInfoId == accountsInfo.Id,
-                cancellationToken);
+            accInfoLimitWrappers = await unitOfWork.AccountsInfoLimitWrapper.GetAll(
+                x => x.AccountsInfoId == accountsInfo.Id).ToListAsync(cancellationToken);
 
             accountsInfo.Limits = accInfoLimitWrappers;
 

@@ -12,6 +12,7 @@ using Aggregator.Core.Services.Abstractions;
 using Aggregator.Core.Services.KeyWordBuilders;
 using Aggregator.Core.Services.MessageBuilders;
 using Aggregator.Core.Validators.Notifications;
+using Aggregator.DTOs.Abstractions;
 using Aggregator.DTOs.AcctBalChange;
 using Aggregator.DTOs.AcqFinAuth;
 using Aggregator.DTOs.AcsOtp;
@@ -79,6 +80,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddTransient<IInboxHandler, InboxHandler>();
+        services.AddTransient<IEntityPreloadService, EntityPreloadService>();
 
         return services;
     }
@@ -111,10 +113,33 @@ public static class ServiceCollectionExtensions
             .WithTransientLifetime()
         );
         
-        services.AddTransient(
-            typeof(IPipelineBehavior<,>),
-            typeof(ValidationBehaviorForProcessNotification<>)
-        );
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorAcqFinAuthDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorAcqFinAuthDto>>();
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorAcctBalChangeDto>>();
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorAcsOtpDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorAcsOtpDto>>();
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorCardStatusChangeDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorCardStatusChangeDto>>();
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorIssFinAuthDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorIssFinAuthDto>>();
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorOwiUserActionDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorOwiUserActionDto>>();
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorPinChangeDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorPinChangeDto>>();
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorTokenStatusChangeDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorTokenStatusChangeDto>>();
+        services.AddTransient<
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorUnholdDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorUnholdDto>>();
 
         return services;
     }

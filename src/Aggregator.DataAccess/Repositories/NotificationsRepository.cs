@@ -44,26 +44,14 @@ public class NotificationsRepository(AggregatorDbContext context)
         where T : Notification
     {
         if (ids == null || ids.Count == 0)
-            return new List<T>();
+            return [];
 
-        var result = Context.Notifications
-            .Where(n => n.NotificationId == ids[0])
-            .OfType<T>();
+        var query = Context.Notifications
+            .OfType<T>()
+            .Where(n => ids.Contains(n.NotificationId));
 
-        result = includes.Aggregate(result, (current, include) => current.Include(include));
+        query = includes.Aggregate(query, (current, inc) => current.Include(inc));
 
-        for (var i = 1; i < ids.Count; i++)
-        {
-            var id = ids[i];
-            var next = Context.Notifications
-                .Where(n => n.NotificationId == id)
-                .OfType<T>();
-
-            next = includes.Aggregate(next, (current, include) => current.Include(include));
-
-            result = result.Union(next);
-        }
-
-        return await result.ToListAsync(cancellationToken);
+        return await query.ToListAsync(cancellationToken);
     }
 }

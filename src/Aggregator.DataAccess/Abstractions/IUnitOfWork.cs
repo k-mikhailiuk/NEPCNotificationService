@@ -231,4 +231,15 @@ public interface IUnitOfWork : IDisposable
     /// <typeparam name="TEntity">Тип сущности.</typeparam>
     /// <param name="entity">Сущность для прикрепления.</param>
     void Attach<TEntity>(TEntity entity) where TEntity : class;
+    
+    /// <summary>
+    /// Даёт IQueryable для любого Entity-типа T.
+    /// </summary>
+    IQueryable<T> Query<T>() where T : class;
+    
+    /// <summary>
+    /// Добавляет новую сущность T в контекст.
+    /// </summary>
+    void Add<T>(T entity)
+        where T : class;
 }

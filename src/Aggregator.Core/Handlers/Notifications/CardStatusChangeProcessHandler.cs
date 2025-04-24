@@ -1,10 +1,12 @@
 using Aggregator.Core.Commands;
 using Aggregator.Core.Extensions;
 using Aggregator.Core.Mappers;
+using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.CardStatusChange;
 using Aggregator.DTOs.CardStatusChange;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;
@@ -35,39 +37,15 @@ public class CardStatusChangeProcessHandler(
 
         using var scope = serviceProvider.CreateScope();
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
-        await PreloadAndUnifyDetailsAsync(entities, unitOfWork, cancellationToken);
+        PreloadAndUnifyDetails(entities, unitOfWork);
         await UnifyProcessorExtension<CardStatusChange>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
-        await ProcessEntitiesAsync(entities, unitOfWork, cancellationToken);
+        
+        entityPreloadService.ProcessEntities(entities);
         
         return entities.Select(x=>x.NotificationId).ToList();
-    }
-
-    /// <summary>
-    /// Обрабатывает сущности изменения статуса карты, добавляя их в БД, если они отсутствуют.
-    /// </summary>
-    /// <param name="entities">Список сущностей <see cref="CardStatusChange"/>.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task ProcessEntitiesAsync(
-        List<CardStatusChange> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
-    {
-        foreach (var entity in entities)
-        {
-            var idsToCheck = new List<long> { entity.NotificationId };
-
-            var existingList = await unitOfWork.CardStatusChange
-                .GetByIdsAsync(idsToCheck, cancellationToken);
-
-            if (existingList.Count == 0)
-            {
-                unitOfWork.CardStatusChange.Add(entity);
-            }
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
     }
 
     /// <summary>
@@ -75,19 +53,17 @@ public class CardStatusChangeProcessHandler(
     /// </summary>
     /// <param name="entities">Список сущностей <see cref="CardStatusChange"/>.</param>
     /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    private static async Task PreloadAndUnifyDetailsAsync(
+    private static void PreloadAndUnifyDetails(
         List<CardStatusChange> entities,
-        IUnitOfWork unitOfWork,
-        CancellationToken cancellationToken)
+        IUnitOfWork unitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.CardStatusChangeDetailsId)
             .Distinct()
             .ToList();
         
-        var existingDetailsList = await unitOfWork.CardStatusChangeDetails
-            .GetListByIdsRawSqlAsync(allDetailsIds, cancellationToken);
+        var existingDetailsList = unitOfWork.CardStatusChangeDetails
+            .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.CardStatusChangeDetailsId, d => d);
 
