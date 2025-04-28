@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
@@ -10,7 +11,11 @@ namespace Aggregator.Core.Mappers.Notifications;
 /// <summary>
 /// Маппер, преобразующий DTO уведомления AcqFinAuth (<see cref="AggregatorAcqFinAuthDto"/>) в сущность <see cref="AcqFinAuth"/>.
 /// </summary>
-public class AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
+public class AcqFinAuthEntityMapper(
+    ILogger<AcqFinAuthEntityMapper> logger,
+    ConversionExtensionsHelper conversionExtensionsHelper,
+    MerchantInfoMapper merchantInfoMapper,
+    DateTimeConverter dateTimeConverter)
     : INotificationMapper<AcqFinAuth, AggregatorAcqFinAuthDto>
 {
     /// <summary>
@@ -31,10 +36,10 @@ public class AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
         {
             NotificationId = dto.Id,
             EventId = dto.EventId,
-            Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
+            Time = dateTimeConverter.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.AcqFinAuth),
-            MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo),
+            Extensions = conversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.AcqFinAuth),
+            MerchantInfo = merchantInfoMapper.MapMerchantInfo(dto.MerchantInfo),
             NotificationType = NotificationType.AcqFinAuth,
         };
 
@@ -65,22 +70,22 @@ public class AcqFinAuthEntityMapper(ILogger<AcqFinAuthEntityMapper> logger)
             ExpDate = dto.ExpDate,
             AccountId = dto.AccountId,
             CorrespondingAccount = dto.CorrespondingAccount,
-            AuthMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AuthMoney>(dto.AuthMoney),
+            AuthMoney = conversionExtensionsHelper.ConvertMoneyDtoToEntity<AuthMoney>(dto.AuthMoney),
             AuthDirection = dto.AuthDirection,
-            LocalTime = ConversionExtensionsHelper.SafeConvertFromLocalToUtc(dto.LocalTime),
-            TransactionTime = ConversionExtensionsHelper.SafeConvertTime(dto.TransactionTime),
+            LocalTime = dateTimeConverter.SafeConvertFromLocalToUtc(dto.LocalTime),
+            TransactionTime = dateTimeConverter.SafeConvertTime(dto.TransactionTime),
             ResponseCode = dto.ResponseCode,
             ApprovalCode = dto.ApprovalCode,
             Rrn = dto.RRN,
-            AcqFee = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AcqFee>(dto.AcqFee),
+            AcqFee = conversionExtensionsHelper.ConvertMoneyDtoToEntity<AcqFee>(dto.AcqFee),
             AcqFeeDirection = dto.AcqFeeDirection,
-            ConvMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<ConvMoney>(dto.ConvMoney),
+            ConvMoney = conversionExtensionsHelper.ConvertMoneyDtoToEntity<ConvMoney>(dto.ConvMoney),
             PhysTerm = Convert.ToBoolean(dto.PhysTerm),
             AuthorizationCondition = dto.AuthorizationCondition,
             PosEntryMode = dto.PosEntryMode,
             ServiceId = dto.ServiceId,
             ServiceCode = dto.ServiceCode,
-            CardIdentifier = ConversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
+            CardIdentifier = conversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
         };
     }
 }

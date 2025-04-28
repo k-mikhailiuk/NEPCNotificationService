@@ -1,4 +1,3 @@
-using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
 using Aggregator.DataAccess.Abstractions;
@@ -7,7 +6,6 @@ using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwiUserAction;
 using Common.Enums;
 using ControlPanel.DataAccess.Entities.Enum;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsConfiguration;
@@ -23,7 +21,8 @@ namespace Aggregator.Core.Services.MessageBuilders;
 public class OwiUserActionNotificationMessageBuilder(
     IOptions<NotificationMessageOptions> notificationMessageOptions,
     IServiceProvider serviceProvider,
-    IKeyWordBuilder<OwiUserAction> keyWordBuilder)
+    IKeyWordBuilder<OwiUserAction> keyWordBuilder,
+    ICustomerIdSelector customerIdSelector)
     : INotificationMessageBuilder<OwiUserAction>
 {
     private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
@@ -47,14 +46,6 @@ public class OwiUserActionNotificationMessageBuilder(
 
         await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
         
-        await using var connection = context.Database.GetDbConnection(); 
-
-        if (unitOfWork == null)
-            throw new ArgumentNullException(nameof(unitOfWork));
-        
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
-
         var messages =
             await unitOfWork.OwiUserAction.GetByIdsWithIncludesAsync(notificationIds,
                 cancellationToken, 
@@ -72,7 +63,7 @@ public class OwiUserActionNotificationMessageBuilder(
             if (!messageText.IsNeedSend)
                 return list;
             
-            var customerId = await GetCustomerIdAsync(message.CardInfo.CardIdentifier.CardIdentifierValue, context, cancellationToken);
+            var customerId = await customerIdSelector.GetCustomerIdAsync(message.CardInfo.CardIdentifier.CardIdentifierValue, context, cancellationToken);
 
             if(customerId == null)
                 continue;
@@ -81,13 +72,7 @@ public class OwiUserActionNotificationMessageBuilder(
             
             var languageId = await languageSelector.GetLanguageIdAsync(customerId.Value, context, cancellationToken);
             
-            var language = Language.Russian;
-            
-            if(languageId != null)
-                language = (Language)languageId;
-            
-            if (language == Language.Undefined)
-                continue;
+            var language = languageId.HasValue ? (Language)languageId.Value : Language.Russian;
             
             var localizeMessage = language switch
             {
@@ -109,39 +94,5 @@ public class OwiUserActionNotificationMessageBuilder(
         }
 
         return list;
-    }
-    
-    /// <summary>
-    /// Асинхронно получает идентификатор клиента по идентификатору аккаунта.
-    /// </summary>
-    /// <param name="accountId">Идентификатор аккаунта (номер карты).</param>
-    /// <param name="context">Контекст базы данных.</param>
-    /// <param name="cancellationToken">Токен для отмены операции.</param>
-    /// <returns>Идентификатор клиента или null, если не найден.</returns>
-    private static async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
-    {
-        var connection = context.Database.GetDbConnection();
-
-        if (connection.State != ConnectionState.Open)
-            await connection.OpenAsync(cancellationToken);
-
-        await using var command = connection.CreateCommand();
-            
-        command.CommandText = @"
-        SELECT accounts.CustomerID
-        FROM dbo.Accounts accounts 
-        WHERE AccountNo = SUBSTRING(CAST(@accountId AS VARCHAR(50)), 4, LEN(CAST(@accountId AS VARCHAR(50))) - 11)";
-
-        var parameter = command.CreateParameter();
-        parameter.ParameterName = "@accountId";
-        parameter.Value = accountId;
-        command.Parameters.Add(parameter);
-            
-        var result = await command.ExecuteScalarAsync(cancellationToken);
-    
-        if(result == null || result == DBNull.Value)
-            return null;
-    
-        return Convert.ToInt64(result);
     }
 }

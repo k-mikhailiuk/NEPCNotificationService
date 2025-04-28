@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Entities.CardStatusChange;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DTOs.CardStatusChange;
@@ -9,7 +10,11 @@ namespace Aggregator.Core.Mappers.Notifications;
 /// <summary>
 /// Маппер, преобразующий DTO уведомления CardStatusChange (<see cref="AggregatorCardStatusChangeDto"/>) в сущность <see cref="CardStatusChange"/>.
 /// </summary>
-public class CardStatusChangeEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
+public class CardStatusChangeEntityMapper(
+    ILogger<CardStatusChangeEntityMapper> logger,
+    CardInfoMapper cardInfoMapper,
+    ConversionExtensionsHelper conversionExtensionsHelper,
+    DateTimeConverter dateTimeConverter)
     : INotificationMapper<CardStatusChange, AggregatorCardStatusChangeDto>
 {
     /// <summary>
@@ -30,10 +35,11 @@ public class CardStatusChangeEntityMapper(ILogger<CardStatusChangeEntityMapper> 
         {
             NotificationId = dto.Id,
             EventId = dto.EventId,
-            Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
+            Time = dateTimeConverter.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.CardStatusChange),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            Extensions =
+                conversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.CardStatusChange),
+            CardInfo = cardInfoMapper.MapCardInfo(dto.CardInfo),
             NotificationType = NotificationType.CardStatusChange,
         };
 
@@ -60,11 +66,11 @@ public class CardStatusChangeEntityMapper(ILogger<CardStatusChangeEntityMapper> 
             ExpDate = dto.ExpDate,
             OldStatus = dto.OldStatus,
             NewStatus = dto.NewStatus,
-            ChangeDate = ConversionExtensionsHelper.SafeConvertTime(dto.ChangeDate),
+            ChangeDate = dateTimeConverter.SafeConvertTime(dto.ChangeDate),
             Service = dto.Service,
             UserName = dto.UserName,
             Note = dto.Note,
-            CardIdentifier = ConversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier),
+            CardIdentifier = conversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier),
         };
     }
 }

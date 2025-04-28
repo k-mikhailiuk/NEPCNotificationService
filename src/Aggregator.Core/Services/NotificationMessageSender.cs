@@ -1,17 +1,17 @@
-using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
 using Aggregator.DataAccess.Entities;
 using FirebaseAdmin.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Services;
 
 /// <summary>
 /// Сервис для отправки push-уведомлений через Firebase Cloud Messaging (FCM).
 /// </summary>
-public class NotificationMessageSender(IServiceProvider serviceProvider) : INotificationMessageSender
+public class NotificationMessageSender(IServiceProvider serviceProvider, ILogger<NotificationMessageSender> logger) : INotificationMessageSender
 {
     /// <inheritdoc/>
     public async Task<bool> SendAsync(NotificationMessage message, CancellationToken cancellationToken = default)
@@ -22,32 +22,10 @@ public class NotificationMessageSender(IServiceProvider serviceProvider) : INoti
 
             await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
 
-            await using var connection = context.Database.GetDbConnection();
-
-            if (connection.State != ConnectionState.Open)
-                await connection.OpenAsync(cancellationToken);
-
-            await using var command = connection.CreateCommand();
-
-            command.CommandText = @"
-                SELECT tokens.Token
-                FROM PushNotification.NotificationTokens tokens 
-                WHERE CustomerID = @customerId";
-
-            var parameter = command.CreateParameter();
-            parameter.ParameterName = "@customerId";
-            parameter.Value = message.CustomerId;
-            command.Parameters.Add(parameter);
-
-            var reader = await command.ExecuteReaderAsync(cancellationToken);
-
-            var tokens = new List<string>();
-
-            while (await reader.ReadAsync(cancellationToken))
-            {
-                var token = reader.GetString(0);
-                tokens.Add(token);
-            }
+            var tokens = await context.Database
+                .SqlQuery<string>(
+                    $"SELECT Token FROM PushNotification.NotificationTokens WHERE CustomerID = {message.CustomerId}")
+                .ToListAsync(cancellationToken);
 
             if (tokens.Count == 0)
             {
@@ -58,6 +36,7 @@ public class NotificationMessageSender(IServiceProvider serviceProvider) : INoti
         }
         catch (Exception e)
         {
+            logger.LogError(e, e.Message);
             return false;
         }
     }
@@ -87,11 +66,11 @@ public class NotificationMessageSender(IServiceProvider serviceProvider) : INoti
 
             var messaging = FirebaseMessaging.DefaultInstance;
             var result = await messaging.SendAsync(fcmMessage, cancellationToken);
-            
-            if(string.IsNullOrEmpty(result))
+
+            if (string.IsNullOrEmpty(result))
                 return false;
         }
-        
+
         return true;
     }
 }

@@ -1,4 +1,3 @@
-using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
 using Aggregator.DataAccess.Abstractions;
@@ -21,7 +20,8 @@ namespace Aggregator.Core.Services.MessageBuilders;
 public class AcctBalChangeNotificationMessageBuilder(
     IOptions<NotificationMessageOptions> notificationMessageOptions,
     IServiceProvider serviceProvider,
-    IKeyWordBuilder<AcctBalChange> keyWordBuilder)
+    IKeyWordBuilder<AcctBalChange> keyWordBuilder,
+    ICustomerIdSelector customerIdSelector)
     : INotificationMessageBuilder<AcctBalChange>
 {
     private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
@@ -43,33 +43,47 @@ public class AcctBalChangeNotificationMessageBuilder(
         
         await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
         
-        await using var connection = context.Database.GetDbConnection(); 
-
-        if (unitOfWork == null)
-            throw new ArgumentNullException(nameof(unitOfWork));
-        
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
-
         var messages =
             await unitOfWork.AcctBalChange.GetByIdsWithIncludesAsync(notificationIds,
                 cancellationToken, 
                 x => x.Details,
                 x=>x.CardInfo);
+        
+        var operationTypes = messages.Select(m => m.Details.TransType)
+            .Distinct()
+            .ToList();
+
+        if (operationTypes.Count == 0)
+            throw new ArgumentNullException($"{operationTypes} is null");
+        
+        var messageTextMap = await context.NotificationMessageTextDirectories
+            .Where(x =>
+                x.NotificationType == NotificationMessageType.AcctBalChange &&
+                operationTypes.Contains((int)x.OperationType!))
+            .ToDictionaryAsync(
+                x => (int)x.OperationType!,
+                x => x,
+                cancellationToken
+            );
+        
+        var allAccountIds = messages.Select(m => m.Details.AccountId);
+        var accountIdMap = await customerIdSelector
+            .GetCustomerIdsAsync(allAccountIds, context, cancellationToken);
+        
+        var notificationToCustomer = messages
+            .ToDictionary(
+                m => m.NotificationId,
+                m => accountIdMap.TryGetValue(m.Details.AccountId, out var cid) 
+                    ? cid 
+                    : null
+            );
 
         foreach (var message in messages)
         {
-            var messageText = await unitOfWork.NotificationMessageTextDirectories.FindAsync(
-                x => x.NotificationType == NotificationMessageType.AcctBalChange &&
-                     (int)x.OperationType! == message.Details.TransType, cancellationToken);
-
-            if (messageText == null)
-                continue;
-
-            if (!messageText.IsNeedSend)
+            if (!messageTextMap.TryGetValue(message.Details.TransType, out var messageText) && messageText is { IsNeedSend: false })
                 continue;
             
-            var customerId = await GetCustomerIdAsync(message.Details.AccountId, context, cancellationToken);
+            var customerId = await customerIdSelector.GetCustomerIdAsync(message.Details.AccountId, context, cancellationToken);
 
             if(customerId == null)
                 continue;
@@ -78,13 +92,7 @@ public class AcctBalChangeNotificationMessageBuilder(
             
             var languageId = await languageSelector.GetLanguageIdAsync(customerId.Value, context, cancellationToken);
 
-            var language = Language.Russian;
-            
-            if(languageId != null)
-                language = (Language)languageId;
-            
-            if (language == Language.Undefined)
-                continue;
+            var language = languageId.HasValue ? (Language)languageId.Value : Language.Russian;
             
             var localizeMessage = language switch
             {
@@ -106,39 +114,5 @@ public class AcctBalChangeNotificationMessageBuilder(
         }
 
         return list;
-    }
-    
-    /// <summary>
-    /// Асинхронно получает идентификатор клиента по номеру счета.
-    /// </summary>
-    /// <param name="accountId">Номер счета.</param>
-    /// <param name="context">Контекст базы данных <see cref="AggregatorDbContext"/>.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    /// <returns>Идентификатор клиента или null, если не найден.</returns>
-    private static async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context, CancellationToken cancellationToken)
-    {
-        var connection = context.Database.GetDbConnection();
-
-        if (connection.State != ConnectionState.Open)
-            await connection.OpenAsync(cancellationToken);
-
-        await using var command = connection.CreateCommand();
-            
-        command.CommandText = @"
-        SELECT accounts.CustomerID
-        FROM dbo.Accounts accounts 
-        WHERE AccountNo = SUBSTRING(CAST(@accountId AS VARCHAR(50)), 4, LEN(CAST(@accountId AS VARCHAR(50))) - 6)";
-
-        var parameter = command.CreateParameter();
-        parameter.ParameterName = "@accountId";
-        parameter.Value = accountId;
-        command.Parameters.Add(parameter);
-            
-        var result = await command.ExecuteScalarAsync(cancellationToken);
-    
-        if(result == null || result == DBNull.Value)
-            return null;
-    
-        return Convert.ToInt64(result);
     }
 }

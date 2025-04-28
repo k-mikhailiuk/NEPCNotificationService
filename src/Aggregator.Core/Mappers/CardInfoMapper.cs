@@ -1,13 +1,18 @@
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DTOs;
+using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers;
 
 /// <summary>
 /// Класс для маппинга данных CardInfo из DTO в сущность.
 /// </summary>
-public static class CardInfoMapper
+public class CardInfoMapper(
+    ILogger<CardInfoMapper> logger,
+    ConversionExtensionsHelper conversionExtensionsHelper,
+    DateTimeConverter dateTimeConverter)
 {
     /// <summary>
     /// Преобразует объект <see cref="AggregatorCardInfoDto"/> в экземпляр <see cref="CardInfo"/>.
@@ -17,15 +22,15 @@ public static class CardInfoMapper
     /// Возвращает экземпляр <see cref="CardInfo"/>, заполненный данными из <paramref name="dto"/>.
     /// Если <paramref name="dto"/> равен null, возвращается null.
     /// </returns>
-    public static CardInfo MapCardInfo(AggregatorCardInfoDto dto)
+    public CardInfo? MapCardInfo(AggregatorCardInfoDto? dto)
     {
         if (dto == null)
         {
-            Console.WriteLine("CardInfo is null");
+            logger.LogInformation("CardInfo is null. dto: {dto}", dto);
             return null;
         }
 
-        Console.WriteLine($"Mapping CardInfo, contractId={dto.ContractId}");
+        logger.LogInformation("Mapping CardInfo, contractId={dto.ContractId}", dto.ContractId);
 
         return new CardInfo
         {
@@ -44,13 +49,15 @@ public static class CardInfoMapper
                     CycleLength = x.AmtLimit?.CycleLength ?? x.CntLimit?.CycleLength ?? 0,
                     CycleType = x.AmtLimit?.CycleType ?? x.CntLimit?.CycleType ?? null,
                     EndTime = x.AmtLimit != null
-                        ? ConversionExtensionsHelper.SafeConvertTime(x.AmtLimit.EndTime)
-                        : ConversionExtensionsHelper.SafeConvertTime(x.CntLimit.EndTime),
+                        ? dateTimeConverter.SafeConvertTime(x.AmtLimit.EndTime)
+                        : dateTimeConverter.SafeConvertTime(x.CntLimit.EndTime),
                     TrsValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.TrsAmount, 2) / 100 : x.CntLimit.TrsValue,
-                    UsedValue = x.AmtLimit != null ? decimal.Round(x.AmtLimit.UsedAmount, 2) / 100 : x.CntLimit.UsedValue,
+                    UsedValue = x.AmtLimit != null
+                        ? decimal.Round(x.AmtLimit.UsedAmount, 2) / 100
+                        : x.CntLimit.UsedValue,
                 }
             }).ToList(),
-            CardIdentifier = ConversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
+            CardIdentifier = conversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
         };
     }
 }

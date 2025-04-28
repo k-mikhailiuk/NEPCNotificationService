@@ -42,6 +42,8 @@ public class UnholdProcessHandler(NotificationEntityMapperFactory mapperFactory,
 
         entityPreloadService.ProcessEntities(entities);
         
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        
         return entities.Select(x=>x.NotificationId).ToList(); 
     }
 

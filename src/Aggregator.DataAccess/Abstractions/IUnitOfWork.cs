@@ -195,6 +195,11 @@ public interface IUnitOfWork : IDisposable
     IAcsOtpRepository AcsOtps { get; }
     
     /// <summary>
+    /// Получает репозиторий для работы с операциями dbo.Accounts.
+    /// </summary>
+    IAccountsRepository Accounts { get; }
+    
+    /// <summary>
     /// Асинхронно сохраняет все изменения, внесённые в контекст.
     /// </summary>
     /// <param name="cancellationToken">Токен для отмены операции.</param>

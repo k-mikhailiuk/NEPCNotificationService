@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwiUserAction;
 using Aggregator.DTOs.OwiUserAction;
@@ -9,7 +10,11 @@ namespace Aggregator.Core.Mappers.Notifications;
 /// <summary>
 /// Маппер, преобразующий DTO уведомления OwiUserAction (<see cref="AggregatorOwiUserActionDto"/>) в сущность <see cref="OwiUserAction"/>.
 /// </summary>
-public class OwiUserActionEntityMapper(ILogger<OwiUserActionEntityMapper> logger)
+public class OwiUserActionEntityMapper(
+    ILogger<OwiUserActionEntityMapper> logger,
+    CardInfoMapper cardInfoMapper,
+    ConversionExtensionsHelper conversionExtensionsHelper,
+    DateTimeConverter dateTimeConverter)
     : INotificationMapper<OwiUserAction, AggregatorOwiUserActionDto>
 {
     /// <summary>
@@ -30,10 +35,11 @@ public class OwiUserActionEntityMapper(ILogger<OwiUserActionEntityMapper> logger
         {
             NotificationId = dto.Id,
             EventId = dto.EventId,
-            Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
+            Time = dateTimeConverter.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.OwiUserAction),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            Extensions =
+                conversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.OwiUserAction),
+            CardInfo = cardInfoMapper.MapCardInfo(dto.CardInfo),
             NotificationType = NotificationType.OwiUserAction,
         };
 
@@ -59,7 +65,7 @@ public class OwiUserActionEntityMapper(ILogger<OwiUserActionEntityMapper> logger
         {
             Action = dto.Action,
             Login = dto.Login,
-            TransactionTime = ConversionExtensionsHelper.SafeConvertTime(dto.TransactionTime)
+            TransactionTime = dateTimeConverter.SafeConvertTime(dto.TransactionTime)
         };
     }
 }

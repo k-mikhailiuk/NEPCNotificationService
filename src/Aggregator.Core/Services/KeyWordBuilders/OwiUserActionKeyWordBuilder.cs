@@ -12,18 +12,6 @@ namespace Aggregator.Core.Services.KeyWordBuilders;
 public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
 {
     /// <summary>
-    /// Словарь соответствий действий для разных языков.
-    /// </summary>
-    private static readonly Dictionary<string, (string Ru, string En, string Kg)> ActionMap = new()
-    {
-        ["addRedPathExclusion"] = ("Добавление карты в исключение RedPath", "addRedPathExclusion",
-            "RedPath тизмесине картаны кошуу"),
-        ["delRedPathExclusion"] = ("Удаление карты из исключения RedPath", "delRedPathExclusion",
-            "RedPath тизмесинен картаны өчүрүү"),
-        ["resetPinCounter"] = ("Сброс счетчика ПИНа", "resetPinCounter", "ПИН коду эсептегичин кайра баштоо"),
-    };
-
-    /// <summary>
     /// Асинхронно формирует строку ключевых слов для уведомления OwiUserAction.
     /// </summary>
     /// <param name="message">
@@ -38,7 +26,7 @@ public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
     /// <returns>
     /// Асинхронная задача, возвращающая строку с подставленными значениями.
     /// </returns>
-    public async Task<string> BuildKeyWordsAsync(string? message, OwiUserAction entity, Language language)
+    public Task<string> BuildKeyWordsAsync(string? message, OwiUserAction entity, Language language)
     {
         var replacements = new Dictionary<string, string>
         {
@@ -48,7 +36,7 @@ public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
             { "{ACTION}", GetActionName(entity.Details.Action, language) }
         };
 
-        return KeyWordReplacer.ReplacePlaceholders(message, replacements);
+        return Task.FromResult(KeyWordReplacer.ReplacePlaceholders(message, replacements));
     }
 
     /// <summary>
@@ -59,7 +47,7 @@ public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
     /// <returns>Локализованное название действия, если оно найдено; иначе возвращается исходный ключ.</returns>
     private static string GetActionName(string action, Language language)
     {
-        if (ActionMap.TryGetValue(action, out var status))
+        if (LanguageMaps.Action.TryGetValue(action, out var status))
         {
             return language switch
             {

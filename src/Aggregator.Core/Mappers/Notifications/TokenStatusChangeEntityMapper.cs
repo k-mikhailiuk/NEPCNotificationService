@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.TokenChangeStatus;
 using Aggregator.DTOs.TokenStausChange;
@@ -10,10 +11,13 @@ namespace Aggregator.Core.Mappers.Notifications;
 /// Маппер, преобразующий DTO уведомления TokenStatusChange (<see cref="AggregatorTokenStatusChangeDto"/>)
 /// в сущность <see cref="TokenStatusChange"/>.
 /// </summary>
-public class TokenStatusChangeEntityMapper(ILogger<TokenStatusChangeEntityMapper> logger)
+public class TokenStatusChangeEntityMapper(
+    ILogger<TokenStatusChangeEntityMapper> logger,
+    CardInfoMapper cardInfoMapper,
+    ConversionExtensionsHelper conversionExtensionsHelper,
+    DateTimeConverter dateTimeConverter)
     : INotificationMapper<TokenStatusChange, AggregatorTokenStatusChangeDto>
 {
-    
     /// <summary>
     /// Преобразует объект <see cref="AggregatorTokenStatusChangeDto"/> в сущность <see cref="TokenStatusChange"/>.
     /// </summary>
@@ -32,10 +36,11 @@ public class TokenStatusChangeEntityMapper(ILogger<TokenStatusChangeEntityMapper
         {
             NotificationId = dto.Id,
             EventId = dto.EventId,
-            Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
+            Time = dateTimeConverter.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.TokenStatusChange),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            Extensions =
+                conversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.TokenStatusChange),
+            CardInfo = cardInfoMapper.MapCardInfo(dto.CardInfo),
             NotificationType = NotificationType.TokenStatusChange,
         };
 
@@ -65,13 +70,13 @@ public class TokenStatusChangeEntityMapper(ILogger<TokenStatusChangeEntityMapper
             DpanRef = dto.DpanRef,
             PaymentSystem = dto.PaymentSystem,
             Status = dto.Status,
-            ChangeDate = ConversionExtensionsHelper.SafeConvertTime(dto.ChangeDate),
+            ChangeDate = dateTimeConverter.SafeConvertTime(dto.ChangeDate),
             DpanExpDate = dto.DpanExpDate,
             WalletProvider = dto.WalletProvider,
             DeviceName = dto.DeviceName,
             DeviceId = dto.DeviceId,
             FpanRef = dto.FpanRef,
-            CardIdentifier = ConversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
+            CardIdentifier = conversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
         };
     }
 }

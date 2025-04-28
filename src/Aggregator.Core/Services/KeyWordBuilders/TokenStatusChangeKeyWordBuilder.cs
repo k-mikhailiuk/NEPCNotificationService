@@ -12,17 +12,6 @@ namespace Aggregator.Core.Services.KeyWordBuilders;
 public class TokenStatusChangeKeyWordBuilder : IKeyWordBuilder<TokenStatusChange>
 {
     /// <summary>
-    /// Словарь соответствий символов статусов для разных языков.
-    /// </summary>
-    private static readonly Dictionary<char, (string Ru, string En, string Kg)> StatusMap = new()
-    {
-        ['A'] = ("Активный","Active", "Активдүү"),
-        ['I'] = ("Неактивный","Inactive", "Активдүү эмес"),
-        ['S'] = ("Приостановленный","Suspended", "Токтотулган"),
-        ['L'] = ("Заблокированный","Locked ", "Блоктолгон"),
-    };
-    
-    /// <summary>
     /// Асинхронно формирует строку ключевых слов для уведомления TokenStatusChange.
     /// </summary>
     /// <param name="message">
@@ -37,7 +26,7 @@ public class TokenStatusChangeKeyWordBuilder : IKeyWordBuilder<TokenStatusChange
     /// <returns>
     /// Асинхронная задача, возвращающая сформированную строку с подставленными значениями.
     /// </returns>
-    public async Task<string> BuildKeyWordsAsync(string? message, TokenStatusChange entity, Language language)
+    public Task<string> BuildKeyWordsAsync(string? message, TokenStatusChange entity, Language language)
     {
         var replacements = new Dictionary<string, string>
         {
@@ -49,7 +38,7 @@ public class TokenStatusChangeKeyWordBuilder : IKeyWordBuilder<TokenStatusChange
             { "{DEVICEID}", entity.Details.DeviceId ?? string.Empty }
         };
 
-        return KeyWordReplacer.ReplacePlaceholders(message, replacements);
+        return Task.FromResult(KeyWordReplacer.ReplacePlaceholders(message, replacements));
     }
     
     /// <summary>
@@ -60,7 +49,7 @@ public class TokenStatusChangeKeyWordBuilder : IKeyWordBuilder<TokenStatusChange
     /// <returns>Локализованное название статуса, если найдено; иначе строка "неизвестный статус" на соответствующем языке.</returns>
     private static string GetStatusName(char code, Language lang)
     {
-        if (StatusMap.TryGetValue(code, out var status))
+        if (LanguageMaps.Status.TryGetValue(code, out var status))
         {
             return lang switch
             {

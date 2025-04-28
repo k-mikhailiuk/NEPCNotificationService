@@ -43,6 +43,8 @@ public class OwiUserActionProcessHandler(
         
         entityPreloadService.ProcessEntities(entities);
         
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        
         return entities.Select(x=>x.NotificationId).ToList();
     }
     

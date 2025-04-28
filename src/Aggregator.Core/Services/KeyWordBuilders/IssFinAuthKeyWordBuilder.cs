@@ -14,6 +14,22 @@ namespace Aggregator.Core.Services.KeyWordBuilders;
 public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimitIdReplacer limitIdReplacer)
     : IKeyWordBuilder<IssFinAuth>
 {
+    private static IReadOnlyDictionary<Language, string> ReversalLanguageMap { get; }
+        = new Dictionary<Language, string>
+        {
+            [Language.English] = "Reversal",
+            [Language.Russian] = "Отмена",
+            [Language.Kyrgyz] = "Жокко чыгаруу",
+        };
+    
+    private static IReadOnlyDictionary<Language, string> ResponseCodeMap { get; }
+        = new Dictionary<Language, string>
+        {
+            [Language.English] = "Transaction declined. Please contact the bank.",
+            [Language.Russian] = "Операция отклонена. Обратитесь в банк.",
+            [Language.Kyrgyz] = "Операция четке кагылды. Банкка кайрылыңыз.",
+        };
+    
     /// <summary>
     /// Асинхронно формирует строку ключевых слов для уведомления AcqFinAuth.
     /// </summary>
@@ -31,20 +47,6 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
     /// </returns>
     public async Task<string> BuildKeyWordsAsync(string? message, IssFinAuth entity, Language language)
     {
-        var reversalLanguageMap = new Dictionary<Language, string>
-        {
-            [Language.English] = "Reversal",
-            [Language.Russian] = "Отмена",
-            [Language.Kyrgyz] = "Жокко чыгару",
-        };
-
-        var responseCodeMap = new Dictionary<Language, string>
-        {
-            [Language.English] = "Transaction declined. Please contact the bank.",
-            [Language.Russian] = "Операция отклонена. Обратитесь в банк.",
-            [Language.Kyrgyz] = "Операция четке кагылды. Банкка кайрылыңыз.",
-        };
-
         var limits = new List<Limit>();
         if (entity.CardInfo?.Limits != null)
             limits.AddRange(entity.CardInfo.Limits.Select(x => x.Limit));
@@ -58,7 +60,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
         var replacements = new Dictionary<string, string>
         {
             { "{TRANSTYPE}", ((TransType)entity.Details.TransType).GetDescription(language) },
-            { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : reversalLanguageMap[language] },
+            { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : ReversalLanguageMap[language] },
             { "{PAN}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
             { "{EXPDATE}", entity.CardInfo?.ExpDate ?? string.Empty },
             { "{ACCOUNTID}", entity.Details.AccountId ?? string.Empty },
@@ -83,7 +85,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             { "{NAME}", entity.MerchantInfo.Name ?? string.Empty },
             { "{CITY}", entity.MerchantInfo.City ?? string.Empty },
             { "{COUNTRY}", entity.MerchantInfo.Country ?? string.Empty },
-            { "{RESPONSECODE}", entity.Details.ResponseCode == -1 ? string.Empty : responseCodeMap[language] },
+            { "{RESPONSECODE}", entity.Details.ResponseCode == -1 ? string.Empty : ResponseCodeMap[language] },
             {
                 "{LIMIT}", limitMessages.Length > 0 ? string.Join(Environment.NewLine, limitMessages) : string.Empty
             }

@@ -204,6 +204,12 @@ public class UnitOfWork : IUnitOfWork
 
     private readonly Lazy<ILimitIdDescriptionDirectoriesRepository> _limitIdDescriptionDirectories;
 
+    /// <inheritdoc/>
+    public IAccountsRepository Accounts =>
+        _accounts.Value;
+
+    private readonly Lazy<IAccountsRepository> _accounts;
+
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="UnitOfWork"/>.
     /// </summary>
@@ -288,6 +294,9 @@ public class UnitOfWork : IUnitOfWork
             serviceProvider.GetService<IAcsOtpRepository>() ?? throw new InvalidOperationException());
         _notifications = new Lazy<INotificationsRepository>(() =>
             serviceProvider.GetService<INotificationsRepository>() ?? throw new InvalidOperationException());
+
+        _accounts = new Lazy<IAccountsRepository>(() =>
+            serviceProvider.GetService<IAccountsRepository>() ?? throw new InvalidOperationException());
     }
 
     /// <inheritdoc/>

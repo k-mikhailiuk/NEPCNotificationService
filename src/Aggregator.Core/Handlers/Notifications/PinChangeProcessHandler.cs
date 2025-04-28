@@ -43,6 +43,8 @@ public class PinChangeProcessHandler(NotificationEntityMapperFactory mapperFacto
 
         entityPreloadService.ProcessEntities(entities);
         
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        
         return entities.Select(x=>x.NotificationId).ToList();
     }
 

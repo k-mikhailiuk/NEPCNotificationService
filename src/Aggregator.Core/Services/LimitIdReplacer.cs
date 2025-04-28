@@ -1,5 +1,4 @@
 using Aggregator.Core.Services.Abstractions;
-using Aggregator.DataAccess;
 using Aggregator.DataAccess.Abstractions;
 using Common.Enums;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,8 +29,6 @@ public class LimitIdReplacer(IServiceProvider serviceProvider) : ILimitIdReplace
             return string.Empty;
 
         using var scope = serviceProvider.CreateScope();
-
-        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
 
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 

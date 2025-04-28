@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 using Aggregator.DataAccess.Entities.Unhold;
@@ -10,7 +11,13 @@ namespace Aggregator.Core.Mappers.Notifications;
 /// <summary>
 /// Маппер, преобразующий DTO уведомления Unhold (<see cref="AggregatorUnholdDto"/>) в сущность <see cref="Unhold"/>.
 /// </summary>
-public class UnholdEntityMapper(ILogger<UnholdEntityMapper> logger) : INotificationMapper<Unhold, AggregatorUnholdDto>
+public class UnholdEntityMapper(
+    ILogger<UnholdEntityMapper> logger,
+    CardInfoMapper cardInfoMapper,
+    ConversionExtensionsHelper conversionExtensionsHelper,
+    MerchantInfoMapper merchantInfoMapper,
+    DateTimeConverter dateTimeConverter)
+    : INotificationMapper<Unhold, AggregatorUnholdDto>
 {
     /// <summary>
     /// Преобразует объект <see cref="AggregatorUnholdDto"/> в сущность <see cref="Unhold"/>.
@@ -30,11 +37,11 @@ public class UnholdEntityMapper(ILogger<UnholdEntityMapper> logger) : INotificat
         {
             NotificationId = dto.Id,
             EventId = dto.EventId,
-            Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
+            Time = dateTimeConverter.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.Unhold),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
-            MerchantInfo = MerchantInfoMapper.MapMerchantInfo(dto.MerchantInfo),
+            Extensions = conversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.Unhold),
+            CardInfo = cardInfoMapper.MapCardInfo(dto.CardInfo),
+            MerchantInfo = merchantInfoMapper.MapMerchantInfo(dto.MerchantInfo),
             NotificationType = NotificationType.Unhold,
         };
 
@@ -65,14 +72,14 @@ public class UnholdEntityMapper(ILogger<UnholdEntityMapper> logger) : INotificat
             TransType = dto.TransType,
             CorrespondingAccount = dto.CorrespondingAccount,
             AccountId = dto.AccountId,
-            AuthMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AuthMoney>(dto.AuthMoney),
+            AuthMoney = conversionExtensionsHelper.ConvertMoneyDtoToEntity<AuthMoney>(dto.AuthMoney),
             UnholdDirection = dto.UnholdDirection,
-            UnholdMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<UnholdMoney>(dto.UnholdMoney),
-            LocalTime = ConversionExtensionsHelper.SafeConvertFromLocalToUtc(dto.LocalTime),
-            TransactionTime = ConversionExtensionsHelper.SafeConvertTime(dto.TransactionTime),
+            UnholdMoney = conversionExtensionsHelper.ConvertMoneyDtoToEntity<UnholdMoney>(dto.UnholdMoney),
+            LocalTime = dateTimeConverter.SafeConvertFromLocalToUtc(dto.LocalTime),
+            TransactionTime = dateTimeConverter.SafeConvertTime(dto.TransactionTime),
             ApprovalCode = dto.ApprovalCode,
             Rrn = dto.RRN,
-            IssFee = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<IssFee>(dto.IssFee),
+            IssFee = conversionExtensionsHelper.ConvertMoneyDtoToEntity<IssFee>(dto.IssFee),
             IssFeeDirection = dto.IssFeeDirection,
             SvTrace = dto.SvTrace,
             WalletProvider = dto.WalletProvider != null
@@ -87,7 +94,7 @@ public class UnholdEntityMapper(ILogger<UnholdEntityMapper> logger) : INotificat
                     PaymentSystem = null
                 },
             Dpan = dto.Dpan,
-            CardIdentifier = ConversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
+            CardIdentifier = conversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
         };
     }
 }

@@ -17,6 +17,6 @@ public interface ILanguageSelector
     /// Асинхронная задача, возвращающая идентификатор языка как значение <see cref="long"/>,
     /// или null, если язык не найден.
     /// </returns>
-    Task<long?> GetLanguageIdAsync(long customerId, AggregatorDbContext context,
+    Task<int?> GetLanguageIdAsync(long customerId, AggregatorDbContext context,
         CancellationToken cancellationToken);
 }

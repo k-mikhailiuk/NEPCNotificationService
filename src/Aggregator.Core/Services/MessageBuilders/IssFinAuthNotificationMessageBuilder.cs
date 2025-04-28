@@ -1,4 +1,3 @@
-using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
 using Aggregator.DataAccess.Abstractions;
@@ -24,7 +23,8 @@ namespace Aggregator.Core.Services.MessageBuilders;
 public class IssFinAuthNotificationMessageBuilder(
     IOptions<NotificationMessageOptions> notificationMessageOptions,
     IServiceProvider serviceProvider,
-    IKeyWordBuilder<IssFinAuth> keyWordBuilder)
+    IKeyWordBuilder<IssFinAuth> keyWordBuilder,
+    ICustomerIdSelector customerIdSelector)
     : INotificationMessageBuilder<IssFinAuth>
 {
     private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
@@ -47,21 +47,41 @@ public class IssFinAuthNotificationMessageBuilder(
 
         await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
 
-        await using var connection = context.Database.GetDbConnection();
-
-        if (unitOfWork == null)
-            throw new ArgumentNullException(nameof(unitOfWork));
-
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
-
         var messages =
-            await unitOfWork.IssFinAuth.GetByIdsWithIncludesAsync(
-                notificationIds,
-                cancellationToken,
+            await unitOfWork.IssFinAuth.GetByIdsWithIncludesAsync(notificationIds,
+                cancellationToken, 
                 x => x.Details,
-                x => x.CardInfo,
-                x => x.MerchantInfo);
+                x=>x.CardInfo);
+        
+        var operationTypes = messages.Select(m => m.Details.TransType)
+            .Distinct()
+            .ToList();
+
+        if (operationTypes.Count == 0)
+            throw new ArgumentNullException($"{operationTypes} is null");
+        
+        var messageTextMap = await context.NotificationMessageTextDirectories
+            .Where(x =>
+                x.NotificationType == NotificationMessageType.AcctBalChange &&
+                operationTypes.Contains((int)x.OperationType!))
+            .ToDictionaryAsync(
+                x => (int)x.OperationType!,
+                x => x,
+                cancellationToken
+            );
+
+        var accountIds = messages.Select(m => customerIdSelector.ParseAccountNo(m.Details.AccountId, m.Details.AccountId[..3])).ToList();
+        
+        var accounts = await unitOfWork.Accounts.GetByAccountNos(accountIds).ToListAsync(cancellationToken);
+        
+        var allAccountIds = messages.Select(m => m.Details.AccountId);
+        var accountIdMap = await customerIdSelector
+            .GetCustomerIdsAsync(allAccountIds, context, cancellationToken);
+        
+        var notificationToCustomer = messages
+            .ToDictionary(
+                m => m.NotificationId,
+                m => accountIdMap.TryGetValue(m.Details.AccountId, out var cid));
 
         foreach (var message in messages)
         {
@@ -71,11 +91,6 @@ public class IssFinAuthNotificationMessageBuilder(
 
             message.AccountsInfo = accountsInfo;
             
-            var limits = await AttachLimitsAsync(message, unitOfWork, cancellationToken);
-
-            message.CardInfo.Limits = limits.ciWrapper;
-
-            message.AccountsInfo = limits.accountsInfo;
 
             var messageText = await unitOfWork.NotificationMessageTextDirectories.FindAsync(
                 x => x.NotificationType == NotificationMessageType.IssFinAuth &&
@@ -87,7 +102,7 @@ public class IssFinAuthNotificationMessageBuilder(
             if (!messageText.IsNeedSend)
                 continue;
 
-            var customerId = await GetCustomerIdAsync(message.Details.AccountId, context, cancellationToken);
+            var customerId = await customerIdSelector.GetCustomerIdAsync(message.Details.AccountId, context, cancellationToken);
 
             if (customerId == null)
                 continue;
@@ -96,13 +111,7 @@ public class IssFinAuthNotificationMessageBuilder(
 
             var languageId = await languageSelector.GetLanguageIdAsync(customerId.Value, context, cancellationToken);
 
-            var language = Language.Russian;
-
-            if (languageId != null)
-                language = (Language)languageId;
-
-            if (language == Language.Undefined)
-                continue;
+            var language = languageId.HasValue ? (Language)languageId.Value : Language.Russian;
 
             var localizeMessage = language switch
             {
@@ -116,7 +125,6 @@ public class IssFinAuthNotificationMessageBuilder(
             {
                 Title = _notificationMessageOptions.Title,
                 Status = NotificationMessageStatus.New,
-                Message = await keyWordBuilder.BuildKeyWordsAsync(localizeMessage, message, language),
                 CustomerId = customerId.Value,
             };
 
@@ -171,40 +179,5 @@ public class IssFinAuthNotificationMessageBuilder(
         }
         
         return (cardInfoLimitWrappers, message.AccountsInfo);
-    }
-
-    /// <summary>
-    /// Асинхронно получает идентификатор клиента по идентификатору аккаунта.
-    /// </summary>
-    /// <param name="accountId">Идентификатор аккаунта.</param>
-    /// <param name="context">Контекст базы данных.</param>
-    /// <param name="cancellationToken">Токен для отмены операции.</param>
-    /// <returns>Идентификатор клиента или null, если не найден.</returns>
-    private static async Task<long?> GetCustomerIdAsync(string accountId, AggregatorDbContext context,
-        CancellationToken cancellationToken)
-    {
-        var connection = context.Database.GetDbConnection();
-
-        if (connection.State != ConnectionState.Open)
-            await connection.OpenAsync(cancellationToken);
-
-        await using var command = connection.CreateCommand();
-
-        command.CommandText = @"
-        SELECT accounts.CustomerID
-        FROM dbo.Accounts accounts 
-        WHERE AccountNo = SUBSTRING(CAST(@accountId AS VARCHAR(50)), 4, LEN(CAST(@accountId AS VARCHAR(50))) - 6)";
-
-        var parameter = command.CreateParameter();
-        parameter.ParameterName = "@accountId";
-        parameter.Value = accountId;
-        command.Parameters.Add(parameter);
-
-        var result = await command.ExecuteScalarAsync(cancellationToken);
-
-        if (result == null || result == DBNull.Value)
-            return null;
-
-        return Convert.ToInt64(result);
     }
 }

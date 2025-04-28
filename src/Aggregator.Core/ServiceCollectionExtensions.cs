@@ -41,35 +41,20 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddCommands(this IServiceCollection services)
     {
         services.AddSingleton<IMediator, Mediator>();
-        services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, List<long>>,
-                AcctBalChangeProcessHandler>();
-        services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcqFinAuthDto>, List<long>>,
-                AcqFinAuthProcessHandler>();
-        services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorCardStatusChangeDto>, List<long>>,
-                CardStatusChangeProcessHandler>();
-        services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorIssFinAuthDto>, List<long>>,
-                IssFinAuthProcessHandler>();
-        services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorOwiUserActionDto>, List<long>>,
-                OwiUserActionProcessHandler>();
-        services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorPinChangeDto>, List<long>>,
-                PinChangeProcessHandler>();
-        services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorTokenStatusChangeDto>, List<long>>,
-                TokenStatusChangeProcessHandler>();
-        services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorUnholdDto>, List<long>>,
-                UnholdProcessHandler>();
-        services
-            .AddTransient<IRequestHandler<ProcessNotificationCommand<AggregatorAcsOtpDto>, List<long>>,
-                AcsOtpProcessHandler>();
+        AddCommand<AggregatorAcctBalChangeDto, AcctBalChangeProcessHandler>();
+        AddCommand<AggregatorAcqFinAuthDto, AcqFinAuthProcessHandler>();
+        AddCommand<AggregatorCardStatusChangeDto, CardStatusChangeProcessHandler>();
+        AddCommand<AggregatorIssFinAuthDto, IssFinAuthProcessHandler>();
+        AddCommand<AggregatorOwiUserActionDto, OwiUserActionProcessHandler>();
+        AddCommand<AggregatorPinChangeDto, PinChangeProcessHandler>();
+        AddCommand<AggregatorTokenStatusChangeDto, TokenStatusChangeProcessHandler>();
+        AddCommand<AggregatorUnholdDto, UnholdProcessHandler>();
+        AddCommand<AggregatorAcsOtpDto, AcsOtpProcessHandler>();
 
         return services;
+        
+        void AddCommand<T, THandler>() where T : INotificationAggregatorDto where THandler : class, IRequestHandler<ProcessNotificationCommand<T>, List<long>>
+            => services.AddTransient<IRequestHandler<ProcessNotificationCommand<T>, List<long>>, THandler>();
     }
     
     /// <summary>
@@ -81,6 +66,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<IInboxHandler, InboxHandler>();
         services.AddTransient<IEntityPreloadService, EntityPreloadService>();
+        services.AddTransient<ICustomerIdSelector, CustomerIdSelector>();
 
         return services;
     }
@@ -168,6 +154,12 @@ public static class ServiceCollectionExtensions
             .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<,>)))
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
+        
+        services.AddTransient<CardInfoMapper>();
+        services.AddTransient<ConversionExtensionsHelper>();
+        services.AddTransient<MerchantInfoMapper>();
+        services.AddTransient<DateTimeConverter>();
+        services.AddTransient<AccountsInfoMapper>();
 
         return services;
     }

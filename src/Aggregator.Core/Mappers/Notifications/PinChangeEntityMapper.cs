@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.PinChange;
 using Aggregator.DTOs.PinChange;
@@ -9,7 +10,11 @@ namespace Aggregator.Core.Mappers.Notifications;
 /// <summary>
 /// Маппер, преобразующий DTO уведомления PinChange (<see cref="AggregatorPinChangeDto"/>) в сущность <see cref="PinChange"/>.
 /// </summary>
-public class PinChangeEntityMapper(ILogger<PinChangeEntityMapper> logger)
+public class PinChangeEntityMapper(
+    ILogger<PinChangeEntityMapper> logger,
+    CardInfoMapper cardInfoMapper,
+    ConversionExtensionsHelper conversionExtensionsHelper,
+    DateTimeConverter dateTimeConverter)
     : INotificationMapper<PinChange, AggregatorPinChangeDto>
 {
     /// <summary>
@@ -24,17 +29,16 @@ public class PinChangeEntityMapper(ILogger<PinChangeEntityMapper> logger)
         {
             logger.LogWarning("AggregatorPinChangeDto is null");
             throw new ArgumentNullException(nameof(dto), "AggregatorPinChangeDto is null");
-
         }
 
         var notification = new PinChange
         {
             NotificationId = dto.Id,
             EventId = dto.EventId,
-            Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
+            Time = dateTimeConverter.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.PinChange),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            Extensions = conversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.PinChange),
+            CardInfo = cardInfoMapper.MapCardInfo(dto.CardInfo),
             NotificationType = NotificationType.PinChange,
         };
 
@@ -46,7 +50,7 @@ public class PinChangeEntityMapper(ILogger<PinChangeEntityMapper> logger)
     /// </summary>
     /// <param name="dto">DTO деталей изменения PIN-кода.</param>
     /// <returns>Сущность <see cref="PinChangeDetails"/> или null, если dto равен null.</returns>
-    private PinChangeDetails MapDetails(AggregatorPinChangeDetailsDto dto)
+    private PinChangeDetails? MapDetails(AggregatorPinChangeDetailsDto? dto)
     {
         if (dto == null)
         {
@@ -59,11 +63,11 @@ public class PinChangeEntityMapper(ILogger<PinChangeEntityMapper> logger)
         return new PinChangeDetails()
         {
             ExpDate = dto.ExpDate,
-            TransactionTime = ConversionExtensionsHelper.SafeConvertTime(dto.TransactionTime),
+            TransactionTime = dateTimeConverter.SafeConvertTime(dto.TransactionTime),
             Status = dto.Status,
             ResponseCode = dto.ResponseCode,
             Service = dto.Service,
-            CardIdentifier = ConversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
+            CardIdentifier = conversionExtensionsHelper.MapCardIdentifier(dto.CardIdentifier)
         };
     }
 }

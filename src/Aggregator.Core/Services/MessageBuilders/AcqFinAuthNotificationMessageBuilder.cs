@@ -1,4 +1,3 @@
-using System.Data;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess;
 using Aggregator.DataAccess.Abstractions;
@@ -7,7 +6,6 @@ using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DataAccess.Entities.Enum;
 using Common.Enums;
 using ControlPanel.DataAccess.Entities.Enum;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using OptionsConfiguration;
@@ -23,7 +21,8 @@ namespace Aggregator.Core.Services.MessageBuilders;
 public class AcqFinAuthNotificationMessageBuilder(
     IOptions<NotificationMessageOptions> notificationMessageOptions,
     IServiceProvider serviceProvider,
-    IKeyWordBuilder<AcqFinAuth> keyWordBuilder)
+    IKeyWordBuilder<AcqFinAuth> keyWordBuilder,
+    ICustomerIdSelector customerIdSelector)
     : INotificationMessageBuilder<AcqFinAuth>
 {
     private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
@@ -45,12 +44,6 @@ public class AcqFinAuthNotificationMessageBuilder(
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
         await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
-        
-        if (unitOfWork == null)
-            throw new ArgumentNullException(nameof(unitOfWork));
-
-        if (context == null)
-            throw new ArgumentNullException(nameof(context));
 
         var messages =
             await unitOfWork.AcqFinAuth.GetByIdsWithIncludesAsync(notificationIds,
@@ -70,7 +63,7 @@ public class AcqFinAuthNotificationMessageBuilder(
             if (!messageText.IsNeedSend)
                 continue;
 
-            var customerId = await GetCustomerIdAsync(message.MerchantInfo.TerminalId, context, cancellationToken);
+            var customerId = await customerIdSelector.GetCustomerIdAsync(message.MerchantInfo.TerminalId, context, cancellationToken);
 
             if (customerId == null)
                 continue;
@@ -79,13 +72,7 @@ public class AcqFinAuthNotificationMessageBuilder(
             
             var languageId = await languageSelector.GetLanguageIdAsync(customerId.Value, context, cancellationToken);
 
-            var language = Language.Russian;
-            
-            if(languageId != null)
-                language = (Language)languageId;
-            
-            if (language == Language.Undefined)
-                continue;
+            var language = languageId.HasValue ? (Language)languageId.Value : Language.Russian;
             
             var localizeMessage = language switch
             {
@@ -107,42 +94,5 @@ public class AcqFinAuthNotificationMessageBuilder(
         }
 
         return list;
-    }
-
-    /// <summary>
-    /// Получает идентификатор клиента по терминалу.
-    /// </summary>
-    /// <param name="terminalId">Идентификатор терминала.</param>
-    /// <param name="context">Контекст базы данных.</param>
-    /// <param name="cancellationToken">Токен для отмены операции.</param>
-    /// <returns>Идентификатор клиента или null, если не найден.</returns>
-    private async Task<long?> GetCustomerIdAsync(string terminalId, AggregatorDbContext context,
-        CancellationToken cancellationToken)
-    {
-        var connection = context.Database.GetDbConnection();
-
-        if (connection.State != ConnectionState.Open)
-            await connection.OpenAsync(cancellationToken);
-
-        await using var command = connection.CreateCommand();
-
-        command.CommandText = @"
-            SELECT a.CustomerId
-            FROM Cards.Offices o
-        JOIN Accounts a
-            ON a.AccountNo = o.AccountNoIncome
-        WHERE o.DeviceCode = @terminalId";
-
-        var parameter = command.CreateParameter();
-        parameter.ParameterName = "@terminalId";
-        parameter.Value = terminalId;
-        command.Parameters.Add(parameter);
-
-        var result = await command.ExecuteScalarAsync(cancellationToken);
-
-        if (result == null || result == DBNull.Value)
-            return null;
-
-        return Convert.ToInt64(result);
     }
 }

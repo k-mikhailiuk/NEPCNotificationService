@@ -19,13 +19,8 @@ public class NotificationEntityMapperFactory(IServiceProvider serviceProvider)
     /// <exception cref="InvalidOperationException">
     /// Выбрасывается, если не удается разрешить зависимость для указанного маппера.
     /// </exception>
-    public INotificationMapper<TEntity, TDto> GetMapper<TEntity, TDto>()
-    {
-        var mapper = serviceProvider.GetService<INotificationMapper<TEntity, TDto>>();
-        if (mapper == null)
-            throw new InvalidOperationException($"No mapper found for {typeof(TEntity).Name} -> {typeof(TDto).Name}");
-        
-        return mapper;
-    }
+    public INotificationMapper<TEntity, TDto> GetMapper<TEntity, TDto>() => 
+        serviceProvider.GetService<INotificationMapper<TEntity, TDto>>() 
+        ?? throw new InvalidOperationException($"No mapper found for {typeof(TEntity).Name} -> {typeof(TDto).Name}");
 
 }

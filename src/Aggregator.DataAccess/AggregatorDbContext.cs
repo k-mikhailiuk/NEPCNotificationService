@@ -1,7 +1,9 @@
 using Aggregator.DataAccess.Configurations;
+using Aggregator.DataAccess.Configurations.ABSEntities;
 using Aggregator.DataAccess.Configurations.NotificationDetails;
 using Aggregator.DataAccess.Configurations.Notifications;
 using Aggregator.DataAccess.Entities;
+using Aggregator.DataAccess.Entities.ABSEntities;
 using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.AcctBalChange;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
@@ -71,6 +73,9 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
     public DbSet<LimitIdDescriptionDirectory> LimitIdDescriptionDirectories { get; set; }
 
     public DbSet<AcsOtp> AcsOtps { get; set; }
+    
+    
+    public DbSet<Account> Accounts { get; set; }
 
     /// <summary>
     /// Настраивает модель базы данных.
@@ -114,6 +119,7 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
         ApplyNotificationConfigurations(modelBuilder);
         ApplyNotificationDetailsConfigurations(modelBuilder);
         ApplyAdditionalConfigurations(modelBuilder);
+        ApplyABSEntitiesConfigurations(modelBuilder);
     }
 
     /// <summary>
@@ -171,5 +177,14 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
         modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
 
         modelBuilder.ApplyConfiguration(new AcsOtpConfiguration());
+    }
+    
+    /// <summary>
+    /// Применяет конфигурации для сущностей ABS.
+    /// </summary>
+    /// <param name="modelBuilder">Объект для построения модели данных.</param>
+    private static void ApplyABSEntitiesConfigurations(ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfiguration(new AccountsConfiguration());
     }
 }

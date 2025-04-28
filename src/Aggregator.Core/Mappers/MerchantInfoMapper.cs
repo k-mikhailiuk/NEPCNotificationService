@@ -1,12 +1,13 @@
 using Aggregator.DataAccess.Entities;
 using Aggregator.DTOs;
+using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers;
 
 /// <summary>
 /// Класс для маппинга данных MerchantInfo из DTO в сущность.
 /// </summary>
-public static class MerchantInfoMapper
+public class MerchantInfoMapper(ILogger<MerchantInfoMapper> logger)
 {
     /// <summary>
     /// Преобразует объект <see cref="AggregatorMerchantInfoDto"/> в экземпляр <see cref="MerchantInfo"/>.
@@ -16,15 +17,15 @@ public static class MerchantInfoMapper
     /// Экземпляр <see cref="MerchantInfo"/> с заполненными полями из <paramref name="dto"/>.
     /// Если <paramref name="dto"/> равен null, возвращается null.
     /// </returns>
-    public static MerchantInfo MapMerchantInfo(AggregatorMerchantInfoDto dto)
+    public MerchantInfo? MapMerchantInfo(AggregatorMerchantInfoDto? dto)
     {
         if (dto == null)
         {
-            Console.WriteLine("MerchantInfo is null");
+            logger.LogInformation("MerchantInfo is null");
             return null;
         }
 
-        Console.WriteLine($"Mapping MerchantInfo, merchantInfoId: {dto.Id}");
+        logger.LogInformation("Mapping MerchantInfo, merchantInfoId: {dto.Id}", dto.Id);
 
         return new MerchantInfo
         {

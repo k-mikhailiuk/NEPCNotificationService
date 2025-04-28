@@ -1,4 +1,5 @@
 using Aggregator.Core.Mappers.Abstractions;
+using Aggregator.Core.Services;
 using Aggregator.DataAccess.Entities.AcsOtp;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
@@ -10,7 +11,11 @@ namespace Aggregator.Core.Mappers.Notifications;
 /// <summary>
 /// Маппер, преобразующий DTO уведомления AcsOtp (<see cref="AggregatorAcsOtpDto"/>) в сущность <see cref="AcsOtp"/>.
 /// </summary>
-public class AcsOtpEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
+public class AcsOtpEntityMapper(
+    ILogger<CardStatusChangeEntityMapper> logger,
+    CardInfoMapper cardInfoMapper,
+    ConversionExtensionsHelper conversionExtensionsHelper,
+    DateTimeConverter dateTimeConverter)
     : INotificationMapper<AcsOtp, AggregatorAcsOtpDto>
 {
     /// <summary>
@@ -31,10 +36,10 @@ public class AcsOtpEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
         {
             NotificationId = dto.Id,
             EventId = dto.EventId,
-            Time = ConversionExtensionsHelper.SafeConvertTime(dto.Time),
+            Time = dateTimeConverter.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions = ConversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.AcsOtp),
-            CardInfo = CardInfoMapper.MapCardInfo(dto.CardInfo),
+            Extensions = conversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.AcsOtp),
+            CardInfo = cardInfoMapper.MapCardInfo(dto.CardInfo),
             NotificationType = NotificationType.AcsOtp,
             MerchantInfo = MapMerchantInfo(dto.MerchantInfo)
         };
@@ -47,21 +52,21 @@ public class AcsOtpEntityMapper(ILogger<CardStatusChangeEntityMapper> logger)
     /// </summary>
     /// <param name="dto">DTO деталей уведомления AcsOtp.</param>
     /// <returns>Сущность <see cref="AcsOtpDetails"/> с заполненными данными.</returns>
-    private static AcsOtpDetails MapDetails(AggregatorAcsOtpDetailsDto dto)
+    private AcsOtpDetails MapDetails(AggregatorAcsOtpDetailsDto dto)
     {
         var otpInfo = new OtpInfo
         {
             Otp = dto.OtpInfo.Otp,
-            ExpirationTime = ConversionExtensionsHelper.SafeConvertTime(dto.OtpInfo.ExpirationTime),
+            ExpirationTime = dateTimeConverter.SafeConvertTime(dto.OtpInfo.ExpirationTime),
         };
-        
+
         var details = new AcsOtpDetails
         {
-            AuthMoney = ConversionExtensionsHelper.ConvertMoneyDtoToEntity<AuthMoney>(dto.AuthMoney),
-            TransactionTime = ConversionExtensionsHelper.SafeConvertTime(dto.TransactionTime),
+            AuthMoney = conversionExtensionsHelper.ConvertMoneyDtoToEntity<AuthMoney>(dto.AuthMoney),
+            TransactionTime = dateTimeConverter.SafeConvertTime(dto.TransactionTime),
             OtpInfo = otpInfo,
         };
-        
+
         return details;
     }
 

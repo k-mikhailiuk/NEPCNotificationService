@@ -1,5 +1,4 @@
 using Aggregator.Core.Services.Abstractions;
-using Aggregator.DataAccess;
 using Aggregator.DataAccess.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,13 +22,9 @@ public class CurrencyReplacer(IServiceProvider serviceProvider) : ICurrencyRepla
         
         using var scope = serviceProvider.CreateScope();
 
-        await using var context = scope.ServiceProvider.GetRequiredService<AggregatorDbContext>();
-        
         using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
         
-        int.TryParse(currency, out var currencyCode);
-        
-        if(currencyCode == 0)
+        if (!int.TryParse(currency, out var currencyCode)) 
             return string.Empty;
         
         var currencyFromDb = await unitOfWork.Currencies.GetByCodeAsync(currencyCode, cancellationToken);
