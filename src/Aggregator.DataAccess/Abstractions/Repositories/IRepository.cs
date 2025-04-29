@@ -9,14 +9,6 @@ namespace Aggregator.DataAccess.Abstractions.Repositories;
 public interface IRepository<T> where T : class
 {
     /// <summary>
-    /// Асинхронно получает сущность по её идентификатору.
-    /// </summary>
-    /// <param name="id">Идентификатор сущности.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    /// <returns>Сущность типа <typeparamref name="T"/> или null, если не найдена.</returns>
-    Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken = default);
-    
-    /// <summary>
     /// Получает все сущности типа <typeparamref name="T"/>.
     /// </summary>
     /// <returns>Список всех сущностей.</returns>
@@ -30,24 +22,10 @@ public interface IRepository<T> where T : class
     IQueryable<T> GetAll(Expression<Func<T, bool>> predicate);
     
     /// <summary>
-    /// Асинхронно проверяет существование сущности, удовлетворяющей заданному предикату.
-    /// </summary>
-    /// <param name="predicate">Условие для поиска сущности.</param>
-    /// <param name="cancellationToken">Токен отмены операции.</param>
-    /// <returns>True, если сущность найдена; в противном случае, false.</returns>
-    Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default);
-    
-    /// <summary>
     /// Асинхронно добавляет новую сущность в репозиторий.
     /// </summary>
     /// <param name="entity">Сущность для добавления.</param>
     void Add(T entity);
-    
-    /// <summary>
-    /// Удаляет указанную сущность из репозитория.
-    /// </summary>
-    /// <param name="entity">Сущность для удаления.</param>
-    void Remove(T entity);
     
     /// <summary>
     /// Асинхронно находит первую сущность, удовлетворяющую заданному предикату.

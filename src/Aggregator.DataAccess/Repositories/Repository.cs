@@ -31,12 +31,6 @@ public class Repository<T> : IRepository<T> where T : class
     }
 
     /// <inheritdoc/>
-    public async Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken)
-    {
-        return await DbSet.FindAsync([id], cancellationToken: cancellationToken);
-    }
-
-    /// <inheritdoc/>
     public IQueryable<T> GetAll()
     {
         return DbSet;
@@ -49,21 +43,9 @@ public class Repository<T> : IRepository<T> where T : class
     }
 
     /// <inheritdoc/>
-    public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken)
-    {
-        return await DbSet.AnyAsync(predicate, cancellationToken);
-    }
-
-    /// <inheritdoc/>
     public void Add(T entity)
     {
          DbSet.Add(entity);
-    }
-
-    /// <inheritdoc/>
-    public void Remove(T entity)
-    {
-        DbSet.Remove(entity);
     }
 
     /// <inheritdoc/>
