@@ -33,8 +33,7 @@ public class AggregatorAcctBalChangeDetailsDtoCommandValidator : AbstractValidat
             .WithMessage("IssInstId must be 4 characters");
 
         RuleFor(x => x.AccountId)
-            .MinimumLength(1)
-            .MaximumLength(32)
+            .Length(1, 32)
             .WithMessage("Account id must be between 1 and 32 characters");
 
         RuleFor(x => x.Direction)

@@ -39,31 +39,26 @@ public class
             .WithMessage("DPAN exp date is not valid.");
 
         RuleFor(x => x.WalletProvider)
-            .MinimumLength(1)
-            .MaximumLength(11)
+            .Length(1, 11)
             .WithMessage("WalletProvider must be between 1 to 11 characters.");
 
         RuleFor(x => x.DeviceName)
-            .MinimumLength(1)
-            .MaximumLength(128)
+            .Length(1, 128)
             .When(x => !string.IsNullOrWhiteSpace(x.DeviceName))
             .WithMessage("DeviceName must be between 1 to 128 characters.");
 
         RuleFor(x => x.DeviceType)
-            .MinimumLength(1)
-            .MaximumLength(30)
+            .Length(1, 30)
             .When(x => !string.IsNullOrWhiteSpace(x.DeviceType))
             .WithMessage("DeviceType must be between 1 to 128 characters.");
 
         RuleFor(x => x.DeviceId)
-            .MinimumLength(1)
-            .MaximumLength(48)
+            .Length(1, 48)
             .When(x => !string.IsNullOrWhiteSpace(x.DeviceId))
             .WithMessage("DeviceId must be between 1 to 128 characters.");
 
         RuleFor(x => x.FpanRef)
-            .MinimumLength(1)
-            .MaximumLength(48)
+            .Length(1, 48)
             .When(x => !string.IsNullOrWhiteSpace(x.FpanRef))
             .WithMessage("FpanRef must be between 1 to 128 characters.");
 

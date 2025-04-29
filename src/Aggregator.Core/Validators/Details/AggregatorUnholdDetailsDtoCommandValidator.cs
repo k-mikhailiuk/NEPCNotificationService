@@ -33,8 +33,7 @@ public class AggregatorUnholdDetailsDtoCommandValidator : AbstractValidator<Aggr
             .WithMessage("CorrespondingAccount must be 4 characters long");
 
         RuleFor(x => x.AccountId)
-            .MinimumLength(1)
-            .MaximumLength(32)
+            .Length(1, 32)
             .WithMessage("AccountId must be between from 1 to 32 characters");
 
         RuleFor(x => x.AuthMoney)

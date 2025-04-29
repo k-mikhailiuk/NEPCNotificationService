@@ -17,8 +17,7 @@ public class AggregatorMerchantInfoDtoCommandValidator : AbstractValidator<Aggre
     public AggregatorMerchantInfoDtoCommandValidator()
     {
         RuleFor(x => x.Id)
-            .MinimumLength(1)
-            .MaximumLength(15)
+            .Length(1, 15)
             .When(x => !string.IsNullOrWhiteSpace(x.Id))
             .WithMessage("Id must be between 1 and 15 characters");
 
@@ -27,32 +26,27 @@ public class AggregatorMerchantInfoDtoCommandValidator : AbstractValidator<Aggre
             .WithMessage("MCC is not valid");
 
         RuleFor(x => x.TerminalId)
-            .MinimumLength(1)
-            .MaximumLength(8)
+            .Length(1, 8)
             .When(x => !string.IsNullOrWhiteSpace(x.TerminalId))
             .WithMessage("TerminalId must be between 1 and 8 characters");
 
         RuleFor(x => x.Aid)
-            .MinimumLength(1)
-            .MaximumLength(11)
+            .Length(1, 11)
             .When(x => !string.IsNullOrWhiteSpace(x.Aid))
             .WithMessage("Aid must be between 1 and 11 characters");
 
         RuleFor(x => x.Name)
-            .MinimumLength(1)
-            .MaximumLength(25)
+            .Length(1, 25)
             .When(x => !string.IsNullOrWhiteSpace(x.Name))
             .WithMessage("Name must be between 1 and 25 characters");
 
         RuleFor(x => x.Street)
-            .MinimumLength(1)
-            .MaximumLength(31)
+            .Length(1, 31)
             .When(x => !string.IsNullOrWhiteSpace(x.Street))
             .WithMessage("Street must be between 1 and 31 characters");
 
         RuleFor(x => x.City)
-            .MinimumLength(1)
-            .MaximumLength(31)
+            .Length(1, 31)
             .When(x => !string.IsNullOrWhiteSpace(x.City))
             .WithMessage("City must be between 1 and 31 characters");
 
@@ -62,8 +56,7 @@ public class AggregatorMerchantInfoDtoCommandValidator : AbstractValidator<Aggre
             .WithMessage("Country is not valid");
 
         RuleFor(x => x.ZipCode)
-            .MinimumLength(1)
-            .MaximumLength(10)
+            .Length(1, 10)
             .When(x => !string.IsNullOrWhiteSpace(x.ZipCode))
             .WithMessage("ZipCode must be between 1 and 10 characters");
     }

@@ -33,8 +33,7 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .WithMessage("correspondingAccount must be exactly 4 characters");
 
         RuleFor(x => x.AccountId)
-            .MinimumLength(1)
-            .MaximumLength(32)
+            .Length(1, 32)
             .When(x => !string.IsNullOrEmpty(x.AccountId))
             .WithMessage("accountId length must be between 1 and 32");
 

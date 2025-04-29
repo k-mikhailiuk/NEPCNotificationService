@@ -21,8 +21,7 @@ public class AggregatorCardInfoDtoCommandValidator : AbstractValidator<Aggregato
             .WithMessage("Exp date must is not valid");
 
         RuleFor(x => x.RefPan)
-            .MinimumLength(1)
-            .MaximumLength(64)
+            .Length(1, 64)
             .WithMessage("Ref pan must be between 1 and 64 characters");
 
         RuleFor(x => x.ContractId)
@@ -30,8 +29,7 @@ public class AggregatorCardInfoDtoCommandValidator : AbstractValidator<Aggregato
             .WithMessage("Contract id must be 6 characters");
 
         RuleFor(x => x.MobilePhone)
-            .MinimumLength(1)
-            .MaximumLength(16)
+            .Length(1, 16)
             .WithMessage("Mobile phone must be between 1 and 16 characters");
 
         RuleFor(x => x.CardIdentifier)

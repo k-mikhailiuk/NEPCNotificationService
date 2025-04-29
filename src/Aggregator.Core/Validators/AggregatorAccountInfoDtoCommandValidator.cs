@@ -17,8 +17,7 @@ public class AggregatorAccountInfoDtoCommandValidator : AbstractValidator<Aggreg
     public AggregatorAccountInfoDtoCommandValidator()
     {
         RuleFor(x => x.Id)
-            .MinimumLength(1)
-            .MaximumLength(32)
+            .Length(1, 32)
             .WithMessage("Id must be between 1 and 32 characters.");
 
         RuleFor(x => x.Type)

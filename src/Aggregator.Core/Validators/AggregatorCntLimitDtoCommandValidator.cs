@@ -19,8 +19,7 @@ public class AggregatorCntLimitDtoCommandValidator : AbstractValidator<Aggregato
         RuleFor(x => x.Id).GreaterThan(1).WithMessage("Id should be greater than or equal 1");
 
         RuleFor(x => x.CycleType)
-            .MinimumLength(1)
-            .MaximumLength(30)
+            .Length(1, 30)
             .When(x => !string.IsNullOrEmpty(x.CycleType))
             .WithMessage("CycleType should be between 1 and 30 characters");
 

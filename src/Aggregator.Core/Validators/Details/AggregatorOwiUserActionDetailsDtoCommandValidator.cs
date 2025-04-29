@@ -21,13 +21,11 @@ public class AggregatorOwiUserActionDetailsDtoCommandValidator : AbstractValidat
             .WithMessage("Invalid transaction time.");
 
         RuleFor(x => x.Login)
-            .MinimumLength(1)
-            .MaximumLength(30)
+            .Length(1, 30)
             .WithMessage("Login must be between 1 and 30 characters.");
 
         RuleFor(x => x.Action)
-            .MinimumLength(1)
-            .MaximumLength(30)
+            .Length(1, 30)
             .WithMessage("Action must be between 1 and 30 characters.");
     }
 }

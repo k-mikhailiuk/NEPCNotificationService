@@ -34,8 +34,7 @@ public class AggregatorAcqFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .WithMessage("ExpDate is invalid");
 
         RuleFor(x => x.AccountId)
-            .MinimumLength(1)
-            .MaximumLength(32)
+            .Length(1, 32)
             .When(x => !string.IsNullOrEmpty(x.AccountId))
             .WithMessage("Account Id cannot be empty");
 
@@ -101,8 +100,7 @@ public class AggregatorAcqFinAuthDetailsDtoCommandValidator : AbstractValidator<
             .WithMessage("CardIdentifier must be exactly 4 characters");
 
         RuleFor(x => x.ServiceId)
-            .MinimumLength(1)
-            .MaximumLength(12)
+            .Length(1, 12)
             .When(x => !string.IsNullOrEmpty(x.ServiceId))
             .WithMessage("Service Id should be from 1 to 12 characters");
 

@@ -36,20 +36,17 @@ public class
             .WithMessage("Change date is invalid");
 
         RuleFor(x => x.Service)
-            .MinimumLength(1)
-            .MaximumLength(30)
+            .Length(1, 30)
             .When(x => !string.IsNullOrWhiteSpace(x.Service))
             .WithMessage("Service should have length between 1 and 30 characters");
 
         RuleFor(x => x.UserName)
-            .MinimumLength(1)
-            .MaximumLength(30)
+            .Length(1, 30)
             .When(x => !string.IsNullOrWhiteSpace(x.UserName))
             .WithMessage("UserName should have length between 1 and 30 characters");
 
         RuleFor(x => x.Note)
-            .MinimumLength(1)
-            .MaximumLength(400)
+            .Length(1, 400)
             .When(x => !string.IsNullOrWhiteSpace(x.Note))
             .WithMessage("Note should have length between 1 and 400 characters");
 

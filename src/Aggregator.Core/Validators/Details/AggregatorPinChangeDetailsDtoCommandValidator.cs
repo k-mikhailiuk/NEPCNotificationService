@@ -33,8 +33,7 @@ public class AggregatorPinChangeDetailsDtoCommandValidator : AbstractValidator<A
             .WithMessage("responseCode must be in [1..999999], i.e. up to 6 digits");
 
         RuleFor(x => x.Service)
-            .MinimumLength(1)
-            .MaximumLength(30)
+            .Length(1, 30)
             .WithMessage("service must be between 1 and 30 characters");
 
         RuleFor(x => x.CardIdentifier)

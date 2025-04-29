@@ -21,8 +21,7 @@ public class AggregatorWalletProviderDtoCommandValidator : AbstractValidator<Agg
             .WithMessage("Payment system is not supported");
 
         RuleFor(x => x.PaymentSystemId)
-            .MinimumLength(1)
-            .MaximumLength(11)
+            .Length(1, 11)
             .WithMessage("Payment system id should be between 1 and 11 characters length");
     }
 }
