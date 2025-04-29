@@ -55,7 +55,7 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
         
         foreach (var entity in entities.Where(entity => !existingList.Contains(entity.NotificationId)))
         {
-            unitOfWork.AcsOtps.AddWithEncription(entity);
+            unitOfWork.AcsOtps.AddWithEncryption(entity);
         }
     }
 }
