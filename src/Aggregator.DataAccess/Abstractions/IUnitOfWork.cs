@@ -200,6 +200,16 @@ public interface IUnitOfWork : IDisposable
     IAccountsRepository Accounts { get; }
     
     /// <summary>
+    /// Получает репозиторий для работы с операциями PushNotification.Settings.
+    /// </summary>
+    IPushNotificationSettingsRepository PushNotificationSettings { get; }
+    
+    /// <summary>
+    /// Получает репозиторий для работы с операциями cards.Offices.
+    /// </summary>
+    IOfficesRepository Offices { get; }
+    
+    /// <summary>
     /// Асинхронно сохраняет все изменения, внесённые в контекст.
     /// </summary>
     /// <param name="cancellationToken">Токен для отмены операции.</param>

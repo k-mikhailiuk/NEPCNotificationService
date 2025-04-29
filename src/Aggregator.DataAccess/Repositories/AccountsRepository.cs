@@ -1,5 +1,6 @@
 using Aggregator.DataAccess.Abstractions.Repositories;
 using Aggregator.DataAccess.Entities.ABSEntities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.DataAccess.Repositories;
 
@@ -12,13 +13,17 @@ namespace Aggregator.DataAccess.Repositories;
 /// </remarks>
 public class AccountsRepository(AggregatorDbContext context) : Repository<Account>(context), IAccountsRepository
 {
-    public IQueryable<Account> GetByAccountNos(List<string?> accountNos)
+    public async Task<Dictionary<string, int>> GetAccountCustomerMapAsync(IReadOnlyCollection<string> accountNos,
+        CancellationToken cancellationToken)
     {
-        if (accountNos == null || accountNos.Count == 0)
-            return Enumerable.Empty<Account>().AsQueryable();
+        if (accountNos.Count == 0)
+            return new Dictionary<string, int>();
 
-        return Context.Set<Account>()
-            .Where(a => accountNos.Contains(a.AccountNo));
+        return await Context.Set<Account>()
+            .Where(a => accountNos.Contains(a.AccountNo))
+            .ToDictionaryAsync(
+                a => a.AccountNo,
+                a => a.CustomerID,
+                cancellationToken);
     }
 }
-

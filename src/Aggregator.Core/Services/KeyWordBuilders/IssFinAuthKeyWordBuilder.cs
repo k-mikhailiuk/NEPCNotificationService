@@ -29,23 +29,25 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             [Language.Russian] = "Операция отклонена. Обратитесь в банк.",
             [Language.Kyrgyz] = "Операция четке кагылды. Банкка кайрылыңыз.",
         };
-    
+
     /// <summary>
     /// Асинхронно формирует строку ключевых слов для уведомления AcqFinAuth.
     /// </summary>
     /// <param name="message">
-    /// Исходное сообщение с шаблонами для подстановки, например, содержащими маркеры вида {PLACEHOLDER}.
+    ///     Исходное сообщение с шаблонами для подстановки, например, содержащими маркеры вида {PLACEHOLDER}.
     /// </param>
     /// <param name="entity">
-    /// Объект уведомления типа <see cref="IssFinAuth"/> для которого необходимо сгенерировать ключевые слова.
+    ///     Объект уведомления типа <see cref="IssFinAuth"/> для которого необходимо сгенерировать ключевые слова.
     /// </param>
     /// <param name="language">
-    /// Язык, на котором должно быть сгенерировано сообщение.
+    ///     Язык, на котором должно быть сгенерировано сообщение.
     /// </param>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     /// Асинхронная задача, возвращающая строку с подставленными значениями.
     /// </returns>
-    public async Task<string> BuildKeyWordsAsync(string? message, IssFinAuth entity, Language language)
+    public async Task<string> BuildKeyWordsAsync(string? message, IssFinAuth entity, Language language,
+        CancellationToken cancellationToken)
     {
         var limits = new List<Limit>();
         if (entity.CardInfo?.Limits != null)

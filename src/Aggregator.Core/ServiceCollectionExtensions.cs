@@ -9,8 +9,10 @@ using Aggregator.Core.Mappers.Abstractions;
 using Aggregator.Core.Mappers.Notifications;
 using Aggregator.Core.Services;
 using Aggregator.Core.Services.Abstractions;
+using Aggregator.Core.Services.DataLoaders;
 using Aggregator.Core.Services.KeyWordBuilders;
 using Aggregator.Core.Services.MessageBuilders;
+using Aggregator.Core.Services.NotificationCompositors;
 using Aggregator.Core.Validators.Notifications;
 using Aggregator.DTOs.Abstractions;
 using Aggregator.DTOs.AcctBalChange;
@@ -66,7 +68,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<IInboxHandler, InboxHandler>();
         services.AddTransient<IEntityPreloadService, EntityPreloadService>();
-        services.AddTransient<ICustomerIdSelector, CustomerIdSelector>();
+        services.AddTransient<IAccountNoParser, AccountNoParser>();
 
         return services;
     }
@@ -184,9 +186,8 @@ public static class ServiceCollectionExtensions
             .AsImplementedInterfaces()
             .WithTransientLifetime()
         );
-
+        
         services.AddTransient<ICurrencyReplacer, CurrencyReplacer>();
-        services.AddTransient<ILanguageSelector, LanguageSelector>();
         services.AddTransient<ILimitIdReplacer, LimitIdReplacer>();
 
         return services;
@@ -201,6 +202,38 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<INotificationMessageSender, NotificationMessageSender>();
         services.AddScoped<INotificationHistorySaver, NotificationHistorySaver>();
+        return services;
+    }
+    
+    /// <summary>
+    /// Регистрирует сервисы, формирующие уведомление, в контейнере зависимостей.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновлённая коллекция сервисов с зарегистрированными зависимостями.</returns>
+    public static IServiceCollection AddNotificationCompositors(this IServiceCollection services)
+    {
+        services.AddTransient(
+            typeof(INotificationCompositor<>),
+            typeof(NotificationCompositor<>)
+        );
+        
+        return services;
+    }
+    
+    /// <summary>
+    /// Регистрирует сервисы предварительной загрузки данных для формирования сообщения в контейнере зависимостей.
+    /// </summary>
+    /// <param name="services">Коллекция сервисов.</param>
+    /// <returns>Обновлённая коллекция сервисов с зарегистрированными зависимостями.</returns>
+    public static IServiceCollection AddNotificationDataLoaders(this IServiceCollection services)
+    {
+        services.Scan(scan => scan
+            .FromAssemblyOf<IssFinAuthDataLoader>()
+            .AddClasses(classes => classes.AssignableTo(typeof(INotificationDataLoader<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime()
+        );
+        
         return services;
     }
 }

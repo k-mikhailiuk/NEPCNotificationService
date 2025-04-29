@@ -28,6 +28,8 @@ public static class DIConfigure
         services.AddBuilders();
         services.AddNotificationMessageOptions(configuration);
         services.AddNotificationMessageServices();
+        services.AddNotificationCompositors();
+        services.AddNotificationDataLoaders();
         services.AddNotificationProcessorOptions(configuration);
         services.AddServices();
     }

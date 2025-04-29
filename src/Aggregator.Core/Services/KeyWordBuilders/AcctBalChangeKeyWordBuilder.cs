@@ -14,18 +14,20 @@ public class AcctBalChangeKeyWordBuilder(ICurrencyReplacer currencyReplacer) : I
     /// Асинхронно формирует строку ключевых слов для заданного уведомления об изменении баланса счета.
     /// </summary>
     /// <param name="message">
-    /// Исходное сообщение, содержащее шаблоны для подстановки.
+    ///     Исходное сообщение, содержащее шаблоны для подстановки.
     /// </param>
     /// <param name="entity">
-    /// Сущность уведомления <see cref="AcctBalChange"/>, на основе которой будут сгенерированы ключевые слова.
+    ///     Сущность уведомления <see cref="AcctBalChange"/>, на основе которой будут сгенерированы ключевые слова.
     /// </param>
     /// <param name="language">
-    /// Язык, на котором должны быть сформированы ключевые слова.
+    ///     Язык, на котором должны быть сформированы ключевые слова.
     /// </param>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     /// Асинхронная задача, возвращающая сформированную строку ключевых слов.
     /// </returns>
-    public async Task<string> BuildKeyWordsAsync(string? message, AcctBalChange entity, Language language)
+    public async Task<string> BuildKeyWordsAsync(string? message, AcctBalChange entity, Language language,
+        CancellationToken cancellationToken)
     {
         var replacements = new Dictionary<string, string>
         {

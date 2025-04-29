@@ -19,23 +19,25 @@ public class UnholdKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKeyWord
             [Language.Russian] = "Отмена",
             [Language.Kyrgyz] = "Жокко чыгаруу",
         };
-    
+
     /// <summary>
     /// Асинхронно формирует строку ключевых слов для уведомления Unhold.
     /// </summary>
     /// <param name="message">
-    /// Исходное сообщение с шаблонами для подстановки (например, маркеры {PLACEHOLDER}).
+    ///     Исходное сообщение с шаблонами для подстановки (например, маркеры {PLACEHOLDER}).
     /// </param>
     /// <param name="entity">
-    /// Объект уведомления типа <see cref="Unhold"/>, на основе которого генерируются ключевые слова.
+    ///     Объект уведомления типа <see cref="Unhold"/>, на основе которого генерируются ключевые слова.
     /// </param>
     /// <param name="language">
-    /// Язык, на котором должно быть сформировано сообщение.
+    ///     Язык, на котором должно быть сформировано сообщение.
     /// </param>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     /// Асинхронная задача, возвращающая строку с подставленными значениями.
     /// </returns>
-    public async Task<string> BuildKeyWordsAsync(string? message, Unhold entity, Language language)
+    public async Task<string> BuildKeyWordsAsync(string? message, Unhold entity, Language language,
+        CancellationToken cancellationToken)
     {
         var replacements = new Dictionary<string, string>
         {

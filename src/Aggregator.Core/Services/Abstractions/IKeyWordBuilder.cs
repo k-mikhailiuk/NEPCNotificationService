@@ -16,16 +16,17 @@ public interface IKeyWordBuilder<in T> where T : Notification
     /// Асинхронно формирует строку ключевых слов для указанного уведомления.
     /// </summary>
     /// <param name="message">
-    /// Исходное сообщение или текст, используемый для генерации ключевых слов. Может быть null.
+    ///     Исходное сообщение или текст, используемый для генерации ключевых слов. Может быть null.
     /// </param>
     /// <param name="entity">
-    /// Объект уведомления, для которого необходимо сгенерировать ключевые слова.
+    ///     Объект уведомления, для которого необходимо сгенерировать ключевые слова.
     /// </param>
     /// <param name="language">
-    /// Язык, на котором должны быть сформированы ключевые слова.
+    ///     Язык, на котором должны быть сформированы ключевые слова.
     /// </param>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     /// Асинхронная задача, возвращающая сформированную строку ключевых слов.
     /// </returns>
-    Task<string> BuildKeyWordsAsync(string? message, T entity, Language language);
+    Task<string> BuildKeyWordsAsync(string? message, T entity, Language language, CancellationToken cancellationToken);
 }

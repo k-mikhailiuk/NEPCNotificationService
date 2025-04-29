@@ -76,6 +76,7 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
     
     
     public DbSet<Account> Accounts { get; set; }
+    public DbSet<PushNotificationSettings> PushNotificationSettings { get; set; }
 
     /// <summary>
     /// Настраивает модель базы данных.
@@ -186,5 +187,6 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
     private static void ApplyABSEntitiesConfigurations(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new AccountsConfiguration());
+        modelBuilder.ApplyConfiguration(new PushNotificationSettingsConfiguration());
     }
 }

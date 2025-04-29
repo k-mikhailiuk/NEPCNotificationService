@@ -10,5 +10,5 @@ namespace Aggregator.DataAccess.Abstractions.Repositories;
 /// </remarks>
 public interface IAccountsRepository : IRepository<Account>
 {
-    IQueryable<Account> GetByAccountNos(List<string?> accountNos);
+    Task<Dictionary<string,int>> GetAccountCustomerMapAsync(IReadOnlyCollection<string> accountNos, CancellationToken cancellationToken);
 }

@@ -15,18 +15,20 @@ public class TokenStatusChangeKeyWordBuilder : IKeyWordBuilder<TokenStatusChange
     /// Асинхронно формирует строку ключевых слов для уведомления TokenStatusChange.
     /// </summary>
     /// <param name="message">
-    /// Исходное сообщение с шаблонами для подстановки (например, маркеры вида {PLACEHOLDER}).
+    ///     Исходное сообщение с шаблонами для подстановки (например, маркеры вида {PLACEHOLDER}).
     /// </param>
     /// <param name="entity">
-    /// Объект уведомления типа <see cref="TokenStatusChange"/>, на основе которого генерируются ключевые слова.
+    ///     Объект уведомления типа <see cref="TokenStatusChange"/>, на основе которого генерируются ключевые слова.
     /// </param>
     /// <param name="language">
-    /// Язык, на котором должно быть сформировано сообщение.
+    ///     Язык, на котором должно быть сформировано сообщение.
     /// </param>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     /// Асинхронная задача, возвращающая сформированную строку с подставленными значениями.
     /// </returns>
-    public Task<string> BuildKeyWordsAsync(string? message, TokenStatusChange entity, Language language)
+    public Task<string> BuildKeyWordsAsync(string? message, TokenStatusChange entity, Language language,
+        CancellationToken cancellationToken)
     {
         var replacements = new Dictionary<string, string>
         {

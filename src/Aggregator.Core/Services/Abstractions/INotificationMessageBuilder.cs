@@ -19,5 +19,5 @@ public interface INotificationMessageBuilder<out T> where T : Notification
     /// <returns>
     /// Асинхронная задача, возвращающая список построенных сообщений уведомлений.
     /// </returns>
-    Task<List<NotificationMessage>> BuildNotificationAsync(List<long> notificationIds, CancellationToken cancellationToken);
+    Task<List<NotificationMessage>> BuildNotificationAsync(IEnumerable<long> notificationIds, CancellationToken cancellationToken);
 }

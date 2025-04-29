@@ -15,18 +15,20 @@ public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
     /// Асинхронно формирует строку ключевых слов для уведомления OwiUserAction.
     /// </summary>
     /// <param name="message">
-    /// Исходное сообщение с шаблонами для подстановки.
+    ///     Исходное сообщение с шаблонами для подстановки.
     /// </param>
     /// <param name="entity">
-    /// Объект уведомления типа <see cref="OwiUserAction"/>, на основе которого генерируются ключевые слова.
+    ///     Объект уведомления типа <see cref="OwiUserAction"/>, на основе которого генерируются ключевые слова.
     /// </param>
     /// <param name="language">
-    /// Язык, на котором должны быть сформированы ключевые слова.
+    ///     Язык, на котором должны быть сформированы ключевые слова.
     /// </param>
+    /// <param name="cancellationToken"></param>
     /// <returns>
     /// Асинхронная задача, возвращающая строку с подставленными значениями.
     /// </returns>
-    public Task<string> BuildKeyWordsAsync(string? message, OwiUserAction entity, Language language)
+    public Task<string> BuildKeyWordsAsync(string? message, OwiUserAction entity, Language language,
+        CancellationToken cancellationToken)
     {
         var replacements = new Dictionary<string, string>
         {

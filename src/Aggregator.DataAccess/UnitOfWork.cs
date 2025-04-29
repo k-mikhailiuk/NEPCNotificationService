@@ -209,6 +209,18 @@ public class UnitOfWork : IUnitOfWork
         _accounts.Value;
 
     private readonly Lazy<IAccountsRepository> _accounts;
+    
+    /// <inheritdoc/>
+    public IPushNotificationSettingsRepository PushNotificationSettings =>
+        _pushNotificationSettings.Value;
+
+    private readonly Lazy<IPushNotificationSettingsRepository> _pushNotificationSettings;
+    
+    /// <inheritdoc/>
+    public IOfficesRepository Offices =>
+        _offices.Value;
+
+    private readonly Lazy<IOfficesRepository> _offices;
 
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="UnitOfWork"/>.
@@ -297,6 +309,11 @@ public class UnitOfWork : IUnitOfWork
 
         _accounts = new Lazy<IAccountsRepository>(() =>
             serviceProvider.GetService<IAccountsRepository>() ?? throw new InvalidOperationException());
+        _pushNotificationSettings = new Lazy<IPushNotificationSettingsRepository>(() =>
+            serviceProvider.GetService<IPushNotificationSettingsRepository>() ?? throw new InvalidOperationException());
+        
+        _offices = new Lazy<IOfficesRepository>(() =>
+            serviceProvider.GetService<IOfficesRepository>() ?? throw new InvalidOperationException());
     }
 
     /// <inheritdoc/>
