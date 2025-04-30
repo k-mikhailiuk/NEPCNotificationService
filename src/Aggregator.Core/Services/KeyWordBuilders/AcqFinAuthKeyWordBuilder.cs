@@ -36,7 +36,7 @@ public class AcqFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKey
             { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : LanguageMaps.Reversal[language] },
             { "{PAN}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
             { "{AUTHMONEY_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AuthMoney.Amount) },
-            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AuthMoney.Currency) },
+            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AuthMoney.Currency, cancellationToken) },
             { "{LOCALTIME}", entity.Details.LocalTime.ToString() },
             { "{RRN}", entity.Details.Rrn ?? string.Empty },
             { "{TERMINALID}", entity.MerchantInfo.TerminalId ?? string.Empty },

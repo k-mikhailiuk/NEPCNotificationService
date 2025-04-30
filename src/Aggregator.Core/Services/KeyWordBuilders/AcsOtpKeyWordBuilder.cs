@@ -35,7 +35,7 @@ public class AcsOtpKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKeyWord
             { "{PAN}", PanMask.MaskPan(entity.CardInfo.CardIdentifier.CardIdentifierValue) },
             { "{TRANSATIONTIME}", entity.Details.TransactionTime.ToString() },
             { "{AUTHMONEY_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AuthMoney.Amount) },
-            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AuthMoney.Currency) },
+            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AuthMoney.Currency, cancellationToken) },
             { "{NAME}", entity.MerchantInfo.Name },
             { "{URL}", entity.MerchantInfo.Url },
         };

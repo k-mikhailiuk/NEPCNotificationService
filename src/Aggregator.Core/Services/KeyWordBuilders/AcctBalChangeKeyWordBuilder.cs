@@ -36,9 +36,9 @@ public class AcctBalChangeKeyWordBuilder(ICurrencyReplacer currencyReplacer) : I
             { "{ACCOUNTID}", entity.Details.AccountId },
             { "{PAN}", PanMask.MaskPan(entity.CardInfo?.CardIdentifier.CardIdentifierValue) },
             { "{ACCOUNT_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AccountAmount.Amount) },
-            { "{ACCOUNT_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountAmount.Currency) },
+            { "{ACCOUNT_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountAmount.Currency, cancellationToken) },
             { "{ACCOUNTBALANCE_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AccountBalance.Amount) },
-            { "{ACCOUNTBALANCE_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountBalance.Currency) }
+            { "{ACCOUNTBALANCE_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountBalance.Currency, cancellationToken) }
         };
 
         return KeyWordReplacer.ReplacePlaceholders(message, replacements);

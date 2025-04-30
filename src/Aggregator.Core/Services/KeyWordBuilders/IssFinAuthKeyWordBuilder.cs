@@ -67,18 +67,18 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             { "{EXPDATE}", entity.CardInfo?.ExpDate ?? string.Empty },
             { "{ACCOUNTID}", entity.Details.AccountId ?? string.Empty },
             { "{AUTHMONEY_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AuthMoney.Amount) },
-            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AuthMoney.Currency) },
+            { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AuthMoney.Currency, cancellationToken) },
             { "{CONVMONEY_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.ConvMoney.Amount) },
-            { "{CONVMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.ConvMoney.Currency) },
+            { "{CONVMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.ConvMoney.Currency, cancellationToken) },
             { "{ACCOUNTBALANCE_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AccountBalance.Amount) },
             {
                 "{ACCOUNTBALANCE_CURRENCY}",
-                await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountBalance.Currency)
+                await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountBalance.Currency, cancellationToken)
             },
             { "{BILLINGMONEY__AMOUNT}", NumberConverter.GetConvertedString(entity.Details.BillingMoney.Amount) },
             {
                 "{BILLINGMONEY__CURRENCY}",
-                await currencyReplacer.ReplaceCurrencyAsync(entity.Details.BillingMoney.Currency)
+                await currencyReplacer.ReplaceCurrencyAsync(entity.Details.BillingMoney.Currency, cancellationToken)
             },
             { "{LOCALTIME}", entity.Details.LocalTime.ToString() },
             { "{TRANSATIONTIME}", entity.Details.TransactionTime.ToString() },
