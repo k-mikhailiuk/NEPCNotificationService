@@ -1,4 +1,4 @@
-using Aggregator.Core.Models.DataLoads;
+using Aggregator.Core.Models;
 using Aggregator.DataAccess.Abstractions;
 
 namespace Aggregator.Core.Services.Abstractions;

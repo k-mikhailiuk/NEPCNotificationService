@@ -39,7 +39,7 @@ public class InboxHandler(
         var inboxMessages = request.ToList();
         logger.LogInformation("Processing inbox messages: {MessageCount}", inboxMessages.Count);
 
-        var notificationsByType = new Dictionary<Type, List<INotificationAggregatorDto>>();
+        var notificationsByType = new Dictionary<Type, List<NotificationAggregatorBaseDto>>();
 
         var processedMessages = new Dictionary<long, long>();
 

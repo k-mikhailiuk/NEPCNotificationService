@@ -13,7 +13,7 @@ namespace Aggregator.Core.Handlers.Notifications;
 /// Обработчик команды уведомления для AcsOtp.
 /// </summary>
 public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory, IServiceProvider serviceProvider)
-    : IRequestHandler<ProcessNotificationCommand<AggregatorAcsOtpDto>, List<long>>
+    : IRequestHandler<ProcessNotificationCommand<AggregatorOtpDto>, List<long>>
 {
     /// <summary>
     /// Обрабатывает команду уведомления, выполняет маппинг DTO в сущности и сохраняет их в БД.
@@ -21,11 +21,11 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
     /// <param name="request">Команда уведомления с коллекцией DTO.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>Список идентификаторов уведомлений.</returns>
-    public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorAcsOtpDto> request, CancellationToken cancellationToken)
+    public async Task<List<long>> Handle(ProcessNotificationCommand<AggregatorOtpDto> request, CancellationToken cancellationToken)
     {
         var dtos = request.Notifications;
 
-        var mapper = mapperFactory.GetMapper<AcsOtp, AggregatorAcsOtpDto>();
+        var mapper = mapperFactory.GetMapper<AcsOtp, AggregatorOtpDto>();
 
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 

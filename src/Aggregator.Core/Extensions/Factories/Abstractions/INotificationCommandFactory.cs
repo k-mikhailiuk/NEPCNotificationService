@@ -19,5 +19,5 @@ public interface INotificationCommandFactory
     /// <returns>
     /// Команда, реализующая <see cref="IRequest{TResponse}"/>, которая при выполнении возвращает список идентификаторов уведомлений.
     /// </returns>
-    IRequest<List<long>> CreateCommand(List<INotificationAggregatorDto> notification);
+    IRequest<List<long>> CreateCommand(List<NotificationAggregatorBaseDto> notification);
 }

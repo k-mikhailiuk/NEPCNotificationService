@@ -68,7 +68,7 @@ public class AggregatorIssFinAuthDetailsDtoCommandValidator : AbstractValidator<
 
         RuleFor(x => x.ResponseCode)
             .InclusiveBetween(-999999, 999999)
-            .WithMessage("responseCode must be in [1..999999], i.e. up to 6 digits");
+            .WithMessage("responseCode must be in [-999999..999999], i.e. up to 6 digits");
 
         RuleFor(x => x.ApprovalCode)
             .Length(6)

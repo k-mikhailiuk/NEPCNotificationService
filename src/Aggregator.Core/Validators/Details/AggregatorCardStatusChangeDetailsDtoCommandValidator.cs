@@ -19,7 +19,7 @@ public class
     {
         RuleFor(x => x.ExpDate)
             .Matches("^([0-9]{2})(0[1-9]|1[0-2])$")
-            .WithMessage("Id is invalid");
+            .WithMessage("Exp date is invalid");
 
         RuleFor(x => x.OldStatus)
             .NotEmpty()

@@ -18,5 +18,5 @@ public record AggregatorExtensionDto
     /// <summary>
     /// Параметры расширения
     /// </summary>
-    public AggregatorExtensionParametersDto[]? Parameters { get; init; }
+    public IEnumerable<AggregatorExtensionParametersDto> Parameters { get; init; }
 }

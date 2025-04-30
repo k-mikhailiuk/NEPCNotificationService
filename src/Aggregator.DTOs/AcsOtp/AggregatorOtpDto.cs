@@ -1,19 +1,19 @@
-using DataIngrestorApi.DTOs.Abstractions;
+using Aggregator.DTOs.Abstractions;
 
-namespace DataIngrestorApi.DTOs.AcsOtp;
+namespace Aggregator.DTOs.AcsOtp;
 
 /// <summary>
 /// Уведомление о разовых паролях, отправляемых ACS банка-эмитента карты
 /// </summary>
-public record AcsOtpDto : NotificationDto<AcsOtpDetailsDto>
+public record AggregatorOtpDto : NotificationAggregatorDto<AggregatorAcsOtpDetailsDto>
 {
     /// <summary>
     /// Информация о карте
     /// </summary>
-    public CardInfoDto CardInfo { get; init; }
+    public AggregatorCardInfoDto CardInfo { get; init; }
     
     /// <summary>
     /// Информация о мерчанте
     /// </summary>
-    public AcsOtpMerchantInfoDto MerchantInfo { get; init; }
+    public AggregatorAcsOtpMerchantInfoDto MerchantInfo { get; init; }
 }

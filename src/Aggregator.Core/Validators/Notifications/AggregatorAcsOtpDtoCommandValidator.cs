@@ -7,10 +7,10 @@ namespace Aggregator.Core.Validators.Notifications;
 /// Валидатор для команды DTO объекта авторизации AcsOtp.
 /// </summary>
 /// <remarks>
-/// Устанавливает правила валидации для свойств объекта <see cref="AggregatorAcsOtpDto"/>,
+/// Устанавливает правила валидации для свойств объекта <see cref="AggregatorOtpDto"/>,
 /// включая валидацию вложенных объектов Details, CardInfo и коллекции Extensions.
 /// </remarks>
-public class AggregatorAcsOtpDtoCommandValidator : AbstractValidator<AggregatorAcsOtpDto>
+public class AggregatorAcsOtpDtoCommandValidator : AbstractValidator<AggregatorOtpDto>
 {
     /// <summary>
     /// Инициализирует новый экземпляр <see cref="AggregatorAcsOtpDtoCommandValidator"/> и задаёт правила валидации.

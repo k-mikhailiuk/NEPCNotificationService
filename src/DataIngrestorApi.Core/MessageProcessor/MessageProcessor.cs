@@ -36,7 +36,7 @@ public class MessageProcessor : IMessageProcessor
     /// <param name="request">Объект, содержащий пакет уведомлений.</param>
     public async Task ProcessBatchAsync(NotificationRequestDto request)
     {
-        if (request.Batch.Length == 0)
+        if (request.Batch.ToList().Count == 0)
         {
             _logger.LogWarning("Received empty batch.");
             return;

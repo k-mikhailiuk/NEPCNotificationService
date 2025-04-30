@@ -39,7 +39,7 @@ public static class NotificationTypeMapper
         { NotificationType.Unhold, typeof(AggregatorUnholdDto) },
         { NotificationType.OwiUserAction, typeof(AggregatorOwiUserActionDto) },
         { NotificationType.AcctBalChange, typeof(AggregatorAcctBalChangeDto) },
-        { NotificationType.AcsOtp, typeof(AggregatorAcsOtpDto) }
+        { NotificationType.AcsOtp, typeof(AggregatorOtpDto) }
     };
     
     /// <summary>
@@ -55,6 +55,6 @@ public static class NotificationTypeMapper
         { typeof(AggregatorUnholdDto), typeof(Unhold) },
         { typeof(AggregatorOwiUserActionDto), typeof(OwiUserAction) },
         { typeof(AggregatorAcctBalChangeDto), typeof(AcctBalChange) },
-        { typeof(AggregatorAcsOtpDto), typeof(AcsOtp) }
+        { typeof(AggregatorOtpDto), typeof(AcsOtp) }
     };
 }

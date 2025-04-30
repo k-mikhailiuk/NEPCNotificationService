@@ -35,7 +35,7 @@ public class NotificationCommandFactory : INotificationCommandFactory
     /// <exception cref="NotSupportedException">
     /// Выбрасывается, если тип уведомления не поддерживается.
     /// </exception>
-    public IRequest<List<long>> CreateCommand(List<INotificationAggregatorDto> notifications)
+    public IRequest<List<long>> CreateCommand(List<NotificationAggregatorBaseDto> notifications)
     {
         if (notifications == null || notifications.Count == 0)
             throw new ArgumentException("Notifications list must contain at least one element.", nameof(notifications));
@@ -51,10 +51,10 @@ public class NotificationCommandFactory : INotificationCommandFactory
             AggregatorOwiUserActionDto _    => Cast<AggregatorOwiUserActionDto>(),
             AggregatorAcctBalChangeDto _    => Cast<AggregatorAcctBalChangeDto>(),
             AggregatorTokenStatusChangeDto _=> Cast<AggregatorTokenStatusChangeDto>(),
-            AggregatorAcsOtpDto _           => Cast<AggregatorAcsOtpDto>(),
+            AggregatorOtpDto _           => Cast<AggregatorOtpDto>(),
             _ => throw new NotSupportedException($"Тип уведомления {first.GetType().Name} не поддерживается.")
         };
 
-        ProcessNotificationCommand<T> Cast<T>() where T : INotificationAggregatorDto => new(notifications.Cast<T>().ToList());
+        ProcessNotificationCommand<T> Cast<T>() where T : NotificationAggregatorBaseDto => new(notifications.Cast<T>().ToList());
     }
 }

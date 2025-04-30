@@ -18,5 +18,5 @@ public record ExtensionDto
     /// <summary>
     /// Параметры расширения
     /// </summary>
-    public ExtensionParametersDto[]? Parameters { get; init; }
+    public IEnumerable<ExtensionParametersDto>? Parameters { get; init; }
 }

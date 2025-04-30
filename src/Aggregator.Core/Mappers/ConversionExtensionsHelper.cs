@@ -36,7 +36,8 @@ public class ConversionExtensionsHelper(ILogger<ConversionExtensionsHelper> logg
         moneyEntity.Amount = decimal.Round(moneyDto.Amount, 2) / 100;
         moneyEntity.Currency = moneyDto.Currency;
 
-        logger.LogInformation("{moneyEntity} was converted to {moneyEntity.GetType().Name}", moneyEntity, moneyEntity.GetType().Name);
+        logger.LogInformation("{moneyEntity} was converted to {moneyEntity.GetType().Name}", moneyEntity,
+            moneyEntity.GetType().Name);
 
         return moneyEntity;
     }
@@ -51,15 +52,15 @@ public class ConversionExtensionsHelper(ILogger<ConversionExtensionsHelper> logg
     /// Объект <see cref="CardIdentifier"/> с заполненными полями <c>CardIdentifierType</c> и <c>CardIdentifierValue</c>;
     /// если входной параметр равен null, возвращает объект с обоими значениями равными null.
     /// </returns>
-    public CardIdentifier MapCardIdentifier(List<AggregatorCardIdentifierDto>? dto)
+    public CardIdentifier MapCardIdentifier(IEnumerable<AggregatorCardIdentifierDto>? dto)
     {
-        if(dto == null)
+        if (dto == null)
             return new CardIdentifier
             {
                 CardIdentifierType = null,
                 CardIdentifierValue = null
             };
-        
+
         return dto.Select(x => new CardIdentifier
             {
                 CardIdentifierType =
@@ -70,7 +71,7 @@ public class ConversionExtensionsHelper(ILogger<ConversionExtensionsHelper> logg
             })
             .FirstOrDefault()!;
     }
-    
+
     /// <summary>
     /// Маппит список DTO расширений в список сущностей <see cref="NotificationExtension"/>.
     /// </summary>
@@ -81,23 +82,24 @@ public class ConversionExtensionsHelper(ILogger<ConversionExtensionsHelper> logg
     /// Список сущностей <see cref="NotificationExtension"/> с заполненными полями.
     /// Если входной список dto равен null или пуст, выводится сообщение и возвращается null.
     /// </returns>
-    public List<NotificationExtension>? MapExtensions(List<AggregatorExtensionDto>? dto, long notificationId, NotificationType notificationType)
+    public List<NotificationExtension>? MapExtensions(IEnumerable<AggregatorExtensionDto>? dto, long notificationId,
+        NotificationType notificationType)
     {
-        if (dto == null || dto.Count == 0)
+        if (dto is null)
         {
             logger.LogInformation("NotificationExtension is null");
             return null;
         }
 
         logger.LogInformation("Mapping NotificationExtension");
-        
+
         return dto.Select(x => new NotificationExtension
         {
             ExtensionId = x.Id,
             NotificationType = notificationType,
             Critical = Convert.ToBoolean(x.Critical),
             NotificationId = notificationId,
-            ExtensionParameters = x.Parameters?.Select(p => new ExtensionParameter
+            ExtensionParameters = x.Parameters.Select(p => new ExtensionParameter
             {
                 Name = p.Name,
                 Value = p.Value

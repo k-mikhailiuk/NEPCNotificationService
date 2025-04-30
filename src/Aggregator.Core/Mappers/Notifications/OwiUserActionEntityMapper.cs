@@ -27,8 +27,8 @@ public class OwiUserActionEntityMapper(
     {
         if (dto == null)
         {
-            logger.LogWarning("AggregatorOwiUserActionDto is null");
-            throw new ArgumentNullException(nameof(dto), "AggregatorOwiUserActionDto is null");
+            logger.LogWarning("AggregatorBaseOwiUserActionDto is null");
+            throw new ArgumentNullException(nameof(dto), "AggregatorBaseOwiUserActionDto is null");
         }
 
         var notification = new OwiUserAction

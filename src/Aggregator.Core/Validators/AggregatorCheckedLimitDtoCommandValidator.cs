@@ -22,7 +22,7 @@ public class AggregatorCheckedLimitDtoCommandValidator : AbstractValidator<Aggre
 
         RuleFor(x => x.Type)
             .IsInEnum()
-            .WithMessage("Type must be a valid integer.");
+            .WithMessage("Type must be a in enum range.");
 
         RuleFor(x => x.Exceeded)
             .NotNull()

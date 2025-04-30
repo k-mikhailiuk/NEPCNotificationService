@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using DataIngrestorApi.DTOs.Abstractions;
@@ -34,7 +33,7 @@ public record CardInfoDto : IHasCardIdentifier
     /// <summary>
     /// Тип - контейнер лимитов
     /// </summary>
-    public LimitWrapperDto[]? Limits { get; init; }
+    public IEnumerable<LimitWrapperDto>? Limits { get; init; }
     
     /// <summary>
     /// Для хранения неидентифицированных полей/заполнение CardIdentifier
@@ -42,12 +41,12 @@ public record CardInfoDto : IHasCardIdentifier
     [JsonExtensionData]
     public Dictionary<string, JsonElement>? ExtensionData { get; set; } = new();
 
-    private List<CardIdentifierDto>? _cardIdentifier;
+    private IEnumerable<CardIdentifierDto>? _cardIdentifier;
     
     /// <summary>
     /// Список идентификаторов карты
     /// </summary>
-    public List<CardIdentifierDto>? CardIdentifier
+    public IEnumerable<CardIdentifierDto>? CardIdentifier
     {
         get
         {

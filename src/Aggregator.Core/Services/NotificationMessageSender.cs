@@ -48,7 +48,7 @@ public class NotificationMessageSender(IServiceProvider serviceProvider, ILogger
     /// <param name="tokens">Список FCM-токенов устройств.</param>
     /// <param name="cancellationToken">Токен отмены задачи.</param>
     /// <returns><c>true</c>, если все отправки завершились успешно; иначе <c>false</c>.</returns>
-    private static async Task<bool> SendMessageAsync(NotificationMessage message, List<string> tokens,
+    private static async Task<bool> SendMessageAsync(NotificationMessage message, IEnumerable<string> tokens,
         CancellationToken cancellationToken = default)
     {
         foreach (var token in tokens)

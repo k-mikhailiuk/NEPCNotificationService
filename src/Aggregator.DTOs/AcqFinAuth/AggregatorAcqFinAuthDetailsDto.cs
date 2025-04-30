@@ -114,5 +114,5 @@ public record AggregatorAcqFinAuthDetailsDto
     /// <summary>
     /// Список идентификаторов карты
     /// </summary>
-    public List<AggregatorCardIdentifierDto>? CardIdentifier { get; init; }
+    public IEnumerable<AggregatorCardIdentifierDto>? CardIdentifier { get; init; }
 }

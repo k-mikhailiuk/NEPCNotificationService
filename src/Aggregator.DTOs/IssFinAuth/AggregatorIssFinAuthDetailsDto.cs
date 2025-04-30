@@ -130,7 +130,7 @@ public record AggregatorIssFinAuthDetailsDto
     /// <summary>
     /// Список лимитов, проверенных при авторизации. Не заполняется для отмен
     /// </summary>
-    public List<AggregatorCheckedLimitDto>? CheckedLimits { get; init; }
+    public IEnumerable<AggregatorCheckedLimitDto>? CheckedLimits { get; init; }
     
     /// <summary>
     /// Изменение собственных средств и Exceed Limit
@@ -140,5 +140,5 @@ public record AggregatorIssFinAuthDetailsDto
     /// <summary>
     /// Список идентификаторов карты
     /// </summary>
-    public List<AggregatorCardIdentifierDto>? CardIdentifier { get; init; }
+    public IEnumerable<AggregatorCardIdentifierDto>? CardIdentifier { get; init; }
 }

@@ -60,7 +60,7 @@ public class PinChangeEntityMapper(
 
         logger.LogInformation($"Mapping PinChangeDetails: TransactionTime={dto.TransactionTime}", dto.TransactionTime);
 
-        return new PinChangeDetails()
+        return new PinChangeDetails
         {
             ExpDate = dto.ExpDate,
             TransactionTime = dateTimeConverter.SafeConvertTime(dto.TransactionTime),

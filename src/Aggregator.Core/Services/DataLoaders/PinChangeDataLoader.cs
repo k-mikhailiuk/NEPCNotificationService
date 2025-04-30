@@ -1,4 +1,4 @@
-using Aggregator.Core.Models.DataLoads;
+using Aggregator.Core.Models;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.PinChange;

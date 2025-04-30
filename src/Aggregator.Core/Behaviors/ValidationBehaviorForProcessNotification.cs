@@ -19,7 +19,7 @@ namespace Aggregator.Core.Behaviors;
 public class ValidationBehaviorForProcessNotification<T>(
     IEnumerable<IValidator<T>> validators,
     ILogger<ValidationBehaviorForProcessNotification<T>> logger)
-    : IPipelineBehavior<ProcessNotificationCommand<T>, Unit> where T : INotificationAggregatorDto
+    : IPipelineBehavior<ProcessNotificationCommand<T>, Unit> where T : NotificationAggregatorBaseDto
 {
     
     /// <summary>

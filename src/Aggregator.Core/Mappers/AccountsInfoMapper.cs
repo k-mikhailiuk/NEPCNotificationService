@@ -19,17 +19,11 @@ public class AccountsInfoMapper(
     /// <param name="dto">Список DTO объектов информации о счетах.</param>
     /// <param name="notificationId">Идентификатор уведомления.</param>
     /// <returns>Список сущностей <see cref="AccountsInfo"/> или null, если список dto пуст или равен null.</returns>
-    public List<AccountsInfo> MapAccountsInfo(List<AggregatorAccountInfoDto> dto, long notificationId)
+    public List<AccountsInfo> MapAccountsInfo(IEnumerable<AggregatorAccountInfoDto> dto, long notificationId)
     {
-        if (dto == null || dto.Count == 0)
-        {
-            logger.LogInformation("AccountsInfo is null");
-            return null;
-        }
-
         logger.LogInformation("Mapping AccountsInfo");
 
-        return dto.Select(x => new AccountsInfo()
+        return dto.Select(x => new AccountsInfo
         {
             AccountsInfoId = x.Id,
             NotificationId = notificationId,

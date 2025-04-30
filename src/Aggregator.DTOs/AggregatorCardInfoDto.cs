@@ -28,10 +28,10 @@ public record AggregatorCardInfoDto
     /// <summary>
     /// Тип - контейнер лимитов
     /// </summary>
-    public AggregatorLimitWrapperDto[]? Limits { get; init; }
+    public IEnumerable<AggregatorLimitWrapperDto> Limits { get; init; }
     
     /// <summary>
     /// Список идентификаторов карты
     /// </summary>
-    public List<AggregatorCardIdentifierDto>? CardIdentifier { get; init; }
+    public IEnumerable<AggregatorCardIdentifierDto>? CardIdentifier { get; init; }
 }

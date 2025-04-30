@@ -13,5 +13,5 @@ public record NotificationRequestDto
     /// <summary>
     /// Список уведомлений
     /// </summary>
-    public NotificationWrapperDto[] Batch { get; init; }
+    public IEnumerable<NotificationWrapperDto> Batch { get; init; }
 }

@@ -9,22 +9,22 @@ using Microsoft.Extensions.Logging;
 namespace Aggregator.Core.Mappers.Notifications;
 
 /// <summary>
-/// Маппер, преобразующий DTO уведомления AcsOtp (<see cref="AggregatorAcsOtpDto"/>) в сущность <see cref="AcsOtp"/>.
+/// Маппер, преобразующий DTO уведомления AcsOtp (<see cref="AggregatorOtpDto"/>) в сущность <see cref="AcsOtp"/>.
 /// </summary>
 public class AcsOtpEntityMapper(
     ILogger<CardStatusChangeEntityMapper> logger,
     CardInfoMapper cardInfoMapper,
     ConversionExtensionsHelper conversionExtensionsHelper,
     DateTimeConverter dateTimeConverter)
-    : INotificationMapper<AcsOtp, AggregatorAcsOtpDto>
+    : INotificationMapper<AcsOtp, AggregatorOtpDto>
 {
     /// <summary>
-    /// Преобразует объект <see cref="AggregatorAcsOtpDto"/> в сущность <see cref="AcsOtp"/>.
+    /// Преобразует объект <see cref="AggregatorOtpDto"/> в сущность <see cref="AcsOtp"/>.
     /// </summary>
     /// <param name="dto">DTO уведомления AcsOtp.</param>
     /// <returns>Сущность <see cref="AcsOtp"/> с заполненными данными.</returns>
     /// <exception cref="ArgumentNullException">Выбрасывается, если <paramref name="dto"/> равен null.</exception>
-    public AcsOtp Map(AggregatorAcsOtpDto dto)
+    public AcsOtp Map(AggregatorOtpDto dto)
     {
         if (dto == null)
         {

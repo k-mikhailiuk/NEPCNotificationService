@@ -15,8 +15,8 @@ public static class InboxMessageParser
     /// Тип DTO определяется по корневому ключу JSON, который должен соответствовать значению <see cref="NotificationType"/>.
     /// </summary>
     /// <param name="payload">Строка JSON, содержащая одно уведомление в формате {"TypeName": {...}}.</param>
-    /// <returns>Объект, реализующий <see cref="INotificationAggregatorDto"/>, или <c>null</c> в случае ошибки.</returns>
-    public static INotificationAggregatorDto? ParseInboxMessage(string payload)
+    /// <returns>Объект, реализующий <see cref="NotificationAggregatorBaseDto"/>, или <c>null</c> в случае ошибки.</returns>
+    public static NotificationAggregatorBaseDto? ParseInboxMessage(string payload)
     {
         try
         {
@@ -38,7 +38,7 @@ public static class InboxMessageParser
                 throw new InvalidOperationException($"Unknown notification type: {rootKey}");
             }
 
-            var deserializedObject = (INotificationAggregatorDto)JsonSerializer.Deserialize(jsonObject[rootKey]!.ToJsonString(), targetType);
+            var deserializedObject = (NotificationAggregatorBaseDto)JsonSerializer.Deserialize(jsonObject[rootKey]!.ToJsonString(), targetType)!;
         
             return deserializedObject;
         }

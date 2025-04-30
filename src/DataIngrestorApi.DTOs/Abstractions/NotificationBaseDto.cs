@@ -1,6 +1,6 @@
-namespace Aggregator.DTOs.Abstractions;
+namespace DataIngrestorApi.DTOs.Abstractions;
 
-public interface INotificationAggregatorDto
+public record NotificationBaseDto
 {
     /// <summary>
     /// Уникальный идентификатор уведомления
@@ -16,4 +16,9 @@ public interface INotificationAggregatorDto
     /// Время создания уведомления (YYYYMMDDHH24MISS) во временной зоне ПЦ
     /// </summary>
     public string Time { get; init; }
+    
+    /// <summary>
+    /// Список расширений
+    /// </summary>
+    public IEnumerable<ExtensionDto>? Extensions { get; init; }
 }

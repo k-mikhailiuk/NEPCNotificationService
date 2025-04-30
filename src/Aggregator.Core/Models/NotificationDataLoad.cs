@@ -1,6 +1,6 @@
 using ControlPanel.DataAccess.Entities;
 
-namespace Aggregator.Core.Models.DataLoads;
+namespace Aggregator.Core.Models;
 
 public record NotificationDataLoad<T>
 {

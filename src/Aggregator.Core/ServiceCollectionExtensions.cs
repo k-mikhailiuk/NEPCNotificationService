@@ -51,14 +51,15 @@ public static class ServiceCollectionExtensions
         AddCommand<AggregatorPinChangeDto, PinChangeProcessHandler>();
         AddCommand<AggregatorTokenStatusChangeDto, TokenStatusChangeProcessHandler>();
         AddCommand<AggregatorUnholdDto, UnholdProcessHandler>();
-        AddCommand<AggregatorAcsOtpDto, AcsOtpProcessHandler>();
+        AddCommand<AggregatorOtpDto, AcsOtpProcessHandler>();
 
         return services;
-        
-        void AddCommand<T, THandler>() where T : INotificationAggregatorDto where THandler : class, IRequestHandler<ProcessNotificationCommand<T>, List<long>>
+
+        void AddCommand<T, THandler>() where T : NotificationAggregatorBaseDto
+            where THandler : class, IRequestHandler<ProcessNotificationCommand<T>, List<long>>
             => services.AddTransient<IRequestHandler<ProcessNotificationCommand<T>, List<long>>, THandler>();
     }
-    
+
     /// <summary>
     /// Регистрирует сервисы.
     /// </summary>
@@ -100,7 +101,7 @@ public static class ServiceCollectionExtensions
             .AsImplementedInterfaces()
             .WithTransientLifetime()
         );
-        
+
         services.AddTransient<
             IPipelineBehavior<ProcessNotificationCommand<AggregatorAcqFinAuthDto>, Unit>,
             ValidationBehaviorForProcessNotification<AggregatorAcqFinAuthDto>>();
@@ -108,8 +109,8 @@ public static class ServiceCollectionExtensions
             IPipelineBehavior<ProcessNotificationCommand<AggregatorAcctBalChangeDto>, Unit>,
             ValidationBehaviorForProcessNotification<AggregatorAcctBalChangeDto>>();
         services.AddTransient<
-            IPipelineBehavior<ProcessNotificationCommand<AggregatorAcsOtpDto>, Unit>,
-            ValidationBehaviorForProcessNotification<AggregatorAcsOtpDto>>();
+            IPipelineBehavior<ProcessNotificationCommand<AggregatorOtpDto>, Unit>,
+            ValidationBehaviorForProcessNotification<AggregatorOtpDto>>();
         services.AddTransient<
             IPipelineBehavior<ProcessNotificationCommand<AggregatorCardStatusChangeDto>, Unit>,
             ValidationBehaviorForProcessNotification<AggregatorCardStatusChangeDto>>();
@@ -156,7 +157,7 @@ public static class ServiceCollectionExtensions
             .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<,>)))
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
-        
+
         services.AddTransient<CardInfoMapper>();
         services.AddTransient<ConversionExtensionsHelper>();
         services.AddTransient<MerchantInfoMapper>();
@@ -186,7 +187,7 @@ public static class ServiceCollectionExtensions
             .AsImplementedInterfaces()
             .WithTransientLifetime()
         );
-        
+
         services.AddTransient<ICurrencyReplacer, CurrencyReplacer>();
         services.AddTransient<ILimitIdReplacer, LimitIdReplacer>();
 
@@ -204,7 +205,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<INotificationHistorySaver, NotificationHistorySaver>();
         return services;
     }
-    
+
     /// <summary>
     /// Регистрирует сервисы, формирующие уведомление, в контейнере зависимостей.
     /// </summary>
@@ -216,10 +217,10 @@ public static class ServiceCollectionExtensions
             typeof(INotificationCompositor<>),
             typeof(NotificationCompositor<>)
         );
-        
+
         return services;
     }
-    
+
     /// <summary>
     /// Регистрирует сервисы предварительной загрузки данных для формирования сообщения в контейнере зависимостей.
     /// </summary>
@@ -233,7 +234,7 @@ public static class ServiceCollectionExtensions
             .AsImplementedInterfaces()
             .WithTransientLifetime()
         );
-        
+
         return services;
     }
 }

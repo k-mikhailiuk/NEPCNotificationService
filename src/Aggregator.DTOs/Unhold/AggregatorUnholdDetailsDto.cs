@@ -95,5 +95,5 @@ public record AggregatorUnholdDetailsDto
     /// <summary>
     /// Список идентификаторов карты
     /// </summary>
-    public List<AggregatorCardIdentifierDto>? CardIdentifier { get; init; }
+    public IEnumerable<AggregatorCardIdentifierDto>? CardIdentifier { get; init; }
 }
