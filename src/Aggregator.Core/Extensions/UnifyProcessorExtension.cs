@@ -15,7 +15,7 @@ public static class UnifyProcessorExtension<T> where T : Notification
     /// Предварительно загружает и унифицирует расширения для заданного списка уведомлений.
     /// </summary>
     /// <param name="entities">Список уведомлений, для которых требуется выполнить загрузку и унификацию расширений.</param>
-    /// <param name="unitOfWork">Объект единицы работы для выполнения SQL-запроса.</param>
+    /// <param name="aggregatorUnitOfWork">Объект единицы работы для выполнения SQL-запроса.</param>
     /// <param name="cancellationToken">Токен для отмены операции.</param>
     /// <returns>Асинхронная задача, представляющая выполнение операции.</returns>
     /// <remarks>
@@ -25,7 +25,7 @@ public static class UnifyProcessorExtension<T> where T : Notification
     /// </remarks>
     public static async Task PreloadAndUnifyExtensionsAsync(
         List<T> entities,
-        IUnitOfWork unitOfWork,
+        IAggregatorUnitOfWork aggregatorUnitOfWork,
         CancellationToken cancellationToken)
     {
         var extensionKeys = new HashSet<(string extId, long notifId)>();
@@ -48,7 +48,7 @@ public static class UnifyProcessorExtension<T> where T : Notification
         if(allExtensionIds.Count == 0)
             return;
         
-        var partialList = await unitOfWork.NotificationExtension
+        var partialList = await aggregatorUnitOfWork.NotificationExtension
             .GetAll(e => allExtensionIds
                 .Contains(e.ExtensionId)).ToListAsync(cancellationToken);
         

@@ -22,6 +22,7 @@ public class IssFinAuthDetailsConfiguration : IEntityTypeConfiguration<IssFinAut
 
         builder.HasKey(x => x.IssFinAuthDetailsId);
 
+        builder.Property(x=>x.IssFinAuthDetailsId).IsRequired().ValueGeneratedNever();
         builder.Property(x => x.Reversal).IsRequired();
         builder.Property(x => x.TransType).IsRequired();
         builder.Property(x => x.IssInstId).IsRequired().HasMaxLength(4);

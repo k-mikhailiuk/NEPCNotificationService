@@ -34,7 +34,7 @@ public class OwiUserActionProcessHandler(
         var entities = dtos.Select(dto => mapper.Map(dto)). ToList();
         
         using var scope = serviceProvider.CreateScope();
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
         var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
         PreloadAndUnifyDetails(entities, unitOfWork);
@@ -52,17 +52,17 @@ public class OwiUserActionProcessHandler(
     /// Загружает и унифицирует детали для сущностей OwiUserAction.
     /// </summary>
     /// <param name="entities">Список сущностей OwiUserAction.</param>
-    /// <param name="unitOfWork">Интерфейс для доступа к базе данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс для доступа к базе данных.</param>
     private static void PreloadAndUnifyDetails(
         List<OwiUserAction> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.OwiUserActionDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = unitOfWork.OwiUserActionDetails
+        var existingDetailsList = aggregatorUnitOfWork.OwiUserActionDetails
             .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.OwiUserActionDetailsId, d => d);

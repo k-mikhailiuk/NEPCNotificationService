@@ -23,7 +23,7 @@ public static class DIConfigure
         services.AddControllersWithViews();
         services.ConfigureIdentity(configuration);
         services.AddDataSeeders();
-        services.AddRepositories();
+        services.AddControlPanelRepositories();
         services.AddServices();
     }
 

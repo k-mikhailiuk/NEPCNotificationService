@@ -9,6 +9,12 @@ namespace ControlPanel.DataAccess.Abstractions.Repositories;
 public interface IRepository<T> where T : class
 {
     /// <summary>
+    /// Получает все сущности типа <typeparamref name="T"/>.
+    /// </summary>
+    /// <returns>Список всех сущностей.</returns>
+    IQueryable<T> GetAll();
+    
+    /// <summary>
     /// Асинхронно получает сущность по идентификатору.
     /// </summary>
     /// <param name="id">Идентификатор сущности.</param>

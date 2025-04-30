@@ -9,7 +9,7 @@ namespace Aggregator.Core.Validators.Notifications;
 /// </summary>
 /// <remarks>
 /// Класс устанавливает правила валидации для свойств объекта <see cref="AggregatorIssFinAuthDto"/>,
-/// включая проверку вложенных объектов Details, CardInfo, AccountsInfo, MerchantInfo и коллекции Extensions.
+/// включая проверку вложенных объектов Details, CardInfo, AccountInfo, MerchantInfo и коллекции Extensions.
 /// </remarks>
 public class AggregatorIssFinAuthDtoCommandValidator : AbstractValidator<AggregatorIssFinAuthDto>
 {

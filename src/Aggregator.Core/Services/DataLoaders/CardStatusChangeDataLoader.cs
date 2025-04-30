@@ -2,6 +2,7 @@ using Aggregator.Core.Models;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.CardStatusChange;
+using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,15 +10,18 @@ namespace Aggregator.Core.Services.DataLoaders;
 
 public class CardStatusChangeDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<CardStatusChange>
 {
-    public async Task<NotificationDataLoad<CardStatusChange>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds, IUnitOfWork unitOfWork,
+    public async Task<NotificationDataLoad<CardStatusChange>> LoadDataForNotificationsAsync(
+        IEnumerable<long> notificationIds,
+        IAggregatorUnitOfWork aggregatorUnitOfWork,
+        IControlPanelUnitOfWork controlPanelUnitOfWork,
         CancellationToken cancellationToken)
     {
-        var messages = await unitOfWork.CardStatusChange
+        var messages = await aggregatorUnitOfWork.CardStatusChange
             .GetAll().Where(x => notificationIds.Contains(x.NotificationId))
             .Include(x => x.Details).ToListAsync(cancellationToken);
 
         var messageText =
-            await unitOfWork.NotificationMessageTextDirectories.FindAsync(x =>
+            await controlPanelUnitOfWork.NotificationMessageTextDirectories.FindAsync(x =>
                 x.NotificationType == NotificationMessageType.CardStatusChange, cancellationToken);
 
         var notificationTextById = messages
@@ -25,7 +29,7 @@ public class CardStatusChangeDataLoader(IAccountNoParser accountNoParser) : INot
                 m => m.NotificationId,
                 _ => messageText
             );
-        
+
         var rawCleanAccountsMap = messages
             .ToDictionary(
                 m => m.Details.CardIdentifier.CardIdentifierValue,
@@ -33,8 +37,9 @@ public class CardStatusChangeDataLoader(IAccountNoParser accountNoParser) : INot
             );
 
         var accountsMap =
-            await unitOfWork.Accounts.GetAccountCustomerMapAsync(
-                messages.Select(x => accountNoParser.ParseAccountNo(x.Details.CardIdentifier.CardIdentifierValue!)).ToList(),
+            await aggregatorUnitOfWork.Accounts.GetAccountCustomerMapAsync(
+                messages.Select(x => accountNoParser.ParseAccountNo(x.Details.CardIdentifier.CardIdentifierValue!))
+                    .ToList(),
                 cancellationToken);
 
         if (accountsMap.Count == 0)
@@ -46,7 +51,7 @@ public class CardStatusChangeDataLoader(IAccountNoParser accountNoParser) : INot
                 m => accountsMap.GetValueOrDefault(rawCleanAccountsMap[m.Details.CardIdentifier.CardIdentifierValue]));
 
         var customerSettingsMap =
-            await unitOfWork.PushNotificationSettings.GetUserSettingsIds(
+            await aggregatorUnitOfWork.PushNotificationSettings.GetUserSettingsIds(
                 notificationToCustomer.Select(x => x.Value).ToList(), cancellationToken);
 
         return new NotificationDataLoad<CardStatusChange>

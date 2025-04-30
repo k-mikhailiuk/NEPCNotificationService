@@ -36,7 +36,7 @@ public class CardStatusChangeProcessHandler(
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
         using var scope = serviceProvider.CreateScope();
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
         var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
         PreloadAndUnifyDetails(entities, unitOfWork);
@@ -54,17 +54,17 @@ public class CardStatusChangeProcessHandler(
     /// Загружает и унифицирует детали для сущностей изменения статуса карты.
     /// </summary>
     /// <param name="entities">Список сущностей <see cref="CardStatusChange"/>.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс для работы с базой данных.</param>
     private static void PreloadAndUnifyDetails(
         List<CardStatusChange> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.CardStatusChangeDetailsId)
             .Distinct()
             .ToList();
         
-        var existingDetailsList = unitOfWork.CardStatusChangeDetails
+        var existingDetailsList = aggregatorUnitOfWork.CardStatusChangeDetails
             .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.CardStatusChangeDetailsId, d => d);

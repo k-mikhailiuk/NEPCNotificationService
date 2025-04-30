@@ -2,6 +2,7 @@ using Aggregator.Core.Models;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
+using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +10,12 @@ namespace Aggregator.Core.Services.DataLoaders;
 
 public class AcqFinAuthDataLoader : INotificationDataLoader<AcqFinAuth>
 {
-    public async Task<NotificationDataLoad<AcqFinAuth>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds, IUnitOfWork unitOfWork,
+    public async Task<NotificationDataLoad<AcqFinAuth>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds,
+        IAggregatorUnitOfWork aggregatorUnitOfWork,
+        IControlPanelUnitOfWork controlPanelUnitOfWork,
         CancellationToken cancellationToken)
     {
-        var messages = await unitOfWork.AcqFinAuth
+        var messages = await aggregatorUnitOfWork.AcqFinAuth
             .GetAll().Where(x=> notificationIds.Contains(x.NotificationId))
             .Include(x=>x.Details)
             .Include(x=>x.MerchantInfo).ToListAsync(cancellationToken);
@@ -24,7 +27,7 @@ public class AcqFinAuthDataLoader : INotificationDataLoader<AcqFinAuth>
         if (operationTypes.Count == 0)
             throw new ArgumentNullException($"{operationTypes} is null");
 
-        var messageTextMap = await unitOfWork.NotificationMessageTextDirectories.GetAll()
+        var messageTextMap = await controlPanelUnitOfWork.NotificationMessageTextDirectories.GetAll()
             .Where(x =>
                 x.NotificationType == NotificationMessageType.AcqFinAuth &&
                 operationTypes.Contains((int)x.OperationType!))
@@ -48,7 +51,7 @@ public class AcqFinAuthDataLoader : INotificationDataLoader<AcqFinAuth>
             );
 
         var accountsMap =
-            await unitOfWork.Offices.GetCustomerIdsByTerminalsAsync(rawCleanAccountsMap.Select(x => x.Value).ToList()!,
+            await aggregatorUnitOfWork.Offices.GetCustomerIdsByTerminalsAsync(rawCleanAccountsMap.Select(x => x.Value).ToList()!,
                 cancellationToken);
 
         if (accountsMap.Count == 0)
@@ -60,7 +63,7 @@ public class AcqFinAuthDataLoader : INotificationDataLoader<AcqFinAuth>
                 m => accountsMap.GetValueOrDefault(m.MerchantInfo.TerminalId));
 
         var customerSettingsMap =
-            await unitOfWork.PushNotificationSettings.GetUserSettingsIds(
+            await aggregatorUnitOfWork.PushNotificationSettings.GetUserSettingsIds(
                 notificationToCustomer.Select(x => x.Value).ToList(), cancellationToken);
 
         return new NotificationDataLoad<AcqFinAuth>

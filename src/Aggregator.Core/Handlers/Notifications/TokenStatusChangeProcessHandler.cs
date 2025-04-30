@@ -36,7 +36,7 @@ public class
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
         using var scope = serviceProvider.CreateScope();
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
         var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
         PreloadAndUnifyDetails(entities, unitOfWork);
@@ -55,17 +55,17 @@ public class
     /// Загружает и унифицирует детали для сущностей TokenStatusChange.
     /// </summary>
     /// <param name="entities">Список сущностей изменения статуса токена.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс для работы с базой данных.</param>
     private static void PreloadAndUnifyDetails(
         List<TokenStatusChange> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.TokenStatusChangeDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = unitOfWork.TokenStatusChangeDetails
+        var existingDetailsList = aggregatorUnitOfWork.TokenStatusChangeDetails
             .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.TokenStatusChangeDetailsId, d => d);

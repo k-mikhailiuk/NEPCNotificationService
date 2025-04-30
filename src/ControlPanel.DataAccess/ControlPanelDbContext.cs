@@ -1,4 +1,3 @@
-using ControlPanel.DataAccess.Configurations;
 using ControlPanel.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -45,9 +44,6 @@ public class ControlPanelDbContext(DbContextOptions<ControlPanelDbContext> optio
         
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.ApplyConfiguration(new NotificationMessageKeyWordConfiguration());
-        modelBuilder.ApplyConfiguration(new NotificationMessageTextDirectoryConfiguration());
-        modelBuilder.ApplyConfiguration(new CurrencyConfiguration());
-        modelBuilder.ApplyConfiguration(new LimitIdDescriptionDirectoryConfiguration());
+        modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
     }
 }

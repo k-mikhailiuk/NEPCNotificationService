@@ -22,7 +22,7 @@ public class PinChangeDetailsConfiguration : IEntityTypeConfiguration<PinChangeD
 
         builder.HasKey(x => x.PinChangeDetailsId);
 
-        builder.Property(x => x.PinChangeDetailsId).ValueGeneratedOnAdd();
+        builder.Property(x => x.PinChangeDetailsId).ValueGeneratedNever();
         builder.Property(x => x.ExpDate).IsRequired().HasMaxLength(4);
         builder.Property(x => x.TransactionTime).IsRequired();
         builder.Property(x => x.Status).IsRequired();

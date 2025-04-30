@@ -6,12 +6,12 @@ using ControlPanel.DataAccess.Entities;
 namespace ControlPanel.Core.Services;
 
 /// <inheritdoc/>
-public class NotificationMessageKeyWordsService(IUnitOfWork unitOfWork) : INotificationMessageKeyWordsService
+public class NotificationMessageKeyWordsService(IControlPanelUnitOfWork controlPanelUnitOfWork) : INotificationMessageKeyWordsService
 {
     /// <inheritdoc/>
     public async Task<List<NotificationMessageKeyWord>> GetKeyWordsAsync(CancellationToken cancellationToken)
     {
-        var keywords = await unitOfWork.NotificationMessageKeyWords.GetAllAsync(cancellationToken);
+        var keywords = await controlPanelUnitOfWork.NotificationMessageKeyWords.GetAllAsync(cancellationToken);
         
         return keywords.ToList();
     }
@@ -19,11 +19,11 @@ public class NotificationMessageKeyWordsService(IUnitOfWork unitOfWork) : INotif
     /// <inheritdoc/>
     public async Task UpdateDescriptionAsync(UpdateNotificationMessageKeyWordsDescriptionDto dto, CancellationToken cancellationToken)
     {
-        var entity = await unitOfWork.NotificationMessageKeyWords.FindAsync(x=>x.Id == dto.Id, cancellationToken);
+        var entity = await controlPanelUnitOfWork.NotificationMessageKeyWords.FindAsync(x=>x.Id == dto.Id, cancellationToken);
         if (entity == null)
             return;
 
         entity.Description = dto.Description;
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await controlPanelUnitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

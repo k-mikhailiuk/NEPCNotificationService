@@ -13,7 +13,7 @@ namespace Aggregator.DataAccess.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_AccountsInfo_AccountsInfoId_NotificationId",
                 schema: "nepc",
-                table: "AccountsInfo");
+                table: "AccountInfo");
         }
 
         /// <inheritdoc />
@@ -22,7 +22,7 @@ namespace Aggregator.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AccountsInfo_AccountsInfoId_NotificationId",
                 schema: "nepc",
-                table: "AccountsInfo",
+                table: "AccountInfo",
                 columns: new[] { "AccountsInfoId", "NotificationId" },
                 unique: true);
         }

@@ -22,7 +22,7 @@ public class CardInfoConfiguration : IEntityTypeConfiguration<CardInfo>
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id).UseIdentityColumn();
         builder.Property(x => x.ExpDate).IsRequired().HasMaxLength(4);
         builder.Property(x => x.RefPan).IsRequired().HasMaxLength(64);
         builder.Property(x => x.ContractId).IsRequired().HasMaxLength(6);

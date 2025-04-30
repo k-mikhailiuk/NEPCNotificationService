@@ -33,7 +33,7 @@ public class AcqFinAuthProcessHandler(NotificationEntityMapperFactory mapperFact
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
         
         using var scope = serviceProvider.CreateScope();
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
         var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
         PreloadAndUnifyDetails(entities, unitOfWork);
@@ -51,17 +51,17 @@ public class AcqFinAuthProcessHandler(NotificationEntityMapperFactory mapperFact
     /// Загружает и унифицирует детали транзакции для сущностей AcqFinAuth.
     /// </summary>
     /// <param name="entities">Список сущностей AcqFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для БД.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для БД.</param>
     private static void PreloadAndUnifyDetails(
         List<AcqFinAuth> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.AcqFinAuthDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = unitOfWork.AcqFinAuthDetails
+        var existingDetailsList = aggregatorUnitOfWork.AcqFinAuthDetails
             .GetQueryByIds(allDetailsIds);
         
         var detailsCache = existingDetailsList.ToDictionary(d => d.AcqFinAuthDetailsId, d => d);
@@ -84,17 +84,17 @@ public class AcqFinAuthProcessHandler(NotificationEntityMapperFactory mapperFact
     /// Загружает и унифицирует информацию о мерчанте для сущностей AcqFinAuth.
     /// </summary>
     /// <param name="entities">Список сущностей AcqFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для БД.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для БД.</param>
     private static void PreloadAndUnifyMerchant(
         List<AcqFinAuth> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allMerchantIds = entities
             .Select(e => e.MerchantInfo.Id)
             .Distinct()
             .ToList();
         
-        var existingMerchants = unitOfWork.MerchantInfo
+        var existingMerchants = aggregatorUnitOfWork.MerchantInfo
             .GetQueryByIds(allMerchantIds);
 
         var merchantCache = existingMerchants.ToDictionary(m => m.Id, m => m);

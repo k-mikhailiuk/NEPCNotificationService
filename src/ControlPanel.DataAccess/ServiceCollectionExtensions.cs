@@ -51,12 +51,12 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">Коллекция сервисов DI.</param>
     /// <returns>Обновленная коллекция сервисов.</returns>
-    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    public static IServiceCollection AddControlPanelRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IControlPanelUnitOfWork, ControlPanelUnitOfWork>();
         
         services.Scan(scan => scan
-            .FromAssemblyOf<IUnitOfWork>()
+            .FromAssemblyOf<IControlPanelUnitOfWork>()
             .AddClasses(classes => classes.InNamespaces("ControlPanel.DataAccess.Repositories"))
             .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsImplementedInterfaces()

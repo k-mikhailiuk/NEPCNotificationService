@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
@@ -8,12 +7,11 @@ namespace Aggregator.DataAccess.Entities.Abstract;
 /// <summary>
 /// Информация о счете
 /// </summary>
-public class AccountsInfo
+public class AccountInfo
 {
     /// <summary>
     /// Уникальный идентификатор
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
     /// <summary>
@@ -27,19 +25,16 @@ public class AccountsInfo
     /// <summary>
     /// Номер счета
     /// </summary>
-    [Required]
     public string AccountsInfoId { get; set; }
     
     /// <summary>
     /// Тип счета
     /// </summary>
-    [Required]
     public int Type { get; set; }
     
     /// <summary>
     /// Доступный баланс
     /// </summary>
-    [Required]
     public AviableBalance AviableBalance { get; set; }
     
     /// <summary>

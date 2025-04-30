@@ -2,6 +2,7 @@ using Aggregator.Core.Models;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.PinChange;
+using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,16 +10,18 @@ namespace Aggregator.Core.Services.DataLoaders;
 
 public class PinChangeDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<PinChange>
 {
-    public async Task<NotificationDataLoad<PinChange>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds, IUnitOfWork unitOfWork,
+    public async Task<NotificationDataLoad<PinChange>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds,
+        IAggregatorUnitOfWork aggregatorUnitOfWork,
+        IControlPanelUnitOfWork controlPanelUnitOfWork,
         CancellationToken cancellationToken)
     {
-        var messages = await unitOfWork.PinChange
+        var messages = await aggregatorUnitOfWork.PinChange
             .GetAll().Where(x => notificationIds.Contains(x.NotificationId))
             .Include(x => x.Details)
-            .Include(x=>x.CardInfo).ToListAsync(cancellationToken);
+            .Include(x => x.CardInfo).ToListAsync(cancellationToken);
 
         var messageText =
-            await unitOfWork.NotificationMessageTextDirectories.FindAsync(x =>
+            await controlPanelUnitOfWork.NotificationMessageTextDirectories.FindAsync(x =>
                 x.NotificationType == NotificationMessageType.PinChange, cancellationToken);
 
         var notificationTextById = messages
@@ -26,7 +29,7 @@ public class PinChangeDataLoader(IAccountNoParser accountNoParser) : INotificati
                 m => m.NotificationId,
                 _ => messageText
             );
-        
+
         var rawCleanAccountsMap = messages
             .ToDictionary(
                 m => m.Details.CardIdentifier.CardIdentifierValue,
@@ -34,8 +37,9 @@ public class PinChangeDataLoader(IAccountNoParser accountNoParser) : INotificati
             );
 
         var accountsMap =
-            await unitOfWork.Accounts.GetAccountCustomerMapAsync(
-                messages.Select(x => accountNoParser.ParseAccountNo(x.Details.CardIdentifier.CardIdentifierValue!)).ToList(),
+            await aggregatorUnitOfWork.Accounts.GetAccountCustomerMapAsync(
+                messages.Select(x => accountNoParser.ParseAccountNo(x.Details.CardIdentifier.CardIdentifierValue!))
+                    .ToList(),
                 cancellationToken);
 
         if (accountsMap.Count == 0)
@@ -47,7 +51,7 @@ public class PinChangeDataLoader(IAccountNoParser accountNoParser) : INotificati
                 m => accountsMap.GetValueOrDefault(rawCleanAccountsMap[m.Details.CardIdentifier.CardIdentifierValue]));
 
         var customerSettingsMap =
-            await unitOfWork.PushNotificationSettings.GetUserSettingsIds(
+            await aggregatorUnitOfWork.PushNotificationSettings.GetUserSettingsIds(
                 notificationToCustomer.Select(x => x.Value).ToList(), cancellationToken);
 
         return new NotificationDataLoad<PinChange>

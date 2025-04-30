@@ -11,7 +11,6 @@ public class Limit
     /// <summary>
     /// Уникальный идентификатор для бд
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
     /// <summary>

@@ -2,6 +2,7 @@ using Aggregator.Core.Models;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.IssFinAuth;
+using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,12 +11,13 @@ namespace Aggregator.Core.Services.DataLoaders;
 public class IssFinAuthDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<IssFinAuth>
 {
     public async Task<NotificationDataLoad<IssFinAuth>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds,
-        IUnitOfWork unitOfWork,
+        IAggregatorUnitOfWork aggregatorUnitOfWork,
+        IControlPanelUnitOfWork controlPanelUnitOfWork,
         CancellationToken cancellationToken)
     {
         try
         {
-            var messages = await unitOfWork.IssFinAuth
+            var messages = await aggregatorUnitOfWork.IssFinAuth
                 .GetAll().Where(x => notificationIds.Contains(x.NotificationId))
                 .Include(x => x.Details)
                 .Include(x => x.CardInfo)
@@ -28,7 +30,7 @@ public class IssFinAuthDataLoader(IAccountNoParser accountNoParser) : INotificat
             if (operationTypes.Count == 0)
                 throw new ArgumentNullException($"{operationTypes} is null");
 
-            var messageTextMap = await unitOfWork.NotificationMessageTextDirectories.GetAll()
+            var messageTextMap = await controlPanelUnitOfWork.NotificationMessageTextDirectories.GetAll()
                 .Where(x =>
                     x.NotificationType == NotificationMessageType.IssFinAuth &&
                     operationTypes.Contains((int)x.OperationType!))
@@ -52,7 +54,7 @@ public class IssFinAuthDataLoader(IAccountNoParser accountNoParser) : INotificat
                 );
 
             var accountsMap =
-                await unitOfWork.Accounts.GetAccountCustomerMapAsync(rawCleanAccountsMap.Select(x => x.Value).ToList(),
+                await aggregatorUnitOfWork.Accounts.GetAccountCustomerMapAsync(rawCleanAccountsMap.Select(x => x.Value).ToList(),
                     cancellationToken);
 
             if (accountsMap.Count == 0)
@@ -64,7 +66,7 @@ public class IssFinAuthDataLoader(IAccountNoParser accountNoParser) : INotificat
                     m => accountsMap.GetValueOrDefault(rawCleanAccountsMap[m.Details.AccountId]));
 
             var customerSettingsMap =
-                await unitOfWork.PushNotificationSettings.GetUserSettingsIds(
+                await aggregatorUnitOfWork.PushNotificationSettings.GetUserSettingsIds(
                     notificationToCustomer.Select(x => x.Value).ToList(), cancellationToken);
 
             return new NotificationDataLoad<IssFinAuth>

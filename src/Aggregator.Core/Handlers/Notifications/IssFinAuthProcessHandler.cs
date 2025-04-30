@@ -35,7 +35,7 @@ public class IssFinAuthProcessHandler(
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
         using var scope = serviceProvider.CreateScope();
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
         var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
         PreloadAndUnifyLimits(entities, unitOfWork);
@@ -66,8 +66,8 @@ public class IssFinAuthProcessHandler(
     /// Загружает и унифицирует информацию о картах для сущностей IssFinAuth.
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    private static void PreloadAndUnifyCardInfo(List<IssFinAuth> entities, IUnitOfWork unitOfWork)
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    private static void PreloadAndUnifyCardInfo(List<IssFinAuth> entities, IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allCardInfoIds = new List<long>();
         foreach (var entity in entities)
@@ -79,7 +79,7 @@ public class IssFinAuthProcessHandler(
         if (allCardInfoIds.Count == 0)
             return;
 
-        var existingCardInfos = unitOfWork.CardInfo
+        var existingCardInfos = aggregatorUnitOfWork.CardInfo
             .GetQueryByIds(allCardInfoIds);
 
         var cardInfoCache = existingCardInfos.ToDictionary(m => m.Id, m => m);
@@ -91,7 +91,7 @@ public class IssFinAuthProcessHandler(
             if (cardInfoCache.TryGetValue(mid, out _)) continue;
 
             cardInfoCache[mid] = cardInfo;
-            unitOfWork.CardInfo.Add(cardInfo);
+            aggregatorUnitOfWork.CardInfo.Add(cardInfo);
         }
     }
 
@@ -99,12 +99,12 @@ public class IssFinAuthProcessHandler(
     /// Загружает и унифицирует информацию о счетах для сущностей IssFinAuth.
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    private static void PreloadAndUnifyAccountsInfo(List<IssFinAuth> entities, IUnitOfWork unitOfWork)
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    private static void PreloadAndUnifyAccountsInfo(List<IssFinAuth> entities, IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allAccountsInfoIds = entities.SelectMany(e => e.AccountsInfo.Select(a => a.Id)).ToList();
 
-        var existingAccountInfos = unitOfWork.AccountsInfos
+        var existingAccountInfos = aggregatorUnitOfWork.AccountsInfos
             .GetQueryByIds(allAccountsInfoIds);
 
         var accountInfoCache = existingAccountInfos.ToDictionary(m => m.Id, m => m);
@@ -116,7 +116,7 @@ public class IssFinAuthProcessHandler(
             if (accountInfoCache.TryGetValue(mid, out _)) continue;
 
             accountInfoCache[mid] = accountsInfo;
-            unitOfWork.AccountsInfos.Add(accountsInfo);
+            aggregatorUnitOfWork.AccountsInfos.Add(accountsInfo);
         }
     }
 
@@ -124,19 +124,19 @@ public class IssFinAuthProcessHandler(
     /// Загружает и унифицирует обёртки лимитов для сущностей IssFinAuth.
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    private static void PreloadAndUnifyLimitWrappers(List<IssFinAuth> entities, IUnitOfWork unitOfWork)
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    private static void PreloadAndUnifyLimitWrappers(List<IssFinAuth> entities, IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         foreach (var accountsInfo in entities.SelectMany(entity => entity.AccountsInfo))
         {
             if (accountsInfo.Limits != null)
-                unitOfWork.AccountsInfoLimitWrapper.AddRange(accountsInfo.Limits);
+                aggregatorUnitOfWork.AccountsInfoLimitWrapper.AddRange(accountsInfo.Limits);
         }
 
         foreach (var cardInfos in entities.Select(entity => entity.CardInfo))
         {
             if (cardInfos.Limits != null)
-                unitOfWork.CardInfoLimitWrapper.AddRange(cardInfos.Limits);
+                aggregatorUnitOfWork.CardInfoLimitWrapper.AddRange(cardInfos.Limits);
         }
     }
 
@@ -144,17 +144,17 @@ public class IssFinAuthProcessHandler(
     /// Загружает и унифицирует детали для сущностей IssFinAuth.
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
     private static void PreloadAndUnifyDetails(
         List<IssFinAuth> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.IssFinAuthDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = unitOfWork.IssFinAuthDetails
+        var existingDetailsList = aggregatorUnitOfWork.IssFinAuthDetails
             .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.IssFinAuthDetailsId, d => d);
@@ -177,17 +177,17 @@ public class IssFinAuthProcessHandler(
     /// Загружает и унифицирует информацию о мерчанте для сущностей IssFinAuth.
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
     private static void PreloadAndUnifyMerchant(
         List<IssFinAuth> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allMerchantIds = entities
             .Select(e => e.MerchantInfo.Id)
             .Distinct()
             .ToList();
 
-        var existingMerchants =  unitOfWork.MerchantInfo
+        var existingMerchants =  aggregatorUnitOfWork.MerchantInfo
             .GetQueryByIds(allMerchantIds);
 
         var merchantCache = existingMerchants.ToDictionary(m => m.Id, m => m);
@@ -210,10 +210,10 @@ public class IssFinAuthProcessHandler(
     /// Обрабатывает лимиты деталей IssFinAuth.
     /// </summary>
     /// <param name="issFinAuthDetails">Детали IssFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
     private static void ProcessDetailsLimits(
         IssFinAuthDetails issFinAuthDetails,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         if (issFinAuthDetails.CheckedLimits == null || issFinAuthDetails.CheckedLimits.Count == 0)
             return;
@@ -223,7 +223,7 @@ public class IssFinAuthProcessHandler(
             .Distinct()
             .ToList();
 
-        var existingLimits = unitOfWork.CheckedLimit
+        var existingLimits = aggregatorUnitOfWork.CheckedLimit
             .GetQueryByIds(allLimitIds);
         var limitCache = existingLimits.ToDictionary(l => l.Id, l => l);
 
@@ -236,7 +236,7 @@ public class IssFinAuthProcessHandler(
             }
             else
             {
-                unitOfWork.CheckedLimit.Add(limit);
+                aggregatorUnitOfWork.CheckedLimit.Add(limit);
                 limitCache[limit.Id] = limit;
             }
         }
@@ -246,10 +246,10 @@ public class IssFinAuthProcessHandler(
     /// Загружает и унифицирует лимиты для сущностей IssFinAuth.
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
     private static void PreloadAndUnifyLimits(
         List<IssFinAuth> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         foreach (var entity in entities)
         {
@@ -257,7 +257,7 @@ public class IssFinAuthProcessHandler(
             {
                 foreach (var lw in entity.CardInfo.Limits)
                 {
-                    unitOfWork.Limit.Add(lw.Limit);
+                    aggregatorUnitOfWork.Limit.Add(lw.Limit);
                 }
             }
 
@@ -268,7 +268,7 @@ public class IssFinAuthProcessHandler(
 
                 foreach (var lw in accInfo.Limits)
                 {
-                    unitOfWork.Limit.Add(lw.Limit);
+                    aggregatorUnitOfWork.Limit.Add(lw.Limit);
                 }
             }
         }

@@ -26,7 +26,7 @@ public class IssFinAuth : Notification
     public CardInfo? CardInfo { get; set; }
     
     /// <inheritdoc cref="AccountsInfo" />
-    public List<AccountsInfo> AccountsInfo { get; set; }
+    public List<AccountInfo> AccountsInfo { get; set; }
     
     /// <summary>
     /// Идентификатор мерчанта

@@ -52,7 +52,7 @@ public class InboxProcessor(
     private async Task ProcessBatchAsync(CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
 
         var messages =
             await unitOfWork.Inbox.GetUnprocessedMessagesAsync(_aggregatorOptions.BatchSize, cancellationToken);

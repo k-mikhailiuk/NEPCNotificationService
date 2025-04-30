@@ -2,6 +2,7 @@ using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcctBalChange;
+using ControlPanel.DataAccess.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services.MessageBuilders;
@@ -27,10 +28,11 @@ public class AcctBalChangeNotificationMessageBuilder(
     {
         using var scope = serviceProvider.CreateScope();
 
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
+        using var controlPanelUnitOfWork = scope.ServiceProvider.GetRequiredService<IControlPanelUnitOfWork>();
         
         var loadedData =
-            await acctBalChangeLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, cancellationToken);
+            await acctBalChangeLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, controlPanelUnitOfWork, cancellationToken);
         
         return await notificationCompositor.ComposeAsync(loadedData.Messages, loadedData.NotificationTextById,
             loadedData.NotificationToCustomer, loadedData.CustomerSettingsMap, cancellationToken);

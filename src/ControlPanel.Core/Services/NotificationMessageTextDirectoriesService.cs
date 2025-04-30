@@ -6,13 +6,13 @@ using ControlPanel.DataAccess.Entities;
 namespace ControlPanel.Core.Services;
 
 /// <inheritdoc/>
-public class NotificationMessageTextDirectoriesService(IUnitOfWork unitOfWork)
+public class NotificationMessageTextDirectoriesService(IControlPanelUnitOfWork controlPanelUnitOfWork)
     : INotificationMessageTextDirectoriesService
 {
     /// <inheritdoc/>
     public async Task<List<NotificationMessageTextDirectory>> GetNotificationsTextAsync(CancellationToken cancellationToken)
     {
-        var keywords = await unitOfWork.NotificationMessageTextDirectories.GetAllAsync(cancellationToken);
+        var keywords = await controlPanelUnitOfWork.NotificationMessageTextDirectories.GetAllAsync(cancellationToken);
         
         return keywords.ToList();
     }
@@ -20,7 +20,7 @@ public class NotificationMessageTextDirectoriesService(IUnitOfWork unitOfWork)
     /// <inheritdoc/>
     public async Task UpdateMessageTextsAsync(UpdateNotificationMessageDirectoriesTextDto dto, CancellationToken cancellationToken)
     {
-        var entity = await unitOfWork.NotificationMessageTextDirectories.FindAsync(x=>x.Id == dto.Id, cancellationToken);
+        var entity = await controlPanelUnitOfWork.NotificationMessageTextDirectories.FindAsync(x=>x.Id == dto.Id, cancellationToken);
         if (entity == null)
             return;
 
@@ -29,6 +29,6 @@ public class NotificationMessageTextDirectoriesService(IUnitOfWork unitOfWork)
         entity.MessageTextKg = dto.MessageTextKg;
         entity.IsNeedSend = dto.IsNeedSend;
         
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await controlPanelUnitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

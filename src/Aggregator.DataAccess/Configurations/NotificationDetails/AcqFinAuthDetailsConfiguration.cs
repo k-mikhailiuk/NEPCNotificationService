@@ -22,6 +22,7 @@ public class AcqFinAuthDetailsConfiguration : IEntityTypeConfiguration<AcqFinAut
 
         builder.HasKey(x => x.AcqFinAuthDetailsId);
 
+        builder.Property(x=>x.AcqFinAuthDetailsId).IsRequired().ValueGeneratedNever();
         builder.Property(x => x.Reversal).IsRequired();
         builder.Property(x => x.TransType).IsRequired();
         builder.Property(x => x.ExpDate).IsRequired(false).HasMaxLength(4);

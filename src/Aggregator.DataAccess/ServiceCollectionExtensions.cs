@@ -39,10 +39,10 @@ public static class ServiceCollectionExtensions
     /// <returns>Обновлённая коллекция сервисов с зарегистрированными репозиториями.</returns>
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IAggregatorUnitOfWork, AggregatorUnitOfWork>();
         
         services.Scan(scan => scan
-            .FromAssemblyOf<IUnitOfWork>()
+            .FromAssemblyOf<IAggregatorUnitOfWork>()
             .AddClasses(classes => classes.InNamespaces("Aggregator.DataAccess.Repositories"))
             .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsImplementedInterfaces()

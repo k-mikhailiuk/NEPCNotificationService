@@ -52,7 +52,7 @@ public class NotificationProcessor(
     {
         using var scope = serviceProvider.CreateScope();
 
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
 
         var messages =
             await unitOfWork.NotificationMessage.GetAllWithConditionAsync(x =>

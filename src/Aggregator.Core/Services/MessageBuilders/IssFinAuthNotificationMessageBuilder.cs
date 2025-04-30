@@ -4,6 +4,7 @@ using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.IssFinAuth;
+using ControlPanel.DataAccess.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,10 +33,11 @@ public class IssFinAuthNotificationMessageBuilder(
     {
         using var scope = serviceProvider.CreateScope();
 
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
+        using var controlPanelUnitOfWork = scope.ServiceProvider.GetRequiredService<IControlPanelUnitOfWork>();
 
         var loadedData =
-            await issFinAuthLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, cancellationToken);
+            await issFinAuthLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, controlPanelUnitOfWork, cancellationToken);
 
         loadedData.Messages = await AttachLimitsAsync(loadedData.Messages, unitOfWork, cancellationToken);
 
@@ -49,10 +51,10 @@ public class IssFinAuthNotificationMessageBuilder(
     /// <param name="messages">
     /// Коллекция сообщений <see cref="IssFinAuth"/>, у каждого из которых есть
     /// <see cref="IssFinAuth.NotificationId"/>, <see cref="IssFinAuth.CardInfoId"/> и список
-    /// <see cref="IssFinAuth.AccountsInfo"/> с собственными <see cref="AccountsInfo.Id"/>.
+    /// <see cref="IssFinAuth.AccountsInfo"/> с собственными <see cref="AccountInfo.Id"/>.
     /// </param>
-    /// <param name="unitOfWork">
-    /// Экземпляр <see cref="IUnitOfWork"/>, предоставляющий репозитории
+    /// <param name="aggregatorUnitOfWork">
+    /// Экземпляр <see cref="IAggregatorUnitOfWork"/>, предоставляющий репозитории
     /// <see cref="CardInfoLimitWrapper"/> и <see cref="AccountsInfoLimitWrapper"/>.
     /// </param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
@@ -61,7 +63,7 @@ public class IssFinAuthNotificationMessageBuilder(
     /// </returns>
     private static async Task<(Dictionary<long, List<CardInfoLimitWrapper>>,
             Dictionary<(long, long), List<AccountsInfoLimitWrapper>>)>
-        CompositeLimits(IReadOnlyCollection<IssFinAuth> messages, IUnitOfWork unitOfWork,
+        CompositeLimits(IReadOnlyCollection<IssFinAuth> messages, IAggregatorUnitOfWork aggregatorUnitOfWork,
             CancellationToken cancellationToken)
     {
         var cardIdToNotificationMap = messages
@@ -72,12 +74,12 @@ public class IssFinAuthNotificationMessageBuilder(
                 .Select(ai => new { ai.Id, m.NotificationId }))
             .ToDictionary(x => x.Id, x => x.NotificationId);
 
-        var cardInfoLimitWrappersQuery = unitOfWork.CardInfoLimitWrapper
+        var cardInfoLimitWrappersQuery = aggregatorUnitOfWork.CardInfoLimitWrapper
             .GetAll()
             .Where(x => cardIdToNotificationMap.Keys.Contains(x.CardInfoId))
             .Include(w => w.Limit);
 
-        var accInfoLimitWrappersQuery = unitOfWork.AccountsInfoLimitWrapper
+        var accInfoLimitWrappersQuery = aggregatorUnitOfWork.AccountsInfoLimitWrapper
             .GetAll()
             .Where(x => accInfoIdToNotificationMap.Keys.Contains(x.AccountsInfoId))
             .Include(w => w.Limit);
@@ -109,14 +111,14 @@ public class IssFinAuthNotificationMessageBuilder(
     /// <param name="messages">
     /// Коллекция сообщений <see cref="IssFinAuth"/>
     /// </param>
-    /// <param name="unitOfWork">
-    /// Экземпляр <see cref="IUnitOfWork"/>
+    /// <param name="aggregatorUnitOfWork">
+    /// Экземпляр <see cref="IAggregatorUnitOfWork"/>
     /// </param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
     /// <returns>
     /// Сообщение с подгруженными сущностями лимитов
     /// </returns>
-    private async Task<List<IssFinAuth>> AttachLimitsAsync(IEnumerable<IssFinAuth> messages, IUnitOfWork unitOfWork,
+    private async Task<List<IssFinAuth>> AttachLimitsAsync(IEnumerable<IssFinAuth> messages, IAggregatorUnitOfWork aggregatorUnitOfWork,
         CancellationToken cancellationToken)
     {
         var messageList = messages.ToList();
@@ -124,7 +126,7 @@ public class IssFinAuthNotificationMessageBuilder(
         var messageIds = messageList
             .Select(m => m.NotificationId);
 
-        var accountsInfo = await unitOfWork.AccountsInfos.GetAll()
+        var accountsInfo = await aggregatorUnitOfWork.AccountsInfos.GetAll()
             .Where(x => x.NotificationType == NotificationType.IssFinAuth && messageIds.Contains(x.NotificationId))
             .ToListAsync(cancellationToken);
 
@@ -134,7 +136,7 @@ public class IssFinAuthNotificationMessageBuilder(
         }
 
         var wrappers =
-            await CompositeLimits((IReadOnlyCollection<IssFinAuth>)messages, unitOfWork, cancellationToken);
+            await CompositeLimits((IReadOnlyCollection<IssFinAuth>)messages, aggregatorUnitOfWork, cancellationToken);
 
         foreach (var message in messageList)
         {

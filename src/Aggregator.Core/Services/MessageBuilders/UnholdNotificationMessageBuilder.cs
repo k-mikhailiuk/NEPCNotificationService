@@ -2,6 +2,7 @@ using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.Unhold;
+using ControlPanel.DataAccess.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services.MessageBuilders;
@@ -29,9 +30,10 @@ public class UnholdNotificationMessageBuilder(
     {
         using var scope = serviceProvider.CreateScope();
 
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
+        using var controlPanelUnitOfWork = scope.ServiceProvider.GetRequiredService<IControlPanelUnitOfWork>();
         
-        var loadedData = await unholdLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, cancellationToken);
+        var loadedData = await unholdLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, controlPanelUnitOfWork, cancellationToken);
         
         return await notificationCompositor.ComposeAsync(loadedData.Messages, loadedData.NotificationTextById,
             loadedData.NotificationToCustomer, loadedData.CustomerSettingsMap, cancellationToken);

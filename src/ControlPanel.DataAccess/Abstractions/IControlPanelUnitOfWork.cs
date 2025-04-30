@@ -8,7 +8,7 @@ namespace ControlPanel.DataAccess.Abstractions;
 /// <remarks>
 /// Объединяет несколько репозиториев и предоставляет метод сохранения изменений.
 /// </remarks>
-public interface IUnitOfWork : IDisposable
+public interface IControlPanelUnitOfWork : IDisposable
 {
     /// <summary>
     /// Репозиторий ключевых слов сообщений уведомлений.

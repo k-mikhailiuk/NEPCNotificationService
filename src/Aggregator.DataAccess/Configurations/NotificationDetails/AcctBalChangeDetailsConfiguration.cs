@@ -22,6 +22,7 @@ public class AcctBalChangeDetailsConfiguration : IEntityTypeConfiguration<AcctBa
 
         builder.HasKey(x => x.AcctBalChangeDetailsId);
 
+        builder.Property(x=>x.AcctBalChangeDetailsId).IsRequired().ValueGeneratedNever();
         builder.Property(x => x.Reversal).IsRequired();
         builder.Property(x => x.TransType).IsRequired().HasMaxLength(3);
         builder.Property(x => x.TransactionTime).IsRequired();

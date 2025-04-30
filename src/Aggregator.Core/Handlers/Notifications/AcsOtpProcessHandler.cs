@@ -30,7 +30,7 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
         using var scope = serviceProvider.CreateScope();
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
 
         ProcessEntities(entities, unitOfWork);
         
@@ -43,19 +43,19 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
     /// Обрабатывает сущности AcsOtp, добавляя их в БД, если они отсутствуют.
     /// </summary>
     /// <param name="entities">Список сущностей AcsOtp.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс для работы с базой данных.</param>
     private static void ProcessEntities(
         List<AcsOtp> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var idsToCheck = (IReadOnlyCollection<long>)entities.Select(x=>x.NotificationId);
 
-        var existingList = unitOfWork.AcsOtps
+        var existingList = aggregatorUnitOfWork.AcsOtps
             .GetQueryByIds(idsToCheck).Select(x=>x.NotificationId);
         
         foreach (var entity in entities.Where(entity => !existingList.Contains(entity.NotificationId)))
         {
-            unitOfWork.AcsOtps.AddWithEncryption(entity);
+            aggregatorUnitOfWork.AcsOtps.AddWithEncryption(entity);
         }
     }
 }

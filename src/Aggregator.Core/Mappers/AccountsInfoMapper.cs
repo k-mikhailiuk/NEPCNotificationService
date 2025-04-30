@@ -14,16 +14,16 @@ public class AccountsInfoMapper(
     ConversionExtensionsHelper conversionExtensionsHelper)
 {
     /// <summary>
-    /// Преобразует список DTO информации о счетах в список сущностей <see cref="AccountsInfo"/>.
+    /// Преобразует список DTO информации о счетах в список сущностей <see cref="AccountInfo"/>.
     /// </summary>
     /// <param name="dto">Список DTO объектов информации о счетах.</param>
     /// <param name="notificationId">Идентификатор уведомления.</param>
-    /// <returns>Список сущностей <see cref="AccountsInfo"/> или null, если список dto пуст или равен null.</returns>
-    public List<AccountsInfo> MapAccountsInfo(IEnumerable<AggregatorAccountInfoDto> dto, long notificationId)
+    /// <returns>Список сущностей <see cref="AccountInfo"/> или null, если список dto пуст или равен null.</returns>
+    public List<AccountInfo> MapAccountsInfo(IEnumerable<AggregatorAccountInfoDto> dto, long notificationId)
     {
-        logger.LogInformation("Mapping AccountsInfo");
+        logger.LogInformation("Mapping AccountInfo");
 
-        return dto.Select(x => new AccountsInfo
+        return dto.Select(x => new AccountInfo
         {
             AccountsInfoId = x.Id,
             NotificationId = notificationId,

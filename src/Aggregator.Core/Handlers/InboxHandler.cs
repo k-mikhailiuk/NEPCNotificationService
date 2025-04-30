@@ -33,7 +33,7 @@ public class InboxHandler(
     public async Task HandleAsync(IEnumerable<InboxMessage> request, CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();
-        var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
         unitOfWork.BeginTransactionAsync();
 
         var inboxMessages = request.ToList();
@@ -114,20 +114,20 @@ public class InboxHandler(
     /// </summary>
     /// <param name="messageIds">Список идентификаторов сообщений.</param>
     /// <param name="newStatus">Новый статус сообщения.</param>
-    /// <param name="unitOfWork">Интерфейс работы с базой данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс работы с базой данных.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    private async Task UpdateStatusAsync(List<long> messageIds, InboxMessageStatus newStatus, IUnitOfWork unitOfWork,
+    private async Task UpdateStatusAsync(List<long> messageIds, InboxMessageStatus newStatus, IAggregatorUnitOfWork aggregatorUnitOfWork,
         CancellationToken cancellationToken)
     {
         if (messageIds.Count == 0)
             return;
 
-        var messages = await unitOfWork.Inbox.GetQueryByIds(messageIds).ToListAsync(cancellationToken);
+        var messages = await aggregatorUnitOfWork.Inbox.GetQueryByIds(messageIds).ToListAsync(cancellationToken);
 
         foreach (var msg in messages)
             msg.Status = newStatus;
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await aggregatorUnitOfWork.SaveChangesAsync(cancellationToken);
 
         logger.LogInformation("Updated {count} messages to status={status}", messages.Count, newStatus);
     }
@@ -136,28 +136,28 @@ public class InboxHandler(
     /// Завершает обработку сообщений: обновляет статус, архивирует и удаляет сообщения.
     /// </summary>
     /// <param name="messageIds">Список идентификаторов сообщений.</param>
-    /// <param name="unitOfWork">Интерфейс работы с базой данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс работы с базой данных.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
-    private async Task CompleteMessageProcessingAsync(List<long> messageIds, IUnitOfWork unitOfWork,
+    private async Task CompleteMessageProcessingAsync(List<long> messageIds, IAggregatorUnitOfWork aggregatorUnitOfWork,
         CancellationToken cancellationToken)
     {
         logger.LogInformation("Get {count} processed messages", messageIds.Count);
 
-        await UpdateStatusAsync(messageIds, InboxMessageStatus.Completed, unitOfWork, cancellationToken);
+        await UpdateStatusAsync(messageIds, InboxMessageStatus.Completed, aggregatorUnitOfWork, cancellationToken);
 
-        var inboxMessages = unitOfWork.Inbox.GetQueryByIds(messageIds);
+        var inboxMessages = aggregatorUnitOfWork.Inbox.GetQueryByIds(messageIds);
 
         var inboxArchive = inboxMessages.Select(inboxMessage => InboxArchiveMessage.Create(inboxMessage.Payload));
 
-        unitOfWork.InboxArchiveMessage.AddRange(inboxArchive);
+        aggregatorUnitOfWork.InboxArchiveMessage.AddRange(inboxArchive);
 
         logger.LogInformation("{count} messages successfully added to archive", messageIds.Count);
 
-        unitOfWork.Inbox.RemoveRange(inboxMessages);
+        aggregatorUnitOfWork.Inbox.RemoveRange(inboxMessages);
 
         logger.LogInformation("{count} messages successfully removed from inbox", messageIds.Count);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await aggregatorUnitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     /// <summary>
@@ -165,19 +165,19 @@ public class InboxHandler(
     /// </summary>
     /// <param name="entityNotificationsType">Тип сущности уведомления.</param>
     /// <param name="notificationIds">Список идентификаторов уведомлений.</param>
-    /// <param name="unitOfWork">Интерфейс работы с базой данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс работы с базой данных.</param>
     /// <param name="cancellationToken">Токен отмены операции.</param>
     private async Task CompositeAndSaveNotificationMessageAsync(Type entityNotificationsType,
         List<long> notificationIds,
-        IUnitOfWork unitOfWork,
+        IAggregatorUnitOfWork aggregatorUnitOfWork,
         CancellationToken cancellationToken)
     {
         var builder = notificationMessageBuilderFactory.CreateNotificationMessageBuilder(entityNotificationsType);
 
         var messages = await builder.BuildNotificationAsync(notificationIds, cancellationToken);
 
-        unitOfWork.NotificationMessage.AddRange(messages);
+        aggregatorUnitOfWork.NotificationMessage.AddRange(messages);
 
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await aggregatorUnitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

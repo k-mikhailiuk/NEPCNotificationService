@@ -6,13 +6,13 @@ using ControlPanel.DataAccess.Entities;
 namespace ControlPanel.Core.Services;
 
 /// <inheritdoc/>
-public class LimitIdDescriptionDirectoriesService(IUnitOfWork unitOfWork) : ILimitIdDescriptionDirectoriesService
+public class LimitIdDescriptionDirectoriesService(IControlPanelUnitOfWork controlPanelUnitOfWork) : ILimitIdDescriptionDirectoriesService
 {
     /// <inheritdoc/>
     public async Task<List<LimitIdDescriptionDirectory>> GetLimitIdDescriptionDirectoriesAsync(
         CancellationToken cancellationToken)
     {
-        var limitIdDirectories = await unitOfWork.LimitIdDescriptionDirectories.GetAllAsync(cancellationToken);
+        var limitIdDirectories = await controlPanelUnitOfWork.LimitIdDescriptionDirectories.GetAllAsync(cancellationToken);
 
         return limitIdDirectories.ToList();
     }
@@ -22,14 +22,14 @@ public class LimitIdDescriptionDirectoriesService(IUnitOfWork unitOfWork) : ILim
     {
         var limitIdDescription = LimitIdDescriptionDirectory.Create(dto.LimitCode, dto.Name, dto.DescriptionRu, dto.DescriptionKg, dto.DescriptionEn);
         
-        await unitOfWork.LimitIdDescriptionDirectories.AddAsync(limitIdDescription, cancellationToken);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await controlPanelUnitOfWork.LimitIdDescriptionDirectories.AddAsync(limitIdDescription, cancellationToken);
+        await controlPanelUnitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
     public async Task EditLimitIdDescription(EditLimitIdDescriptionDto dto, CancellationToken cancellationToken)
     {
-        var limitIdDescription = await unitOfWork.LimitIdDescriptionDirectories.GetByIdAsync(dto.Id, cancellationToken);
+        var limitIdDescription = await controlPanelUnitOfWork.LimitIdDescriptionDirectories.GetByIdAsync(dto.Id, cancellationToken);
         
         if (limitIdDescription == null)
             return;
@@ -40,15 +40,15 @@ public class LimitIdDescriptionDirectoriesService(IUnitOfWork unitOfWork) : ILim
         limitIdDescription.DescriptionKg = dto.DescriptionKg;
         limitIdDescription.DescriptionEn = dto.DescriptionEn;
         
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        await controlPanelUnitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     /// <inheritdoc/>
     public async Task DeleteLimitIdDescription(int id, CancellationToken cancellationToken)
     {
-        var limitIdDescription = await unitOfWork.LimitIdDescriptionDirectories.GetByIdAsync(id, cancellationToken);
+        var limitIdDescription = await controlPanelUnitOfWork.LimitIdDescriptionDirectories.GetByIdAsync(id, cancellationToken);
 
-        if (limitIdDescription != null) unitOfWork.LimitIdDescriptionDirectories.Remove(limitIdDescription);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        if (limitIdDescription != null) controlPanelUnitOfWork.LimitIdDescriptionDirectories.Remove(limitIdDescription);
+        await controlPanelUnitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

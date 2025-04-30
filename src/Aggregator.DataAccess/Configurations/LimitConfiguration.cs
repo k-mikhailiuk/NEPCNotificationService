@@ -22,7 +22,7 @@ public class LimitConfiguration : IEntityTypeConfiguration<Limit>
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id).UseIdentityColumn();
         builder.Property(x => x.LimitId).IsRequired();
         builder.Property(x => x.CycleType).IsRequired(false).HasMaxLength(30);
         builder.Property(x => x.CycleLength).IsRequired(false);

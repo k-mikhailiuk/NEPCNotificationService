@@ -22,6 +22,7 @@ public class NotificationMessageConfiguration : IEntityTypeConfiguration<Notific
 
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id).UseIdentityColumn();
         builder.Property(x => x.Title).IsRequired();
         builder.Property(x => x.Message).IsRequired();
         builder.Property(x => x.Status).IsRequired().HasConversion<byte>();

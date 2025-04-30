@@ -1,5 +1,6 @@
 using Aggregator.Core;
 using Aggregator.DataAccess;
+using ControlPanel.DataAccess;
 using OptionsConfiguration;
 
 namespace Aggregator.App;
@@ -19,6 +20,7 @@ public static class DIConfigure
         services.AddDatabaseConnectionString(configuration);
         services.AddAggregatorDbContext(configuration);
         services.AddRepositories();
+        services.AddControlPanelRepositories();
         services.AddCommands();
         services.AddFactories();
         services.AddAggregatorOptions(configuration);

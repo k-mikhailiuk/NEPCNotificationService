@@ -9,7 +9,7 @@ namespace Aggregator.Core.Validators.Notifications;
 /// </summary>
 /// <remarks>
 /// Устанавливает правила валидации для свойств объекта <see cref="AggregatorAcctBalChangeDto"/>,
-/// включая валидацию вложенных объектов Details, CardInfo, AccountsInfo и Extensions.
+/// включая валидацию вложенных объектов Details, CardInfo, AccountInfo и Extensions.
 /// </remarks>
 public class AggregatorAcctBalChangeDtoCommandValidator : AbstractValidator<AggregatorAcctBalChangeDto>
 {

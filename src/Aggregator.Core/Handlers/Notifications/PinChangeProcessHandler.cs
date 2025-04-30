@@ -33,7 +33,7 @@ public class PinChangeProcessHandler(NotificationEntityMapperFactory mapperFacto
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
         using var scope = serviceProvider.CreateScope();
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
         var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
         PreloadAndUnifyDetails(entities, unitOfWork);
@@ -52,17 +52,17 @@ public class PinChangeProcessHandler(NotificationEntityMapperFactory mapperFacto
     /// Загружает и унифицирует детали для сущностей PinChange.
     /// </summary>
     /// <param name="entities">Список сущностей изменения PIN-кода.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
     private static void PreloadAndUnifyDetails(
         List<PinChange> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.PinChangeDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = unitOfWork.PinChangeDetails
+        var existingDetailsList = aggregatorUnitOfWork.PinChangeDetails
             .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.PinChangeDetailsId, d => d);

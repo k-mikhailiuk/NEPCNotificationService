@@ -26,6 +26,12 @@ public class Repository<T> : IRepository<T> where T : class
         Context = context;
         DbSet = Context.Set<T>();
     }
+    
+    /// <inheritdoc/>
+    public IQueryable<T> GetAll()
+    {
+        return DbSet;
+    }
 
     /// <inheritdoc/>
     public async Task<T?> GetByIdAsync(long id, CancellationToken cancellationToken)

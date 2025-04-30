@@ -76,7 +76,7 @@ namespace Aggregator.DataAccess.Migrations
                 defaultValue: 0L);
 
             migrationBuilder.CreateTable(
-                name: "AccountsInfo",
+                name: "AccountInfo",
                 schema: "nepc",
                 columns: table => new
                 {
@@ -125,20 +125,20 @@ namespace Aggregator.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_AccountsInfo_AccountsInfoId_NotificationId",
                 schema: "nepc",
-                table: "AccountsInfo",
+                table: "AccountInfo",
                 columns: new[] { "AccountsInfoId", "NotificationId" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountsInfo_AcctBalChangeNotificationId",
                 schema: "nepc",
-                table: "AccountsInfo",
+                table: "AccountInfo",
                 column: "AcctBalChangeNotificationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountsInfo_IssFinAuthNotificationId",
                 schema: "nepc",
-                table: "AccountsInfo",
+                table: "AccountInfo",
                 column: "IssFinAuthNotificationId");
 
             migrationBuilder.AddForeignKey(
@@ -147,7 +147,7 @@ namespace Aggregator.DataAccess.Migrations
                 table: "AccountsInfoLimitWrappers",
                 column: "AccountsInfoId",
                 principalSchema: "nepc",
-                principalTable: "AccountsInfo",
+                principalTable: "AccountInfo",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -161,7 +161,7 @@ namespace Aggregator.DataAccess.Migrations
                 table: "AccountsInfoLimitWrappers");
 
             migrationBuilder.DropTable(
-                name: "AccountsInfo",
+                name: "AccountInfo",
                 schema: "nepc");
 
             migrationBuilder.DropIndex(

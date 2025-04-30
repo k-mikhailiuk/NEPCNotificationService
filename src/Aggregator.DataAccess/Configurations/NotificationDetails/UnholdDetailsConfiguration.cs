@@ -21,7 +21,8 @@ public class UnholdDetailsConfiguration : IEntityTypeConfiguration<UnholdDetails
         builder.ToTable("UnholdDetails");
 
         builder.HasKey(x => x.UnholdDetailsId);
-
+        
+        builder.Property(x=>x.UnholdDetailsId).IsRequired().ValueGeneratedNever();
         builder.Property(x => x.Reversal).IsRequired();
         builder.Property(x => x.TransType).IsRequired();
         builder.Property(x => x.CorrespondingAccount).IsRequired().HasMaxLength(4);

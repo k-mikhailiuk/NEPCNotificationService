@@ -20,8 +20,8 @@ public class AccountsInfoLimitWrapper
     /// </summary>
     public long AccountsInfoId { get; set; }
     
-    /// <inheritdoc cref="AccountsInfo" />
-    public AccountsInfo AccountsInfo { get; set; }
+    /// <inheritdoc cref="AccountInfo" />
+    public AccountInfo AccountInfo { get; set; }
     
     /// <summary>
     /// Тип лимита.

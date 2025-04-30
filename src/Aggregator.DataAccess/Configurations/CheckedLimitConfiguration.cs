@@ -22,6 +22,7 @@ public class CheckedLimitConfiguration : IEntityTypeConfiguration<CheckedLimit>
 
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id).IsRequired().ValueGeneratedNever();
         builder.Property(x => x.ObjectType).IsRequired().HasConversion<byte>();
         builder.Property(x => x.Exceeded).IsRequired();
         builder.Property(x => x.IssFinAuthDetailsId).IsRequired();

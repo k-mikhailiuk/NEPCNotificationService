@@ -11,7 +11,6 @@ public class CheckedLimit
     /// <summary>
     /// Идентификатор лимита
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long Id { get; set; }
     
     /// <summary>

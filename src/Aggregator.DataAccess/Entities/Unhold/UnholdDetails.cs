@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities.Unhold;
@@ -11,7 +10,6 @@ public class UnholdDetails
     /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long UnholdDetailsId { get; set; }
     
     /// <summary>

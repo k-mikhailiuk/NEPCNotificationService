@@ -33,7 +33,7 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
 
         using var scope = serviceProvider.CreateScope();
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
 
         var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
         
@@ -57,8 +57,8 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
     /// Загружает и унифицирует информацию о картах.
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    private static void PreloadAndUnifyCardInfo(List<AcctBalChange> entities, IUnitOfWork unitOfWork)
+    /// <param name="aggregatorUnitOfWork">Интерфейс для работы с базой данных.</param>
+    private static void PreloadAndUnifyCardInfo(List<AcctBalChange> entities, IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allCardInfoIds = new List<long>();
         foreach (var entity in entities)
@@ -70,50 +70,50 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
         if (allCardInfoIds.Count == 0)
             return;
 
-        var existingCardInfos = unitOfWork.CardInfo
+        var existingCardInfos = aggregatorUnitOfWork.CardInfo
             .GetQueryByIds(allCardInfoIds);
 
         var cardInfoCache = existingCardInfos.Select(m => m.Id).ToHashSet();
 
         foreach (var cardInfo in entities.Select(e => e.CardInfo))
             if (cardInfo != null && cardInfoCache.Add(cardInfo.Id)) 
-                unitOfWork.CardInfo.Add(cardInfo);
+                aggregatorUnitOfWork.CardInfo.Add(cardInfo);
     }
 
     /// <summary>
     /// Загружает и унифицирует информацию о счетах.
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
-    private static void PreloadAndUnifyAccountsInfo(List<AcctBalChange> entities, IUnitOfWork unitOfWork)
+    /// <param name="aggregatorUnitOfWork">Интерфейс для работы с базой данных.</param>
+    private static void PreloadAndUnifyAccountsInfo(List<AcctBalChange> entities, IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allAccountsInfoIds = entities.SelectMany(e => e.AccountsInfo.Select(a => a.Id)).ToList();
 
-        var existingAccountInfos = unitOfWork.AccountsInfos
+        var existingAccountInfos = aggregatorUnitOfWork.AccountsInfos
             .GetQueryByIds(allAccountsInfoIds);
 
         var accountInfoCache = existingAccountInfos.Select(m => m.Id).ToHashSet();
 
         foreach (var accountsInfo in entities.SelectMany(e => e.AccountsInfo))
             if (accountInfoCache.Add(accountsInfo.Id)) 
-                unitOfWork.AccountsInfos.Add(accountsInfo);
+                aggregatorUnitOfWork.AccountsInfos.Add(accountsInfo);
     }
    
     /// <summary>
     /// Загружает и унифицирует детали транзакции.
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс для работы с базой данных.</param>
     private static void PreloadAndUnifyDetails(
         List<AcctBalChange> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.AcctBalChangeDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = unitOfWork.AcctBalChangeDetails
+        var existingDetailsList = aggregatorUnitOfWork.AcctBalChangeDetails
             .GetQueryByIds(allDetailsIds);
 
         var finTransIds = entities
@@ -121,7 +121,7 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
             .Distinct()
             .ToList();
 
-        var existingTrans = unitOfWork.FinTransaction
+        var existingTrans = aggregatorUnitOfWork.FinTransaction
             .GetQueryByIds(finTransIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.AcctBalChangeDetailsId, d => d);
@@ -133,7 +133,7 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
             if (finTransCache.TryGetValue(ftId, out var existingFinTrans))
             {
                 entity.Details.FinTrans = existingFinTrans;
-                unitOfWork.Attach(existingFinTrans);
+                aggregatorUnitOfWork.Attach(existingFinTrans);
             }
             else
             {
@@ -156,10 +156,10 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
     /// Загружает и унифицирует лимиты.
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс для работы с базой данных.</param>
     private static void PreloadAndUnifyLimit(
         List<AcctBalChange> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         foreach (var entity in entities)
         {
@@ -167,7 +167,7 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
             {
                 foreach (var lw in entity.CardInfo.Limits)
                 {
-                    unitOfWork.Limit.Add(lw.Limit);
+                    aggregatorUnitOfWork.Limit.Add(lw.Limit);
                 }
             }
 
@@ -178,7 +178,7 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
 
                 foreach (var lw in accInfo.Limits)
                 {
-                    unitOfWork.Limit.Add(lw.Limit);
+                    aggregatorUnitOfWork.Limit.Add(lw.Limit);
                 }
             }
         }
@@ -188,21 +188,21 @@ public class AcctBalChangeProcessHandler(NotificationEntityMapperFactory mapperF
     /// Загружает и унифицирует обёртки лимитов.
     /// </summary>
     /// <param name="entities">Список сущностей AcctBalChange.</param>
-    /// <param name="unitOfWork">Интерфейс для работы с базой данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс для работы с базой данных.</param>
     private static void PreloadAndUnifyLimitWrappers(
         List<AcctBalChange> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         foreach (var accountsInfo in entities.SelectMany(entity => entity.AccountsInfo))
         {
             if (accountsInfo.Limits != null)
-                unitOfWork.AccountsInfoLimitWrapper.AddRange(accountsInfo.Limits);
+                aggregatorUnitOfWork.AccountsInfoLimitWrapper.AddRange(accountsInfo.Limits);
         }
 
         foreach (var cardInfos in entities.Select(entity => entity.CardInfo))
         {
             if (cardInfos.Limits != null)
-                unitOfWork.CardInfoLimitWrapper.AddRange(cardInfos.Limits);
+                aggregatorUnitOfWork.CardInfoLimitWrapper.AddRange(cardInfos.Limits);
         }
     }
 }

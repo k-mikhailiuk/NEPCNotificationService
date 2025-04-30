@@ -5,23 +5,24 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace Aggregator.DataAccess.Configurations;
 
 /// <summary>
-/// Конфигурация сущности <see cref="AccountsInfo"/> для Entity Framework.
+/// Конфигурация сущности <see cref="AccountInfo"/> для Entity Framework.
 /// </summary>
 /// <remarks>
-/// Определяет схему таблицы, ключи, ограничения и собственные типы для сущности <see cref="AccountsInfo"/>.
+/// Определяет схему таблицы, ключи, ограничения и собственные типы для сущности <see cref="AccountInfo"/>.
 /// </remarks>
-public class AccountsInfoConfiguration : IEntityTypeConfiguration<AccountsInfo>
+public class AccountsInfoConfiguration : IEntityTypeConfiguration<AccountInfo>
 {
     /// <summary>
-    /// Настраивает сущность <see cref="AccountsInfo"/>.
+    /// Настраивает сущность <see cref="AccountInfo"/>.
     /// </summary>
-    /// <param name="builder">Построитель конфигурации для сущности <see cref="AccountsInfo"/>.</param>
-    public void Configure(EntityTypeBuilder<AccountsInfo> builder)
+    /// <param name="builder">Построитель конфигурации для сущности <see cref="AccountInfo"/>.</param>
+    public void Configure(EntityTypeBuilder<AccountInfo> builder)
     {
         builder.HasKey(x => x.Id);
 
-        builder.ToTable("AccountsInfo");
+        builder.ToTable("AccountInfo");
 
+        builder.Property(x => x.Id).UseIdentityColumn();
         builder.Property(x => x.NotificationId).IsRequired();
         builder.Property(x => x.NotificationType).IsRequired();
         builder.Property(x => x.AccountsInfoId).IsRequired().HasMaxLength(32);

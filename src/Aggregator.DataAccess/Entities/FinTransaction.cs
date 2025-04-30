@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
 namespace Aggregator.DataAccess.Entities;
@@ -11,7 +10,6 @@ public class FinTransaction
     /// <summary>
     /// Идентификатор финансовой транзакции (bo_utrnno)
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public long FinTransactionId { get; set; }
     
     /// <summary>

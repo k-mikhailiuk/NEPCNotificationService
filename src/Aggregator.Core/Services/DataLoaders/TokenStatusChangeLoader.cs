@@ -2,6 +2,7 @@ using Aggregator.Core.Models;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.TokenChangeStatus;
+using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,16 +10,18 @@ namespace Aggregator.Core.Services.DataLoaders;
 
 public class TokenStatusChangeLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<TokenStatusChange>
 {
-    public async Task<NotificationDataLoad<TokenStatusChange>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds, IUnitOfWork unitOfWork,
+    public async Task<NotificationDataLoad<TokenStatusChange>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds,
+        IAggregatorUnitOfWork aggregatorUnitOfWork,
+        IControlPanelUnitOfWork controlPanelUnitOfWork,
         CancellationToken cancellationToken)
     {
-        var messages = await unitOfWork.TokenStatusChange
+        var messages = await aggregatorUnitOfWork.TokenStatusChange
             .GetAll().Where(x => notificationIds.Contains(x.NotificationId))
             .Include(x => x.Details)
             .Include(x=>x.CardInfo).ToListAsync(cancellationToken);
 
         var messageText =
-            await unitOfWork.NotificationMessageTextDirectories.FindAsync(x =>
+            await controlPanelUnitOfWork.NotificationMessageTextDirectories.FindAsync(x =>
                 x.NotificationType == NotificationMessageType.TokenStatusChange, cancellationToken);
 
         var notificationTextById = messages
@@ -34,7 +37,7 @@ public class TokenStatusChangeLoader(IAccountNoParser accountNoParser) : INotifi
             );
 
         var accountsMap =
-            await unitOfWork.Accounts.GetAccountCustomerMapAsync(
+            await aggregatorUnitOfWork.Accounts.GetAccountCustomerMapAsync(
                 messages.Select(x => accountNoParser.ParseAccountNo(x.Details.CardIdentifier.CardIdentifierValue!)).ToList(),
                 cancellationToken);
 
@@ -47,7 +50,7 @@ public class TokenStatusChangeLoader(IAccountNoParser accountNoParser) : INotifi
                 m => accountsMap.GetValueOrDefault(rawCleanAccountsMap[m.Details.CardIdentifier.CardIdentifierValue]));
 
         var customerSettingsMap =
-            await unitOfWork.PushNotificationSettings.GetUserSettingsIds(
+            await aggregatorUnitOfWork.PushNotificationSettings.GetUserSettingsIds(
                 notificationToCustomer.Select(x => x.Value).ToList(), cancellationToken);
 
         return new NotificationDataLoad<TokenStatusChange>

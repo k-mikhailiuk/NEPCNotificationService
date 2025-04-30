@@ -22,13 +22,13 @@ public class AccountsInfoLimitWrapperConfiguration : IEntityTypeConfiguration<Ac
 
         builder.HasKey(x => x.Id);
 
-        builder.Property(x => x.Id).UseIdentityColumn().ValueGeneratedOnAdd();
+        builder.Property(x => x.Id).UseIdentityColumn();
         builder.Property(x => x.AccountsInfoId).IsRequired();
         builder.Property(x => x.LimitType).IsRequired().HasConversion<byte>();
         builder.Property(x => x.CardInfoId).IsRequired();
         builder.Property(x => x.LimitId).IsRequired();
 
-        builder.HasOne(p => p.AccountsInfo)
+        builder.HasOne(p => p.AccountInfo)
             .WithMany(e => e.Limits)
             .HasForeignKey(p => p.AccountsInfoId)
             .OnDelete(DeleteBehavior.Cascade);

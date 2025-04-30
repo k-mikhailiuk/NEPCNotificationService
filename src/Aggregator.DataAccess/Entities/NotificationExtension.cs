@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.Abstract;
 using Aggregator.DataAccess.Entities.Enum;
 
@@ -12,7 +11,6 @@ public class NotificationExtension
     /// <summary>
     /// Уникальный идентификатор
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
     /// <summary>

@@ -1,5 +1,5 @@
 using Aggregator.Core.Services.Abstractions;
-using Aggregator.DataAccess.Abstractions;
+using ControlPanel.DataAccess.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services;
@@ -22,7 +22,7 @@ public class CurrencyReplacer(IServiceProvider serviceProvider) : ICurrencyRepla
         
         using var scope = serviceProvider.CreateScope();
 
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IControlPanelUnitOfWork>();
         
         if (!int.TryParse(currency, out var currencyCode)) 
             return string.Empty;

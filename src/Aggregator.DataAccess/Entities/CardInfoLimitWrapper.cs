@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Aggregator.DataAccess.Entities.Enum;
 
 namespace Aggregator.DataAccess.Entities;
@@ -11,7 +10,6 @@ public class CardInfoLimitWrapper
     /// <summary>
     /// Уникальный идентификатор записи.
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
     /// <summary>

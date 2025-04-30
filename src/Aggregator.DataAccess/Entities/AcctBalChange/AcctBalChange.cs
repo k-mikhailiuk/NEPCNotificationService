@@ -24,5 +24,5 @@ public class AcctBalChange : Notification
     public CardInfo? CardInfo { get; set; }
     
     /// <inheritdoc cref="AccountsInfo" />
-    public List<AccountsInfo> AccountsInfo { get; set; }
+    public List<AccountInfo> AccountsInfo { get; set; }
 }

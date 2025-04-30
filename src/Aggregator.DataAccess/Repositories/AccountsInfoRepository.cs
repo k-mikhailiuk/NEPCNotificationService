@@ -4,11 +4,11 @@ using Aggregator.DataAccess.Entities.Abstract;
 namespace Aggregator.DataAccess.Repositories;
 
 /// <summary>
-/// Репозиторий для работы с AccountsInfo.
+/// Репозиторий для работы с AccountInfo.
 /// </summary>
 /// <remarks>
 /// Реализует интерфейс <see cref="IAccountsInfoRepository"/> и наследует базовый класс 
-/// <see cref="Repository{T}"/> для сущности <see cref="AccountsInfo"/>.
+/// <see cref="Repository{T}"/> для сущности <see cref="AccountInfo"/>.
 /// </remarks>
 public class AccountsInfoRepository(AggregatorDbContext context)
-    : Repository<AccountsInfo>(context), IAccountsInfoRepository;
+    : Repository<AccountInfo>(context), IAccountsInfoRepository;

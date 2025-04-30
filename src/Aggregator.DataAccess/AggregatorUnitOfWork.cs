@@ -20,7 +20,7 @@ namespace Aggregator.DataAccess;
 /// <remarks>
 /// Предоставляет свойства для доступа к различным репозиториям, а также методы для сохранения изменений, выполнения сырого SQL-запроса и управления транзакциями.
 /// </remarks>
-public class UnitOfWork : IUnitOfWork
+public class AggregatorUnitOfWork : IAggregatorUnitOfWork
 {
     /// <summary>
     /// Контекст базы данных Aggregator.
@@ -178,31 +178,9 @@ public class UnitOfWork : IUnitOfWork
     private readonly Lazy<INotificationMessageRepository> _notificationMessage;
 
     /// <inheritdoc/>
-    public INotificationMessageKeyWordsRepository NotificationMessageKeyWords => _notificationMessageKeyWords.Value;
-
-    private readonly Lazy<INotificationMessageKeyWordsRepository> _notificationMessageKeyWords;
-
-    /// <inheritdoc/>
-    public INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories =>
-        _notificationMessageTextDirectories.Value;
-
-    private readonly Lazy<INotificationMessageTextDirectoriesRepository> _notificationMessageTextDirectories;
-
-    /// <inheritdoc/>
-    public ICurrenciesRepository Currencies => _currencies.Value;
-
-    private readonly Lazy<ICurrenciesRepository> _currencies;
-
-    /// <inheritdoc/>
     public IAcsOtpRepository AcsOtps => _acsOtps.Value;
 
     private readonly Lazy<IAcsOtpRepository> _acsOtps;
-
-    /// <inheritdoc/>
-    public ILimitIdDescriptionDirectoriesRepository LimitIdDescriptionDirectories =>
-        _limitIdDescriptionDirectories.Value;
-
-    private readonly Lazy<ILimitIdDescriptionDirectoriesRepository> _limitIdDescriptionDirectories;
 
     /// <inheritdoc/>
     public IAccountsRepository Accounts =>
@@ -223,11 +201,11 @@ public class UnitOfWork : IUnitOfWork
     private readonly Lazy<IOfficesRepository> _offices;
 
     /// <summary>
-    /// Инициализирует новый экземпляр <see cref="UnitOfWork"/>.
+    /// Инициализирует новый экземпляр <see cref="AggregatorUnitOfWork"/>.
     /// </summary>
     /// <param name="context">Контекст базы данных Aggregator.</param>
     /// <param name="serviceProvider">Провайдер сервисов для разрешения зависимостей репозиториев.</param>
-    public UnitOfWork(AggregatorDbContext context, IServiceProvider serviceProvider)
+    public AggregatorUnitOfWork(AggregatorDbContext context, IServiceProvider serviceProvider)
     {
         Context = context;
 
@@ -289,18 +267,6 @@ public class UnitOfWork : IUnitOfWork
             serviceProvider.GetService<IInboxArchiveMessageRepository>() ?? throw new InvalidOperationException());
         _notificationMessage = new Lazy<INotificationMessageRepository>(() =>
             serviceProvider.GetService<INotificationMessageRepository>() ?? throw new InvalidOperationException());
-
-        _notificationMessageKeyWords = new Lazy<INotificationMessageKeyWordsRepository>(() =>
-            serviceProvider.GetService<INotificationMessageKeyWordsRepository>() ??
-            throw new InvalidOperationException());
-        _notificationMessageTextDirectories = new Lazy<INotificationMessageTextDirectoriesRepository>(() =>
-            serviceProvider.GetService<INotificationMessageTextDirectoriesRepository>() ??
-            throw new InvalidOperationException());
-        _currencies = new Lazy<ICurrenciesRepository>(() =>
-            serviceProvider.GetService<ICurrenciesRepository>() ?? throw new InvalidOperationException());
-        _limitIdDescriptionDirectories = new Lazy<ILimitIdDescriptionDirectoriesRepository>(() =>
-            serviceProvider.GetService<ILimitIdDescriptionDirectoriesRepository>() ??
-            throw new InvalidOperationException());
 
         _acsOtps = new Lazy<IAcsOtpRepository>(() =>
             serviceProvider.GetService<IAcsOtpRepository>() ?? throw new InvalidOperationException());

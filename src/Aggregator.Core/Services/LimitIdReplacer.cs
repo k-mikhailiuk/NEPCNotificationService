@@ -1,6 +1,7 @@
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Common.Enums;
+using ControlPanel.DataAccess.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services;
@@ -30,10 +31,11 @@ public class LimitIdReplacer(IServiceProvider serviceProvider) : ILimitIdReplace
 
         using var scope = serviceProvider.CreateScope();
 
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
+        using var controlPanelUnitOfWork = scope.ServiceProvider.GetRequiredService<IControlPanelUnitOfWork>();
 
         var limitIdDescription =
-            await unitOfWork.LimitIdDescriptionDirectories.GetByLimitCodeAsync(limitId, cancellationToken);
+            await controlPanelUnitOfWork.LimitIdDescriptionDirectories.GetByLimitCodeAsync(limitId, cancellationToken);
         
         if (limitIdDescription == null)
             return string.Empty;

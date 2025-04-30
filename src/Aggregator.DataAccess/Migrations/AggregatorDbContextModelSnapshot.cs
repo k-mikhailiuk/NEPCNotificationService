@@ -23,7 +23,7 @@ namespace Aggregator.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Aggregator.DataAccess.Entities.Abstract.AccountsInfo", b =>
+            modelBuilder.Entity("Aggregator.DataAccess.Entities.Abstract.AccountInfo", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +57,7 @@ namespace Aggregator.DataAccess.Migrations
 
                     b.HasIndex("IssFinAuthNotificationId");
 
-                    b.ToTable("AccountsInfo", "nepc");
+                    b.ToTable("AccountInfo", "nepc");
                 });
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.Abstract.Notification", b =>
@@ -1100,14 +1100,14 @@ namespace Aggregator.DataAccess.Migrations
                     b.ToTable("Unholds", "nepc");
                 });
 
-            modelBuilder.Entity("Aggregator.DataAccess.Entities.Abstract.AccountsInfo", b =>
+            modelBuilder.Entity("Aggregator.DataAccess.Entities.Abstract.AccountInfo", b =>
                 {
                     b.HasOne("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", null)
-                        .WithMany("AccountsInfo")
+                        .WithMany("AccountInfo")
                         .HasForeignKey("AcctBalChangeNotificationId");
 
                     b.HasOne("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", null)
-                        .WithMany("AccountsInfo")
+                        .WithMany("AccountInfo")
                         .HasForeignKey("IssFinAuthNotificationId");
 
                     b.OwnsOne("Aggregator.DataAccess.Entities.OwnedEntities.ExceedLimitMoney", "ExceedLimit", b1 =>
@@ -1124,7 +1124,7 @@ namespace Aggregator.DataAccess.Migrations
 
                             b1.HasKey("AccountsInfoId");
 
-                            b1.ToTable("AccountsInfo", "nepc");
+                            b1.ToTable("AccountInfo", "nepc");
 
                             b1.WithOwner()
                                 .HasForeignKey("AccountsInfoId");
@@ -1145,7 +1145,7 @@ namespace Aggregator.DataAccess.Migrations
 
                             b1.HasKey("AccountsInfoId");
 
-                            b1.ToTable("AccountsInfo", "nepc");
+                            b1.ToTable("AccountInfo", "nepc");
 
                             b1.WithOwner()
                                 .HasForeignKey("AccountsInfoId");
@@ -1160,7 +1160,7 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.AccountsInfoLimitWrapper", b =>
                 {
-                    b.HasOne("Aggregator.DataAccess.Entities.Abstract.AccountsInfo", "AccountsInfo")
+                    b.HasOne("Aggregator.DataAccess.Entities.Abstract.AccountInfo", "AccountInfo")
                         .WithMany("Limits")
                         .HasForeignKey("AccountsInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1172,7 +1172,7 @@ namespace Aggregator.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AccountsInfo");
+                    b.Navigation("AccountInfo");
 
                     b.Navigation("Limit");
                 });
@@ -2222,7 +2222,7 @@ namespace Aggregator.DataAccess.Migrations
                     b.Navigation("MerchantInfo");
                 });
 
-            modelBuilder.Entity("Aggregator.DataAccess.Entities.Abstract.AccountsInfo", b =>
+            modelBuilder.Entity("Aggregator.DataAccess.Entities.Abstract.AccountInfo", b =>
                 {
                     b.Navigation("Limits");
                 });
@@ -2249,12 +2249,12 @@ namespace Aggregator.DataAccess.Migrations
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.AcctBalChange.AcctBalChange", b =>
                 {
-                    b.Navigation("AccountsInfo");
+                    b.Navigation("AccountInfo");
                 });
 
             modelBuilder.Entity("Aggregator.DataAccess.Entities.IssFinAuth.IssFinAuth", b =>
                 {
-                    b.Navigation("AccountsInfo");
+                    b.Navigation("AccountInfo");
                 });
 #pragma warning restore 612, 618
         }

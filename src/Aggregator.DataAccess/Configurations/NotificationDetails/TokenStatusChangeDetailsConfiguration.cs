@@ -22,7 +22,7 @@ public class TokenStatusChangeDetailsConfiguration : IEntityTypeConfiguration<To
 
         builder.HasKey(x => x.TokenStatusChangeDetailsId);
 
-        builder.Property(x => x.TokenStatusChangeDetailsId).ValueGeneratedOnAdd();
+        builder.Property(x => x.TokenStatusChangeDetailsId).ValueGeneratedNever();
         builder.Property(x => x.DpanRef).IsRequired().HasMaxLength(48);
         builder.Property(x => x.PaymentSystem).IsRequired();
         builder.Property(x => x.Status).IsRequired();

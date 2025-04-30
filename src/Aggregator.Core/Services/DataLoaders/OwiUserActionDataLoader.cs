@@ -2,6 +2,7 @@ using Aggregator.Core.Models;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.OwiUserAction;
+using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,16 +11,17 @@ namespace Aggregator.Core.Services.DataLoaders;
 public class OwiUserActionDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<OwiUserAction>
 {
     public async Task<NotificationDataLoad<OwiUserAction>> LoadDataForNotificationsAsync(
-        IEnumerable<long> notificationIds, IUnitOfWork unitOfWork,
+        IEnumerable<long> notificationIds, IAggregatorUnitOfWork aggregatorUnitOfWork,
+        IControlPanelUnitOfWork controlPanelUnitOfWork,
         CancellationToken cancellationToken)
     {
-        var messages = await unitOfWork.OwiUserAction
+        var messages = await aggregatorUnitOfWork.OwiUserAction
             .GetAll().Where(x => notificationIds.Contains(x.NotificationId))
             .Include(x => x.Details)
             .Include(x => x.CardInfo).ToListAsync(cancellationToken);
 
         var messageText =
-            await unitOfWork.NotificationMessageTextDirectories.FindAsync(x =>
+            await controlPanelUnitOfWork.NotificationMessageTextDirectories.FindAsync(x =>
                 x.NotificationType == NotificationMessageType.OwiUserAction, cancellationToken);
 
         var notificationTextById = messages
@@ -27,7 +29,7 @@ public class OwiUserActionDataLoader(IAccountNoParser accountNoParser) : INotifi
                 m => m.NotificationId,
                 m => messageText
             );
-        
+
         var rawCleanAccountsMap = messages
             .ToDictionary(
                 m => m.CardInfo.CardIdentifier.CardIdentifierValue,
@@ -35,7 +37,7 @@ public class OwiUserActionDataLoader(IAccountNoParser accountNoParser) : INotifi
             );
 
         var accountsMap =
-            await unitOfWork.Accounts.GetAccountCustomerMapAsync(
+            await aggregatorUnitOfWork.Accounts.GetAccountCustomerMapAsync(
                 messages.Select(x => accountNoParser.ParseAccountNo(x.CardInfo.CardIdentifier.CardIdentifierValue))
                     .ToList()!,
                 cancellationToken);
@@ -49,7 +51,7 @@ public class OwiUserActionDataLoader(IAccountNoParser accountNoParser) : INotifi
                 m => accountsMap.GetValueOrDefault(rawCleanAccountsMap[m.CardInfo.CardIdentifier.CardIdentifierValue]));
 
         var customerSettingsMap =
-            await unitOfWork.PushNotificationSettings.GetUserSettingsIds(
+            await aggregatorUnitOfWork.PushNotificationSettings.GetUserSettingsIds(
                 notificationToCustomer.Select(x => x.Value).ToList(), cancellationToken);
 
         return new NotificationDataLoad<OwiUserAction>

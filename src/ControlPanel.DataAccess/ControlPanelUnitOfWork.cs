@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ControlPanel.DataAccess;
 
 /// <inheritdoc/>
-public class UnitOfWork : IUnitOfWork
+public class ControlPanelUnitOfWork : IControlPanelUnitOfWork
 {
     private readonly ControlPanelDbContext _context;
 
@@ -30,7 +30,7 @@ public class UnitOfWork : IUnitOfWork
     /// </summary>
     /// <param name="context">Контекст базы данных ControlPanel.</param>
     /// <param name="serviceProvider">Провайдер сервисов для разрешения зависимостей репозиториев.</param>
-    public UnitOfWork(ControlPanelDbContext context, IServiceProvider serviceProvider)
+    public ControlPanelUnitOfWork(ControlPanelDbContext context, IServiceProvider serviceProvider)
     {
         _context = context;
 

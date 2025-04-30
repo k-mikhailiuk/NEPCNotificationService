@@ -17,7 +17,7 @@ namespace Aggregator.DataAccess.Abstractions;
 /// <remarks>
 /// Обеспечивает доступ к различным репозиториям, а также методы для сохранения изменений и управления транзакциями.
 /// </remarks>
-public interface IUnitOfWork : IDisposable
+public interface IAggregatorUnitOfWork : IDisposable
 {
     /// <summary>
     /// Получает репозиторий для работы с входящими сообщениями.
@@ -168,26 +168,6 @@ public interface IUnitOfWork : IDisposable
     /// Получает репозиторий для работы с сообщениями уведомлений.
     /// </summary>
     INotificationMessageRepository NotificationMessage { get; }
-    
-    /// <summary>
-    /// Получает репозиторий для работы с ключевыми словами сообщений уведомлений.
-    /// </summary>
-    INotificationMessageKeyWordsRepository NotificationMessageKeyWords { get; }
-    
-    /// <summary>
-    /// Получает репозиторий для работы со справочником текстов сообщений уведомлений.
-    /// </summary>
-    INotificationMessageTextDirectoriesRepository NotificationMessageTextDirectories { get; }
-    
-    /// <summary>
-    /// Получает репозиторий для работы со справочником описаний лимитов.
-    /// </summary>
-    ILimitIdDescriptionDirectoriesRepository LimitIdDescriptionDirectories { get; }
-    
-    /// <summary>
-    /// Получает репозиторий для работы с валютами.
-    /// </summary>
-    ICurrenciesRepository Currencies { get; }
     
     /// <summary>
     /// Получает репозиторий для работы с операциями AcsOtp.

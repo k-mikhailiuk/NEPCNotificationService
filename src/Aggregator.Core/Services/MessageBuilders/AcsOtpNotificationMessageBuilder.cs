@@ -2,6 +2,7 @@ using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.AcsOtp;
+using ControlPanel.DataAccess.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services.MessageBuilders;
@@ -25,7 +26,7 @@ public class AcsOtpNotificationMessageBuilder(
     /// <param name="cancellationToken">Токен для отмены операции.</param>
     /// <returns>Список сформированных уведомлений.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Выбрасывается, если unitOfWork или context равны null.
+    /// Выбрасывается, если aggregatorUnitOfWork или context равны null.
     /// </exception>
     public async Task<List<NotificationMessage>> BuildNotificationAsync(IEnumerable<long> notificationIds,
         CancellationToken cancellationToken)
@@ -33,9 +34,10 @@ public class AcsOtpNotificationMessageBuilder(
 
         using var scope = serviceProvider.CreateScope();
 
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
+        using var controlPanelUnitOfWork = scope.ServiceProvider.GetRequiredService<IControlPanelUnitOfWork>();
 
-        var loadedData = await acsOtpLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, cancellationToken);
+        var loadedData = await acsOtpLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, controlPanelUnitOfWork, cancellationToken);
         
         return await notificationCompositor.ComposeAsync(loadedData.Messages, loadedData.NotificationTextById,
             loadedData.NotificationToCustomer, loadedData.CustomerSettingsMap, cancellationToken);

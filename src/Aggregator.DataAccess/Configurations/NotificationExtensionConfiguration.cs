@@ -21,6 +21,8 @@ public class NotificationExtensionConfiguration : IEntityTypeConfiguration<Notif
         builder.ToTable("NotificationExtensions");
 
         builder.HasKey(x => x.Id);
+        
+        builder.Property(x => x.Id).UseIdentityColumn();
 
         builder
             .HasIndex(x => new { x.ExtensionId, x.NotificationId })

@@ -32,7 +32,7 @@ public class UnholdProcessHandler(NotificationEntityMapperFactory mapperFactory,
         var entities = dtos.Select(dto => mapper.Map(dto)).ToList();
         
         using var scope = serviceProvider.CreateScope();
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IAggregatorUnitOfWork>();
         var entityPreloadService = scope.ServiceProvider.GetRequiredService<IEntityPreloadService>();
 
         PreloadAndUnifyDetails(entities, unitOfWork);
@@ -51,17 +51,17 @@ public class UnholdProcessHandler(NotificationEntityMapperFactory mapperFactory,
     /// Загружает и унифицирует детали для сущностей Unhold.
     /// </summary>
     /// <param name="entities">Список сущностей Unhold.</param>
-    /// <param name="unitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
+    /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
     private static void PreloadAndUnifyDetails(
         List<Unhold> entities,
-        IUnitOfWork unitOfWork)
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allDetailsIds = entities
             .Select(e => e.Details.UnholdDetailsId)
             .Distinct()
             .ToList();
 
-        var existingDetailsList = unitOfWork.UnholdDetails
+        var existingDetailsList = aggregatorUnitOfWork.UnholdDetails
             .GetQueryByIds(allDetailsIds);
 
         var detailsCache = existingDetailsList.ToDictionary(d => d.UnholdDetailsId, d => d);
