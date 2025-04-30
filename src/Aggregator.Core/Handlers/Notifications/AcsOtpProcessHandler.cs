@@ -4,7 +4,6 @@ using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.AcsOtp;
 using Aggregator.DTOs.AcsOtp;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;

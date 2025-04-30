@@ -6,7 +6,6 @@ using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.CardStatusChange;
 using Aggregator.DTOs.CardStatusChange;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;

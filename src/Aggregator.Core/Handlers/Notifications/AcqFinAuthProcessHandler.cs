@@ -6,7 +6,6 @@ using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.AcqFinAuth;
 using Aggregator.DTOs.AcqFinAuth;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Handlers.Notifications;

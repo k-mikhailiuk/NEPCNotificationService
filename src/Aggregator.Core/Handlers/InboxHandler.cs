@@ -47,12 +47,6 @@ public class InboxHandler(
         {
             var notification = InboxMessageParser.ParseInboxMessage(message.Payload);
 
-            if (notification == null)
-            {
-                logger.LogWarning("Не удалось распарсить уведомление. Id={messageId}", message.Id);
-                continue;
-            }
-
             processedMessages.Add(message.Id, notification.Id);
 
             var notificationType = notification.GetType();
