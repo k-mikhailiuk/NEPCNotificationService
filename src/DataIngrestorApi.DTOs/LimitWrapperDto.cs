@@ -3,15 +3,15 @@ namespace DataIngrestorApi.DTOs;
 /// <summary>
 /// Тип - контейнер лимитов
 /// </summary>
-public class LimitWrapperDto
+public record LimitWrapperDto
 {
     /// <summary>
     /// Суммовой лимит
     /// </summary>
-    public AmtLimitDto? AmtLimit { get; set; }
+    public AmtLimitDto? AmtLimit { get; init; }
     
     /// <summary>
     /// Количественный лимит
     /// </summary>
-    public CntLimitDto? CntLimit { get; set; }
+    public CntLimitDto? CntLimit { get; init; }
 }

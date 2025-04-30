@@ -1,5 +1,8 @@
 namespace DataIngrestorApi.DTOs.Enums;
 
+/// <summary>
+/// Тип LimitObject
+/// </summary>
 public enum LimitObjectType
 {
     /// <summary>

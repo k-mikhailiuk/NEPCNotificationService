@@ -1,0 +1,211 @@
+@model IEnumerable<ControlPanel.DataAccess.Entities.NotificationMessageKeyWord>
+
+@{
+    ViewBag.Title = "Справочник ключевых слов";
+    Layout = "_Layout";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="accordion" id="keywordAccordion">
+    @foreach (var group in Model.GroupBy(x => x.NotificationType))
+    {
+        var btnId = $"btn_{group.Key}";
+        var collapseId = $"collapse_{group.Key}";
+
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading_@group.Key">
+                <button class="accordion-button collapsed"
+                        type="button"
+                        id="@btnId">
+                    @group.Key
+                </button>
+            </h2>
+            <div id="@collapseId" class="accordion-collapse collapse"
+                 aria-labelledby="heading_@group.Key">
+                <div class="accordion-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th style="width: 150px;">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in group)
+                        {
+                            <tr data-id="@item.Id">
+                                <td>@item.KeyWord</td>
+                                <td class="desc-cell">@item.Description</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-secondary edit-btn">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.edit-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    const row = btn.closest('tr');
+                    const descCell = row.querySelector('.desc-cell');
+                    const originalText = descCell.innerText.trim();
+                    const rowId = row.dataset.id; 
+
+                    const isEditing = row.classList.contains('editing');
+
+                    if (!isEditing) {
+                        row.classList.add('editing');
+
+                        descCell.innerHTML = `
+                            <input type="text" class="form-control form-control-sm desc-input" 
+                                   value="${originalText}" />
+                        `;
+
+                        btn.classList.remove('btn-secondary');
+                        btn.classList.add('btn-success');
+                        btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+
+                        const cancelBtn = document.createElement('button');
+                        cancelBtn.type = 'button';
+                        cancelBtn.classList.add('btn', 'btn-sm', 'btn-danger', 'ms-1', 'cancel-btn');
+                        cancelBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+                        btn.parentNode.appendChild(cancelBtn);
+
+                        cancelBtn.addEventListener('click', function () {
+                            descCell.innerText = originalText;
+                            row.classList.remove('editing');
+                            btn.classList.remove('btn-success');
+                            btn.classList.add('btn-secondary');
+                            btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+                            cancelBtn.remove();
+                        });
+                    } else {
+                        const input = row.querySelector('.desc-input');
+                        const newText = input.value.trim();
+
+                        fetch('@Url.Action("UpdateDescription", "NotificationMessageKeyWords")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                id: parseInt(rowId),
+                                description: newText
+                            })
+                        })
+                            .then(response => {
+                                if (!response.ok) {
+                                    showToast('Network response was not OK', 'danger');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.success) {
+                                    descCell.innerText = newText;
+                                    row.classList.remove('editing');
+                                    btn.classList.remove('btn-success');
+                                    btn.classList.add('btn-secondary');
+                                    btn.innerHTML = '<i class="bi bi-pencil-square"></i>';
+                                    const cancelBtn = row.querySelector('.cancel-btn');
+                                    if (cancelBtn) cancelBtn.remove();
+                                    showToast('Сохранено успешно!', 'success');
+                                } else {
+                                    showToast('Сохранение не удалось!', 'danger');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                showToast('Ошибка при сохранении. См. консоль.', 'danger');
+                            });
+                    }
+                });
+            });
+
+            const allButtons = document.querySelectorAll('.accordion-button');
+            const collapses = {};
+
+            allButtons.forEach(btn => {
+                const key = btn.id.replace('btn_', '');
+                const collapseEl = document.getElementById(`collapse_${key}`);
+
+                if (!collapseEl) {
+                    console.warn("Не найден collapse для", btn.id);
+                    return;
+                }
+
+                const bsCollapse = new bootstrap.Collapse(collapseEl, { toggle: false });
+
+                collapses[key] = {
+                    instance: bsCollapse,
+                    button: btn,
+                    collapseEl
+                };
+
+                btn.addEventListener('click', () => {
+                    const isOpen = collapseEl.classList.contains('show');
+
+                    if (isOpen) {
+                        bsCollapse.hide();
+                        btn.classList.add('collapsed');
+                    } else {
+                        Object.entries(collapses).forEach(([otherKey, other]) => {
+                            if (other.collapseEl.classList.contains('show')) {
+                                other.instance.hide();
+                                other.button.classList.add('collapsed');
+                            }
+                        });
+                        bsCollapse.show();
+                        btn.classList.remove('collapsed');
+                    }
+                });
+            });
+        });
+
+        function showToast(message, type = 'success', delay = 3000) {
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.className = 'toast-container position-fixed top-0 end-0 p-3';
+                document.body.appendChild(container);
+            }
+
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+            toastEl.setAttribute('role', 'alert');
+            toastEl.setAttribute('aria-live', 'assertive');
+            toastEl.setAttribute('aria-atomic', 'true');
+
+            toastEl.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                    data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    `;
+
+            container.appendChild(toastEl);
+
+            const bsToast = new bootstrap.Toast(toastEl, {delay: delay});
+            bsToast.show();
+
+            toastEl.addEventListener('hidden.bs.toast', () => {
+                toastEl.remove();
+            });
+        }
+    </script>
+}
