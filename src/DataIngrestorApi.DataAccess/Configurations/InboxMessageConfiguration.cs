@@ -19,7 +19,7 @@ public class InboxMessageConfiguration : IEntityTypeConfiguration<InboxMessage>
         
         builder.HasKey(x => x.Id);
         
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
+        builder.Property(x => x.Id).UseIdentityColumn();
         builder.Property(x => x.Payload).IsRequired().HasColumnType("nvarchar(max)");
         builder.Property(x => x.Status).IsRequired().HasConversion<byte>();
         builder.Property(x => x.Timestamp).IsRequired();

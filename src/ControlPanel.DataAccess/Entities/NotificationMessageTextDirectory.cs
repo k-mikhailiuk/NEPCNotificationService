@@ -12,7 +12,6 @@ public class NotificationMessageTextDirectory
     /// <summary>
     /// Уникальный идентификатор записи справочника. Значение генерируется автоматически базой данных.
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
     /// <summary>

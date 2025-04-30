@@ -19,6 +19,7 @@ public class NotificationMessageTextDirectoryConfiguration : IEntityTypeConfigur
 
         builder.HasKey(x => x.Id);
 
+        builder.Property(x => x.Id).UseIdentityColumn();
         builder.Property(x => x.MessageTextRu).IsUnicode().IsRequired(false);
         builder.Property(x => x.MessageTextEn).IsUnicode().IsRequired(false);
         builder.Property(x => x.MessageTextKg).IsUnicode().IsRequired(false);

@@ -11,7 +11,6 @@ public class NotificationMessageKeyWord
     /// <summary>
     /// Уникальный идентификатор записи. Значение генерируется автоматически базой данных.
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
     
     /// <summary>

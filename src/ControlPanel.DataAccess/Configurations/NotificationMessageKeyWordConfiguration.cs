@@ -19,6 +19,7 @@ public class NotificationMessageKeyWordConfiguration : IEntityTypeConfiguration<
         
         builder.HasKey(x => x.Id);
         
+        builder.Property(x => x.Id).UseIdentityColumn();
         builder.Property(x => x.KeyWord).IsRequired();
         builder.Property(x => x.Description).IsUnicode().IsRequired(false);
         builder.Property(x => x.NotificationType).IsRequired().HasConversion<byte>();

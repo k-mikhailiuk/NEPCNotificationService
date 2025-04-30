@@ -19,6 +19,7 @@ public class CurrencyConfiguration : IEntityTypeConfiguration<Currency>
         
         builder.HasKey(x => x.CurrencyCode);
         
+        builder.Property(x => x.CurrencyCode).IsRequired().ValueGeneratedNever();
         builder.Property(x => x.CurrencyName).IsRequired();
         builder.Property(x => x.CurrencySymbol).IsRequired();
     }

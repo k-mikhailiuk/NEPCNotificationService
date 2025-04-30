@@ -7,11 +7,9 @@ namespace ControlPanel.DataAccess.Entities;
 /// </summary>
 public class Currency
 {
-    
     /// <summary>
     /// Код валюты. Значение не генерируется базой данных автоматически.
     /// </summary>
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int CurrencyCode { get; set; }
     
     /// <summary>
