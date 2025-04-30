@@ -3,7 +3,7 @@ namespace DataIngrestorApi.DataAccess.Entities.Enums;
 /// <summary>
 /// Статусы обработки сообщений в inbox
 /// </summary>
-public enum InboxMessageStatus
+public enum InboxMessageStatus : byte
 {
     /// <summary>
     /// Default

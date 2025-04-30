@@ -20,6 +20,7 @@ public static class DIConfigure
         services.AddDatabaseConnectionString(configuration);
         services.AddAggregatorDbContext(configuration);
         services.AddRepositories();
+        services.AddControlPanelDbContext(configuration);
         services.AddControlPanelRepositories();
         services.AddCommands();
         services.AddFactories();

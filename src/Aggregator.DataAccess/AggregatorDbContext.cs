@@ -93,18 +93,6 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
         modelBuilder.Entity<InboxMessage>()
             .ToTable("InboxMessages", "nepc", t => t.ExcludeFromMigrations());
 
-        modelBuilder.Entity<NotificationMessageKeyWord>()
-            .ToTable("NotificationMessageKeyWords", "nepc", t => t.ExcludeFromMigrations());
-
-        modelBuilder.Entity<Currency>()
-            .ToTable("Currencies", "nepc", t => t.ExcludeFromMigrations());
-
-        modelBuilder.Entity<NotificationMessageTextDirectory>()
-            .ToTable("NotificationMessageTextDirectories", "nepc", t => t.ExcludeFromMigrations());
-
-        modelBuilder.Entity<LimitIdDescriptionDirectory>()
-            .ToTable("LimitIdDescriptionDirectories", "nepc", t => t.ExcludeFromMigrations());
-
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
     }
 }

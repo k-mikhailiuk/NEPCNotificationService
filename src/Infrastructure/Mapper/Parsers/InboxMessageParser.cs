@@ -16,7 +16,7 @@ public static class InboxMessageParser
     /// </summary>
     /// <param name="payload">Строка JSON, содержащая одно уведомление в формате {"TypeName": {...}}.</param>
     /// <returns>Объект, реализующий <see cref="NotificationAggregatorBaseDto"/>, или <c>null</c> в случае ошибки.</returns>
-    public static NotificationAggregatorBaseDto? ParseInboxMessage(string payload)
+    public static NotificationAggregatorBaseDto ParseInboxMessage(string payload)
     {
         try
         {

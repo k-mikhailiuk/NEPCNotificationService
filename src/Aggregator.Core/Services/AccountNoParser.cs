@@ -16,10 +16,7 @@ public class AccountNoParser : IAccountNoParser
         var accountNo = accountNumber.StartsWith(bankCode)
             ? accountNumber[bankCode.Length..]
             : accountNumber;
-
-        if (!int.TryParse(accountNo.AsSpan(accountNo.Length - 3, 3), out _))
-            throw new Exception("Не удалось получить валюту счета: " + accountNumber);
-
-        return accountNo[..^3];
+        
+        return accountNo.Contains('=') ? accountNo[..^8] : accountNo[..^3];
     }
 }

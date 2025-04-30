@@ -20,7 +20,6 @@ public class NotificationEntityMapperFactory(IServiceProvider serviceProvider)
     /// Выбрасывается, если не удается разрешить зависимость для указанного маппера.
     /// </exception>
     public INotificationMapper<TEntity, TDto> GetMapper<TEntity, TDto>() => 
-        serviceProvider.GetService<INotificationMapper<TEntity, TDto>>() 
+        serviceProvider.GetRequiredService<INotificationMapper<TEntity, TDto>>() 
         ?? throw new InvalidOperationException($"No mapper found for {typeof(TEntity).Name} -> {typeof(TDto).Name}");
-
 }

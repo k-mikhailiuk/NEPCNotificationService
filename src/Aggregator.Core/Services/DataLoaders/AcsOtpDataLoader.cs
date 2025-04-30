@@ -2,6 +2,7 @@ using Aggregator.Core.Models;
 using Aggregator.Core.Services.Abstractions;
 using Aggregator.DataAccess.Abstractions;
 using Aggregator.DataAccess.Entities.AcsOtp;
+using Common;
 using ControlPanel.DataAccess.Abstractions;
 using ControlPanel.DataAccess.Entities.Enum;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,11 @@ public class AcsOtpDataLoader(IAccountNoParser accountNoParser) : INotificationD
             .GetAll().Where(x => notificationIds.Contains(x.NotificationId))
             .Include(x => x.Details)
             .Include(x => x.CardInfo).ToListAsync(cancellationToken);
+
+        foreach (var message in messages)
+        {
+            message.Details.OtpInfo.Otp = Encryptor.Decrypt(message.Details.OtpInfo.Otp);
+        }
 
         var messageText =
             await controlPanelUnitOfWork.NotificationMessageTextDirectories.FindAsync(x =>

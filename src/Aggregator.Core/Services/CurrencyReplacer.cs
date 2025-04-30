@@ -1,5 +1,6 @@
 using Aggregator.Core.Services.Abstractions;
 using ControlPanel.DataAccess.Abstractions;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aggregator.Core.Services;
@@ -7,7 +8,7 @@ namespace Aggregator.Core.Services;
 /// <summary>
 /// Реализация интерфейса <see cref="ICurrencyReplacer"/> для замены идентификатора валюты на соответствующий символ.
 /// </summary>
-public class CurrencyReplacer(IServiceProvider serviceProvider) : ICurrencyReplacer
+public class CurrencyReplacer(IServiceProvider serviceProvider, IMemoryCache cache) : ICurrencyReplacer
 {
     /// <summary>
     /// Асинхронно заменяет валютный код на строковое представление валютного символа.
@@ -20,15 +21,24 @@ public class CurrencyReplacer(IServiceProvider serviceProvider) : ICurrencyRepla
         if (string.IsNullOrWhiteSpace(currency))
             return string.Empty;
         
-        using var scope = serviceProvider.CreateScope();
-
-        using var unitOfWork = scope.ServiceProvider.GetRequiredService<IControlPanelUnitOfWork>();
-        
         if (!int.TryParse(currency, out var currencyCode)) 
             return string.Empty;
         
-        var currencyFromDb = await unitOfWork.Currencies.GetByCodeAsync(currencyCode, cancellationToken);
-        
-        return currencyFromDb is null ? string.Empty : currencyFromDb.CurrencySymbol;
+        var cacheDictionary = await cache.GetOrCreateAsync(currencyCode, async entry =>
+        {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+
+            using var scope = serviceProvider.CreateScope();
+            var uow = scope.ServiceProvider.GetRequiredService<IControlPanelUnitOfWork>();
+            var allCurrencies = await uow.Currencies
+                .GetAllAsync(cancellationToken);
+
+            return allCurrencies
+                .ToDictionary(x => x.CurrencyCode, x => x.CurrencySymbol);
+        });
+
+        return cacheDictionary != null && cacheDictionary.TryGetValue(currencyCode, out var symbol)
+            ? symbol
+            : string.Empty;
     }
 }

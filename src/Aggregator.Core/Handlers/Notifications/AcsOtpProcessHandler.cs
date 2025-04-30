@@ -48,7 +48,7 @@ public class AcsOtpProcessHandler(NotificationEntityMapperFactory mapperFactory,
         List<AcsOtp> entities,
         IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
-        var idsToCheck = (IReadOnlyCollection<long>)entities.Select(x=>x.NotificationId);
+        var idsToCheck = entities.Select(x=>x.NotificationId).ToList();
 
         var existingList = aggregatorUnitOfWork.AcsOtps
             .GetQueryByIds(idsToCheck).Select(x=>x.NotificationId);

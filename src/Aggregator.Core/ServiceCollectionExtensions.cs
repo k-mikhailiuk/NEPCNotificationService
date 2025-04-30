@@ -70,6 +70,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IInboxHandler, InboxHandler>();
         services.AddTransient<IEntityPreloadService, EntityPreloadService>();
         services.AddTransient<IAccountNoParser, AccountNoParser>();
+        services.AddMemoryCache();
 
         return services;
     }

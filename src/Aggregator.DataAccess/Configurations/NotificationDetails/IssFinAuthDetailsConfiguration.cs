@@ -55,7 +55,7 @@ public class IssFinAuthDetailsConfiguration : IEntityTypeConfiguration<IssFinAut
 
         builder.Property(x => x.LocalTime).IsRequired();
         builder.Property(x => x.TransType).IsRequired();
-        builder.Property(x => x.ResponseCode).IsRequired(false).HasMaxLength(6);
+        builder.Property(x => x.ResponseCode).IsRequired().HasMaxLength(6);
         builder.Property(x => x.ApprovalCode).IsRequired(false).HasMaxLength(6);
         builder.Property(x => x.Rrn).IsRequired(false).HasMaxLength(12);
 
