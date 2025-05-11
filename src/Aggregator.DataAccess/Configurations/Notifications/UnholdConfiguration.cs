@@ -25,8 +25,8 @@ public class UnholdConfiguration : IEntityTypeConfiguration<Unhold>
         builder.Property(x => x.MerchantInfoId).IsRequired();
 
         builder.HasOne(x => x.Details)
-            .WithMany()
-            .HasForeignKey(x => x.DetailsId)
+            .WithOne()
+            .HasForeignKey<Unhold>(x => x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.MerchantInfo)

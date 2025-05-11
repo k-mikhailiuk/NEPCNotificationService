@@ -24,8 +24,8 @@ public class CardStatusChangeConfiguration : IEntityTypeConfiguration<CardStatus
         builder.Property(x => x.CardInfoId).IsRequired();
 
         builder.HasOne(x => x.Details)
-            .WithMany()
-            .HasForeignKey(x => x.DetailsId)
+            .WithOne()
+            .HasForeignKey<CardStatusChange>(x => x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CardInfo)

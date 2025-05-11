@@ -37,8 +37,7 @@ public class OwiUserActionEntityMapper(
             EventId = dto.EventId,
             Time = dateTimeConverter.SafeConvertTime(dto.Time),
             Details = MapDetails(dto.Details),
-            Extensions =
-                conversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.OwiUserAction),
+            Extensions = conversionExtensionsHelper.MapExtensions(dto.Extensions, dto.Id, NotificationType.OwiUserAction),
             CardInfo = cardInfoMapper.MapCardInfo(dto.CardInfo),
             NotificationType = NotificationType.OwiUserAction,
         };

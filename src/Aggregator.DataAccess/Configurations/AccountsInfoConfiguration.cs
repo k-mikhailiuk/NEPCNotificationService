@@ -1,3 +1,4 @@
+using Aggregator.DataAccess.Entities;
 using Aggregator.DataAccess.Entities.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

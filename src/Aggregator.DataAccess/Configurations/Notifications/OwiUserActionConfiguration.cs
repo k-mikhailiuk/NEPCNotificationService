@@ -24,8 +24,8 @@ public class OwiUserActionConfiguration : IEntityTypeConfiguration<OwiUserAction
         builder.Property(x => x.DetailsId).IsRequired();
 
         builder.HasOne(x => x.Details)
-            .WithMany()
-            .HasForeignKey(x => x.DetailsId)
+            .WithOne()
+            .HasForeignKey<OwiUserAction>(x => x.DetailsId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CardInfo)

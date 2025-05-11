@@ -181,6 +181,11 @@ public class AggregatorUnitOfWork : IAggregatorUnitOfWork
     public IAcsOtpRepository AcsOtps => _acsOtps.Value;
 
     private readonly Lazy<IAcsOtpRepository> _acsOtps;
+    
+    /// <inheritdoc/>
+    public IAcsOtpDetailsRepository AcsOtpDetails => _acsOtpDetails.Value;
+
+    private readonly Lazy<IAcsOtpDetailsRepository> _acsOtpDetails;
 
     /// <inheritdoc/>
     public IAccountsRepository Accounts =>
@@ -270,6 +275,8 @@ public class AggregatorUnitOfWork : IAggregatorUnitOfWork
 
         _acsOtps = new Lazy<IAcsOtpRepository>(() =>
             serviceProvider.GetService<IAcsOtpRepository>() ?? throw new InvalidOperationException());
+        _acsOtpDetails = new Lazy<IAcsOtpDetailsRepository>(() =>
+            serviceProvider.GetService<IAcsOtpDetailsRepository>() ?? throw new InvalidOperationException());
         _notifications = new Lazy<INotificationsRepository>(() =>
             serviceProvider.GetService<INotificationsRepository>() ?? throw new InvalidOperationException());
 

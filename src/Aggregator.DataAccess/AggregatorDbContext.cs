@@ -10,7 +10,6 @@ using Aggregator.DataAccess.Entities.OwiUserAction;
 using Aggregator.DataAccess.Entities.PinChange;
 using Aggregator.DataAccess.Entities.TokenChangeStatus;
 using Aggregator.DataAccess.Entities.Unhold;
-using ControlPanel.DataAccess.Entities;
 using DataIngrestorApi.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,6 +35,7 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
     public DbSet<Unhold> Unholds { get; set; }
     public DbSet<OwiUserAction> OwiUserActions { get; set; }
     public DbSet<AcctBalChange> AcctBalChanges { get; set; }
+    public DbSet<AcsOtp> AcsOtps { get; set; }
 
     public DbSet<IssFinAuthDetails> IssFinAuthDetails { get; set; }
     public DbSet<AcqFinAuthDetails> AcqFinAuthDetails { get; set; }
@@ -45,6 +45,7 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
     public DbSet<UnholdDetails> UnholdDetails { get; set; }
     public DbSet<OwiUserActionDetails> OwiUserActionDetails { get; set; }
     public DbSet<AcctBalChangeDetails> AcctBalChangeDetails { get; set; }
+    public DbSet<AcsOtpDetails> AcsOtpsDetails { get; set; }
 
     public DbSet<MerchantInfo> MerchantInfos { get; set; }
     public DbSet<AccountsInfoLimitWrapper> AccountsInfoLimitWrappers { get; set; }
@@ -60,9 +61,6 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
     public DbSet<InboxArchiveMessage> InboxArchiveMessages { get; set; }
 
     public DbSet<NotificationMessage> NotificationMessages { get; set; }
-
-    public DbSet<AcsOtp> AcsOtps { get; set; }
-    
     public DbSet<Account> Accounts { get; set; }
     public DbSet<PushNotificationSettings> PushNotificationSettings { get; set; }
 

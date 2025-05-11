@@ -21,25 +21,7 @@ public class AcsOtpConfiguration : IEntityTypeConfiguration<AcsOtp>
         builder.ToTable("AcsOtps");
 
         builder.Property(x => x.CardInfoId).IsRequired();
-
-        builder.OwnsOne(x => x.Details, details =>
-        {
-            details.Property(d => d.TransactionTime).IsRequired();
-
-            details.OwnsOne(d => d.OtpInfo, otp =>
-            {
-                otp.Property(o => o.Otp).IsRequired();
-                otp.Property(o => o.ExpirationTime).IsRequired();
-            });
-
-            details.OwnsOne(d => d.AuthMoney, auth =>
-            {
-                auth.Property(a => a.Amount).IsRequired(false);
-                auth.Property(a => a.Currency)
-                    .HasMaxLength(3)
-                    .IsRequired(false);
-            });
-        });
+        builder.Property(x => x.DetailsId).IsRequired();
 
         builder.OwnsOne(x => x.MerchantInfo, merchantInfo =>
         {
@@ -48,6 +30,11 @@ public class AcsOtpConfiguration : IEntityTypeConfiguration<AcsOtp>
             merchantInfo.Property(x => x.Country).IsRequired().HasMaxLength(3);
             merchantInfo.Property(x => x.Url).IsRequired().HasMaxLength(4000);
         });
+        
+        builder.HasOne(x => x.Details)
+            .WithOne()
+            .HasForeignKey<AcsOtpDetails>(x => x.DetailsId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CardInfo)
             .WithMany()

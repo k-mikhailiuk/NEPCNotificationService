@@ -175,6 +175,11 @@ public interface IAggregatorUnitOfWork : IDisposable
     IAcsOtpRepository AcsOtps { get; }
     
     /// <summary>
+    /// Получает репозиторий для работы с деталями операциями AcsOtp.
+    /// </summary>
+    IAcsOtpDetailsRepository AcsOtpDetails { get; }
+    
+    /// <summary>
     /// Получает репозиторий для работы с операциями dbo.Accounts.
     /// </summary>
     IAccountsRepository Accounts { get; }

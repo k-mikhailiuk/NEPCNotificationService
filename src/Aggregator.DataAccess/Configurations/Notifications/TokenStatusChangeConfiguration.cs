@@ -24,8 +24,8 @@ public class TokenStatusChangeConfiguration : IEntityTypeConfiguration<TokenStat
         builder.Property(x => x.CardInfoId).IsRequired();
 
         builder.HasOne(x => x.CardInfo)
-            .WithMany()
-            .HasForeignKey(x => x.CardInfoId)
+            .WithOne()
+            .HasForeignKey<TokenStatusChange>(x => x.CardInfoId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.Details)

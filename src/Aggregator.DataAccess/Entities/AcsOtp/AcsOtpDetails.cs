@@ -1,13 +1,17 @@
-using Microsoft.EntityFrameworkCore;
+using Aggregator.DataAccess.Entities.OwnedEntities;
 
-namespace Aggregator.DataAccess.Entities.OwnedEntities;
+namespace Aggregator.DataAccess.Entities.AcsOtp;
 
 /// <summary>
 /// Детали разовых паролей, отправляемых ACS банка-эмитента карты
 /// </summary>
-[Owned]
 public class AcsOtpDetails
 {
+    /// <summary>
+    /// Уникальный идентификатор деталей уведомления одноразового кода
+    /// </summary>
+    public long DetailsId { get; set; }
+    
     /// <summary>
     /// Информация о разовом пароле
     /// </summary>

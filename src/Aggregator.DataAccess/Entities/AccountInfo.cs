@@ -1,8 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using Aggregator.DataAccess.Entities.Enum;
 using Aggregator.DataAccess.Entities.OwnedEntities;
 
-namespace Aggregator.DataAccess.Entities.Abstract;
+namespace Aggregator.DataAccess.Entities;
 
 /// <summary>
 /// Информация о счете
