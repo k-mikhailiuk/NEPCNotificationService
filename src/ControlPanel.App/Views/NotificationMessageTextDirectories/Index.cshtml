@@ -1,0 +1,225 @@
+@model IEnumerable<ControlPanel.DataAccess.Entities.NotificationMessageTextDirectory>
+
+@{
+    ViewBag.Title = "Справочник текста уведомлений";
+    Layout = "_Layout";
+
+    var grouped = Model
+        .GroupBy(x => x.NotificationType)
+        .ToDictionary(
+            g => g.Key,
+            g => g.Select(item => new
+            {
+                item.Id,
+                OperationType = item.OperationType?.ToString(),
+                MessageTextRu = item.MessageTextRu,
+                MessageTextEn = item.MessageTextEn,
+                MessageTextKg = item.MessageTextKg,
+                IssNeedSend = item.IsNeedSend
+            }).ToList()
+        );
+
+    var jsonData = System.Text.Json.JsonSerializer.Serialize(grouped);
+}
+
+<div class="card mb-3">
+    <div class="card-header">
+        <h5>Push-уведомление</h5>
+    </div>
+    <div class="card-body">
+        <div class="mb-3">
+            <label for="notificationTypeSelect" class="form-label">Тип уведомления</label>
+            <select id="notificationTypeSelect" class="form-select">
+                <option value="">--Выберите тип уведомления--</option>
+                @foreach (var group in grouped)
+                {
+                    <option value="@group.Key">@group.Key</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="operationTypeSelect" class="form-label">Тип операции</label>
+            <select id="operationTypeSelect" class="form-select" disabled>
+                <option value="">--Выберите тип операции--</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="textRu" class="form-label">Текст (RU)</label>
+            <textarea id="textRu" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="textEn" class="form-label">Текст (EN)</label>
+            <textarea id="textEn" class="form-control" rows="2"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="textKg" class="form-label">Текст (KG)</label>
+            <textarea id="textKg" class="form-control" rows="2"></textarea>
+        </div>
+
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" id="isNeedSendCheckbox" />
+            <label class="form-check-label" for="isNeedSendCheckbox">Отправлять уведомление?</label>
+        </div>
+
+        <button type="button" id="saveBtn" class="btn btn-primary">Сохранить</button>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const data = @Html.Raw(jsonData);
+
+        const notificationTypeSelect = document.getElementById('notificationTypeSelect');
+        const operationTypeSelect = document.getElementById('operationTypeSelect');
+        const textRu = document.getElementById('textRu');
+        const textEn = document.getElementById('textEn');
+        const textKg = document.getElementById('textKg');
+        const isNeedSendCheckbox = document.getElementById('isNeedSendCheckbox'); // <-- ВАЖНО
+        const saveBtn = document.getElementById('saveBtn');
+
+        let currentItem = null;
+
+        notificationTypeSelect.addEventListener('change', function () {
+            const selectedNotificationType = this.value;
+
+            operationTypeSelect.innerHTML = '<option value="">--Выберите тип операции--</option>';
+            operationTypeSelect.disabled = true;
+            textRu.value = '';
+            textEn.value = '';
+            textKg.value = '';
+            isNeedSendCheckbox.checked = false; // <-- Сбрасываем чекбокс
+            currentItem = null;
+
+            if (!selectedNotificationType || !data[selectedNotificationType]) {
+                return;
+            }
+
+            const items = data[selectedNotificationType];
+            if (!items || items.length === 0) {
+                return;
+            }
+
+            const hasNonNullOperationType = items.some(i => i.OperationType !== null);
+
+            if (!hasNonNullOperationType) {
+                operationTypeSelect.disabled = true;
+                currentItem = items[0];
+                fillFields(currentItem);
+            } else {
+                operationTypeSelect.disabled = false;
+                for (const it of items) {
+                    if (it.OperationType !== null) {
+                        const option = document.createElement('option');
+                        option.value = it.OperationType;
+                        option.textContent = it.OperationType;
+                        operationTypeSelect.appendChild(option);
+                    }
+                }
+            }
+        });
+
+        operationTypeSelect.addEventListener('change', function () {
+            const selectedNotificationType = notificationTypeSelect.value;
+            const selectedOpType = this.value;
+            if (!selectedNotificationType || !data[selectedNotificationType]) {
+                return;
+            }
+
+            const items = data[selectedNotificationType];
+            currentItem = items.find(x => x.OperationType == selectedOpType);
+
+            if (currentItem) {
+                fillFields(currentItem);
+            } else {
+                textRu.value = '';
+                textEn.value = '';
+                textKg.value = '';
+                isNeedSendCheckbox.checked = false;
+            }
+        });
+
+        function fillFields(item) {
+            textRu.value = item.MessageTextRu || '';
+            textEn.value = item.MessageTextEn || '';
+            textKg.value = item.MessageTextKg || '';
+            isNeedSendCheckbox.checked = !!item.IssNeedSend;
+        }
+
+        saveBtn.addEventListener('click', function () {
+            if (!currentItem) {
+                showToast('Не выбран объект для сохранения!', 'danger');
+                return;
+            }
+
+            const payload = {
+                Id: currentItem.Id,
+                MessageTextRu: textRu.value,
+                MessageTextEn: textEn.value,
+                MessageTextKg: textKg.value,
+                IsNeedSend: isNeedSendCheckbox.checked 
+            };
+
+            fetch('@Url.Action("UpdateMessageTexts", "NotificationMessageTextDirectories")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(resp => resp.json())
+                .then(data => {
+                    if (data.success) {
+                        currentItem.MessageTextRu = textRu.value;
+                        currentItem.MessageTextEn = textEn.value;
+                        currentItem.MessageTextKg = textKg.value;
+                        currentItem.IssNeedSend = isNeedSendCheckbox.checked;
+
+                        showToast('Сохранено успешно!', 'success');
+                    } else {
+                        showToast('Ошибка при сохранении!', 'danger');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    showToast('Ошибка при сохранении (см. консоль).', 'danger');
+                });
+        });
+
+        function showToast(message, type = 'success', delay = 3000) {
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.className = 'toast-container position-fixed top-0 end-0 p-3';
+                document.body.appendChild(container);
+            }
+
+            const toastEl = document.createElement('div');
+            toastEl.className = `toast align-items-center text-bg-${type} border-0`;
+            toastEl.setAttribute('role', 'alert');
+            toastEl.setAttribute('aria-live', 'assertive');
+            toastEl.setAttribute('aria-atomic', 'true');
+
+            toastEl.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" 
+                            data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+
+            container.appendChild(toastEl);
+
+            const bsToast = new bootstrap.Toast(toastEl, { delay: delay });
+            bsToast.show();
+
+            toastEl.addEventListener('hidden.bs.toast', () => {
+                toastEl.remove();
+            });
+        }
+    </script>
+}

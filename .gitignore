@@ -33,8 +33,6 @@ packages/
 .nuget/
 
 # 🟢 Конфигурация / Логирование
-appsettings*.json
-secrets.json
 logs/
 logs/*.log
 *.log
@@ -42,6 +40,7 @@ logs/*.log
 *.csv
 *.ts
 *.csproj.user
+appsettings.json
 
 # 🟢 Docker
 docker-compose.override.yml

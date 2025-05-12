@@ -3,40 +3,40 @@ namespace DataIngrestorApi.DTOs;
 /// <summary>
 /// Суммовой лимит
 /// </summary>
-public class AmtLimitDto
+public record AmtLimitDto
 {
     /// <summary>
     /// Идентификатор лимита
     /// </summary>
-    public long Id { get; set; }
+    public long Id { get; init; }
     
     /// <summary>
     /// Тип цикла лимита
     /// </summary>
-    public string? CycleType { get; set; }
+    public string? CycleType { get; init; }
     
     /// <summary>
     /// Длина цикла лимита
     /// </summary>
-    public int? CycleLength { get; set; }
+    public int? CycleLength { get; init; }
     
     /// <summary>
     /// Дата окончания цикла (YYYYMMDDHH24MISS) во временной зоне ПЦ
     /// </summary>
-    public string? EndTime { get; set; }
+    public string? EndTime { get; init; }
     
     /// <summary>
     /// Трехзначный числовой код валюты (ISO-4217)
     /// </summary>
-    public string Currency { get; set; }
+    public string Currency { get; init; }
     
     /// <summary>
     /// Пороговое (выставленное) значение лимита
     /// </summary>
-    public long TrsAmount { get; set; }
+    public long TrsAmount { get; init; }
     
     /// <summary>
     /// Текущее (накопленное) значение по лимиту
     /// </summary>
-    public long UsedAmount { get; set; }
+    public long UsedAmount { get; init; }
 }

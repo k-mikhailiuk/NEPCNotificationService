@@ -11,11 +11,10 @@ services.RegisterServices(builder.Configuration);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseStaticFiles();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapControllers();
 app.UseHttpsRedirection();

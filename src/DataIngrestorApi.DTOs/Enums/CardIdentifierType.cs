@@ -1,5 +1,8 @@
 namespace DataIngrestorApi.DTOs.Enums;
 
+/// <summary>
+/// Тип идентификатора карты
+/// </summary>
 public enum CardIdentifierType
 {
     /// <summary>
@@ -10,25 +13,45 @@ public enum CardIdentifierType
     /// <summary>
     /// Номер карты
     /// </summary>
-    Pan = 1,
+    pan = 1,
+    
+    /// <summary>
+    /// Токен карты
+    /// </summary>
+    dpan = 2,
     
     /// <summary>
     /// Хэш номера карты в верхнем регистре, вычисленного алгоритмом sha-256
     /// </summary>
-    Sha256 = 2,
+    sha256 = 3,
+    
+    /// <summary>
+    /// Маскированный токен карты
+    /// </summary>
+    dpanMask = 4,
     
     /// <summary>
     /// Хэш номера карты в верхнем регистре, вычисленного алгоритмом sha-1
     /// </summary>
-    Sha1 = 3,
+    sha1 = 5,
+    
+    /// <summary>
+    /// Хэш токена в верхнем регистре, вычисленного алгоритмом sha-1
+    /// </summary>
+    dpanSha1 = 6,
     
     /// <summary>
     /// Номер счета+последние 4 цифры ПАНа через разделитель '='
     /// </summary>
-    AcctIdPanTail = 4,
+    acctIdPanTail = 7,
     
     /// <summary>
     /// EAN13 карты (Штрих-код)
     /// </summary>
-    Ean13 = 5,
+    ean13 = 8,
+    
+    /// <summary>
+    /// Маскированный номер карты или токена
+    /// </summary>
+    panMask = 9
 }

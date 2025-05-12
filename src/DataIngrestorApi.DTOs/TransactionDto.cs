@@ -3,36 +3,36 @@ namespace DataIngrestorApi.DTOs;
 /// <summary>
 /// Информация о финансовой транзакции
 /// </summary>
-public class TransactionDto
+public record TransactionDto
 {
     /// <summary>
     /// Идентификатор фин. транзакции (bo_utrnno)
     /// </summary>
-    public long Id { get; set; }
+    public long Id { get; init; }
     
     /// <summary>
     /// Тип транзакции в FE (используется в BO)
     /// </summary>
-    public string? FeTrans { get; set; }
+    public string? FeTrans { get; init; }
     
     /// <summary>
     /// Сумма транзакции в валюте счета
     /// </summary>
-    public MoneyDto? TranMoney { get; set; }
+    public MoneyDto? TranMoney { get; init; }
     
     /// <summary>
     /// Направление движения средств относительно счета карты.
     /// C - счет кредитуется, D - счет дебетуется
     /// </summary>
-    public string? Direction {get; set;}
+    public char? Direction {get; init;}
     
     /// <summary>
     /// Информация о мерчанте
     /// </summary>
-    public MerchantInfoDto? MerchantInfo { get; set; }
+    public MerchantInfoDto? MerchantInfo { get; init; }
     
     /// <summary>
     /// Идентификатор института-корреспондента
     /// </summary>
-    public string? CorrespondingAccount { get; set; }
+    public string? CorrespondingAccount { get; init; }
 }
