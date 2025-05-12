@@ -33,9 +33,11 @@ public class OwiUserActionDataLoader(IAccountNoParser accountNoParser) : INotifi
             );
 
         var rawCleanAccountsMap = messages
+            .Select(x=>x.CardInfo?.CardIdentifier)
+            .Distinct()
             .ToDictionary(
-                m => m.CardInfo.CardIdentifier.CardIdentifierValue,
-                m => accountNoParser.ParseAccountNo(m.CardInfo.CardIdentifier.CardIdentifierValue)
+                m => m?.CardIdentifierValue!,
+                m => accountNoParser.ParseAccountNo(m?.CardIdentifierValue!)
             );
 
         var accountsMap =

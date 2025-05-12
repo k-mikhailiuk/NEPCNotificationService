@@ -33,9 +33,11 @@ public class PinChangeDataLoader(IAccountNoParser accountNoParser) : INotificati
             );
 
         var rawCleanAccountsMap = messages
+            .Select(x=>x.Details.CardIdentifier)
+            .Distinct()
             .ToDictionary(
-                m => m.Details.CardIdentifier.CardIdentifierValue,
-                m => accountNoParser.ParseAccountNo(m.Details.CardIdentifier.CardIdentifierValue!)
+                m => m.CardIdentifierValue!,
+                m => accountNoParser.ParseAccountNo(m.CardIdentifierValue!)
             );
 
         var accountsMap =

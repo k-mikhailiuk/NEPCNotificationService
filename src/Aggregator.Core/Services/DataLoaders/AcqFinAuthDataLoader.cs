@@ -47,9 +47,11 @@ public class AcqFinAuthDataLoader : INotificationDataLoader<AcqFinAuth>
             );
 
         var rawCleanAccountsMap = messages
+            .Select(m => m.MerchantInfo)
+            .Distinct()
             .ToDictionary(
-                m => m.MerchantInfo,
-                m => m.MerchantInfo.TerminalId
+                mi => mi,
+                mi => mi.TerminalId
             );
 
         var accountsMap =

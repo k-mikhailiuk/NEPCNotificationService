@@ -50,9 +50,11 @@ public class IssFinAuthDataLoader(IAccountNoParser accountNoParser) : INotificat
                 );
 
             var rawCleanAccountsMap = messages
+                .Select(m => m.Details.AccountId)
+                .Distinct()
                 .ToDictionary(
-                    m => m.Details.AccountId,
-                    m => accountNoParser.ParseAccountNo(m.Details.AccountId)
+                    accountId => accountId,
+                    accountNoParser.ParseAccountNo
                 );
 
             var accountsMap =

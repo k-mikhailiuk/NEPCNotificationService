@@ -54,9 +54,10 @@ public class InboxHandler(
             if (notificationsByType.TryGetValue(notificationType, out var notificationList))
                 notificationList.Add(notification);
             else
+            {
                 notificationsByType.Add(notificationType, [notification]);
-
-            notificationList?.Add(notification);
+                notificationList?.Add(notification);
+            }
 
             logger.LogInformation("Parsed notification: Id={messageId}, Type={notificationType}", message.Id,
                 notificationType.Name);

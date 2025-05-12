@@ -22,7 +22,7 @@ public class CardStatusChangeDetailsConfiguration : IEntityTypeConfiguration<Car
 
         builder.HasKey(x => x.CardStatusChangeDetailsId);
 
-        builder.Property(x => x.CardStatusChangeDetailsId).ValueGeneratedNever();
+        builder.Property(x => x.CardStatusChangeDetailsId).ValueGeneratedOnAdd();
         builder.Property(x => x.ExpDate).IsRequired().HasMaxLength(4);
         builder.Property(x => x.OldStatus).IsRequired();
         builder.Property(x => x.NewStatus).IsRequired();
