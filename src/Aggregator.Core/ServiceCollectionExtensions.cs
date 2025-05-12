@@ -165,7 +165,7 @@ public static class ServiceCollectionExtensions
     {
         services.Scan(scan => scan
             .FromAssemblyOf<AcqFinAuthEntityMapper>()
-            .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<,>)))
+            .AddClasses(classes => classes.AssignableTo(typeof(INotificationMapper<, >)))
             .AsImplementedInterfaces()
             .WithSingletonLifetime());
 

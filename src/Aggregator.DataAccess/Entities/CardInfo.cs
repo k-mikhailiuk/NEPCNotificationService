@@ -31,8 +31,6 @@ public class CardInfo
     /// Номер телефона владельца карты
     /// </summary>
     public string? MobilePhone { get; set; }
-    
-    public long NotificationId { get; set; }
 
     /// <summary>
     /// Список лимитов

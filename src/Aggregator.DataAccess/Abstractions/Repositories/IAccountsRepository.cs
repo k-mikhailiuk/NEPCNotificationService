@@ -15,7 +15,7 @@ public interface IAccountsRepository : IRepository<Account>
     /// </summary>
     /// <param name="accountNos">Коллекция AccountNo</param>
     /// <param name="cancellationToken">Токен отмены</param>
-    /// <returns></returns>
+    /// <returns>Асинхронную операцию содержащую данные по соответствиям AccountNo CustomerId</returns>
     Task<Dictionary<string, int>> GetAccountCustomerMapAsync(IReadOnlyCollection<string> accountNos,
         CancellationToken cancellationToken);
 }

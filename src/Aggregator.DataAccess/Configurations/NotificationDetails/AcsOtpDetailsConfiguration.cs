@@ -22,6 +22,7 @@ public class AcsOtpDetailsConfiguration : IEntityTypeConfiguration<AcsOtpDetails
         
         builder.Property(d => d.TransactionTime).IsRequired();
         builder.Property(x => x.NotificationId).IsRequired();
+        builder.Property(x => x.DetailsId).IsRequired().ValueGeneratedNever();
 
         builder.OwnsOne(d => d.OtpInfo, otp =>
         {

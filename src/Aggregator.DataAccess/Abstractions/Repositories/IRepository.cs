@@ -40,7 +40,7 @@ public interface IRepository<T> where T : class
     /// </summary>
     /// <param name="ids">Коллекция идентификаторов сущностей.</param>
     /// <returns>Запрос найденных сущностей.</returns>
-    IQueryable<T>  GetQueryByIds(IReadOnlyCollection<long> ids);
+    IQueryable<T> GetQueryByIds(IReadOnlyCollection<long> ids);
     
     /// <summary>
     /// Асинхронно добавляет коллекцию сущностей в репозиторий.

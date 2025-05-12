@@ -3,9 +3,15 @@ using FluentValidation;
 
 namespace Aggregator.Core.Validators.Notifications;
 
+/// <summary>
+/// Базовый валидатор дто уведомлений
+/// </summary>
 public class BaseAggregatorNotificationDtoCommandValidator<TDto> : AbstractValidator<TDto> 
     where TDto : NotificationAggregatorBaseDto
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр <see cref="BaseAggregatorNotificationDtoCommandValidator"/> и задаёт правила валидации.
+    /// </summary>
     public BaseAggregatorNotificationDtoCommandValidator()
     {
         RuleFor(x => x.Id)

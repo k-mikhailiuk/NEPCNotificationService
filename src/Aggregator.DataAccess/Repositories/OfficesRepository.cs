@@ -4,8 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.DataAccess.Repositories;
 
+/// <inheritdoc cref="Aggregator.DataAccess.Abstractions.Repositories.IOfficesRepository" />
 public class OfficesRepository(AggregatorDbContext context) : Repository<Office>(context), IOfficesRepository
 {
+    /// <inheritdoc/>
     public async Task<Dictionary<string, int>> GetCustomerIdsByTerminalsAsync(
         IReadOnlyCollection<string> terminalIds,
         CancellationToken cancellationToken)

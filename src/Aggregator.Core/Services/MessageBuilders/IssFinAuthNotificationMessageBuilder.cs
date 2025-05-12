@@ -102,7 +102,6 @@ public class IssFinAuthNotificationMessageBuilder(
             ))
             .ToDictionary(g => g.Key, g => g.ToList());
 
-
         return (cardMap, accCompositeMap);
     }
 

@@ -12,14 +12,6 @@ namespace Aggregator.Core.Services.KeyWordBuilders;
 /// </summary>
 public class UnholdKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKeyWordBuilder<Unhold>
 {
-    private static IReadOnlyDictionary<Language, string> ReversalLanguageMap { get; }
-        = new Dictionary<Language, string>
-        {
-            [Language.English] = "Reversal",
-            [Language.Russian] = "Отмена",
-            [Language.Kyrgyz] = "Жокко чыгаруу",
-        };
-
     /// <summary>
     /// Асинхронно формирует строку ключевых слов для уведомления Unhold.
     /// </summary>
@@ -42,7 +34,7 @@ public class UnholdKeyWordBuilder(ICurrencyReplacer currencyReplacer) : IKeyWord
         var replacements = new Dictionary<string, string>
         {
             { "{TRANSTYPE}", ((TransType)entity.Details.TransType).GetDescription(language) },
-            { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : ReversalLanguageMap[language] },
+            { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : LanguageMaps.Reversal[language] },
             { "{PAN}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
             { "{AUTHMONEY_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AuthMoney.Amount) },
             { "{AUTHMONEY_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AuthMoney.Currency, cancellationToken) },
