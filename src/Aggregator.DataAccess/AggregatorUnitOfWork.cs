@@ -181,7 +181,7 @@ public class AggregatorUnitOfWork : IAggregatorUnitOfWork
     public IAcsOtpRepository AcsOtps => _acsOtps.Value;
 
     private readonly Lazy<IAcsOtpRepository> _acsOtps;
-    
+
     /// <inheritdoc/>
     public IAcsOtpDetailsRepository AcsOtpDetails => _acsOtpDetails.Value;
 
@@ -192,13 +192,13 @@ public class AggregatorUnitOfWork : IAggregatorUnitOfWork
         _accounts.Value;
 
     private readonly Lazy<IAccountsRepository> _accounts;
-    
+
     /// <inheritdoc/>
     public IPushNotificationSettingsRepository PushNotificationSettings =>
         _pushNotificationSettings.Value;
 
     private readonly Lazy<IPushNotificationSettingsRepository> _pushNotificationSettings;
-    
+
     /// <inheritdoc/>
     public IOfficesRepository Offices =>
         _offices.Value;
@@ -284,7 +284,7 @@ public class AggregatorUnitOfWork : IAggregatorUnitOfWork
             serviceProvider.GetService<IAccountsRepository>() ?? throw new InvalidOperationException());
         _pushNotificationSettings = new Lazy<IPushNotificationSettingsRepository>(() =>
             serviceProvider.GetService<IPushNotificationSettingsRepository>() ?? throw new InvalidOperationException());
-        
+
         _offices = new Lazy<IOfficesRepository>(() =>
             serviceProvider.GetService<IOfficesRepository>() ?? throw new InvalidOperationException());
     }
@@ -329,9 +329,11 @@ public class AggregatorUnitOfWork : IAggregatorUnitOfWork
         }
     }
 
+    /// <inheritdoc/>
     public IQueryable<T> Query<T>() where T : class
         => Context.Set<T>();
 
+    /// <inheritdoc/>
     public void Add<T>(T entity) where T : class
         => Context.Set<T>().Add(entity);
 

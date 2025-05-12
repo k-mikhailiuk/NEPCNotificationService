@@ -26,5 +26,6 @@ public class OwiUserActionDetailsConfiguration : IEntityTypeConfiguration<OwiUse
         builder.Property(x => x.TransactionTime).IsRequired();
         builder.Property(x => x.Login).IsRequired().HasMaxLength(30);
         builder.Property(x => x.Action).IsRequired().HasMaxLength(30);
+        builder.Property(x => x.NotificationId).IsRequired();
     }
 }

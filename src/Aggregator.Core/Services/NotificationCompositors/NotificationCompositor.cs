@@ -9,12 +9,14 @@ using OptionsConfiguration;
 
 namespace Aggregator.Core.Services.NotificationCompositors;
 
+/// <inheritdoc />
 public class NotificationCompositor<T>(
     IOptions<NotificationMessageOptions> notificationMessageOptions,
     IKeyWordBuilder<T> keyWordBuilder) : INotificationCompositor<T> where T : Notification
 {
     private readonly NotificationMessageOptions _notificationMessageOptions = notificationMessageOptions.Value;
 
+    /// <inheritdoc />
     public async Task<List<NotificationMessage>> ComposeAsync(IEnumerable<T> messages,
         Dictionary<long, NotificationMessageTextDirectory> notificationTextById,
         Dictionary<long, int> notificationToCustomer,

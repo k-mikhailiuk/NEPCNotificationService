@@ -3,6 +3,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Services;
 
+/// <summary>
+/// Конвертер дат
+/// </summary>
+/// <param name="logger">Логгер для записи событий и ошибок</param>
 public class DateTimeConverter(ILogger<DateTimeConverter> logger)
 {
     /// <summary>

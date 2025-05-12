@@ -14,13 +14,13 @@ public class AcctBalChangeKeyWordBuilder(ICurrencyReplacer currencyReplacer) : I
     /// Асинхронно формирует строку ключевых слов для заданного уведомления об изменении баланса счета.
     /// </summary>
     /// <param name="message">
-    ///     Исходное сообщение, содержащее шаблоны для подстановки.
+    /// Исходное сообщение, содержащее шаблоны для подстановки.
     /// </param>
     /// <param name="entity">
-    ///     Сущность уведомления <see cref="AcctBalChange"/>, на основе которой будут сгенерированы ключевые слова.
+    /// Сущность уведомления <see cref="AcctBalChange"/>, на основе которой будут сгенерированы ключевые слова.
     /// </param>
     /// <param name="language">
-    ///     Язык, на котором должны быть сформированы ключевые слова.
+    /// Язык, на котором должны быть сформированы ключевые слова.
     /// </param>
     /// <param name="cancellationToken"></param>
     /// <returns>
@@ -36,9 +36,15 @@ public class AcctBalChangeKeyWordBuilder(ICurrencyReplacer currencyReplacer) : I
             { "{ACCOUNTID}", entity.Details.AccountId },
             { "{PAN}", PanMask.MaskPan(entity.CardInfo?.CardIdentifier.CardIdentifierValue) },
             { "{ACCOUNT_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AccountAmount.Amount) },
-            { "{ACCOUNT_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountAmount.Currency, cancellationToken) },
+            {
+                "{ACCOUNT_CURRENCY}",
+                await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountAmount.Currency, cancellationToken)
+            },
             { "{ACCOUNTBALANCE_AMOUNT}", NumberConverter.GetConvertedString(entity.Details.AccountBalance.Amount) },
-            { "{ACCOUNTBALANCE_CURRENCY}", await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountBalance.Currency, cancellationToken) }
+            {
+                "{ACCOUNTBALANCE_CURRENCY}",
+                await currencyReplacer.ReplaceCurrencyAsync(entity.Details.AccountBalance.Currency, cancellationToken)
+            }
         };
 
         return KeyWordReplacer.ReplacePlaceholders(message, replacements);

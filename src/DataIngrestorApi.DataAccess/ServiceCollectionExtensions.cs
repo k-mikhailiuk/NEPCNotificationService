@@ -17,16 +17,17 @@ public static class ServiceCollectionExtensions
     /// <param name="configuration">Конфигурация приложения, содержащая строку подключения с ключом "DefaultConnection".</param>
     /// <returns>Обновлённая коллекция сервисов с зарегистрированным <see cref="IngressApiDbContext"/>.</returns>
     /// <exception cref="InvalidOperationException">Выбрасывается, если строка подключения отсутствует.</exception>
-    public static IServiceCollection AddIngressApiDbContext(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddIngressApiDbContext(this IServiceCollection services,
+        IConfiguration configuration)
     {
         services.AddDbContext<IngressApiDbContext>(options =>
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection")
                                    ?? throw new InvalidOperationException("Connection string is missing");
-            
+
             options.UseSqlServer(connectionString);
         });
-        
+
         return services;
     }
 }

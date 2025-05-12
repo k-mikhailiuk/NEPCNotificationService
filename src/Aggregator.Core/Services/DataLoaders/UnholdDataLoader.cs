@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Services.DataLoaders;
 
+/// <inheritdoc />
 public class UnholdDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<Unhold>
 {
+    /// <inheritdoc />
     public async Task<NotificationDataLoad<Unhold>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds,
         IAggregatorUnitOfWork aggregatorUnitOfWork,
         IControlPanelUnitOfWork controlPanelUnitOfWork,

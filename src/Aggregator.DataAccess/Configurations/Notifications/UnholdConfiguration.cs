@@ -21,12 +21,12 @@ public class UnholdConfiguration : IEntityTypeConfiguration<Unhold>
         builder.ToTable("Unholds");
 
         builder.Property(x => x.CardInfoId).IsRequired();
-        builder.Property(x => x.DetailsId).IsRequired();
         builder.Property(x => x.MerchantInfoId).IsRequired();
 
         builder.HasOne(x => x.Details)
             .WithOne()
-            .HasForeignKey<Unhold>(x => x.DetailsId)
+            .HasForeignKey<UnholdDetails>(x => x.NotificationId)
+            .HasPrincipalKey<Unhold>(x => x.NotificationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.MerchantInfo)

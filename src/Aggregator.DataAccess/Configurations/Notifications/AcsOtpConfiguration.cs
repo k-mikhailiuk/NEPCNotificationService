@@ -21,7 +21,6 @@ public class AcsOtpConfiguration : IEntityTypeConfiguration<AcsOtp>
         builder.ToTable("AcsOtps");
 
         builder.Property(x => x.CardInfoId).IsRequired();
-        builder.Property(x => x.DetailsId).IsRequired();
 
         builder.OwnsOne(x => x.MerchantInfo, merchantInfo =>
         {
@@ -33,7 +32,8 @@ public class AcsOtpConfiguration : IEntityTypeConfiguration<AcsOtp>
         
         builder.HasOne(x => x.Details)
             .WithOne()
-            .HasForeignKey<AcsOtpDetails>(x => x.DetailsId)
+            .HasForeignKey<AcsOtpDetails>(x => x.NotificationId)
+            .HasPrincipalKey<AcsOtp>(x=>x.NotificationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CardInfo)

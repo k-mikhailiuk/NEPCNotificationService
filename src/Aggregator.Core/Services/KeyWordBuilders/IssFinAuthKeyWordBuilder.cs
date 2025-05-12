@@ -14,33 +14,17 @@ namespace Aggregator.Core.Services.KeyWordBuilders;
 public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimitIdReplacer limitIdReplacer)
     : IKeyWordBuilder<IssFinAuth>
 {
-    private static IReadOnlyDictionary<Language, string> ReversalLanguageMap { get; }
-        = new Dictionary<Language, string>
-        {
-            [Language.English] = "Reversal",
-            [Language.Russian] = "Отмена",
-            [Language.Kyrgyz] = "Жокко чыгаруу",
-        };
-    
-    private static IReadOnlyDictionary<Language, string> ResponseCodeMap { get; }
-        = new Dictionary<Language, string>
-        {
-            [Language.English] = "Transaction declined. Please contact the bank.",
-            [Language.Russian] = "Операция отклонена. Обратитесь в банк.",
-            [Language.Kyrgyz] = "Операция четке кагылды. Банкка кайрылыңыз.",
-        };
-
     /// <summary>
     /// Асинхронно формирует строку ключевых слов для уведомления AcqFinAuth.
     /// </summary>
     /// <param name="message">
-    ///     Исходное сообщение с шаблонами для подстановки, например, содержащими маркеры вида {PLACEHOLDER}.
+    /// Исходное сообщение с шаблонами для подстановки, например, содержащими маркеры вида {PLACEHOLDER}.
     /// </param>
     /// <param name="entity">
-    ///     Объект уведомления типа <see cref="IssFinAuth"/> для которого необходимо сгенерировать ключевые слова.
+    /// Объект уведомления типа <see cref="IssFinAuth"/> для которого необходимо сгенерировать ключевые слова.
     /// </param>
     /// <param name="language">
-    ///     Язык, на котором должно быть сгенерировано сообщение.
+    /// Язык, на котором должно быть сгенерировано сообщение.
     /// </param>
     /// <param name="cancellationToken"></param>
     /// <returns>
@@ -62,7 +46,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
         var replacements = new Dictionary<string, string>
         {
             { "{TRANSTYPE}", ((TransType)entity.Details.TransType).GetDescription(language) },
-            { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : ReversalLanguageMap[language] },
+            { "{REVERSAL}", entity.Details.Reversal == false ? string.Empty : LanguageMaps.Reversal[language] },
             { "{PAN}", PanMask.MaskPan(entity.Details.CardIdentifier.CardIdentifierValue) },
             { "{EXPDATE}", entity.CardInfo?.ExpDate ?? string.Empty },
             { "{ACCOUNTID}", entity.Details.AccountId ?? string.Empty },
@@ -87,7 +71,7 @@ public class IssFinAuthKeyWordBuilder(ICurrencyReplacer currencyReplacer, ILimit
             { "{NAME}", entity.MerchantInfo.Name ?? string.Empty },
             { "{CITY}", entity.MerchantInfo.City ?? string.Empty },
             { "{COUNTRY}", entity.MerchantInfo.Country ?? string.Empty },
-            { "{RESPONSECODE}", entity.Details.ResponseCode == -1 ? string.Empty : ResponseCodeMap[language] },
+            { "{RESPONSECODE}", entity.Details.ResponseCode == -1 ? string.Empty : LanguageMaps.ResponseCode[language] },
             {
                 "{LIMIT}", limitMessages.Length > 0 ? string.Join(Environment.NewLine, limitMessages) : string.Empty
             }

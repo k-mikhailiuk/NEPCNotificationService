@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Services.DataLoaders;
 
+/// <inheritdoc />
 public class PinChangeDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<PinChange>
 {
+    /// <inheritdoc />
     public async Task<NotificationDataLoad<PinChange>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds,
         IAggregatorUnitOfWork aggregatorUnitOfWork,
         IControlPanelUnitOfWork controlPanelUnitOfWork,

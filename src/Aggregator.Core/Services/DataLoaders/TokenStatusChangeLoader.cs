@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Services.DataLoaders;
 
+/// <inheritdoc />
 public class TokenStatusChangeLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<TokenStatusChange>
 {
+    /// <inheritdoc />
     public async Task<NotificationDataLoad<TokenStatusChange>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds,
         IAggregatorUnitOfWork aggregatorUnitOfWork,
         IControlPanelUnitOfWork controlPanelUnitOfWork,

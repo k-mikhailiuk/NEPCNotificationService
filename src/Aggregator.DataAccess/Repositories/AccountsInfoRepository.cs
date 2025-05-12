@@ -1,6 +1,5 @@
 using Aggregator.DataAccess.Abstractions.Repositories;
 using Aggregator.DataAccess.Entities;
-using Aggregator.DataAccess.Entities.Abstract;
 
 namespace Aggregator.DataAccess.Repositories;
 

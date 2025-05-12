@@ -7,11 +7,6 @@ namespace Aggregator.DataAccess.Entities.AcqFinAuth;
 /// </summary>
 public class AcqFinAuth : Notification
 {
-    /// <summary>
-    /// Идентификатор деталей онлайн эквайринговой финансовой авторизации по карте
-    /// </summary>
-    public long DetailsId { get; set; }
-    
     /// <inheritdoc cref="AcqFinAuthDetails" />
     public AcqFinAuthDetails Details { get; set; }
     

@@ -11,11 +11,6 @@ public class AcsOtp : Notification
     /// <summary>
     /// Детали разовых паролей, отправляемых ACS банка-эмитента карты
     /// </summary>
-    public long DetailsId { get; set; }
-    
-    /// <summary>
-    /// Детали разовых паролей, отправляемых ACS банка-эмитента карты
-    /// </summary>
     public AcsOtpDetails Details { get; set; }
     
     /// <summary>

@@ -21,11 +21,11 @@ public class OwiUserActionConfiguration : IEntityTypeConfiguration<OwiUserAction
         builder.ToTable("OwiUserActions");
 
         builder.Property(x => x.CardInfoId).IsRequired(false);
-        builder.Property(x => x.DetailsId).IsRequired();
 
         builder.HasOne(x => x.Details)
             .WithOne()
-            .HasForeignKey<OwiUserAction>(x => x.DetailsId)
+            .HasForeignKey<OwiUserActionDetails>(x => x.NotificationId)
+            .HasPrincipalKey<OwiUserAction>(x=>x.NotificationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CardInfo)

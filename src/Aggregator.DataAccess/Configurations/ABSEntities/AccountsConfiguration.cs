@@ -4,8 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aggregator.DataAccess.Configurations.ABSEntities;
 
+/// <summary>
+/// Конфигурация сущности <see cref="Account"/> для Entity Framework.
+/// </summary>
+/// <remarks>
+/// Определяет схему таблицы, ключи, ограничения и собственные типы для сущности <see cref="Account"/>.
+/// </remarks>
 public class AccountsConfiguration : IEntityTypeConfiguration<Account>
 {
+    /// <summary>
+    /// Настраивает конфигурацию для сущности <see cref="Account"/>.
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации для сущности <see cref="Account"/>.</param>
     public void Configure(EntityTypeBuilder<Account> builder)
     {
         builder.ToTable("Accounts", "dbo", t => t.ExcludeFromMigrations());

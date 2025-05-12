@@ -15,13 +15,13 @@ public class OwiUserActionKeyWordBuilder : IKeyWordBuilder<OwiUserAction>
     /// Асинхронно формирует строку ключевых слов для уведомления OwiUserAction.
     /// </summary>
     /// <param name="message">
-    ///     Исходное сообщение с шаблонами для подстановки.
+    /// Исходное сообщение с шаблонами для подстановки.
     /// </param>
     /// <param name="entity">
-    ///     Объект уведомления типа <see cref="OwiUserAction"/>, на основе которого генерируются ключевые слова.
+    /// Объект уведомления типа <see cref="OwiUserAction"/>, на основе которого генерируются ключевые слова.
     /// </param>
     /// <param name="language">
-    ///     Язык, на котором должны быть сформированы ключевые слова.
+    /// Язык, на котором должны быть сформированы ключевые слова.
     /// </param>
     /// <param name="cancellationToken"></param>
     /// <returns>

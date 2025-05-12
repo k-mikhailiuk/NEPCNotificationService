@@ -27,6 +27,7 @@ public class UnholdDetailsConfiguration : IEntityTypeConfiguration<UnholdDetails
         builder.Property(x => x.TransType).IsRequired();
         builder.Property(x => x.CorrespondingAccount).IsRequired().HasMaxLength(4);
         builder.Property(x => x.AccountId).IsRequired().HasMaxLength(32);
+        builder.Property(x => x.NotificationId).IsRequired();
 
         builder.OwnsOne(x => x.AuthMoney, parameters =>
         {

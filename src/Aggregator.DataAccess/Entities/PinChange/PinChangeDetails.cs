@@ -8,6 +8,11 @@ namespace Aggregator.DataAccess.Entities.PinChange;
 public class PinChangeDetails
 {
     /// <summary>
+    /// Уникальный идентификатор уведомления
+    /// </summary>
+    public long NotificationId { get; set; }
+    
+    /// <summary>
     /// Уникальный идентификатор 
     /// </summary>
     public long PinChangeDetailsId { get; set; }

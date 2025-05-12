@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Services.DataLoaders;
 
+/// <inheritdoc />
 public class AcctBalChangeDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<AcctBalChange>
 {
+    /// <inheritdoc />
     public async Task<NotificationDataLoad<AcctBalChange>> LoadDataForNotificationsAsync(
         IEnumerable<long> notificationIds,
         IAggregatorUnitOfWork aggregatorUnitOfWork,

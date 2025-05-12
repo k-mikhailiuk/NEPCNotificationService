@@ -14,13 +14,13 @@ public class CardStatusChangeKeyWordBuilder : IKeyWordBuilder<CardStatusChange>
     /// Асинхронно формирует строку ключевых слов для уведомления изменения статуса карты.
     /// </summary>
     /// <param name="message">
-    ///     Исходное сообщение с шаблонами для подстановки.
+    /// Исходное сообщение с шаблонами для подстановки.
     /// </param>
     /// <param name="entity">
-    ///     Сущность <see cref="CardStatusChange"/>, на основе которой будут сгенерированы ключевые слова.
+    /// Сущность <see cref="CardStatusChange"/>, на основе которой будут сгенерированы ключевые слова.
     /// </param>
     /// <param name="language">
-    ///     Язык, на котором должны быть сформированы ключевые слова.
+    /// Язык, на котором должны быть сформированы ключевые слова.
     /// </param>
     /// <param name="cancellationToken"></param>
     /// <returns>

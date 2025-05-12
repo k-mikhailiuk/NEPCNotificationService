@@ -30,6 +30,7 @@ public class CardStatusChangeDetailsConfiguration : IEntityTypeConfiguration<Car
         builder.Property(x => x.Service).IsRequired(false).HasMaxLength(30);
         builder.Property(x => x.UserName).IsRequired(false).HasMaxLength(30);
         builder.Property(x => x.Note).IsRequired(false).HasMaxLength(400);
+        builder.Property(x => x.NotificationId).IsRequired();
 
         builder.OwnsOne(x => x.CardIdentifier);
     }

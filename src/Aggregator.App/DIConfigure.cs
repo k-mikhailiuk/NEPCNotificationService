@@ -6,15 +6,15 @@ using OptionsConfiguration;
 namespace Aggregator.App;
 
 /// <summary>
-/// Register services
+/// Класс для конфигурации DI контейнера и регистрации сервисов приложения ControlPanel.
 /// </summary>
 public static class DIConfigure
 {
     /// <summary>
-    /// Register custom services
+    /// Регистрирует кастомные сервисы в DI контейнере
     /// </summary>
-    /// <param name="services">Коллекция сервисов, в которую будут зарегистрированы зависимости.</param>
-    /// <param name="configuration">Конфигурация приложения, которая используется для настройки сервисов.</param>
+    /// <param name="services">Коллекция сервисов для регистрации зависимостей.</param>
+    /// <param name="configuration">Конфигурация приложения.</param>
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDatabaseConnectionString(configuration);

@@ -1,5 +1,8 @@
 namespace DataIngrestorApi.DTOs.Abstractions;
 
+/// <summary>
+/// Базовый дто-класс уведомлений
+/// </summary>
 public record NotificationBaseDto
 {
     /// <summary>

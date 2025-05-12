@@ -37,7 +37,8 @@ public class IssFinAuthNotificationMessageBuilder(
         using var controlPanelUnitOfWork = scope.ServiceProvider.GetRequiredService<IControlPanelUnitOfWork>();
 
         var loadedData =
-            await issFinAuthLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, controlPanelUnitOfWork, cancellationToken);
+            await issFinAuthLoader.LoadDataForNotificationsAsync(notificationIds, unitOfWork, controlPanelUnitOfWork,
+                cancellationToken);
 
         loadedData.Messages = await AttachLimitsAsync(loadedData.Messages, unitOfWork, cancellationToken);
 
@@ -118,7 +119,8 @@ public class IssFinAuthNotificationMessageBuilder(
     /// <returns>
     /// Сообщение с подгруженными сущностями лимитов
     /// </returns>
-    private async Task<List<IssFinAuth>> AttachLimitsAsync(IEnumerable<IssFinAuth> messages, IAggregatorUnitOfWork aggregatorUnitOfWork,
+    private async Task<List<IssFinAuth>> AttachLimitsAsync(IEnumerable<IssFinAuth> messages,
+        IAggregatorUnitOfWork aggregatorUnitOfWork,
         CancellationToken cancellationToken)
     {
         var messageList = messages.ToList();

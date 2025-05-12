@@ -8,6 +8,11 @@ namespace Aggregator.DataAccess.Entities.AcctBalChange;
 public class AcctBalChangeDetails
 {
     /// <summary>
+    /// Уникальный идентификатор уведомления
+    /// </summary>
+    public long NotificationId { get; set; }
+    
+    /// <summary>
     /// Внутренний идентификатор операции изменения ЛА по факту фин. обработки
     /// </summary>
     public long AcctBalChangeDetailsId { get; set; }

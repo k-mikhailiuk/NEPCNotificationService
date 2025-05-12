@@ -7,11 +7,6 @@ namespace Aggregator.DataAccess.Entities.CardStatusChange;
 /// </summary>
 public class CardStatusChange : Notification
 {
-    /// <summary>
-    /// Идентификатор CardStatusChangeDetails
-    /// </summary>
-    public long DetailsId { get; set; }
-    
     /// <inheritdoc cref="Details" />
     public CardStatusChangeDetails Details { get; set; }
     

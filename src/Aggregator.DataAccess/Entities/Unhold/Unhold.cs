@@ -7,11 +7,6 @@ namespace Aggregator.DataAccess.Entities.Unhold;
 /// </summary>
 public class Unhold : Notification
 {
-    /// <summary>
-    /// Уникальный идентификатор UnholdDetails 
-    /// </summary>
-    public long DetailsId { get; set; }
-    
     /// <inheritdoc cref="UnholdDetails" />
     public UnholdDetails Details { get; set; }
     

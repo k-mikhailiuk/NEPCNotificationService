@@ -13,6 +13,7 @@ namespace Aggregator.DataAccess.Repositories;
 /// </remarks>
 public class AccountsRepository(AggregatorDbContext context) : Repository<Account>(context), IAccountsRepository
 {
+    /// <inheritdoc/>
     public async Task<Dictionary<string, int>> GetAccountCustomerMapAsync(IReadOnlyCollection<string> accountNos,
         CancellationToken cancellationToken)
     {

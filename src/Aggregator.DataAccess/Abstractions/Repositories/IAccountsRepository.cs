@@ -10,5 +10,12 @@ namespace Aggregator.DataAccess.Abstractions.Repositories;
 /// </remarks>
 public interface IAccountsRepository : IRepository<Account>
 {
-    Task<Dictionary<string,int>> GetAccountCustomerMapAsync(IReadOnlyCollection<string> accountNos, CancellationToken cancellationToken);
+    /// <summary>
+    /// Асинхронная операция по получения соответствия AccountNo CustomerId
+    /// </summary>
+    /// <param name="accountNos">Коллекция AccountNo</param>
+    /// <param name="cancellationToken">Токен отмены</param>
+    /// <returns></returns>
+    Task<Dictionary<string, int>> GetAccountCustomerMapAsync(IReadOnlyCollection<string> accountNos,
+        CancellationToken cancellationToken);
 }

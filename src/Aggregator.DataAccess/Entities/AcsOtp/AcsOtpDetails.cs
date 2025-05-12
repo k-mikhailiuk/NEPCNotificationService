@@ -8,6 +8,11 @@ namespace Aggregator.DataAccess.Entities.AcsOtp;
 public class AcsOtpDetails
 {
     /// <summary>
+    /// Уникальный идентификатор уведомления
+    /// </summary>
+    public long NotificationId { get; set; }
+    
+    /// <summary>
     /// Уникальный идентификатор деталей уведомления одноразового кода
     /// </summary>
     public long DetailsId { get; set; }

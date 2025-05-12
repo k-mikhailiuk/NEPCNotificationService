@@ -20,12 +20,12 @@ public class AcqFinAuthConfiguration : IEntityTypeConfiguration<AcqFinAuth>
     {
         builder.ToTable("AcqFinAuths");
 
-        builder.Property(x => x.DetailsId).IsRequired();
         builder.Property(x => x.MerchantInfoId).IsRequired();
 
         builder.HasOne(x => x.Details)
             .WithOne()
-            .HasForeignKey<AcqFinAuth>(x => x.DetailsId)
+            .HasForeignKey<AcqFinAuthDetails>(x => x.NotificationId)
+            .HasPrincipalKey<AcqFinAuth>(x=>x.NotificationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.MerchantInfo)

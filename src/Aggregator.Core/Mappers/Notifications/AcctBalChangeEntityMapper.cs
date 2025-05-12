@@ -93,6 +93,4 @@ public class AcctBalChangeEntityMapper(
             AccountBalance = conversionExtensionsHelper.ConvertMoneyDtoToEntity<AccountBalance>(dto.AccountBalance),
         };
     }
-
-    
 }

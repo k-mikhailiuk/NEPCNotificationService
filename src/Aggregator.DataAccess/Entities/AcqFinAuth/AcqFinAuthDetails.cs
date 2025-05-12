@@ -8,6 +8,11 @@ namespace Aggregator.DataAccess.Entities.AcqFinAuth;
 public class AcqFinAuthDetails
 {
     /// <summary>
+    /// Уникальный идентификатор уведомления
+    /// </summary>
+    public long NotificationId { get; set; }
+    
+    /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
     public long AcqFinAuthDetailsId { get; set; }

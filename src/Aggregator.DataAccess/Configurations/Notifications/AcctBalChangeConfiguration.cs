@@ -20,12 +20,12 @@ public class AcctBalChangeConfiguration : IEntityTypeConfiguration<AcctBalChange
     {
         builder.ToTable("AcctBalChanges");
 
-        builder.Property(x => x.DetailsId).IsRequired();
         builder.Property(x => x.CardInfoId).IsRequired();
 
         builder.HasOne(x => x.Details)
             .WithOne()
-            .HasForeignKey<AcctBalChange>(x => x.DetailsId)
+            .HasForeignKey<AcctBalChangeDetails>(x => x.NotificationId)
+            .HasPrincipalKey<AcctBalChange>(x=>x.NotificationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CardInfo)

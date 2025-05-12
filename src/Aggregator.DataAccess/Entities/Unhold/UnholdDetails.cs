@@ -8,6 +8,11 @@ namespace Aggregator.DataAccess.Entities.Unhold;
 public class UnholdDetails
 {
     /// <summary>
+    /// Уникальный идентификатор уведомления
+    /// </summary>
+    public long NotificationId { get; set; }
+    
+    /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
     public long UnholdDetailsId { get; set; }

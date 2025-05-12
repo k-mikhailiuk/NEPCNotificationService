@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Services.DataLoaders;
 
+/// <inheritdoc />
 public class OwiUserActionDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<OwiUserAction>
 {
+    /// <inheritdoc />
     public async Task<NotificationDataLoad<OwiUserAction>> LoadDataForNotificationsAsync(
         IEnumerable<long> notificationIds, IAggregatorUnitOfWork aggregatorUnitOfWork,
         IControlPanelUnitOfWork controlPanelUnitOfWork,

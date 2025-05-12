@@ -7,11 +7,6 @@ namespace Aggregator.DataAccess.Entities.OwiUserAction;
 /// </summary>
 public class OwiUserAction : Notification
 {
-    /// <summary>
-    /// Уникальный идентификатор OwiUserActionDetails
-    /// </summary>
-    public long DetailsId { get; set; }
-    
     /// <inheritdoc cref="OwiUserActionDetails" />
     public OwiUserActionDetails Details { get; set; }
     

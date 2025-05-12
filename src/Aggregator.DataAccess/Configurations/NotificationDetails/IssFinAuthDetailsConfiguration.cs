@@ -28,6 +28,7 @@ public class IssFinAuthDetailsConfiguration : IEntityTypeConfiguration<IssFinAut
         builder.Property(x => x.IssInstId).IsRequired().HasMaxLength(4);
         builder.Property(x => x.CorrespondingAccount).IsRequired().HasMaxLength(4);
         builder.Property(x => x.AccountId).IsRequired(false).HasMaxLength(32);
+        builder.Property(x => x.NotificationId).IsRequired();
 
         builder.OwnsOne(x => x.AuthMoney, parameters =>
         {

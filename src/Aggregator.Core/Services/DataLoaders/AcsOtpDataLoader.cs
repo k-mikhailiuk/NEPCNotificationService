@@ -9,8 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Services.DataLoaders;
 
+/// <inheritdoc />
 public class AcsOtpDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<AcsOtp>
 {
+    /// <inheritdoc />
     public async Task<NotificationDataLoad<AcsOtp>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds,
         IAggregatorUnitOfWork aggregatorUnitOfWork,
         IControlPanelUnitOfWork controlPanelUnitOfWork,

@@ -28,6 +28,7 @@ public class PinChangeDetailsConfiguration : IEntityTypeConfiguration<PinChangeD
         builder.Property(x => x.Status).IsRequired();
         builder.Property(x => x.ResponseCode).IsRequired(false).HasMaxLength(6);
         builder.Property(x => x.Service).IsRequired().HasMaxLength(30);
+        builder.Property(x => x.NotificationId).IsRequired();
 
         builder.OwnsOne(x => x.CardIdentifier);
     }

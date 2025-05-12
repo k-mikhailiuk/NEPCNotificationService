@@ -6,11 +6,11 @@ using OptionsConfiguration;
 namespace Aggregator.App;
 
 /// <summary>
-/// Processes incoming inbox messages in batches.
+/// Обрабатывает входящие сообщения из очереди пакетами.
 /// </summary>
 /// <remarks>
-/// This background service periodically checks for unprocessed messages from the inbox,
-/// logs the activity, and sends them for processing using MediatR.
+/// Этот фоновой сервис периодически проверяет наличие необработанных сообщений во входящей очереди,
+/// записывает информацию в лог и отправляет их на обработку через MediatR.
 /// </remarks>
 public class InboxProcessor(
     ILogger<InboxProcessor> logger,
@@ -21,10 +21,10 @@ public class InboxProcessor(
     private readonly AggregatorOptions _aggregatorOptions = aggregatorOptions.Value;
 
     /// <summary>
-    /// Executes the background service.
+    /// Выполняет работу фонового сервиса.
     /// </summary>
-    /// <param name="cancelationToken">A token that can be used to signal cancellation.</param>
-    /// <returns>A task that represents the long-running operation.</returns>
+    /// <param name="cancelationToken">Токен для отмены операции.</param>
+    /// <returns>Задача, представляющая непрерывную фоновую обработку.</returns>
     protected override async Task ExecuteAsync(CancellationToken cancelationToken)
     {
         logger.LogInformation("InboxProcessor started with batch size: {BatchSize}", _aggregatorOptions.BatchSize);
@@ -45,10 +45,10 @@ public class InboxProcessor(
     }
 
     /// <summary>
-    /// Processes a batch of unprocessed inbox messages.
+    /// Обрабатывает очередной пакет необработанных входящих сообщений.
     /// </summary>
-    /// <param name="cancellationToken">A token that can be used to signal cancellation.</param>
-    /// <returns>A task representing the asynchronous batch processing operation.</returns>
+    /// <param name="cancellationToken">Токен для отмены операции.</param>
+    /// <returns>Задача, представляющая асинхронную обработку пакета.</returns>
     private async Task ProcessBatchAsync(CancellationToken cancellationToken)
     {
         using var scope = serviceProvider.CreateScope();

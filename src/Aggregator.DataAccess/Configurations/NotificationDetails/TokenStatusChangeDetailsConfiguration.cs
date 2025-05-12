@@ -33,6 +33,7 @@ public class TokenStatusChangeDetailsConfiguration : IEntityTypeConfiguration<To
         builder.Property(x => x.DeviceType).IsRequired(false).HasMaxLength(30);
         builder.Property(x => x.DeviceId).IsRequired(false).HasMaxLength(48);
         builder.Property(x => x.FpanRef).IsRequired(false).HasMaxLength(48);
+        builder.Property(x => x.NotificationId).IsRequired();
 
         builder.OwnsOne(x => x.CardIdentifier);
     }

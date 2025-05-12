@@ -96,6 +96,11 @@ public static class ServiceCollectionExtensions
     /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddBehaviors(this IServiceCollection services)
     {
+        services.AddTransient(
+            typeof(BaseAggregatorNotificationDtoCommandValidator<>),
+            typeof(BaseAggregatorNotificationDtoCommandValidator<>)
+        );
+
         services.Scan(scan => scan
             .FromAssemblies(typeof(ValidationBehaviorForProcessNotification<>).Assembly)
             .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
@@ -141,8 +146,13 @@ public static class ServiceCollectionExtensions
     /// <returns>Обновленная коллекция сервисов.</returns>
     public static IServiceCollection AddValidators(this IServiceCollection services)
     {
-        services.AddTransient<IValidator<AggregatorCardStatusChangeDto>, CardStatusChangeDtoValidator>();
-        services.AddTransient<IValidator<AggregatorIssFinAuthDto>, AggregatorIssFinAuthDtoCommandValidator>();
+        services.Scan(scan => scan
+            .FromAssemblies(typeof(BaseAggregatorNotificationDtoCommandValidator<>).Assembly)
+            .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
+            .AsImplementedInterfaces()
+            .WithTransientLifetime()
+        );
+
         return services;
     }
 

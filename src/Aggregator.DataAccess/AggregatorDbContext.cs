@@ -45,7 +45,7 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
     public DbSet<UnholdDetails> UnholdDetails { get; set; }
     public DbSet<OwiUserActionDetails> OwiUserActionDetails { get; set; }
     public DbSet<AcctBalChangeDetails> AcctBalChangeDetails { get; set; }
-    public DbSet<AcsOtpDetails> AcsOtpsDetails { get; set; }
+    public DbSet<AcsOtpDetails> AcsOtpDetails { get; set; }
 
     public DbSet<MerchantInfo> MerchantInfos { get; set; }
     public DbSet<AccountsInfoLimitWrapper> AccountsInfoLimitWrappers { get; set; }
@@ -54,7 +54,7 @@ public class AggregatorDbContext(DbContextOptions<AggregatorDbContext> options) 
     public DbSet<CheckedLimit> CheckedLimits { get; set; }
     public DbSet<ExtensionParameter> ExtensionParameter { get; set; }
     public DbSet<FinTransaction> FinTransactions { get; set; }
-    public DbSet<AccountInfo> AccountsInfos { get; set; }
+    public DbSet<AccountInfo> AccountInfos { get; set; }
     public DbSet<Limit> Limits { get; set; }
     public DbSet<NotificationExtension> NotificationExtensions { get; set; }
 

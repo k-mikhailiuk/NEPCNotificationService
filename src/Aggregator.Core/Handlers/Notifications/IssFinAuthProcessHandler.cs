@@ -47,17 +47,17 @@ public class IssFinAuthProcessHandler(
         PreloadAndUnifyCardInfo(entities, unitOfWork);
 
         PreloadAndUnifyLimitWrappers(entities, unitOfWork);
-        
+
         await UnifyProcessorExtension<IssFinAuth>.PreloadAndUnifyExtensionsAsync(entities, unitOfWork,
             cancellationToken);
-        
+
         foreach (var entity in entities)
             ProcessDetailsLimits(entity.Details, unitOfWork);
 
         entityPreloadService.ProcessEntities(entities);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
-        
+
         return entities.Select(x => x.NotificationId).ToList();
     }
 
@@ -99,7 +99,8 @@ public class IssFinAuthProcessHandler(
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
     /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    private static void PreloadAndUnifyAccountsInfo(List<IssFinAuth> entities, IAggregatorUnitOfWork aggregatorUnitOfWork)
+    private static void PreloadAndUnifyAccountsInfo(List<IssFinAuth> entities,
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         var allAccountsInfoIds = entities.SelectMany(e => e.AccountsInfo.Select(a => a.Id)).ToList();
 
@@ -124,7 +125,8 @@ public class IssFinAuthProcessHandler(
     /// </summary>
     /// <param name="entities">Список сущностей IssFinAuth.</param>
     /// <param name="aggregatorUnitOfWork">Интерфейс единицы работы для доступа к базе данных.</param>
-    private static void PreloadAndUnifyLimitWrappers(List<IssFinAuth> entities, IAggregatorUnitOfWork aggregatorUnitOfWork)
+    private static void PreloadAndUnifyLimitWrappers(List<IssFinAuth> entities,
+        IAggregatorUnitOfWork aggregatorUnitOfWork)
     {
         foreach (var accountsInfo in entities.SelectMany(entity => entity.AccountsInfo))
         {
@@ -186,7 +188,7 @@ public class IssFinAuthProcessHandler(
             .Distinct()
             .ToList();
 
-        var existingMerchants =  aggregatorUnitOfWork.MerchantInfo
+        var existingMerchants = aggregatorUnitOfWork.MerchantInfo
             .GetQueryByIds(allMerchantIds);
 
         var merchantCache = existingMerchants.ToDictionary(m => m.Id, m => m);

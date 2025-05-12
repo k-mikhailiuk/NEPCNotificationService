@@ -2,6 +2,9 @@ using Aggregator.Core.Services.Abstractions;
 
 namespace Aggregator.Core.Services;
 
+/// <summary>
+/// Парсер для номера счёта
+/// </summary>
 public class AccountNoParser : IAccountNoParser
 {
     /// <summary>

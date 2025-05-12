@@ -8,6 +8,11 @@ namespace Aggregator.DataAccess.Entities.CardStatusChange;
 public class CardStatusChangeDetails
 {
     /// <summary>
+    /// Уникальный идентификатор уведомления
+    /// </summary>
+    public long NotificationId { get; set; }
+    
+    /// <summary>
     /// Уникальный идентификатор
     /// </summary>
     public long CardStatusChangeDetailsId { get; set; }

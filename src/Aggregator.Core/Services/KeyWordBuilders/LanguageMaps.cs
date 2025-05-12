@@ -2,6 +2,9 @@ using Common.Enums;
 
 namespace Aggregator.Core.Services.KeyWordBuilders;
 
+/// <summary>
+/// Класс словарей соответствий языку
+/// </summary>
 public static class LanguageMaps
 {
     /// <summary>

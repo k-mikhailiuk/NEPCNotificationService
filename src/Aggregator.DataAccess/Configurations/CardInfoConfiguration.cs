@@ -27,6 +27,7 @@ public class CardInfoConfiguration : IEntityTypeConfiguration<CardInfo>
         builder.Property(x => x.RefPan).IsRequired().HasMaxLength(64);
         builder.Property(x => x.ContractId).IsRequired().HasMaxLength(6);
         builder.Property(x => x.MobilePhone).IsRequired(false).HasMaxLength(16);
+        builder.Property(x => x.NotificationId).IsRequired();
 
         builder.OwnsOne(x => x.CardIdentifier);
 

@@ -20,13 +20,13 @@ public class IssFinAuthConfiguration : IEntityTypeConfiguration<IssFinAuth>
     {
         builder.ToTable("IssFinAuths");
 
-        builder.Property(x => x.DetailsId).IsRequired();
         builder.Property(x => x.MerchantInfoId).IsRequired();
         builder.Property(x => x.CardInfoId).IsRequired(false);
 
         builder.HasOne(x => x.Details)
             .WithOne()
-            .HasForeignKey<IssFinAuth>(x => x.DetailsId)
+            .HasForeignKey<IssFinAuthDetails>(x => x.NotificationId)
+            .HasPrincipalKey<IssFinAuth>(x => x.NotificationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.MerchantInfo)

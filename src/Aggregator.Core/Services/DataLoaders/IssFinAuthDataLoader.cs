@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.Core.Services.DataLoaders;
 
+/// <inheritdoc />
 public class IssFinAuthDataLoader(IAccountNoParser accountNoParser) : INotificationDataLoader<IssFinAuth>
 {
+    /// <inheritdoc />
     public async Task<NotificationDataLoad<IssFinAuth>> LoadDataForNotificationsAsync(IEnumerable<long> notificationIds,
         IAggregatorUnitOfWork aggregatorUnitOfWork,
         IControlPanelUnitOfWork controlPanelUnitOfWork,

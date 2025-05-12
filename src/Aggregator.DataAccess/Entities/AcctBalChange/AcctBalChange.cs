@@ -7,11 +7,6 @@ namespace Aggregator.DataAccess.Entities.AcctBalChange;
 /// </summary>
 public class AcctBalChange : Notification
 {
-    /// <summary>
-    /// Уникальный идентификатор AcctBalChangeDetails
-    /// </summary>
-    public long DetailsId { get; set; }
-    
     /// <inheritdoc cref="AcctBalChangeDetails" />
     public AcctBalChangeDetails Details { get; set; }
     

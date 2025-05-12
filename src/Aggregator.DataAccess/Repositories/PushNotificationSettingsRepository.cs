@@ -4,6 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aggregator.DataAccess.Repositories;
 
+/// <summary>
+/// Репозиторий для работы с PushNotificationSettings.
+/// </summary>
+/// <remarks>
+/// Реализует интерфейс <see cref="IPushNotificationSettingsRepository"/> и наследует базовый класс 
+/// <see cref="Repository{T}"/> для сущности <see cref="PushNotificationSettings"/>.
+/// </remarks>
 public class PushNotificationSettingsRepository(AggregatorDbContext context)
     : Repository<PushNotificationSettings>(context), IPushNotificationSettingsRepository
 {

@@ -19,13 +19,13 @@ public class CardStatusChangeConfiguration : IEntityTypeConfiguration<CardStatus
     public void Configure(EntityTypeBuilder<CardStatusChange> builder)
     {
         builder.ToTable("CardStatusChanges");
-
-        builder.Property(x => x.DetailsId).IsRequired();
+        
         builder.Property(x => x.CardInfoId).IsRequired();
 
         builder.HasOne(x => x.Details)
             .WithOne()
-            .HasForeignKey<CardStatusChange>(x => x.DetailsId)
+            .HasForeignKey<CardStatusChangeDetails>(x => x.NotificationId)
+            .HasPrincipalKey<CardStatusChange>(x=>x.NotificationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CardInfo)

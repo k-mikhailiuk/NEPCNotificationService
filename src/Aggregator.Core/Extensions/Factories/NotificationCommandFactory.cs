@@ -43,18 +43,19 @@ public class NotificationCommandFactory : INotificationCommandFactory
         var first = notifications.First();
         return first switch
         {
-            AggregatorIssFinAuthDto _       => Cast<AggregatorIssFinAuthDto>(),
-            AggregatorAcqFinAuthDto _       => Cast<AggregatorAcqFinAuthDto>(),
+            AggregatorIssFinAuthDto _ => Cast<AggregatorIssFinAuthDto>(),
+            AggregatorAcqFinAuthDto _ => Cast<AggregatorAcqFinAuthDto>(),
             AggregatorCardStatusChangeDto _ => Cast<AggregatorCardStatusChangeDto>(),
-            AggregatorPinChangeDto _        => Cast<AggregatorPinChangeDto>(),
-            AggregatorUnholdDto _           => Cast<AggregatorUnholdDto>(),
-            AggregatorOwiUserActionDto _    => Cast<AggregatorOwiUserActionDto>(),
-            AggregatorAcctBalChangeDto _    => Cast<AggregatorAcctBalChangeDto>(),
-            AggregatorTokenStatusChangeDto _=> Cast<AggregatorTokenStatusChangeDto>(),
-            AggregatorOtpDto _           => Cast<AggregatorOtpDto>(),
+            AggregatorPinChangeDto _ => Cast<AggregatorPinChangeDto>(),
+            AggregatorUnholdDto _ => Cast<AggregatorUnholdDto>(),
+            AggregatorOwiUserActionDto _ => Cast<AggregatorOwiUserActionDto>(),
+            AggregatorAcctBalChangeDto _ => Cast<AggregatorAcctBalChangeDto>(),
+            AggregatorTokenStatusChangeDto _ => Cast<AggregatorTokenStatusChangeDto>(),
+            AggregatorOtpDto _ => Cast<AggregatorOtpDto>(),
             _ => throw new NotSupportedException($"Тип уведомления {first.GetType().Name} не поддерживается.")
         };
 
-        ProcessNotificationCommand<T> Cast<T>() where T : NotificationAggregatorBaseDto => new(notifications.Cast<T>().ToList());
+        ProcessNotificationCommand<T> Cast<T>() where T : NotificationAggregatorBaseDto =>
+            new(notifications.Cast<T>().ToList());
     }
 }

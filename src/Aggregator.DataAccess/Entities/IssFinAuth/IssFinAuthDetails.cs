@@ -8,6 +8,11 @@ namespace Aggregator.DataAccess.Entities.IssFinAuth;
 public class IssFinAuthDetails
 {
     /// <summary>
+    /// Уникальный идентификатор уведомления
+    /// </summary>
+    public long NotificationId { get; set; }
+    
+    /// <summary>
     /// Внутренний идентификатор авторизации (utrnno)
     /// </summary>
     public long IssFinAuthDetailsId { get; set; }

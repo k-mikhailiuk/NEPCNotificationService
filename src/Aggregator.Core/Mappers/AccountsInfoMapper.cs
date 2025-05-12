@@ -8,6 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Aggregator.Core.Mappers;
 
+/// <summary>
+/// Класс для маппинга данных AccountsInfo из DTO в сущность.
+/// </summary>
 public class AccountsInfoMapper(
     ILogger<AccountsInfoMapper> logger,
     DateTimeConverter dateTimeConverter,

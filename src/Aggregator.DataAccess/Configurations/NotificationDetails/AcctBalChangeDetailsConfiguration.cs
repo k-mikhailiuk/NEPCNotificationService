@@ -26,6 +26,7 @@ public class AcctBalChangeDetailsConfiguration : IEntityTypeConfiguration<AcctBa
         builder.Property(x => x.Reversal).IsRequired();
         builder.Property(x => x.TransType).IsRequired().HasMaxLength(3);
         builder.Property(x => x.TransactionTime).IsRequired();
+        builder.Property(x => x.NotificationId).IsRequired();
 
         builder.OwnsOne(x => x.Auth);
 

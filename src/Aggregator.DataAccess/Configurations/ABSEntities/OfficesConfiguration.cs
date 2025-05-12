@@ -4,8 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Aggregator.DataAccess.Configurations.ABSEntities;
 
+/// <summary>
+/// Конфигурация сущности <see cref="Office"/> для Entity Framework.
+/// </summary>
+/// <remarks>
+/// Определяет схему таблицы, ключи, ограничения и собственные типы для сущности <see cref="Office"/>.
+/// </remarks>
 public class OfficesConfiguration : IEntityTypeConfiguration<Office>
 {
+    /// <summary>
+    /// Настраивает конфигурацию для сущности <see cref="Office"/>.
+    /// </summary>
+    /// <param name="builder">Построитель конфигурации для сущности <see cref="Office"/>.</param>
     public void Configure(EntityTypeBuilder<Office> builder)
     {
             builder.ToTable("Office", "Cards", t=>t.ExcludeFromMigrations());

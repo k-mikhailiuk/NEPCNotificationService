@@ -7,11 +7,6 @@ namespace Aggregator.DataAccess.Entities.IssFinAuth;
 /// </summary>
 public class IssFinAuth : Notification
 {
-    /// <summary>
-    /// Идентификатор деталей финансовой авторизации по карте банка-эмитента
-    /// </summary>
-    public long DetailsId { get; set; }
-    
     /// <inheritdoc cref="IssFinAuthDetails" />
     public IssFinAuthDetails Details { get; set; }
     

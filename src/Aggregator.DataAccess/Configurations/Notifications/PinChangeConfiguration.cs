@@ -19,13 +19,13 @@ public class PinChangeConfiguration : IEntityTypeConfiguration<PinChange>
     public void Configure(EntityTypeBuilder<PinChange> builder)
     {
         builder.ToTable("PinChanges");
-
-        builder.Property(x => x.DetailsId).IsRequired();
+        
         builder.Property(x => x.CardInfoId).IsRequired();
 
         builder.HasOne(x => x.Details)
             .WithOne()
-            .HasForeignKey<PinChange>(x => x.DetailsId)
+            .HasForeignKey<PinChangeDetails>(x => x.NotificationId)
+            .HasPrincipalKey<PinChange>(x=>x.NotificationId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.CardInfo)

@@ -8,6 +8,11 @@ namespace Aggregator.DataAccess.Entities.TokenChangeStatus;
 public class TokenStatusChangeDetails
 {
     /// <summary>
+    /// Уникальный идентификатор уведомления
+    /// </summary>
+    public long NotificationId { get; set; }
+    
+    /// <summary>
     /// Уникальный идентификатор
     /// </summary>
     public long TokenStatusChangeDetailsId { get; set; }
